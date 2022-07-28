@@ -3,6 +3,8 @@ import Konva from 'konva';
 import { useState, useRef, useEffect } from 'react';
 import { Button, Container } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
+import axios from 'axios';
 
 const StageComponent = () => {
   const [circles, setCircles] = useState([]);
@@ -48,8 +50,21 @@ const StageComponent = () => {
     layerRef.current.add(rectangle);
     layerRef.current.draw();
   };
-  const handleClick = () => {
+  const handleClickReset = () => {
     layerRef.current.destroyChildren();
+  };
+  const handleClickJson = () => {
+    console.log('aaa');
+    axios
+      .post('/api/saveFigures', {
+        msg: layerRef.current.toJSON(),
+      })
+      .then((result) => {
+        console.log(result.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -109,9 +124,17 @@ const StageComponent = () => {
         </Layer>
         <Layer ref={layerRef}></Layer>
       </Stage>
-      <Button variant='contained' onClick={() => handleClick()}>
+      <Button variant='contained' onClick={() => handleClickReset()}>
         RESET
         <RestartAltIcon />
+      </Button>
+      <Button
+        sx={{ marginX: 2 }}
+        variant='contained'
+        onClick={() => handleClickJson()}
+      >
+        To JSON
+        <SimCardDownloadIcon />
       </Button>
     </Container>
   );
