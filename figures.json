@@ -1,1 +1,1 @@
-{"attrs":{},"className":"Layer","children":[]}
+{"attrs":{},"className":"Layer","children":[{"attrs":{"radiusX":60,"radiusY":40,"x":336,"y":236,"stroke":"red","strokeWidth":3},"className":"Ellipse"},{"attrs":{"x":265,"y":85,"radius":60,"stroke":"green","strokeWidth":3},"className":"Circle"}]}

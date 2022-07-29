@@ -1,4 +1,4 @@
-import { Stage, Layer, Rect, Circle, Text } from 'react-konva';
+import { Stage, Layer, Rect, Circle, Ellipse } from 'react-konva';
 import Konva from 'konva';
 import { useState, useRef, useEffect } from 'react';
 import { Button, Container } from '@mui/material';
@@ -23,6 +23,10 @@ const StageComponent = () => {
 
         case 'rectangle':
           addRectangle();
+          break;
+
+        case 'ellipse':
+          addEllipse();
           break;
       }
     }
@@ -52,6 +56,19 @@ const StageComponent = () => {
     layerRef.current.add(rectangle);
     layerRef.current.draw();
   };
+  const addEllipse = () => {
+    var ellipse = new Konva.Ellipse({
+      radiusX: 60,
+      radiusY: 40,
+      x: currentFigure.x,
+      y: currentFigure.y,
+      stroke: 'red',
+      strokeWidth: 3,
+    });
+    layerRef.current.add(ellipse);
+    layerRef.current.draw();
+  };
+
   const handleClickReset = () => {
     layerRef.current.destroyChildren();
   };
@@ -138,6 +155,25 @@ const StageComponent = () => {
                 '.draggableRectangle'
               );
               draggableRectangle.position({ x: 35, y: 200 });
+            }}
+          />
+          <Ellipse
+            name='draggableEllipse'
+            x={50}
+            y={260}
+            radiusX={25}
+            radiusY={15}
+            fill='black'
+            draggable
+            onDragEnd={(e) => {
+              setCurrentFigure({
+                x: e.target.x(),
+                y: e.target.y(),
+                type: 'ellipse',
+              });
+              var draggableEllipse =
+                stageRef.current.findOne('.draggableEllipse');
+              draggableEllipse.position({ x: 50, y: 260 });
             }}
           />
         </Layer>
