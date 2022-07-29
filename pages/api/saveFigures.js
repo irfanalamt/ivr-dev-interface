@@ -15,7 +15,7 @@ async function handler(req, res) {
   });
 
   res.status(201).send({
-    message: 'figures saved!',
+    message: 'figures saved to JSON!',
   });
   return;
 }

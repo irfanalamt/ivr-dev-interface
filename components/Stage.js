@@ -4,7 +4,9 @@ import { useState, useRef, useEffect } from 'react';
 import { Button, Container } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
 import axios from 'axios';
+import raw from '../figures.json';
 
 const StageComponent = () => {
   const [circles, setCircles] = useState([]);
@@ -61,9 +63,26 @@ const StageComponent = () => {
       })
       .then((result) => {
         console.log(result.data.message);
+        alert(result.data.message);
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+
+  const handleClickLoadFile = () => {
+    fetch('/api/getFigures')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(JSON.stringify(data));
+        var stage = Konva.Node.create(JSON.stringify(data), 'container');
+        layerRef.current.destroyChildren();
+        stageRef.current.add(stage);
+        stageRef.current.draw();
+        alert('loaded from JSON');
+      })
+      .catch((err) => {
+        alert('figure fetch api error');
       });
   };
 
@@ -135,6 +154,10 @@ const StageComponent = () => {
       >
         To JSON
         <SimCardDownloadIcon />
+      </Button>
+      <Button variant='contained' onClick={() => handleClickLoadFile()}>
+        Load from File
+        <UploadFileIcon />
       </Button>
     </Container>
   );
