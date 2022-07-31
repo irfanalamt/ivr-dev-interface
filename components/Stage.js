@@ -1,4 +1,4 @@
-import { Stage, Layer, Rect, Circle, Ellipse } from 'react-konva';
+import { Stage, Layer, Rect, Circle, Ellipse, Arrow } from 'react-konva';
 import Konva from 'konva';
 import { useState, useRef, useEffect } from 'react';
 import { Button, Container } from '@mui/material';
@@ -12,7 +12,8 @@ const StageComponent = () => {
   const [circles, setCircles] = useState([]);
   const [currentFigure, setCurrentFigure] = useState(null);
   const stageRef = useRef(null);
-  const layerRef = useRef(null);
+  const layerRef1 = useRef(null);
+  const layerRef2 = useRef(null);
 
   useEffect(() => {
     if (currentFigure) {
@@ -23,10 +24,16 @@ const StageComponent = () => {
 
         case 'rectangle':
           addRectangle();
+          console.log(currentFigure);
           break;
 
         case 'ellipse':
           addEllipse();
+          break;
+
+        case 'arrow':
+          addArrow();
+          console.log(currentFigure);
           break;
       }
     }
@@ -39,9 +46,10 @@ const StageComponent = () => {
       radius: 60,
       stroke: 'green',
       strokeWidth: 3,
+      draggable: true,
     });
-    layerRef.current.add(circle);
-    layerRef.current.draw();
+    layerRef2.current.add(circle);
+    layerRef2.current.draw();
   };
 
   const addRectangle = () => {
@@ -50,11 +58,13 @@ const StageComponent = () => {
       y: currentFigure.y,
       height: 100,
       width: 150,
+      cornerRadius: 20,
       stroke: 'blue',
       strokeWidth: 3,
+      draggable: true,
     });
-    layerRef.current.add(rectangle);
-    layerRef.current.draw();
+    layerRef2.current.add(rectangle);
+    layerRef2.current.draw();
   };
   const addEllipse = () => {
     var ellipse = new Konva.Ellipse({
@@ -64,19 +74,58 @@ const StageComponent = () => {
       y: currentFigure.y,
       stroke: 'red',
       strokeWidth: 3,
+      draggable: true,
     });
-    layerRef.current.add(ellipse);
-    layerRef.current.draw();
+    layerRef2.current.add(ellipse);
+    layerRef2.current.draw();
+  };
+
+  const addArrow = () => {
+    var arrow = new Konva.Arrow({
+      points: [
+        currentFigure.x,
+        currentFigure.y,
+        100 + currentFigure.x,
+        currentFigure.y,
+      ],
+      pointerLength: 10,
+      pointerWidth: 10,
+      fill: 'grey',
+      stroke: 'grey',
+      strokeWidth: 4,
+      draggable: true,
+    });
+
+    layerRef2.current.add(arrow);
+
+    var tr1 = new Konva.Transformer({
+      nodes: [arrow],
+      centeredScaling: true,
+      rotationSnaps: [0, 90, 180, 270],
+      resizeEnabled: false,
+    });
+    layerRef2.current.add(tr1);
+    layerRef2.current.draw();
+
+    // stageRef.current
+    //   .findOne('.draggableArrow')
+    //   .setAttr('points', [
+    //     30 - currentFigure.testx,
+    //     300 - currentFigure.testy,
+    //     70 - currentFigure.testx,
+    //     300 - currentFigure.testy,
+    //   ]);
+    // layerRef1.current.draw();
   };
 
   const handleClickReset = () => {
-    layerRef.current.destroyChildren();
+    layerRef2.current.destroyChildren();
   };
   const handleClickJson = () => {
     console.log('aaa');
     axios
       .post('/api/saveFigures', {
-        msg: layerRef.current.toJSON(),
+        msg: layerRef2.current.toJSON(),
       })
       .then((result) => {
         console.log(result.data.message);
@@ -93,7 +142,7 @@ const StageComponent = () => {
       .then((data) => {
         console.log(JSON.stringify(data));
         var stage = Konva.Node.create(JSON.stringify(data), 'container');
-        layerRef.current.destroyChildren();
+        layerRef2.current.destroyChildren();
         stageRef.current.add(stage);
         stageRef.current.draw();
         alert('loaded from JSON');
@@ -110,7 +159,7 @@ const StageComponent = () => {
         height={window.innerHeight - 200}
         ref={stageRef}
       >
-        <Layer>
+        <Layer ref={layerRef1}>
           <Circle
             name='draggableCircle'
             x={50}
@@ -143,6 +192,7 @@ const StageComponent = () => {
             y={200}
             height={20}
             width={30}
+            cornerRadius={5}
             fill='black'
             draggable
             onDragEnd={(e) => {
@@ -151,6 +201,7 @@ const StageComponent = () => {
                 y: e.target.y(),
                 type: 'rectangle',
               });
+              //   console.log(currentFigure.x, currentFigure.y, currentFigure.type);
               var draggableRectangle = stageRef.current.findOne(
                 '.draggableRectangle'
               );
@@ -176,8 +227,37 @@ const StageComponent = () => {
               draggableEllipse.position({ x: 50, y: 260 });
             }}
           />
+          <Arrow
+            name='draggableArrow'
+            points={[30, 300, 70, 300]}
+            fill='black'
+            draggable
+            pointerLength={5}
+            pointerWidth={7}
+            stroke='black'
+            strokeWidth={4}
+            onDragEnd={(e) => {
+              setCurrentFigure({
+                x: 30 + e.target.x(),
+                y: 300 + e.target.y(),
+                type: 'arrow',
+                testx: e.target.x(),
+                testy: e.target.y(),
+              });
+              stageRef.current
+                .findOne('.draggableArrow')
+                .setAttr('points', [
+                  30 - e.target.x(),
+                  300 - e.target.y(),
+                  70 - e.target.x(),
+                  300 - e.target.y(),
+                ]);
+              //   layerRef1.current.draw();
+              stageRef.current.draw();
+            }}
+          />
         </Layer>
-        <Layer ref={layerRef}></Layer>
+        <Layer ref={layerRef2}></Layer>
       </Stage>
       <Button variant='contained' onClick={() => handleClickReset()}>
         RESET
@@ -194,6 +274,22 @@ const StageComponent = () => {
       <Button variant='contained' onClick={() => handleClickLoadFile()}>
         Load from File
         <UploadFileIcon />
+      </Button>
+      <Button
+        variant='contained'
+        onClick={() => {
+          var draggableArrow = stageRef.current.findOne('.draggableArrow');
+
+          addRectangle();
+          draggableArrow.setAttr('points', [
+            30 - currentFigure.testx,
+            300 - currentFigure.testy,
+            70 - currentFigure.testx,
+            300 - currentFigure.testy,
+          ]);
+        }}
+      >
+        TEST
       </Button>
     </Container>
   );

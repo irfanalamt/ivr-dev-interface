@@ -1,10 +1,9 @@
 import { Box, Container, Typography } from '@mui/material';
-
-import dynamic from 'next/dynamic';
-
-const DynamicStage = dynamic(() => import('../components/Stage'), {
+const DynamicCanvas = dynamic(() => import('../components/Canvas'), {
   ssr: false,
 });
+
+import dynamic from 'next/dynamic';
 
 export default function Home() {
   return (
@@ -18,7 +17,7 @@ export default function Home() {
         IVR framework UI
       </Typography>
       <Box sx={{ display: 'flex' }}>
-        <DynamicStage />
+        <DynamicCanvas />
       </Box>
     </Container>
   );
