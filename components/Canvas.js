@@ -1,17 +1,22 @@
 import { useEffect, useRef, useState } from 'react';
+import Shape from './Shape';
+import Shapes from './Shapes';
 
 const CanvasComponent = () => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
+  let isDragging = false;
 
-  const circle = {
-    x: 50,
-    y: 150,
-    size: 15,
-    dx: 5,
-    dy: 4,
-  };
+  let palletRectangle = new Shape(35, 100, 30, 20, 'rectangle');
+  let palletCircle = new Shape(50, 150, 30, 30, 'circle');
+  let shapeGroup = new Shapes('palette', [palletRectangle, palletCircle]);
+
+  //   const circle = {
+  //     x: 50,
+  //     y: 150,
+  //     width: 34,
+  //     height: 67,
+  //   };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -25,66 +30,74 @@ const CanvasComponent = () => {
   }, []);
 
   function drawOnFirstRender() {
-    //draw pallet rectangle
-    contextRef.current.fillStyle = 'purple';
-    contextRef.current.fillRect(35, 200, 30, 20);
-
-    //draw pallet circle
-    drawCircle();
+    palletRectangle.drawShape(contextRef.current);
+    palletCircle.drawShape(contextRef.current);
   }
 
-  const startDrawing = ({ nativeEvent: { offsetX, offsetY } }) => {
-    contextRef.current.beginPath();
-    contextRef.current.moveTo(offsetX, offsetY);
-    setIsDrawing(true);
+  const mouseDown = ({ nativeEvent }) => {
+    let { offsetX, offsetY } = nativeEvent;
+    // contextRef.current.beginPath();
+    // contextRef.current.moveTo(offsetX, offsetY);
+    nativeEvent.preventDefault();
+    shapeGroup.getShapes().forEach((element) => {
+      if (element.isMouseInShape(offsetX, offsetY)) {
+        console.log(`YES in shape ${element.type}`);
+        isDragging = true;
+      } else console.log('NO');
+    });
   };
-  const finishDrawing = () => {
-    contextRef.current.closePath();
-    setIsDrawing(false);
-  };
-  function drawCircle() {
-    contextRef.current.beginPath();
-    contextRef.current.fillStyle = 'purple';
-    contextRef.current.arc(circle.x, circle.y, circle.size, 0, Math.PI * 2);
+  const mouseUp = ({ nativeEvent }) => {
+    if (!isDragging) return;
 
-    contextRef.current.fill();
+    nativeEvent.preventDefault();
+    isDragging = false;
+  };
+  const mouseOut = ({ nativeEvent }) => {
+    if (!isDragging) return;
+
+    nativeEvent.preventDefault();
+    isDragging = false;
+  };
+
+  function mouseMove() {
+    console.log('moving');
   }
-  const draw = ({ nativeEvent: { offsetX, offsetY } }) => {
-    if (!isDrawing) return;
 
-    contextRef.current.lineTo(offsetX, offsetY);
-    contextRef.current.stroke();
-  };
-  function update(params) {
-    contextRef.current.clearRect(
-      0,
-      0,
-      canvasRef.current.width,
-      canvasRef.current.height
-    );
-    drawCircle();
+  //   function update(params) {
+  //     contextRef.current.clearRect(
+  //       0,
+  //       0,
+  //       canvasRef.current.width,
+  //       canvasRef.current.height
+  //     );
+  //     mouseMoveCircle();
 
-    circle.x += circle.dx;
+  //     circle.x += circle.dx;
 
-    if (
-      circle.x + circle.size > canvasRef.current.width ||
-      circle.x - circle.size < 0
-    ) {
-      circle.dx *= -1;
-    }
+  //     if (
+  //       circle.x + circle.size > canvasRef.current.width ||
+  //       circle.x - circle.size < 0
+  //     ) {
+  //       circle.dx *= -1;
+  //     }
 
-    setTimeout(() => {}, 5000);
+  //     setTimeout(() => {}, 5000);
 
-    requestAnimationFrame(update);
-  }
+  //     requestAnimationFrame(update);
+  //   }
 
   return (
     <canvas
       width={window.innerWidth}
       height={window.innerHeight}
-      onMouseDown={startDrawing}
-      onMouseUp={finishDrawing}
-      onMouseMove={draw}
+      onMouseMove={() => {
+        console.log('movingggg');
+      }}
+      onMouseDown={() => {
+        console.log('hsaha');
+      }}
+      onMouseUp={mouseUp}
+      onMouseOut={mouseOut}
       ref={canvasRef}
     ></canvas>
   );
