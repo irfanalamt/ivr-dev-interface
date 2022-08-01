@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <Container
       on
-      sx={{ marginX: 'auto', marginY: 4, padding: 2, textAlign: 'center' }}
+      sx={{ marginX: 'auto', marginY: 2, padding: 2, textAlign: 'center' }}
     >
       <Typography
         sx={{ marginX: 'auto', padding: 1, boxShadow: 2, maxWidth: 220 }}
@@ -17,17 +17,9 @@ export default function Home() {
       >
         IVR framework UI
       </Typography>
-
       <Box sx={{ display: 'flex' }}>
         <DynamicCanvas />
       </Box>
-      <Button
-        onMouseMove={() => {
-          console.log('moving on button');
-        }}
-      >
-        hhhhhhhhhhhhhhhhhhhhhh
-      </Button>
     </Container>
   );
 }

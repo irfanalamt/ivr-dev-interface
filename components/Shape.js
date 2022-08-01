@@ -1,28 +1,46 @@
 class Shape {
-  constructor(x, y, width, height, type) {
+  constructor(x, y, width, height, type, style = 'black', stroke = false) {
     this.x = x;
     this.y = y;
     this.width = width;
     this.height = height;
     this.type = type;
+    this.style = style;
+    this.initPos = [x, y];
+    this.stroke = stroke;
   }
 
   calcArea() {
     return this.width * this.height;
   }
+  getInitPos() {
+    return this.initPos;
+  }
 
   drawShape(ctx) {
     switch (this.type) {
       case 'rectangle':
-        ctx.fillStyle = 'purple';
-        ctx.fillRect(this.x, this.y, this.width, this.height);
+        if (this.stroke) {
+          ctx.strokeStyle = '#2196f3';
+          ctx.strokeRect(this.x, this.y, this.width, this.height);
+        } else {
+          ctx.fillStyle = this.style;
+          ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
         break;
 
       case 'circle':
         ctx.beginPath();
-        ctx.fillStyle = 'purple';
-        ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
-        ctx.fill();
+
+        if (this.stroke) {
+          ctx.strokeStyle = '#009688';
+          ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
+          ctx.stroke();
+        } else {
+          ctx.fillStyle = this.style;
+          ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
+          ctx.fill();
+        }
         break;
     }
   }

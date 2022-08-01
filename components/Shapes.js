@@ -10,6 +10,9 @@ class Shapes {
   getShapes() {
     return this.shapes;
   }
+  addShape(newShape) {
+    this.shapes.push(newShape);
+  }
 }
 
 export default Shapes;
