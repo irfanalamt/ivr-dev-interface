@@ -1,3 +1,4 @@
+import { StayPrimaryPortraitTwoTone } from '@mui/icons-material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from './Shape';
 import Shapes from './Shapes';
@@ -6,6 +7,8 @@ const CanvasComponent = () => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   let isDragging = false;
+  let current_shape_index = null;
+  let startX, startY;
 
   let palletRectangle = new Shape(35, 100, 30, 20, 'rectangle');
   let palletCircle = new Shape(50, 150, 30, 30, 'circle');
@@ -30,74 +33,65 @@ const CanvasComponent = () => {
   }, []);
 
   function drawOnFirstRender() {
-    palletRectangle.drawShape(contextRef.current);
-    palletCircle.drawShape(contextRef.current);
+    contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    shapeGroup.getShapes().forEach((el) => {
+      el.drawShape(contextRef.current);
+    });
   }
 
-  const mouseDown = ({ nativeEvent }) => {
-    let { offsetX, offsetY } = nativeEvent;
-    // contextRef.current.beginPath();
-    // contextRef.current.moveTo(offsetX, offsetY);
+  function handleMouseDown({ nativeEvent }) {
+    let { offsetX, offsetY, clientX, clientY } = nativeEvent;
     nativeEvent.preventDefault();
-    shapeGroup.getShapes().forEach((element) => {
+
+    shapeGroup.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`YES in shape ${element.type}`);
+        current_shape_index = i;
+        startX = clientX;
+        startY = clientY;
         isDragging = true;
       } else console.log('NO');
     });
-  };
-  const mouseUp = ({ nativeEvent }) => {
+  }
+  function handleMouseUp({ nativeEvent }) {
     if (!isDragging) return;
 
     nativeEvent.preventDefault();
     isDragging = false;
-  };
-  const mouseOut = ({ nativeEvent }) => {
+  }
+  function handleMouseOut({ nativeEvent }) {
     if (!isDragging) return;
 
     nativeEvent.preventDefault();
     isDragging = false;
-  };
-
-  function mouseMove() {
-    console.log('moving');
   }
 
-  //   function update(params) {
-  //     contextRef.current.clearRect(
-  //       0,
-  //       0,
-  //       canvasRef.current.width,
-  //       canvasRef.current.height
-  //     );
-  //     mouseMoveCircle();
+  function handleMouseMove({ nativeEvent }) {
+    if (!isDragging) return;
+    else {
+      nativeEvent.preventDefault();
+      let mouseX = parseInt(nativeEvent.clientX);
+      let mouseY = parseInt(nativeEvent.clientY);
 
-  //     circle.x += circle.dx;
-
-  //     if (
-  //       circle.x + circle.size > canvasRef.current.width ||
-  //       circle.x - circle.size < 0
-  //     ) {
-  //       circle.dx *= -1;
-  //     }
-
-  //     setTimeout(() => {}, 5000);
-
-  //     requestAnimationFrame(update);
-  //   }
+      let dx = mouseX - startX;
+      let dy = mouseY - startY;
+      let current_shape = shapeGroup.getShapes()[current_shape_index];
+      current_shape.x += dx;
+      current_shape.y += dy;
+      drawOnFirstRender();
+      startX = mouseX;
+      startY = mouseY;
+    }
+  }
 
   return (
     <canvas
       width={window.innerWidth}
       height={window.innerHeight}
-      onMouseMove={() => {
-        console.log('movingggg');
-      }}
-      onMouseDown={() => {
-        console.log('hsaha');
-      }}
-      onMouseUp={mouseUp}
-      onMouseOut={mouseOut}
+      onMouseMove={handleMouseMove}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+      onMouseOut={handleMouseOut}
       ref={canvasRef}
     ></canvas>
   );

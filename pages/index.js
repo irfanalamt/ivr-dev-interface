@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Button, Container, Typography } from '@mui/material';
 const DynamicCanvas = dynamic(() => import('../components/Canvas'), {
   ssr: false,
 });
@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 export default function Home() {
   return (
     <Container
+      on
       sx={{ marginX: 'auto', marginY: 4, padding: 2, textAlign: 'center' }}
     >
       <Typography
@@ -20,6 +21,13 @@ export default function Home() {
       <Box sx={{ display: 'flex' }}>
         <DynamicCanvas />
       </Box>
+      <Button
+        onMouseMove={() => {
+          console.log('moving on button');
+        }}
+      >
+        hhhhhhhhhhhhhhhhhhhhhh
+      </Button>
     </Container>
   );
 }
