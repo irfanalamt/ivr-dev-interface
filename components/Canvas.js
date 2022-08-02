@@ -172,9 +172,11 @@ const CanvasComponent = () => {
         sx={{
           position: 'absolute',
           bottom: 10,
-          left: '50%',
-          right: '50%',
+          marginX: 'auto',
+          left: 0,
+          right: 0,
           textAlign: 'center',
+          maxWidth: 150,
         }}
         variant='contained'
       >
