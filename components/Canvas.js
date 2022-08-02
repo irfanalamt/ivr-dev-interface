@@ -1,10 +1,11 @@
-import { Box, Button, Container } from '@mui/material';
+import { Box, Button, Container, TextField } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from './Shape';
 import Shapes from './Shapes';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 
 const CanvasComponent = () => {
+  const [showInput, setShowInput] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const bgRef = useRef(null);
@@ -81,7 +82,7 @@ const CanvasComponent = () => {
         stageFigure = new Shape(
           offsetX,
           offsetY,
-          120,
+          130,
           80,
           'rectangle',
           null,
@@ -126,27 +127,42 @@ const CanvasComponent = () => {
     }
   }
   function handleDoubleClick({ nativeEvent }) {
-    let { offsetX, offsetY } = nativeEvent;
+    let { offsetX, offsetY, clientX, clientY } = nativeEvent;
+    let boxd = document.getElementById('box-div');
+    setShowInput(true);
     console.log('double cliick');
-    // we only have 2 pallet shapes now
+    // we only have 2 pallet shapes now;only checking stage shapes
     shapeGroup1
       .getShapes()
       .slice(2)
       .forEach((element, i) => {
         if (element.isMouseInShape(offsetX, offsetY)) {
           console.log(`dbclick in shape ${element.type}`);
+
+          boxd.style.position = 'absolute';
+          boxd.style.left = element.x + 5 + 'px';
+          boxd.style.top = clientY + 5 + 'px';
         } else console.log('NOT dbclick in shape');
       });
   }
   function handleReset() {
     shapeGroup1.getShapes().splice(2);
+    setShowInput(false);
     clearAndDraw();
+
+    let tf = document.getElementById('text-box');
+    // let boxd = document.getElementById('box-div');
+    // boxd.style.position = 'absolute';
+    // boxd.style.right = 0;
+    // boxd.style.top = 350;
+    // setShowInput(true);
+    console.log(tf);
   }
 
   return (
     <Box sx={{ marginY: 1 }}>
       <canvas
-        style={{ position: 'absolute', left: 0, zIndex: 2 }}
+        style={{ position: 'absolute', left: 0, bottom: 10, zIndex: 2 }}
         width={window.innerWidth}
         height={window.innerHeight * 0.8}
         onMouseMove={handleMouseMove}
@@ -161,6 +177,7 @@ const CanvasComponent = () => {
           position: 'absolute',
           zIndex: -1,
           left: 0,
+          bottom: 10,
           backgroundColor: '#f9fbe7',
         }}
         width={window.innerWidth}
@@ -170,19 +187,32 @@ const CanvasComponent = () => {
       <Button
         onClick={handleReset}
         sx={{
-          position: 'absolute',
-          bottom: 10,
           marginX: 'auto',
-          left: 0,
-          right: 0,
+          position: 'absolute',
           textAlign: 'center',
           maxWidth: 150,
+          left: 0,
+          right: 0,
+          bottom: 20,
+          zIndex: 5,
         }}
         variant='contained'
       >
         RESET
         <RestartAltRoundedIcon />
       </Button>
+
+      <div style={{ position: 'relative' }} id='box-div'>
+        {showInput && (
+          <TextField
+            style={{ zIndex: 10, maxWidth: 120 }}
+            id='text-box'
+            label='input text'
+            variant='outlined'
+            size='small'
+          />
+        )}
+      </div>
     </Box>
   );
 };
