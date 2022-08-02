@@ -1,4 +1,4 @@
-import { Button, Container } from '@mui/material';
+import { Box, Button, Container } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from './Shape';
 import Shapes from './Shapes';
@@ -6,6 +6,8 @@ import Shapes from './Shapes';
 const CanvasComponent = () => {
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
+  const bgRef = useRef(null);
+  const bgContext = useRef(null);
 
   let isDragging = false;
   let current_shape_index = null;
@@ -28,14 +30,22 @@ const CanvasComponent = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
+    const bg = bgRef.current;
+    const context2 = bg.getContext('2d');
+
     context.lineCap = 'round';
     context.strokeStyle = 'black';
     context.lineWidth = 3;
 
     contextRef.current = context;
-
+    bgContext.current = context2;
+    drawBackground();
     clearAndDraw();
   }, []);
+
+  function drawBackground() {
+    bgContext.current.strokeRect(20, 120, 100, 200);
+  }
 
   function clearAndDraw() {
     contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -127,15 +137,29 @@ const CanvasComponent = () => {
   }
 
   return (
-    <canvas
-      width={window.innerWidth}
-      height={window.innerHeight}
-      onMouseMove={handleMouseMove}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseOut={handleMouseOut}
-      ref={canvasRef}
-    ></canvas>
+    <Box sx={{ marginY: 1 }}>
+      <canvas
+        style={{ position: 'absolute', left: 0, zIndex: 2 }}
+        width={window.innerWidth}
+        height={window.innerHeight}
+        onMouseMove={handleMouseMove}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseOut={handleMouseOut}
+        ref={canvasRef}
+      ></canvas>
+      <canvas
+        style={{
+          position: 'absolute',
+          zIndex: -1,
+          left: 0,
+          backgroundColor: '#f9fbe7',
+        }}
+        width={window.innerWidth}
+        height={window.innerHeight}
+        ref={bgRef}
+      ></canvas>
+    </Box>
   );
 };
 
