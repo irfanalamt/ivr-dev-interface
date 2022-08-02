@@ -6,10 +6,14 @@ class Shape {
     this.height = height;
     this.type = type;
     this.style = style;
-    this.initPos = [x, y];
     this.stroke = stroke;
+    this.initPos = [x, y];
+    this.text = 'haha';
   }
 
+  setText(inputText) {
+    this.text = inputText;
+  }
   calcArea() {
     return this.width * this.height;
   }
@@ -21,6 +25,16 @@ class Shape {
     switch (this.type) {
       case 'rectangle':
         if (this.stroke) {
+          ctx.font = '30px sans-serif';
+          ctx.fillStyle = 'black';
+          ctx.lineWidth = 2;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(
+            this.text,
+            this.x + this.height,
+            this.y + this.height - 20
+          );
           ctx.strokeStyle = '#e65100';
           ctx.strokeRect(this.x, this.y, this.width, this.height);
         } else {

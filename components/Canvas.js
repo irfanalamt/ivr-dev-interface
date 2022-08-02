@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import Shape from './Shape';
 import Shapes from './Shapes';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
+import LabelIcon from '@mui/icons-material/Label';
 
 const CanvasComponent = () => {
   const [showInput, setShowInput] = useState(false);
@@ -10,9 +11,11 @@ const CanvasComponent = () => {
   const contextRef = useRef(null);
   const bgRef = useRef(null);
   const bgContext = useRef(null);
+  const currentShape = useRef(null);
 
   let isDragging = false;
   let current_shape_index = null;
+
   let startX, startY;
   let initX, initY;
 
@@ -96,7 +99,7 @@ const CanvasComponent = () => {
       current_shape.y = palletFigureDragged.getInitPos()[1];
       shapeGroup1.addShape(stageFigure);
       clearAndDraw();
-      stageFigure.drawShape(contextRef.current);
+      // stageFigure.drawShape(contextRef.current);
     }
 
     nativeEvent.preventDefault();
@@ -138,10 +141,10 @@ const CanvasComponent = () => {
       .forEach((element, i) => {
         if (element.isMouseInShape(offsetX, offsetY)) {
           console.log(`dbclick in shape ${element.type}`);
-
+          currentShape.current = element;
           boxd.style.position = 'absolute';
           boxd.style.left = element.x + 5 + 'px';
-          boxd.style.top = clientY + 5 + 'px';
+          boxd.style.top = clientY + 'px';
         } else console.log('NOT dbclick in shape');
       });
   }
@@ -149,14 +152,16 @@ const CanvasComponent = () => {
     shapeGroup1.getShapes().splice(2);
     setShowInput(false);
     clearAndDraw();
+  }
+  function handleTextSave() {
+    let tb = document.getElementById('text-box');
+    // let currentShape = shapeGroup1.getShapes()[current_shape_index];
+    // currentShape.setText(tb.value);
+    currentShape.current.setText(tb.value);
+    setShowInput(false);
+    console.log(shapeGroup1.getShapes());
 
-    let tf = document.getElementById('text-box');
-    // let boxd = document.getElementById('box-div');
-    // boxd.style.position = 'absolute';
-    // boxd.style.right = 0;
-    // boxd.style.top = 350;
-    // setShowInput(true);
-    console.log(tf);
+    console.log(currentShape.current);
   }
 
   return (
@@ -204,13 +209,22 @@ const CanvasComponent = () => {
 
       <div style={{ position: 'relative' }} id='box-div'>
         {showInput && (
-          <TextField
-            style={{ zIndex: 10, maxWidth: 120 }}
-            id='text-box'
-            label='input text'
-            variant='outlined'
-            size='small'
-          />
+          <>
+            <TextField
+              style={{ zIndex: 10, maxWidth: 120 }}
+              id='text-box'
+              label='input text'
+              variant='outlined'
+              size='small'
+            />
+            <Button
+              onClick={handleTextSave}
+              sx={{ marginX: 2, zIndex: 10 }}
+              variant='contained'
+            >
+              <LabelIcon />
+            </Button>
+          </>
         )}
       </div>
     </Box>
