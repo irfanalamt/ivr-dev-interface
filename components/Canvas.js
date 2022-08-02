@@ -2,6 +2,7 @@ import { Box, Button, Container } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from './Shape';
 import Shapes from './Shapes';
+import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 
 const CanvasComponent = () => {
   const canvasRef = useRef(null);
@@ -124,16 +125,22 @@ const CanvasComponent = () => {
       startY = mouseY;
     }
   }
-  function handleTest() {
-    let testShape = new Shape(
-      window.innerWidth - 10,
-      100,
-      60,
-      40,
-      'rectangle',
-      'green'
-    );
-    testShape.drawShape(contextRef.current);
+  function handleDoubleClick({ nativeEvent }) {
+    let { offsetX, offsetY } = nativeEvent;
+    console.log('double cliick');
+    // we only have 2 pallet shapes now
+    shapeGroup1
+      .getShapes()
+      .slice(2)
+      .forEach((element, i) => {
+        if (element.isMouseInShape(offsetX, offsetY)) {
+          console.log(`dbclick in shape ${element.type}`);
+        } else console.log('NOT dbclick in shape');
+      });
+  }
+  function handleReset() {
+    shapeGroup1.getShapes().splice(2);
+    clearAndDraw();
   }
 
   return (
@@ -141,11 +148,12 @@ const CanvasComponent = () => {
       <canvas
         style={{ position: 'absolute', left: 0, zIndex: 2 }}
         width={window.innerWidth}
-        height={window.innerHeight}
+        height={window.innerHeight * 0.8}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseOut={handleMouseOut}
+        onDoubleClick={handleDoubleClick}
         ref={canvasRef}
       ></canvas>
       <canvas
@@ -156,9 +164,23 @@ const CanvasComponent = () => {
           backgroundColor: '#f9fbe7',
         }}
         width={window.innerWidth}
-        height={window.innerHeight}
+        height={window.innerHeight * 0.8}
         ref={bgRef}
       ></canvas>
+      <Button
+        onClick={handleReset}
+        sx={{
+          position: 'absolute',
+          bottom: 10,
+          left: '50%',
+          right: '50%',
+          textAlign: 'center',
+        }}
+        variant='contained'
+      >
+        RESET
+        <RestartAltRoundedIcon />
+      </Button>
     </Box>
   );
 };

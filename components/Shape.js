@@ -21,7 +21,7 @@ class Shape {
     switch (this.type) {
       case 'rectangle':
         if (this.stroke) {
-          ctx.strokeStyle = '#2196f3';
+          ctx.strokeStyle = '#e65100';
           ctx.strokeRect(this.x, this.y, this.width, this.height);
         } else {
           ctx.fillStyle = this.style;
@@ -33,7 +33,7 @@ class Shape {
         ctx.beginPath();
 
         if (this.stroke) {
-          ctx.strokeStyle = '#009688';
+          ctx.strokeStyle = '#2196f3';
           ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
           ctx.stroke();
         } else {
