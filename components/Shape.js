@@ -8,7 +8,11 @@ class Shape {
     this.style = style;
     this.stroke = stroke;
     this.initPos = [x, y];
-    this.text = 'haha';
+    if (type === 'rectangle') {
+      this.text = '▶️ menu';
+    } else if (type === 'circle') {
+      this.text = '▶️ message';
+    } else this.text = '';
   }
 
   setText(inputText) {
@@ -25,7 +29,7 @@ class Shape {
     switch (this.type) {
       case 'rectangle':
         if (this.stroke) {
-          ctx.font = '30px sans-serif';
+          ctx.font = '19px sans-serif';
           ctx.fillStyle = 'black';
           ctx.lineWidth = 2;
           ctx.textAlign = 'center';
@@ -47,6 +51,12 @@ class Shape {
         ctx.beginPath();
 
         if (this.stroke) {
+          ctx.font = '19px sans-serif';
+          ctx.fillStyle = 'black';
+          ctx.lineWidth = 2;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(this.text, this.x, this.y + 10);
           ctx.strokeStyle = '#2196f3';
           ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
           ctx.stroke();

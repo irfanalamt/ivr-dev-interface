@@ -17,7 +17,7 @@ export default function Home() {
       >
         IVR framework UI
       </Typography>
-      <Box sx={{ display: 'flex' }}>
+      <Box>
         <DynamicCanvas />
       </Box>
     </Container>
