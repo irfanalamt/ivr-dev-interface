@@ -1,7 +1,7 @@
 import { Box, Button, Container, TextField } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import Shape from './Shape';
-import Shapes from './Shapes';
+import Shape from '../models/Shape';
+import Shapes from '../models/Shapes';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import LabelIcon from '@mui/icons-material/Label';
 
@@ -12,10 +12,12 @@ const CanvasComponent = () => {
   const bgRef = useRef(null);
   const bgContext = useRef(null);
   const currentShape = useRef(null);
-  const shapeGroup = useRef(null);
+  const palletGroup = useRef(null);
+  const stageGroup = useRef(null);
 
   let isDragging = false;
-  let current_shape_index = null;
+  let isPalletShape = false;
+  console.log('loopsie');
 
   let startX, startY;
   let initX, initY;
@@ -40,9 +42,11 @@ const CanvasComponent = () => {
 
     let palletRectangle = new Shape(35, 150, 60, 40, 'rectangle', 'red');
     let palletCircle = new Shape(65, 250, 30, 30, 'circle', 'blue');
-    shapeGroup.current = new Shapes('palette', [palletRectangle, palletCircle]);
-    console.log('loop again');
-    let shapeGroup2 = new Shapes('stage', []);
+    palletGroup.current = new Shapes('palette', [
+      palletRectangle,
+      palletCircle,
+    ]);
+    stageGroup.current = new Shapes('stage', []);
 
     contextRef.current = context;
     bgContext.current = context2;
@@ -56,7 +60,10 @@ const CanvasComponent = () => {
 
   function clearAndDraw() {
     contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    shapeGroup.current.getShapes().forEach((el) => {
+    palletGroup.current.getShapes().forEach((el) => {
+      el.drawShape(contextRef.current);
+    });
+    stageGroup.current.getShapes().forEach((el) => {
       el.drawShape(contextRef.current);
     });
   }
@@ -65,26 +72,39 @@ const CanvasComponent = () => {
     let { offsetX, offsetY, clientX, clientY } = nativeEvent;
     nativeEvent.preventDefault();
 
-    shapeGroup.current.getShapes().forEach((element, i) => {
+    stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
-        console.log(`YES in shape ${element.type}`);
-        current_shape_index = i;
+        console.log(`YES in stage shape ${element.type}`);
+        currentShape.current = element;
         startX = clientX;
         startY = clientY;
         isDragging = true;
-      } else console.log('NO');
+        isPalletShape = false;
+        return;
+      }
+    });
+
+    palletGroup.current.getShapes().forEach((element, i) => {
+      if (element.isMouseInShape(offsetX, offsetY)) {
+        console.log(`YES in pallet shape ${element.type}`);
+        currentShape.current = element;
+        startX = clientX;
+        startY = clientY;
+        isDragging = true;
+        isPalletShape = true;
+      }
     });
   }
+
   function handleMouseUp({ nativeEvent }) {
     let { offsetX, offsetY } = nativeEvent;
     if (!isDragging) return;
     // we only have two pallet items
-    else if (current_shape_index < 2) {
+    else if (isPalletShape) {
       console.log('mouse up while dragging pallet');
-      let palletFigureDragged =
-        shapeGroup.current.getShapes()[current_shape_index];
+      let palletFigureDragged = currentShape.current;
       let stageFigure;
-      if (current_shape_index === 0) {
+      if (palletFigureDragged.type === 'rectangle') {
         stageFigure = new Shape(
           offsetX,
           offsetY,
@@ -94,13 +114,14 @@ const CanvasComponent = () => {
           null,
           true
         );
-      } else if (current_shape_index === 1) {
+      } else if (palletFigureDragged.type === 'circle') {
         stageFigure = new Shape(offsetX, offsetY, 60, 60, 'circle', null, true);
       }
-      let current_shape = shapeGroup.current.getShapes()[current_shape_index];
-      current_shape.x = palletFigureDragged.getInitPos()[0];
-      current_shape.y = palletFigureDragged.getInitPos()[1];
-      shapeGroup.current.addShape(stageFigure);
+      // reset pallet figure to pallet
+      palletFigureDragged.x = palletFigureDragged.getInitPos()[0];
+      palletFigureDragged.y = palletFigureDragged.getInitPos()[1];
+      //add figure to stage
+      stageGroup.current.addShape(stageFigure);
       clearAndDraw();
       // stageFigure.drawShape(contextRef.current);
     }
@@ -124,7 +145,7 @@ const CanvasComponent = () => {
 
       let dx = mouseX - startX;
       let dy = mouseY - startY;
-      let current_shape = shapeGroup.current.getShapes()[current_shape_index];
+      let current_shape = currentShape.current;
       current_shape.x += dx;
       current_shape.y += dy;
       clearAndDraw();
@@ -138,10 +159,8 @@ const CanvasComponent = () => {
     let boxd = document.getElementById('box-div');
     setShowInput(true);
     console.log('double cliick');
-    // we only have 2 pallet shapes now;only checking stage shapes
-    let stageGroup = shapeGroup.current.getShapes().slice(2);
 
-    stageGroup.forEach((element, i) => {
+    stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`dbclick in shape ${element.type}`);
         currentShape.current = element;
@@ -151,10 +170,10 @@ const CanvasComponent = () => {
       } else console.log('NOT dbclick in shape');
     });
 
-    console.log(shapeGroup.current.getShapes());
+    console.log(palletGroup.current.getShapes());
   }
   const handleReset = () => {
-    //shapeGroup.current.getShapes().splice(2);
+    stageGroup.current.getShapes().splice(0);
     setShowInput(false);
     clearAndDraw();
   };
@@ -168,7 +187,8 @@ const CanvasComponent = () => {
     clearAndDraw();
     setShowInput(false);
 
-    console.log(shapeGroup.current.getShapes());
+    console.log(palletGroup.current.getShapes());
+    console.log(stageGroup.current.getShapes());
     console.log(currentShape.current);
   }
 

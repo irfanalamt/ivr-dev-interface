@@ -1,4 +1,3 @@
-import Shape from './Shape';
 class Shapes {
   constructor(groupname, shapes) {
     this.groupname = groupname;
