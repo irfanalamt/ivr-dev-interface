@@ -112,6 +112,21 @@ class Shape {
       ctx.fill();
     }
   }
+
+  isMouseInEnd(x, y) {
+    let edgeLeft, edgeRight, edgeTop, edgeBottom;
+    if (this.type == 'rectangle') {
+      edgeLeft = (this.x - this.width / 2) * 1.1;
+      edgeRight = (this.x + this.width / 2) * 0.9;
+      edgeTop = (this.y - this.height / 2) * 1.1;
+      edgeBottom = (this.y + this.height / 2) * 0.9;
+    }
+
+    if ((x < edgeLeft || x > edgeRight) && (y < edgeTop || y > edgeBottom)) {
+      return true;
+    }
+    return false;
+  }
   isMouseInShape(x, y) {
     let shapeLeft, shapeRight, shapeTop, shapeBottom;
     if (this.type == 'rectangle') {

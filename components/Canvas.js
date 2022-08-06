@@ -74,11 +74,15 @@ const CanvasComponent = () => {
   function handleMouseDown({ nativeEvent }) {
     let { offsetX, offsetY, clientX, clientY } = nativeEvent;
     nativeEvent.preventDefault();
-
+    canvasRef.current.style.cursor = 'default';
     stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`YES in stage shape ${element.type}`);
         currentShape.current = element;
+        if (element.isMouseInEnd(offsetX, offsetY)) {
+          console.log('Mouse in figure end');
+          canvasRef.current.style.cursor = 'w-resize';
+        }
         startX = clientX;
         startY = clientY;
         isDragging = true;
@@ -175,7 +179,10 @@ const CanvasComponent = () => {
         console.log(`dbclick in shape ${element.type}`);
         currentShape.current = element;
         placeTextField();
-      } else console.log('NOT dbclick in shape');
+        return;
+      } else {
+        console.log('NOT dbclick in shape');
+      }
     });
 
     console.log(palletGroup.current.getShapes());
