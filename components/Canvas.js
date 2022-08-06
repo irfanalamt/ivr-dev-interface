@@ -184,6 +184,7 @@ const CanvasComponent = () => {
   function placeTextField() {
     let boxd = document.getElementById('box-div');
     setShowInput(true);
+
     console.log('double cliick');
     boxd.style.position = 'absolute';
     if (currentShape.current.type === 'rectangle') {
@@ -218,6 +219,11 @@ const CanvasComponent = () => {
     console.log(palletGroup.current.getShapes());
     console.log(stageGroup.current.getShapes());
     console.log(currentShape.current);
+  }
+
+  function handleTextFocus() {
+    let tb = document.getElementById('text-box');
+    tb.value = currentShape.current.text;
   }
 
   return (
@@ -267,10 +273,15 @@ const CanvasComponent = () => {
         {showInput && (
           <>
             <TextField
-              style={{ zIndex: 5, maxWidth: 115, backgroundColor: '#eceff1' }}
+              style={{
+                zIndex: 5,
+                maxWidth: 115,
+                backgroundColor: '#eceff1',
+              }}
               id='text-box'
               variant='standard'
               size='small'
+              onFocus={handleTextFocus}
             />
             <Button
               onClick={handleTextSave}
