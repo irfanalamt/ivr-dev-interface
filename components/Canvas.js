@@ -40,22 +40,25 @@ const CanvasComponent = () => {
     context.strokeStyle = 'black';
     context.lineWidth = 3;
 
-    let palletRectangle = new Shape(35, 150, 60, 40, 'rectangle', 'red');
-    let palletCircle = new Shape(65, 250, 30, 30, 'circle', 'blue');
+    let palletRectangle = new Shape(65, 230, 40, 30, 'rectangle', '#bf360c');
+    let palletCircle = new Shape(65, 285, 20, 20, 'circle', '#0d47a1');
+    let palletHexagon = new Shape(65, 340, 30, 20, 'hexagon', '#004d40');
     palletGroup.current = new Shapes('palette', [
       palletRectangle,
       palletCircle,
+      palletHexagon,
     ]);
     stageGroup.current = new Shapes('stage', []);
 
     contextRef.current = context;
     bgContext.current = context2;
+
     drawBackground();
     clearAndDraw();
   }, []);
 
   function drawBackground() {
-    bgContext.current.strokeRect(20, 120, 100, 200);
+    bgContext.current.strokeRect(30, 100, 70, 400);
   }
 
   function clearAndDraw() {
@@ -108,14 +111,24 @@ const CanvasComponent = () => {
         stageFigure = new Shape(
           offsetX,
           offsetY,
-          130,
-          80,
+          120,
+          60,
           'rectangle',
           null,
           true
         );
       } else if (palletFigureDragged.type === 'circle') {
         stageFigure = new Shape(offsetX, offsetY, 60, 60, 'circle', null, true);
+      } else if (palletFigureDragged.type === 'hexagon') {
+        stageFigure = new Shape(
+          offsetX,
+          offsetY,
+          80,
+          40,
+          'hexagon',
+          '#009688',
+          true
+        );
       }
       // reset pallet figure to pallet
       palletFigureDragged.x = palletFigureDragged.getInitPos()[0];
@@ -211,7 +224,7 @@ const CanvasComponent = () => {
           zIndex: -1,
           left: 0,
           bottom: 10,
-          backgroundColor: '#f9fbe7',
+          backgroundColor: '#eceff1',
         }}
         width={window.innerWidth}
         height={window.innerHeight}

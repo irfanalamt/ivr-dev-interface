@@ -9,9 +9,11 @@ class Shape {
     this.stroke = stroke;
     this.initPos = [x, y];
     if (type === 'rectangle') {
-      this.text = '▶️ menu';
+      this.text = 'function';
+    } else if (type === 'hexagon') {
+      this.text = 'playMenu';
     } else if (type === 'circle') {
-      this.text = '▶️ message';
+      this.text = 'getDigits';
     } else this.text = '';
   }
 
@@ -34,16 +36,22 @@ class Shape {
           ctx.lineWidth = 2;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText(
-            this.text,
-            this.x + this.height,
-            this.y + this.height - 20
+          ctx.fillText(this.text, this.x, this.y);
+          ctx.strokeStyle = '#ff5722';
+          ctx.strokeRect(
+            this.x - this.width / 2,
+            this.y - this.height / 2,
+            this.width,
+            this.height
           );
-          ctx.strokeStyle = '#e65100';
-          ctx.strokeRect(this.x, this.y, this.width, this.height);
         } else {
           ctx.fillStyle = this.style;
-          ctx.fillRect(this.x, this.y, this.width, this.height);
+          ctx.fillRect(
+            this.x - this.width / 2,
+            this.y - this.height / 2,
+            this.width,
+            this.height
+          );
         }
         break;
 
@@ -56,7 +64,7 @@ class Shape {
           ctx.lineWidth = 2;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText(this.text, this.x, this.y + 10);
+          ctx.fillText(this.text, this.x, this.y);
           ctx.strokeStyle = '#2196f3';
           ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
           ctx.stroke();
@@ -66,19 +74,55 @@ class Shape {
           ctx.fill();
         }
         break;
+
+      case 'hexagon':
+        this.drawHexagon(ctx);
+    }
+  }
+
+  drawHexagon(ctx) {
+    const ANGLE_IN_RADIAN = (2 * Math.PI) / 6;
+
+    ctx.beginPath();
+    for (var i = 0; i < 6; i++) {
+      let k = 1.0;
+      if (i === 0 || i === 3) {
+        k = 0.8;
+      }
+      ctx.lineTo(
+        this.x + this.width * Math.cos(ANGLE_IN_RADIAN * i) * k,
+        this.y + this.height * Math.sin(ANGLE_IN_RADIAN * i)
+      );
+      console.log(`width=${this.width} height=${this.height}`);
+    }
+
+    if (this.stroke) {
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.closePath();
+      ctx.strokeStyle = this.style;
+      ctx.stroke();
+      console.log('stroke hex');
+    } else {
+      ctx.fillStyle = this.style;
+      ctx.fill();
     }
   }
   isMouseInShape(x, y) {
     let shapeLeft, shapeRight, shapeTop, shapeBottom;
-    if (this.type == 'circle') {
+    if (this.type == 'rectangle') {
+      shapeLeft = this.x - this.width / 2;
+      shapeRight = this.x + this.width / 2;
+      shapeTop = this.y - this.height / 2;
+      shapeBottom = this.y + this.height / 2;
+    } else {
       shapeLeft = this.x - this.width;
       shapeRight = this.x + this.width;
       shapeTop = this.y - this.height;
-      shapeBottom = this.y + this.height;
-    } else {
-      shapeLeft = this.x;
-      shapeRight = this.x + this.width;
-      shapeTop = this.y;
       shapeBottom = this.y + this.height;
     }
 
