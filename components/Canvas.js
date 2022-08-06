@@ -169,21 +169,36 @@ const CanvasComponent = () => {
   function handleDoubleClick({ nativeEvent }) {
     let { offsetX, offsetY, clientX, clientY } = nativeEvent;
     nativeEvent.preventDefault();
-    let boxd = document.getElementById('box-div');
-    setShowInput(true);
-    console.log('double cliick');
 
     stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`dbclick in shape ${element.type}`);
         currentShape.current = element;
-        boxd.style.position = 'absolute';
-        boxd.style.left = element.x + 5 + 'px';
-        boxd.style.top = element.y + 'px';
+        placeTextField();
       } else console.log('NOT dbclick in shape');
     });
 
     console.log(palletGroup.current.getShapes());
+  }
+
+  function placeTextField() {
+    let boxd = document.getElementById('box-div');
+    setShowInput(true);
+    console.log('double cliick');
+    boxd.style.position = 'absolute';
+    if (currentShape.current.type === 'rectangle') {
+      boxd.style.left =
+        currentShape.current.x - currentShape.current.width / 2 + 'px';
+      boxd.style.top = currentShape.current.y - 19 + 'px';
+    } else if (currentShape.current.type === 'hexagon') {
+      boxd.style.left =
+        currentShape.current.x - currentShape.current.width + 12 + 'px';
+      boxd.style.top = currentShape.current.y - 19 + 'px';
+    } else {
+      boxd.style.left =
+        currentShape.current.x - currentShape.current.width + 'px';
+      boxd.style.top = currentShape.current.y - 19 + 'px';
+    }
   }
   const handleReset = () => {
     stageGroup.current.getShapes().splice(0);
@@ -252,10 +267,9 @@ const CanvasComponent = () => {
         {showInput && (
           <>
             <TextField
-              style={{ zIndex: 5, maxWidth: 120, backgroundColor: '#e0f2f1' }}
+              style={{ zIndex: 5, maxWidth: 115, backgroundColor: '#eceff1' }}
               id='text-box'
-              label='input name'
-              variant='outlined'
+              variant='standard'
               size='small'
             />
             <Button
