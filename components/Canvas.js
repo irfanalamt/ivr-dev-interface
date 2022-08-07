@@ -43,10 +43,19 @@ const CanvasComponent = () => {
     let palletRectangle = new Shape(65, 230, 40, 30, 'rectangle', '#bf360c');
     let palletCircle = new Shape(65, 285, 20, 20, 'circle', '#0d47a1');
     let palletHexagon = new Shape(65, 340, 30, 20, 'hexagon', '#004d40');
+    let palletParallelogram = new Shape(
+      65,
+      389,
+      16,
+      14,
+      'parallelogram',
+      '#4a148c'
+    );
     palletGroup.current = new Shapes('palette', [
       palletRectangle,
       palletCircle,
       palletHexagon,
+      palletParallelogram,
     ]);
     stageGroup.current = new Shapes('stage', []);
 
@@ -154,11 +163,11 @@ const CanvasComponent = () => {
   }
 
   function handleMouseMove({ nativeEvent }) {
-    if (!isDragging) return;
-    else {
+    let mouseX = parseInt(nativeEvent.clientX);
+    let mouseY = parseInt(nativeEvent.clientY);
+    if (!isDragging) {
+    } else {
       nativeEvent.preventDefault();
-      let mouseX = parseInt(nativeEvent.clientX);
-      let mouseY = parseInt(nativeEvent.clientY);
 
       let dx = mouseX - startX;
       let dy = mouseY - startY;

@@ -13,6 +13,8 @@ class Shape {
     } else if (type === 'hexagon') {
       this.text = 'playMenu';
     } else if (type === 'circle') {
+      this.text = 'playMessage';
+    } else if (type === 'parallelogram') {
       this.text = 'getDigits';
     } else this.text = '';
   }
@@ -46,7 +48,15 @@ class Shape {
           );
         } else {
           ctx.fillStyle = this.style;
+          ctx.strokeStyle = '#ff5722';
+          ctx.lineWidth = 2;
           ctx.fillRect(
+            this.x - this.width / 2,
+            this.y - this.height / 2,
+            this.width,
+            this.height
+          );
+          ctx.strokeRect(
             this.x - this.width / 2,
             this.y - this.height / 2,
             this.width,
@@ -70,14 +80,37 @@ class Shape {
           ctx.stroke();
         } else {
           ctx.fillStyle = this.style;
+          ctx.strokeStyle = '#2196f3';
+          ctx.lineWidth = 2;
           ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
           ctx.fill();
+          ctx.stroke();
         }
         break;
 
       case 'hexagon':
         this.drawHexagon(ctx);
+        break;
+
+      case 'parallelogram':
+        this.drawParallelogram(ctx);
+        break;
     }
+  }
+
+  drawParallelogram(ctx) {
+    ctx.beginPath();
+    ctx.fillStyle = this.style;
+    ctx.strokeStyle = '#9c27b0';
+    ctx.lineWidth = 2;
+    ctx.lineTo(this.x + (this.width - this.height), this.y + this.height);
+    ctx.lineTo(this.x + (-this.width - this.height), this.y + this.height);
+    ctx.lineTo(this.x + (-this.width + this.height), this.y - this.height);
+    ctx.lineTo(this.x + (this.width + this.height), this.y - this.height);
+    ctx.closePath();
+
+    ctx.fill();
+    ctx.stroke();
   }
 
   drawHexagon(ctx) {
@@ -93,8 +126,10 @@ class Shape {
         this.x + this.width * Math.cos(ANGLE_IN_RADIAN * i) * k,
         this.y + this.height * Math.sin(ANGLE_IN_RADIAN * i)
       );
+
       console.log(`width=${this.width} height=${this.height}`);
     }
+    ctx.closePath();
 
     if (this.stroke) {
       ctx.font = '19px sans-serif';
@@ -109,7 +144,10 @@ class Shape {
       console.log('stroke hex');
     } else {
       ctx.fillStyle = this.style;
+      ctx.strokeStyle = '#009688';
+      ctx.lineWidth = 2;
       ctx.fill();
+      ctx.stroke();
     }
   }
 
