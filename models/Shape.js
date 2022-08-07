@@ -1,3 +1,5 @@
+import { emphasize } from '@mui/material';
+
 class Shape {
   constructor(x, y, width, height, type, style = 'black', stroke = false) {
     this.x = x;
@@ -100,12 +102,13 @@ class Shape {
 
   drawParallelogram(ctx) {
     ctx.beginPath();
-
-    ctx.lineTo(this.x + (this.width - this.height), this.y + this.height);
-    ctx.lineTo(this.x + (-this.width - this.height), this.y + this.height);
-    ctx.lineTo(this.x + (-this.width + this.height), this.y - this.height);
-    ctx.lineTo(this.x + (this.width + this.height), this.y - this.height);
+    ctx.translate(this.x, this.y);
+    ctx.lineTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5 - this.height * 0.5, this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
+    ctx.lineTo(this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
     ctx.closePath();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
       ctx.font = '19px sans-serif';
@@ -126,20 +129,18 @@ class Shape {
   }
 
   drawHexagon(ctx) {
-    const ANGLE_IN_RADIAN = (2 * Math.PI) / 6;
-
     ctx.beginPath();
-    for (var i = 0; i < 6; i++) {
-      let k = 1.0;
-      if (i === 0 || i === 3) {
-        k = 0.8;
-      }
-      ctx.lineTo(
-        this.x + this.width * Math.cos(ANGLE_IN_RADIAN * i) * k,
-        this.y + this.height * Math.sin(ANGLE_IN_RADIAN * i)
-      );
-    }
+    ctx.translate(this.x, this.y);
+
+    ctx.moveTo(this.width * 0.5, 0);
+    ctx.lineTo(this.width * 0.4, 0.5 * this.height);
+
+    ctx.lineTo(-this.width * 0.4, 0.5 * this.height);
+    ctx.lineTo(-this.width * 0.5, 0);
+    ctx.lineTo(-this.width * 0.4, -0.5 * this.height);
+    ctx.lineTo(this.width * 0.4, -0.5 * this.height);
     ctx.closePath();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
       ctx.font = '19px sans-serif';

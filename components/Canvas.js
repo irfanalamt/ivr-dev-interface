@@ -17,6 +17,7 @@ const CanvasComponent = () => {
 
   let isDragging = false;
   let isPalletShape = false;
+  let isResizing = false;
   console.log('loopsie');
 
   let startX, startY;
@@ -42,12 +43,12 @@ const CanvasComponent = () => {
 
     let palletRectangle = new Shape(65, 230, 40, 30, 'rectangle', '#bf360c');
     let palletCircle = new Shape(65, 285, 20, 20, 'circle', '#0d47a1');
-    let palletHexagon = new Shape(65, 340, 30, 20, 'hexagon', '#004d40');
+    let palletHexagon = new Shape(65, 340, 60, 40, 'hexagon', '#004d40');
     let palletParallelogram = new Shape(
       65,
       389,
-      16,
-      14,
+      36,
+      22,
       'parallelogram',
       '#4a148c'
     );
@@ -123,7 +124,7 @@ const CanvasComponent = () => {
           offsetX,
           offsetY,
           120,
-          60,
+          50,
           'rectangle',
           null,
           true
@@ -134,8 +135,8 @@ const CanvasComponent = () => {
         stageFigure = new Shape(
           offsetX,
           offsetY,
-          80,
-          40,
+          140,
+          50,
           'hexagon',
           '#009688',
           true
@@ -144,8 +145,8 @@ const CanvasComponent = () => {
         stageFigure = new Shape(
           offsetX,
           offsetY,
-          60,
-          30,
+          120,
+          50,
           'parallelogram',
           '#9c27b0',
           true
@@ -179,9 +180,11 @@ const CanvasComponent = () => {
         if (element.isMouseInEnd(offsetX, offsetY)) {
           console.log('Mouse in figure end');
           canvasRef.current.style.cursor = 'w-resize';
+          isResizing = true;
           return;
         }
       });
+      isResizing = false;
     } else {
       nativeEvent.preventDefault();
 
