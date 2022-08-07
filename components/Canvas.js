@@ -83,15 +83,11 @@ const CanvasComponent = () => {
   function handleMouseDown({ nativeEvent }) {
     let { offsetX, offsetY, clientX, clientY } = nativeEvent;
     nativeEvent.preventDefault();
-    canvasRef.current.style.cursor = 'default';
+
     stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`YES in stage shape ${element.type}`);
         currentShape.current = element;
-        if (element.isMouseInEnd(offsetX, offsetY)) {
-          console.log('Mouse in figure end');
-          canvasRef.current.style.cursor = 'w-resize';
-        }
         startX = clientX;
         startY = clientY;
         isDragging = true;
@@ -99,6 +95,8 @@ const CanvasComponent = () => {
         return;
       }
     });
+
+    canvasRef.current.style.cursor = 'default';
 
     palletGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
@@ -142,6 +140,16 @@ const CanvasComponent = () => {
           '#009688',
           true
         );
+      } else if (palletFigureDragged.type === 'parallelogram') {
+        stageFigure = new Shape(
+          offsetX,
+          offsetY,
+          60,
+          30,
+          'parallelogram',
+          '#9c27b0',
+          true
+        );
       }
       // reset pallet figure to pallet
       palletFigureDragged.x = palletFigureDragged.getInitPos()[0];
@@ -163,9 +171,17 @@ const CanvasComponent = () => {
   }
 
   function handleMouseMove({ nativeEvent }) {
+    let { offsetX, offsetY } = nativeEvent;
     let mouseX = parseInt(nativeEvent.clientX);
     let mouseY = parseInt(nativeEvent.clientY);
     if (!isDragging) {
+      stageGroup.current.getShapes().forEach((element, i) => {
+        if (element.isMouseInEnd(offsetX, offsetY)) {
+          console.log('Mouse in figure end');
+          canvasRef.current.style.cursor = 'w-resize';
+          return;
+        }
+      });
     } else {
       nativeEvent.preventDefault();
 

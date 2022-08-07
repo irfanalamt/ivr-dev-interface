@@ -100,17 +100,29 @@ class Shape {
 
   drawParallelogram(ctx) {
     ctx.beginPath();
-    ctx.fillStyle = this.style;
-    ctx.strokeStyle = '#9c27b0';
-    ctx.lineWidth = 2;
+
     ctx.lineTo(this.x + (this.width - this.height), this.y + this.height);
     ctx.lineTo(this.x + (-this.width - this.height), this.y + this.height);
     ctx.lineTo(this.x + (-this.width + this.height), this.y - this.height);
     ctx.lineTo(this.x + (this.width + this.height), this.y - this.height);
     ctx.closePath();
 
-    ctx.fill();
-    ctx.stroke();
+    if (this.stroke) {
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.strokeStyle = this.style;
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = this.style;
+      ctx.strokeStyle = '#9c27b0';
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+    }
   }
 
   drawHexagon(ctx) {
@@ -126,8 +138,6 @@ class Shape {
         this.x + this.width * Math.cos(ANGLE_IN_RADIAN * i) * k,
         this.y + this.height * Math.sin(ANGLE_IN_RADIAN * i)
       );
-
-      console.log(`width=${this.width} height=${this.height}`);
     }
     ctx.closePath();
 
@@ -138,7 +148,6 @@ class Shape {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(this.text, this.x, this.y);
-      ctx.closePath();
       ctx.strokeStyle = this.style;
       ctx.stroke();
       console.log('stroke hex');
@@ -152,15 +161,25 @@ class Shape {
   }
 
   isMouseInEnd(x, y) {
-    let edgeLeft, edgeRight, edgeTop, edgeBottom;
+    let shapeLeft, shapeRight, shapeTop, shapeBottom;
     if (this.type == 'rectangle') {
-      edgeLeft = (this.x - this.width / 2) * 1.1;
-      edgeRight = (this.x + this.width / 2) * 0.9;
-      edgeTop = (this.y - this.height / 2) * 1.1;
-      edgeBottom = (this.y + this.height / 2) * 0.9;
+      shapeLeft = this.x - this.width / 2;
+      shapeRight = this.x + this.width / 2;
+      shapeTop = this.y - this.height / 2;
+      shapeBottom = this.y + this.height / 2;
+    } else {
+      shapeLeft = this.x - this.width;
+      shapeRight = this.x + this.width;
+      shapeTop = this.y - this.height;
+      shapeBottom = this.y + this.height;
     }
 
-    if ((x < edgeLeft || x > edgeRight) && (y < edgeTop || y > edgeBottom)) {
+    if (
+      ((shapeLeft < x && x < shapeLeft + 10) ||
+        (x < shapeRight && shapeRight - 10 < x)) &&
+      ((shapeTop < y && y < shapeTop + 10) ||
+        (y < shapeBottom && shapeBottom - 10 < y))
+    ) {
       return true;
     }
     return false;
