@@ -4,6 +4,7 @@ import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import LabelIcon from '@mui/icons-material/Label';
+import { rootShouldForwardProp } from '@mui/material/styles/styled';
 
 const CanvasComponent = () => {
   const [showInput, setShowInput] = useState(false);
@@ -43,21 +44,30 @@ const CanvasComponent = () => {
     context.lineWidth = 3;
 
     let palletRectangle = new Shape(65, 230, 40, 30, 'rectangle', '#bf360c');
-    let palletCircle = new Shape(65, 285, 20, 20, 'circle', '#0d47a1');
-    let palletHexagon = new Shape(65, 340, 60, 40, 'hexagon', '#004d40');
+    let palletCircle = new Shape(65, 285, 40, 40, 'circle', '#0d47a1');
+    let palletHexagon = new Shape(65, 340, 50, 30, 'hexagon', '#004d40');
     let palletParallelogram = new Shape(
       65,
-      389,
+      387,
       36,
       22,
       'parallelogram',
       '#4a148c'
+    );
+    let palletRoundedRectangle = new Shape(
+      65,
+      430,
+      60,
+      40,
+      'roundedRectangle',
+      '#827717'
     );
     palletGroup.current = new Shapes('palette', [
       palletRectangle,
       palletCircle,
       palletHexagon,
       palletParallelogram,
+      palletRoundedRectangle,
     ]);
     stageGroup.current = new Shapes('stage', []);
 
@@ -140,7 +150,15 @@ const CanvasComponent = () => {
           true
         );
       } else if (palletFigureDragged.type === 'circle') {
-        stageFigure = new Shape(offsetX, offsetY, 60, 60, 'circle', null, true);
+        stageFigure = new Shape(
+          offsetX,
+          offsetY,
+          120,
+          120,
+          'circle',
+          null,
+          true
+        );
       } else if (palletFigureDragged.type === 'hexagon') {
         stageFigure = new Shape(
           offsetX,

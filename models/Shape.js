@@ -78,13 +78,13 @@ class Shape {
           ctx.textBaseline = 'middle';
           ctx.fillText(this.text, this.x, this.y);
           ctx.strokeStyle = '#2196f3';
-          ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
+          ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
           ctx.stroke();
         } else {
           ctx.fillStyle = this.style;
           ctx.strokeStyle = '#2196f3';
           ctx.lineWidth = 2;
-          ctx.arc(this.x, this.y, this.width, 0, Math.PI * 2);
+          ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
           ctx.fill();
           ctx.stroke();
         }
@@ -96,6 +96,10 @@ class Shape {
 
       case 'parallelogram':
         this.drawParallelogram(ctx);
+        break;
+
+      case 'roundedRectangle':
+        this.drawRoundedRectangle(ctx);
         break;
     }
   }
@@ -161,12 +165,26 @@ class Shape {
     }
   }
 
+  drawRoundedRectangle(ctx) {
+    ctx.beginPath();
+    ctx.translate(this.x, this.y);
+    ctx.moveTo(this.width * 0.5, this.height * 0.2);
+    ctx.lineTo(-this.width * 0.5, this.height * 0.2);
+    ctx.lineTo(-this.width * 0.5, -this.height * 0.2);
+    ctx.lineTo(this.width * 0.5, -this.height * 0.2);
+    ctx.fillStyle = this.style;
+    ctx.fill();
+
+    ctx.closePath();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+
   isMouseNearVertex(x, y) {
     let leftVertex, rightVertex;
 
     leftVertex = [this.x - this.width / 2, this.y];
     rightVertex = [this.x + this.width / 2, this.y];
-    console.log('ggggg');
+    console.log('.is near vertex.');
     if (
       this.isNearPoint(x, y, ...leftVertex) ||
       this.isNearPoint(x, y, ...rightVertex)
@@ -177,24 +195,6 @@ class Shape {
     return false;
   }
 
-  isMouseInEnd(x, y) {
-    let shapeLeft, shapeRight, shapeTop, shapeBottom;
-
-    shapeLeft = this.x - this.width / 2;
-    shapeRight = this.x + this.width / 2;
-    shapeTop = this.y - this.height / 2;
-    shapeBottom = this.y + this.height / 2;
-
-    if (
-      ((shapeLeft < x && x < shapeLeft + 10) ||
-        (x < shapeRight && shapeRight - 10 < x)) &&
-      ((shapeTop < y && y < shapeTop + 10) ||
-        (y < shapeBottom && shapeBottom - 10 < y))
-    ) {
-      return true;
-    }
-    return false;
-  }
   isNearPoint(x1, y1, x2, y2) {
     const dist = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
     if (parseInt(dist) < 10) {
@@ -203,17 +203,11 @@ class Shape {
   }
   isMouseInShape(x, y) {
     let shapeLeft, shapeRight, shapeTop, shapeBottom;
-    if (this.type == 'rectangle') {
-      shapeLeft = this.x - this.width / 2;
-      shapeRight = this.x + this.width / 2;
-      shapeTop = this.y - this.height / 2;
-      shapeBottom = this.y + this.height / 2;
-    } else {
-      shapeLeft = this.x - this.width;
-      shapeRight = this.x + this.width;
-      shapeTop = this.y - this.height;
-      shapeBottom = this.y + this.height;
-    }
+
+    shapeLeft = this.x - this.width / 2;
+    shapeRight = this.x + this.width / 2;
+    shapeTop = this.y - this.height / 2;
+    shapeBottom = this.y + this.height / 2;
 
     if (x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom) {
       return true;
