@@ -15,9 +15,11 @@ class Shape {
     } else if (type === 'hexagon') {
       this.text = 'playMenu';
     } else if (type === 'circle') {
-      this.text = 'playMessage';
+      this.text = 'addNew';
     } else if (type === 'parallelogram') {
       this.text = 'getDigits';
+    } else if (type === 'roundedRectangle') {
+      this.text = 'playMessage';
     } else this.text = '';
   }
 
@@ -168,15 +170,42 @@ class Shape {
   drawRoundedRectangle(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
-    ctx.moveTo(this.width * 0.5, this.height * 0.2);
-    ctx.lineTo(-this.width * 0.5, this.height * 0.2);
-    ctx.lineTo(-this.width * 0.5, -this.height * 0.2);
-    ctx.lineTo(this.width * 0.5, -this.height * 0.2);
-    ctx.fillStyle = this.style;
-    ctx.fill();
-
+    ctx.moveTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
+    ctx.lineTo(-(this.width * 0.5 - this.height * 0.5), this.height * 0.5);
+    // ctx.lineTo(-this.width * 0.5, -this.height * 0.5);
+    ctx.arc(
+      -(this.width * 0.5 - this.height * 0.5),
+      0,
+      Math.abs(this.height * 0.5),
+      0.5 * Math.PI,
+      1.5 * Math.PI
+    );
+    ctx.lineTo(this.width * 0.5 - this.height * 0.5, -this.height * 0.5);
+    ctx.arc(
+      this.width * 0.5 - this.height * 0.5,
+      0,
+      Math.abs(this.height * 0.5),
+      1.5 * Math.PI,
+      0.5 * Math.PI
+    );
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (this.stroke) {
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.strokeStyle = this.style;
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = this.style;
+      ctx.strokeStyle = '#cddc39';
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+    }
   }
 
   isMouseNearVertex(x, y) {

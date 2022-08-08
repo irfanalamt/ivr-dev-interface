@@ -43,12 +43,12 @@ const CanvasComponent = () => {
     context.strokeStyle = 'black';
     context.lineWidth = 3;
 
-    let palletRectangle = new Shape(65, 230, 40, 30, 'rectangle', '#bf360c');
-    let palletCircle = new Shape(65, 285, 40, 40, 'circle', '#0d47a1');
-    let palletHexagon = new Shape(65, 340, 50, 30, 'hexagon', '#004d40');
+    let palletRectangle = new Shape(65, 220, 40, 30, 'rectangle', '#bf360c');
+    let palletCircle = new Shape(65, 275, 40, 40, 'circle', '#0d47a1');
+    let palletHexagon = new Shape(65, 330, 50, 30, 'hexagon', '#004d40');
     let palletParallelogram = new Shape(
       65,
-      387,
+      377,
       36,
       22,
       'parallelogram',
@@ -56,9 +56,9 @@ const CanvasComponent = () => {
     );
     let palletRoundedRectangle = new Shape(
       65,
-      430,
-      60,
-      40,
+      420,
+      50,
+      30,
       'roundedRectangle',
       '#827717'
     );
@@ -177,6 +177,16 @@ const CanvasComponent = () => {
           50,
           'parallelogram',
           '#9c27b0',
+          true
+        );
+      } else if (palletFigureDragged.type === 'roundedRectangle') {
+        stageFigure = new Shape(
+          offsetX,
+          offsetY,
+          130,
+          50,
+          'roundedRectangle',
+          '#c0ca33',
           true
         );
       }
@@ -324,7 +334,7 @@ const CanvasComponent = () => {
           zIndex: -1,
           left: 0,
           bottom: 10,
-          backgroundColor: '#eceff1',
+          backgroundColor: '#fafafa',
         }}
         width={window.innerWidth}
         height={window.innerHeight}
