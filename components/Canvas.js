@@ -18,6 +18,7 @@ const CanvasComponent = () => {
   let isDragging = false;
   let isPalletShape = false;
   let isResizing = false;
+  let isOnEdge = false;
   console.log('loopsie');
 
   let startX, startY;
@@ -84,6 +85,15 @@ const CanvasComponent = () => {
   function handleMouseDown({ nativeEvent }) {
     let { offsetX, offsetY, clientX, clientY } = nativeEvent;
     nativeEvent.preventDefault();
+
+    if (isOnEdge) {
+      isResizing = true;
+      startX = clientX;
+      startY = clientY;
+      return;
+    } else {
+      isResizing = false;
+    }
 
     stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
@@ -172,19 +182,35 @@ const CanvasComponent = () => {
   }
 
   function handleMouseMove({ nativeEvent }) {
-    let { offsetX, offsetY } = nativeEvent;
-    let mouseX = parseInt(nativeEvent.clientX);
-    let mouseY = parseInt(nativeEvent.clientY);
-    if (!isDragging) {
+    let { offsetX, offsetY, clientX, clientY } = nativeEvent;
+    let initPosResizeX, initPosResizeY;
+    let mouseX = parseInt(clientX);
+    let mouseY = parseInt(clientY);
+    if (!isDragging && !isResizing) {
+      isOnEdge = false;
+      canvasRef.current.style.cursor = 'default';
+
       stageGroup.current.getShapes().forEach((element, i) => {
-        if (element.isMouseInEnd(offsetX, offsetY)) {
-          console.log('Mouse in figure end');
+        if (element.isMouseNearVertex(offsetX, offsetY)) {
+          console.log('Mouse near vertex');
           canvasRef.current.style.cursor = 'w-resize';
-          isResizing = true;
+          initPosResizeX = parseInt(clientX);
+          initPosResizeY = parseInt(clientY);
+          isOnEdge = true;
+          currentShape.current = element;
           return;
         }
       });
-      isResizing = false;
+    } else if (isResizing) {
+      let dx = mouseX - startX;
+      let dy = mouseY - startY;
+      let current_shape = currentShape.current;
+      current_shape.width += dx;
+      current_shape.height += dy;
+      clearAndDraw();
+      startX = mouseX;
+      startY = mouseY;
+      isOnEdge = false;
     } else {
       nativeEvent.preventDefault();
 
