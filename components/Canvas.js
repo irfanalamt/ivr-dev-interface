@@ -276,19 +276,10 @@ const CanvasComponent = () => {
 
     console.log('double cliick');
     boxd.style.position = 'absolute';
-    if (currentShape.current.type === 'rectangle') {
-      boxd.style.left =
-        currentShape.current.x - currentShape.current.width / 2 + 'px';
-      boxd.style.top = currentShape.current.y - 19 + 'px';
-    } else if (currentShape.current.type === 'hexagon') {
-      boxd.style.left =
-        currentShape.current.x - currentShape.current.width + 12 + 'px';
-      boxd.style.top = currentShape.current.y - 19 + 'px';
-    } else {
-      boxd.style.left =
-        currentShape.current.x - currentShape.current.width + 'px';
-      boxd.style.top = currentShape.current.y - 19 + 'px';
-    }
+
+    boxd.style.left =
+      currentShape.current.x - currentShape.current.width / 2 + 'px';
+    boxd.style.top = currentShape.current.y - 19 + 'px';
   }
   const handleReset = () => {
     stageGroup.current.getShapes().splice(0);
@@ -365,7 +356,7 @@ const CanvasComponent = () => {
               style={{
                 zIndex: 5,
                 maxWidth: 115,
-                backgroundColor: '#eceff1',
+                backgroundColor: '#fafafa',
               }}
               id='text-box'
               variant='standard'
