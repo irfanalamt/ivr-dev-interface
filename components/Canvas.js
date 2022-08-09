@@ -9,6 +9,7 @@ import LabelIcon from '@mui/icons-material/Label';
 const CanvasComponent = () => {
   const [showInput, setShowInput] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [shapeInputText, setShapeInputText] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const bgRef = useRef(null);
@@ -274,6 +275,7 @@ const CanvasComponent = () => {
   function placeTextField() {
     let boxd = document.getElementById('box-div');
     setShowInput(true);
+    setShapeInputText(currentShape.current.text);
 
     console.log('double cliick');
     boxd.style.position = 'absolute';
@@ -300,11 +302,6 @@ const CanvasComponent = () => {
     console.log(palletGroup.current.getShapes());
     console.log(stageGroup.current.getShapes());
     console.log(currentShape.current);
-  }
-
-  function handleTextFocus() {
-    let tb = document.getElementById('text-box');
-    tb.value = currentShape.current.text;
   }
 
   return (
@@ -372,10 +369,13 @@ const CanvasComponent = () => {
                 maxWidth: 115,
                 backgroundColor: '#fafafa',
               }}
+              value={shapeInputText}
               id='text-box'
               variant='standard'
               size='small'
-              onFocus={handleTextFocus}
+              onChange={(e) => {
+                setShapeInputText(e.target.value);
+              }}
             />
             <Button
               onClick={handleTextSave}
