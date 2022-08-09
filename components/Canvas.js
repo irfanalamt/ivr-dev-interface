@@ -1,15 +1,16 @@
-import { Box, Button, Container, TextField } from '@mui/material';
+import { Box, Button, Container, Stack, TextField } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
 import DrawerComponent from './Drawer';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
-import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import InputRoundedIcon from '@mui/icons-material/InputRounded';
+import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 
 const CanvasComponent = () => {
   const [showInput, setShowInput] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [shapeInputText, setShapeInputText] = useState(false);
+  const [shapeInputText, setShapeInputText] = useState('');
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const bgRef = useRef(null);
@@ -26,7 +27,6 @@ const CanvasComponent = () => {
   console.log('loopsie');
 
   let startX, startY;
-  let initX, initY;
 
   //   const circle = {
   //     centreX: 50,
@@ -105,10 +105,6 @@ const CanvasComponent = () => {
     let { offsetX, offsetY, clientX, clientY } = nativeEvent;
     nativeEvent.preventDefault();
 
-    let menubookIcon = new Image();
-    menubookIcon.src = '/icons/menu_book.svg';
-    console.log(typeof menubookIcon);
-
     if (isOnEdge) {
       isResizing = true;
       startX = clientX;
@@ -122,6 +118,7 @@ const CanvasComponent = () => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`YES in stage shape ${element.type}`);
         currentShape.current = element;
+        //setIsOpen(true);
         startX = clientX;
         startY = clientY;
         isDragging = true;
@@ -151,7 +148,6 @@ const CanvasComponent = () => {
   function handleMouseUp({ nativeEvent }) {
     let { offsetX, offsetY } = nativeEvent;
     if (!isDragging) return;
-    // we only have two pallet items
     else if (isPalletShape) {
       console.log('mouse up while dragging pallet');
       let palletFigureDragged = currentShape.current;
@@ -366,9 +362,10 @@ const CanvasComponent = () => {
       <DrawerComponent
         isOpen={isOpen}
         handleCloseDrawer={() => setIsOpen(false)}
+        shape={currentShape.current}
       />
 
-      <div style={{ position: 'relative' }} id='box-div'>
+      <div style={{ position: 'relative', display: 'flex' }} id='box-div'>
         {showInput && (
           <>
             <TextField
@@ -385,13 +382,25 @@ const CanvasComponent = () => {
                 setShapeInputText(e.target.value);
               }}
             />
-            <Button
-              onClick={handleTextSave}
-              sx={{ marginX: 2, zIndex: 5, backgroundColor: '#42a5f5' }}
-              variant='standard'
-            >
-              <EditRoundedIcon />
-            </Button>
+            <Stack spacing={4}>
+              <Button
+                onClick={handleTextSave}
+                sx={{ marginX: 2, zIndex: 5, backgroundColor: '#42a5f5' }}
+                variant='standard'
+              >
+                <InputRoundedIcon />
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsOpen(true);
+                }}
+                sx={{ zIndex: 6 }}
+                variant='contained'
+                color='secondary'
+              >
+                Edit <TuneRoundedIcon sx={{ marginX: 1 }} />
+              </Button>
+            </Stack>
           </>
         )}
       </div>

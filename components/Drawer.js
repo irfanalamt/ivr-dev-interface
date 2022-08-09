@@ -3,21 +3,48 @@ import Drawer from '@mui/material/Drawer';
 import { useState } from 'react';
 
 const DrawerComponent = (props) => {
-  const { isOpen, handleCloseDrawer } = props;
+  const { isOpen, handleCloseDrawer, shape = null } = props;
   const myList = () => {
-    return (
-      <div>
-        <List>
-          <ListItem>
-            <Typography variant='h5'>IT workss!</Typography>
-          </ListItem>
-          <ListItem>
-            <TextField label='prompt type' variant='outlined' />
-            <TextField label='pgh' variant='outlined' />
-          </ListItem>
-        </List>
-      </div>
-    );
+    if (shape?.type == 'rectangle') {
+      return (
+        <div>
+          <List>
+            <ListItem>
+              <Typography variant='h5'>{shape.type}</Typography>
+            </ListItem>
+            <ListItem>
+              <TextField label='prompt type' variant='outlined' />
+              <TextField label='pgh' variant='outlined' />
+            </ListItem>
+            <ListItem
+              sx={{
+                textAlign: 'center',
+                justifyContent: 'center',
+                marginTop: 5,
+              }}
+            >
+              <Button color='success' variant='outlined'>
+                ADD NEW
+              </Button>
+            </ListItem>
+          </List>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <List>
+            <ListItem>
+              <Typography variant='h5'> not rectangle</Typography>
+            </ListItem>
+            <ListItem>
+              <TextField label='prompt type' variant='outlined' />
+              <TextField label='pgh' variant='outlined' />
+            </ListItem>
+          </List>
+        </div>
+      );
+    }
   };
   return (
     <>
