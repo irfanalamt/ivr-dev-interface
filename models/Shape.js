@@ -1,5 +1,3 @@
-import { emphasize } from '@mui/material';
-
 class Shape {
   constructor(x, y, width, height, type, style = 'black', stroke = false) {
     this.x = x;
@@ -54,11 +52,20 @@ class Shape {
           ctx.fillStyle = this.style;
           ctx.strokeStyle = '#ff5722';
           ctx.lineWidth = 2;
+          let menubookIcon = new Image();
+          menubookIcon.src = '/icons/menu_book.svg';
           ctx.fillRect(
             this.x - this.width / 2,
             this.y - this.height / 2,
             this.width,
             this.height
+          );
+          ctx.drawImage(
+            menubookIcon,
+            this.x - this.width / 2 + 10,
+            this.y - this.height / 2 + 5,
+            20,
+            20
           );
           ctx.strokeRect(
             this.x - this.width / 2,

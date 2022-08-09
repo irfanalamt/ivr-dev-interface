@@ -83,7 +83,6 @@ const CanvasComponent = () => {
 
   useEffect(() => {
     if (showInput) {
-      console.log(textBoxRef.current);
       textBoxRef.current.style.width = currentShape.current.width + 'px';
     }
   }, [showInput]);
@@ -105,6 +104,10 @@ const CanvasComponent = () => {
   function handleMouseDown({ nativeEvent }) {
     let { offsetX, offsetY, clientX, clientY } = nativeEvent;
     nativeEvent.preventDefault();
+
+    let menubookIcon = new Image();
+    menubookIcon.src = '/icons/menu_book.svg';
+    console.log(typeof menubookIcon);
 
     if (isOnEdge) {
       isResizing = true;
@@ -384,8 +387,8 @@ const CanvasComponent = () => {
             />
             <Button
               onClick={handleTextSave}
-              sx={{ marginX: 2, zIndex: 5, backgroundColor: '#26a69a' }}
-              variant='contained'
+              sx={{ marginX: 2, zIndex: 5, backgroundColor: '#42a5f5' }}
+              variant='standard'
             >
               <EditRoundedIcon />
             </Button>
