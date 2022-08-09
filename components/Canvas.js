@@ -29,10 +29,10 @@ const CanvasComponent = () => {
   let initX, initY;
 
   //   const circle = {
-  //     x: 50,
-  //     y: 150,
-  //     width: 34,
-  //     height: 67,
+  //     centreX: 50,
+  //     centreY: 150,
+  //     totalWidth: 34,
+  //     totalHeight: 67,
   //   };
 
   useEffect(() => {
@@ -291,7 +291,7 @@ const CanvasComponent = () => {
     boxd.style.position = 'absolute';
 
     boxd.style.left =
-      currentShape.current.x - currentShape.current.width / 2 + 'px';
+      currentShape.current.x - currentShape.current.width / 2 + 2 + 'px';
     boxd.style.top = currentShape.current.y - 19 + 'px';
   }
   const handleReset = () => {
