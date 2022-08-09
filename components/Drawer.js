@@ -2,9 +2,8 @@ import { Button, List, ListItem, TextField, Typography } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import { useState } from 'react';
 
-const DrawerComponent = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const DrawerComponent = (props) => {
+  const { isOpen, handleCloseDrawer } = props;
   const myList = () => {
     return (
       <div>
@@ -22,14 +21,7 @@ const DrawerComponent = () => {
   };
   return (
     <>
-      <Button
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        CLICK MEE
-      </Button>
-      <Drawer anchor='right' open={isOpen} onClose={() => setIsOpen(false)}>
+      <Drawer anchor='right' open={isOpen} onClose={handleCloseDrawer}>
         {myList()}
       </Drawer>
     </>

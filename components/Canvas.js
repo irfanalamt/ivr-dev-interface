@@ -2,12 +2,13 @@ import { Box, Button, Container, TextField } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
+import DrawerComponent from './Drawer';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import LabelIcon from '@mui/icons-material/Label';
-import { rootShouldForwardProp } from '@mui/material/styles/styled';
 
 const CanvasComponent = () => {
   const [showInput, setShowInput] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const bgRef = useRef(null);
@@ -348,6 +349,19 @@ const CanvasComponent = () => {
         RESET
         <RestartAltRoundedIcon />
       </Button>
+      <Button
+        sx={{ zIndex: 5 }}
+        onClick={() => {
+          setIsOpen(true);
+        }}
+        variant='contained'
+      >
+        Open Drawer
+      </Button>
+      <DrawerComponent
+        isOpen={isOpen}
+        handleCloseDrawer={() => setIsOpen(false)}
+      />
 
       <div style={{ position: 'relative' }} id='box-div'>
         {showInput && (
