@@ -4,7 +4,7 @@ import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
 import DrawerComponent from './Drawer';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
-import LabelIcon from '@mui/icons-material/Label';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
 
 const CanvasComponent = () => {
   const [showInput, setShowInput] = useState(false);
@@ -17,6 +17,7 @@ const CanvasComponent = () => {
   const currentShape = useRef(null);
   const palletGroup = useRef(null);
   const stageGroup = useRef(null);
+  const textBoxRef = useRef(null);
 
   let isDragging = false;
   let isPalletShape = false;
@@ -80,6 +81,13 @@ const CanvasComponent = () => {
     clearAndDraw();
   }, []);
 
+  useEffect(() => {
+    if (showInput) {
+      console.log(textBoxRef.current);
+      textBoxRef.current.style.width = currentShape.current.width + 'px';
+    }
+  }, [showInput]);
+
   function drawBackground() {
     bgContext.current.strokeRect(30, 100, 70, 400);
   }
@@ -119,8 +127,6 @@ const CanvasComponent = () => {
       }
     });
 
-    canvasRef.current.style.cursor = 'default';
-
     palletGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`YES in pallet shape ${element.type}`);
@@ -129,8 +135,14 @@ const CanvasComponent = () => {
         startY = clientY;
         isDragging = true;
         isPalletShape = true;
+        return;
       }
     });
+    if (showInput) {
+      currentShape.current.setText(shapeInputText);
+      setShowInput(false);
+      clearAndDraw();
+    }
   }
 
   function handleMouseUp({ nativeEvent }) {
@@ -268,8 +280,6 @@ const CanvasComponent = () => {
         console.log('NOT dbclick in shape');
       }
     });
-
-    console.log(palletGroup.current.getShapes());
   }
 
   function placeTextField() {
@@ -292,16 +302,11 @@ const CanvasComponent = () => {
 
   function handleTextSave({ nativeEvent }) {
     nativeEvent.preventDefault();
-    let tb = document.getElementById('text-box');
 
-    currentShape.current.setText(tb.value);
+    currentShape.current.setText(shapeInputText);
 
     clearAndDraw();
     setShowInput(false);
-
-    console.log(palletGroup.current.getShapes());
-    console.log(stageGroup.current.getShapes());
-    console.log(currentShape.current);
   }
 
   return (
@@ -366,11 +371,11 @@ const CanvasComponent = () => {
             <TextField
               style={{
                 zIndex: 5,
-                maxWidth: 115,
+                maxWidth: 500,
                 backgroundColor: '#fafafa',
               }}
               value={shapeInputText}
-              id='text-box'
+              ref={textBoxRef}
               variant='standard'
               size='small'
               onChange={(e) => {
@@ -382,7 +387,7 @@ const CanvasComponent = () => {
               sx={{ marginX: 2, zIndex: 5, backgroundColor: '#26a69a' }}
               variant='contained'
             >
-              <LabelIcon />
+              <EditRoundedIcon />
             </Button>
           </>
         )}
