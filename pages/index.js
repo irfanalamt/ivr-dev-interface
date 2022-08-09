@@ -2,7 +2,7 @@ import { Box, Button, Container, TextField, Typography } from '@mui/material';
 const DynamicCanvas = dynamic(() => import('../components/Canvas'), {
   ssr: false,
 });
-
+import DrawerComponent from '../components/Drawer';
 import dynamic from 'next/dynamic';
 
 export default function Home() {
@@ -19,6 +19,7 @@ export default function Home() {
       </Typography>
       <Box>
         <DynamicCanvas />
+        {/* <DrawerComponent /> */}
       </Box>
     </Container>
   );
