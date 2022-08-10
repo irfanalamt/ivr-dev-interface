@@ -17,12 +17,10 @@
     "@mui/material": "^5.9.2",
     "axios": "^0.27.2",
     "canvas": "^2.9.3",
-    "konva": "^8.3.10",
     "next": "12.2.3",
     "next-connect": "^0.13.0",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-konva": "^18.2.1"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "eslint": "8.20.0",

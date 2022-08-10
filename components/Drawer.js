@@ -24,6 +24,20 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
       )
     );
   }
+  const nameField = () => {
+    return (
+      <ListItem sx={{ justifyContent: 'center' }}>
+        <Typography variant='h6'>NAME</Typography>
+        <TextField
+          sx={{ marginX: 2 }}
+          value={shapeName}
+          onChange={(e) => {
+            setShapeName(e.target.value);
+          }}
+        />
+      </ListItem>
+    );
+  };
   const myList = () => {
     if (shape?.type == 'roundedRectangle') {
       return (
@@ -42,20 +56,31 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
               Play Message
             </Typography>
           </ListItem>
-          <ListItem sx={{ justifyContent: 'center' }}>
-            <Typography variant='h6'>NAME</Typography>
-            <TextField
-              sx={{ marginX: 2 }}
-              value={shapeName}
-              onChange={(e) => {
-                setShapeName(e.target.value);
-              }}
-            />
-          </ListItem>
+          {nameField()}
           <ListItem>
             <TextField label='ab' variant='outlined' />
             <TextField label='xy' variant='outlined' />
           </ListItem>
+        </List>
+      );
+    } else if (shape?.type == 'hexagon') {
+      return (
+        <List>
+          <ListItem>
+            <Typography
+              sx={{
+                marginX: 'auto',
+                boxShadow: 1,
+                paddingX: 1,
+                borderRadius: 2,
+                backgroundColor: '#009688',
+              }}
+              variant='h5'
+            >
+              Play Message
+            </Typography>
+          </ListItem>
+          {nameField()}
         </List>
       );
     } else {
@@ -64,10 +89,7 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
           <ListItem>
             <Typography variant='h5'> not playMessage</Typography>
           </ListItem>
-          <ListItem>
-            <TextField label='prompt type' variant='outlined' />
-            <TextField label='pgh' variant='outlined' />
-          </ListItem>
+          {nameField()}
         </List>
       );
     }
