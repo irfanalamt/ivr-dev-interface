@@ -1,8 +1,14 @@
 import {
   Button,
+  FormControlLabel,
   Input,
+  InputLabel,
   List,
   ListItem,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
   Tab,
   Tabs,
   TextField,
@@ -16,7 +22,7 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
   const [inputList, setInputList] = useState([]);
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
-
+  const [repeatOption, setRepeatOption] = useState(9);
   function addNewInput() {
     setInputList(
       inputList.concat(
@@ -70,25 +76,79 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
               value={tabValue}
               onChange={handleTabChange}
             >
-              <Tab label='msgList' />
-              <Tab label='params' />
+              <Tab label='Message List' />
+              <Tab label='Parameters' />
             </Tabs>
           </ListItem>
           {tabValue == '0' && (
-            <ListItem>
-              <Typography>Message List</Typography>
-            </ListItem>
+            <>
+              <ListItem>
+                <Typography variant='subtitle1'>msgList</Typography>
+              </ListItem>
+              <ListItem>
+                <Button
+                  sx={{ maxWidth: 100, marginX: 'auto' }}
+                  color='success'
+                  variant='outlined'
+                  onClick={addNewInput}
+                >
+                  ADD NEW
+                </Button>
+              </ListItem>
+            </>
           )}
           {tabValue == '1' && (
-            <ListItem>
-              <Typography>Params</Typography>
-            </ListItem>
+            <>
+              <ListItem>
+                <Typography variant='h6'>interruptible:</Typography>
+                <RadioGroup
+                  defaultValue='true'
+                  row
+                  name='interruptible-radio-buttons-group'
+                >
+                  <FormControlLabel
+                    sx={{ marginX: 1 }}
+                    value='true'
+                    control={<Radio />}
+                    label='true'
+                  />
+                  <FormControlLabel
+                    sx={{ marginX: 1 }}
+                    value='false'
+                    control={<Radio />}
+                    label='false'
+                  />
+                </RadioGroup>
+              </ListItem>
+              <ListItem sx={{ marginTop: 3 }}>
+                <Typography variant='h6'>repeatOption:</Typography>
+                <Select
+                  sx={{ marginX: 1 }}
+                  id='repeatOption-select'
+                  label='0-9'
+                  value={repeatOption}
+                  defaultValue={9}
+                  onChange={(e) => {
+                    setRepeatOption(e.target.value);
+                  }}
+                >
+                  <MenuItem value={0}>0</MenuItem>
+                  <MenuItem value={1}>1</MenuItem>
+                  <MenuItem value={2}>2</MenuItem>
+                  <MenuItem value={3}>3</MenuItem>
+                  <MenuItem value={4}>4</MenuItem>
+                  <MenuItem value={5}>5</MenuItem>
+                  <MenuItem value={6}>6</MenuItem>
+                  <MenuItem value={7}>7</MenuItem>
+                  <MenuItem value={8}>8</MenuItem>
+                  <MenuItem value={9}>9</MenuItem>
+                </Select>
+                <Typography sx={{ marginX: 1 }} variant='subtitle2'>
+                  0-9
+                </Typography>
+              </ListItem>
+            </>
           )}
-
-          <ListItem>
-            <TextField label='ab' variant='outlined' />
-            <TextField label='xy' variant='outlined' />
-          </ListItem>
         </List>
       );
     } else if (shape?.type == 'hexagon') {
@@ -134,14 +194,6 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
       >
         {myList()}
         <List>{inputList}</List>
-        <Button
-          sx={{ maxWidth: 100, marginX: 'auto' }}
-          color='success'
-          variant='outlined'
-          onClick={addNewInput}
-        >
-          ADD NEW
-        </Button>
       </Drawer>
     </>
   );
