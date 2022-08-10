@@ -3,6 +3,8 @@ import {
   Input,
   List,
   ListItem,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
@@ -13,6 +15,7 @@ import { useState } from 'react';
 const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
   const [inputList, setInputList] = useState([]);
   const [shapeName, setShapeName] = useState(shape.text);
+  const [tabValue, setTabValue] = useState(0);
 
   function addNewInput() {
     setInputList(
@@ -23,6 +26,9 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
         </ListItem>
       )
     );
+  }
+  function handleTabChange(e, newVal) {
+    setTabValue(newVal);
   }
   const nameField = () => {
     return (
@@ -46,6 +52,7 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
             <Typography
               sx={{
                 marginX: 'auto',
+                marginY: 1,
                 boxShadow: 1,
                 paddingX: 1,
                 borderRadius: 2,
@@ -57,6 +64,27 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
             </Typography>
           </ListItem>
           {nameField()}
+          <ListItem>
+            <Tabs
+              sx={{ marginX: 'auto' }}
+              value={tabValue}
+              onChange={handleTabChange}
+            >
+              <Tab label='msgList' />
+              <Tab label='params' />
+            </Tabs>
+          </ListItem>
+          {tabValue == '0' && (
+            <ListItem>
+              <Typography>Message List</Typography>
+            </ListItem>
+          )}
+          {tabValue == '1' && (
+            <ListItem>
+              <Typography>Params</Typography>
+            </ListItem>
+          )}
+
           <ListItem>
             <TextField label='ab' variant='outlined' />
             <TextField label='xy' variant='outlined' />
