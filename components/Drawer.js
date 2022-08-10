@@ -22,6 +22,7 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
   const [inputList, setInputList] = useState([]);
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
+  const [interruptible, setInterruptible] = useState(true);
   const [repeatOption, setRepeatOption] = useState(9);
   function addNewInput() {
     setInputList(
@@ -95,6 +96,7 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
                   ADD NEW
                 </Button>
               </ListItem>
+              <List>{inputList}</List>
             </>
           )}
           {tabValue == '1' && (
@@ -102,19 +104,22 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
               <ListItem>
                 <Typography variant='h6'>interruptible:</Typography>
                 <RadioGroup
-                  defaultValue='true'
+                  value={interruptible}
                   row
                   name='interruptible-radio-buttons-group'
+                  onChange={(e) => {
+                    setInterruptible(e.target.value);
+                  }}
                 >
                   <FormControlLabel
                     sx={{ marginX: 1 }}
-                    value='true'
+                    value={true}
                     control={<Radio />}
                     label='true'
                   />
                   <FormControlLabel
                     sx={{ marginX: 1 }}
-                    value='false'
+                    value={false}
                     control={<Radio />}
                     label='false'
                   />
@@ -193,7 +198,6 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
         }}
       >
         {myList()}
-        <List>{inputList}</List>
       </Drawer>
     </>
   );
