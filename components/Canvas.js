@@ -139,7 +139,6 @@ const CanvasComponent = () => {
       }
     });
     if (showInput) {
-      currentShape.current.setText(shapeInputText);
       setShowInput(false);
       clearAndDraw();
     }
@@ -308,6 +307,12 @@ const CanvasComponent = () => {
     setShowInput(false);
   }
 
+  function handleCloseDrawer() {
+    setIsOpen(false);
+    setShowInput(false);
+    clearAndDraw();
+  }
+
   return (
     <Box sx={{ marginY: 1 }}>
       <canvas
@@ -359,11 +364,13 @@ const CanvasComponent = () => {
       >
         Open Drawer
       </Button>
-      <DrawerComponent
-        isOpen={isOpen}
-        handleCloseDrawer={() => setIsOpen(false)}
-        shape={currentShape.current}
-      />
+      {isOpen && (
+        <DrawerComponent
+          isOpen={isOpen}
+          handleCloseDrawer={handleCloseDrawer}
+          shape={currentShape.current}
+        />
+      )}
 
       <div style={{ position: 'relative', display: 'flex' }} id='box-div'>
         {showInput && (
@@ -394,7 +401,7 @@ const CanvasComponent = () => {
                 onClick={() => {
                   setIsOpen(true);
                 }}
-                sx={{ zIndex: 6 }}
+                sx={{ zIndex: 6, borderRadius: 4 }}
                 variant='contained'
                 color='secondary'
               >
