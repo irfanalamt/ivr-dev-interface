@@ -355,15 +355,7 @@ const CanvasComponent = () => {
         RESET
         <RestartAltRoundedIcon />
       </Button>
-      <Button
-        sx={{ zIndex: 5 }}
-        onClick={() => {
-          setIsOpen(true);
-        }}
-        variant='contained'
-      >
-        Open Drawer
-      </Button>
+
       {isOpen && (
         <DrawerComponent
           isOpen={isOpen}

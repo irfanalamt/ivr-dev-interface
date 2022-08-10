@@ -17,6 +17,7 @@ import {
 import Drawer from '@mui/material/Drawer';
 import { Box } from '@mui/system';
 import { useState } from 'react';
+import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 
 const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
   const [inputList, setInputList] = useState([]);
@@ -24,15 +25,236 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
   const [tabValue, setTabValue] = useState(0);
   const [interruptible, setInterruptible] = useState(true);
   const [repeatOption, setRepeatOption] = useState(9);
+  const [msgObjType, setMsgObjType] = useState('prompt');
   function addNewInput() {
-    setInputList(
-      inputList.concat(
-        <ListItem>
-          <TextField label='xyz' variant='outlined' />
-          <TextField label='abc' variant='outlined' />
-        </ListItem>
-      )
-    );
+    switch (msgObjType) {
+      case 'prompt':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                label='Enter prompt'
+                variant='outlined'
+                fullWidth
+                focused
+              />
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'ordinal':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                sx={{ maxWidth: 100 }}
+                label='Enter ordinal'
+                variant='outlined'
+                focused
+              />
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'number':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                sx={{ maxWidth: 100 }}
+                label='Enter number'
+                variant='outlined'
+                focused
+              />
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'amount':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                sx={{ maxWidth: 100 }}
+                label='Enter amount'
+                variant='outlined'
+                focused
+              />
+              <TextField
+                sx={{ maxWidth: 150, marginX: 2 }}
+                label='Select currency'
+                variant='outlined'
+                defaultValue='SAR'
+              />
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'date':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                sx={{ maxWidth: 150 }}
+                label='Enter date'
+                placeholder='yyyymmdd'
+                variant='outlined'
+                focused
+              />
+              <Typography sx={{ marginX: 1 }} variant='body1'>
+                playYear:
+              </Typography>
+              <RadioGroup
+                defaultValue={false}
+                row
+                name='playYear-radio-buttons-group'
+              >
+                <FormControlLabel
+                  sx={{ marginX: 1 }}
+                  value={true}
+                  control={<Radio />}
+                  label='true'
+                />
+                <FormControlLabel
+                  sx={{ marginX: 1 }}
+                  value={false}
+                  control={<Radio />}
+                  label='false'
+                />
+              </RadioGroup>
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'day':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <Typography sx={{ marginX: 1 }} variant='body2'>
+                select day:
+              </Typography>
+              <Select placeholder='day' defaultValue='mon'>
+                <MenuItem value='mon'>Monday</MenuItem>
+                <MenuItem value='tue'>Tuesday</MenuItem>
+                <MenuItem value='wed'>Wednesday</MenuItem>
+                <MenuItem value='thu'>Thursday</MenuItem>
+                <MenuItem value='fri'>Friday</MenuItem>
+                <MenuItem value='sat'>Saturday</MenuItem>
+                <MenuItem value='sun'>Sunday</MenuItem>
+              </Select>
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'number':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                sx={{ maxWidth: 100 }}
+                label='Enter number'
+                variant='outlined'
+                focused
+              />
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'digits':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                sx={{ maxWidth: 100 }}
+                label='Enter digit'
+                variant='outlined'
+                focused
+              />
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'month':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                sx={{ maxWidth: 150 }}
+                label='Enter month'
+                variant='outlined'
+                focused
+              />
+              <Typography sx={{ marginX: 1 }} variant='body1'>
+                isHijri:
+              </Typography>
+              <RadioGroup
+                defaultValue={false}
+                row
+                name='isHijri-radio-buttons-group'
+              >
+                <FormControlLabel
+                  sx={{ marginX: 1 }}
+                  value={true}
+                  control={<Radio />}
+                  label='true'
+                />
+                <FormControlLabel
+                  sx={{ marginX: 1 }}
+                  value={false}
+                  control={<Radio />}
+                  label='false'
+                />
+              </RadioGroup>
+            </ListItem>
+          )
+        );
+        break;
+
+      case 'time':
+        setInputList(
+          inputList.concat(
+            <ListItem>
+              <TextField
+                sx={{ maxWidth: 100 }}
+                label='Enter time'
+                variant='outlined'
+                placeholder='hhmm'
+                focused
+              />
+              <Typography sx={{ marginX: 1 }} variant='body1'>
+                is24:
+              </Typography>
+              <RadioGroup
+                defaultValue={false}
+                row
+                name='is24-radio-buttons-group'
+              >
+                <FormControlLabel
+                  sx={{ marginX: 1 }}
+                  value={true}
+                  control={<Radio />}
+                  label='true'
+                />
+                <FormControlLabel
+                  sx={{ marginX: 1 }}
+                  value={false}
+                  control={<Radio />}
+                  label='false'
+                />
+              </RadioGroup>
+            </ListItem>
+          )
+        );
+        break;
+    }
   }
   function handleTabChange(e, newVal) {
     setTabValue(newVal);
@@ -84,16 +306,34 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
           {tabValue == '0' && (
             <>
               <ListItem>
-                <Typography variant='subtitle1'>msgList</Typography>
-              </ListItem>
-              <ListItem>
+                <Typography variant='body1'>Select object type: </Typography>
+                <Select
+                  defaultValue='prompt'
+                  value={msgObjType}
+                  sx={{ marginX: 2 }}
+                  label='Object Type'
+                  onChange={(e) => {
+                    setMsgObjType(e.target.value);
+                  }}
+                >
+                  <MenuItem value='prompt'>Prompt</MenuItem>
+                  <MenuItem value='number'>Number</MenuItem>
+                  <MenuItem value='ordinal'>Ordinal</MenuItem>
+                  <MenuItem value='amount'>Amount</MenuItem>
+                  <MenuItem value='digits'>Digits</MenuItem>
+                  <MenuItem value='date'>Date</MenuItem>
+                  <MenuItem value='day'>Day</MenuItem>
+                  <MenuItem value='month'>Month</MenuItem>
+                  <MenuItem value='time'>Time</MenuItem>
+                </Select>
                 <Button
-                  sx={{ maxWidth: 100, marginX: 'auto' }}
+                  sx={{ maxWidth: 150, marginX: 'auto' }}
                   color='success'
                   variant='outlined'
                   onClick={addNewInput}
                 >
                   ADD NEW
+                  <AddBoxRoundedIcon />
                 </Button>
               </ListItem>
               <List>{inputList}</List>
