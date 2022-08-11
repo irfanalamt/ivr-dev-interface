@@ -27,6 +27,7 @@ const CanvasComponent = () => {
   console.log('loopsie');
 
   let startX, startY;
+  let startX1, startY1;
 
   //   const circle = {
   //     centreX: 50,
@@ -121,8 +122,11 @@ const CanvasComponent = () => {
         //setIsOpen(true);
         startX = clientX;
         startY = clientY;
+        startX1 = clientX;
+        startY1 = clientY;
         isDragging = true;
         isPalletShape = false;
+        // handleDoubleClickX(offsetX, offsetY);
         return;
       }
     });
@@ -145,9 +149,11 @@ const CanvasComponent = () => {
   }
 
   function handleMouseUp({ nativeEvent }) {
-    let { offsetX, offsetY } = nativeEvent;
-    if (!isDragging) return;
-    else if (isPalletShape) {
+    let { offsetX, offsetY, clientX, clientY } = nativeEvent;
+    if (!isDragging) {
+      // handleDoubleClickX(offsetX, offsetY);
+      // console.log('hmu Not dragging');
+    } else if (isPalletShape) {
       console.log('mouse up while dragging pallet');
       let palletFigureDragged = currentShape.current;
       let stageFigure;
@@ -208,7 +214,12 @@ const CanvasComponent = () => {
       //add figure to stage
       stageGroup.current.addShape(stageFigure);
       clearAndDraw();
+
       // stageFigure.drawShape(contextRef.current);
+    } else {
+      if (clientX == startX1 && clientY == startY1) {
+        handleDoubleClickX(offsetX, offsetY);
+      }
     }
 
     nativeEvent.preventDefault();
@@ -264,10 +275,8 @@ const CanvasComponent = () => {
       startY = mouseY;
     }
   }
-  function handleDoubleClick({ nativeEvent }) {
-    let { offsetX, offsetY, clientX, clientY } = nativeEvent;
-    nativeEvent.preventDefault();
 
+  function handleDoubleClickX(offsetX, offsetY) {
     stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`dbclick in shape ${element.type}`);
@@ -282,6 +291,13 @@ const CanvasComponent = () => {
         console.log('NOT dbclick in shape');
       }
     });
+  }
+
+  function handleDoubleClick({ nativeEvent }) {
+    let { offsetX, offsetY, clientX, clientY } = nativeEvent;
+    nativeEvent.preventDefault();
+
+    // handleDoubleClickX(offsetX, offsetY);
   }
 
   // function placeTextField() {

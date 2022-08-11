@@ -26,7 +26,7 @@ class Shape {
     this.selected = bool;
   }
   fillSelected(ctx) {
-    ctx.fillStyle = '#b0bec5';
+    ctx.fillStyle = '#c0c0c0';
     ctx.fill();
   }
 
@@ -220,6 +220,9 @@ class Shape {
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     if (this.stroke) {
+      if (this.selected) {
+        this.fillSelected(ctx);
+      }
       ctx.font = '19px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
@@ -229,9 +232,6 @@ class Shape {
       ctx.strokeStyle = this.style;
       ctx.stroke();
       // fill color when selected
-      if (this.selected) {
-        this.fillSelected(ctx);
-      }
     } else {
       ctx.fillStyle = this.style;
       ctx.strokeStyle = '#cddc39';
