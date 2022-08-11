@@ -19,6 +19,15 @@ class Shape {
     } else if (type === 'roundedRectangle') {
       this.text = 'playMessage';
     } else this.text = '';
+    this.selected = false;
+  }
+
+  setSelected(bool) {
+    this.selected = bool;
+  }
+  fillSelected(ctx) {
+    ctx.fillStyle = '#b0bec5';
+    ctx.fill();
   }
 
   setText(inputText) {
@@ -48,6 +57,15 @@ class Shape {
             this.width,
             this.height
           );
+          if (this.selected) {
+            ctx.fillStyle = '#b0bec5';
+            ctx.fillRect(
+              this.x - this.width / 2,
+              this.y - this.height / 2,
+              this.width,
+              this.height
+            );
+          }
         } else {
           ctx.fillStyle = this.style;
           ctx.strokeStyle = '#ff5722';
@@ -82,6 +100,10 @@ class Shape {
           ctx.strokeStyle = '#2196f3';
           ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
           ctx.stroke();
+          // fill color when selected
+          if (this.selected) {
+            this.fillSelected(ctx);
+          }
         } else {
           ctx.fillStyle = this.style;
           ctx.strokeStyle = '#2196f3';
@@ -125,6 +147,10 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = this.style;
       ctx.stroke();
+      // fill color when selected
+      if (this.selected) {
+        this.fillSelected(ctx);
+      }
     } else {
       ctx.fillStyle = this.style;
       ctx.strokeStyle = '#9c27b0';
@@ -157,7 +183,10 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = this.style;
       ctx.stroke();
-      console.log('stroke hex');
+      // fill color when selected
+      if (this.selected) {
+        this.fillSelected(ctx);
+      }
     } else {
       ctx.fillStyle = this.style;
       ctx.strokeStyle = '#009688';
@@ -199,6 +228,10 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = this.style;
       ctx.stroke();
+      // fill color when selected
+      if (this.selected) {
+        this.fillSelected(ctx);
+      }
     } else {
       ctx.fillStyle = this.style;
       ctx.strokeStyle = '#cddc39';

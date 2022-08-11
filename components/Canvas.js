@@ -272,7 +272,11 @@ const CanvasComponent = () => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`dbclick in shape ${element.type}`);
         currentShape.current = element;
-        placeTextField();
+        currentShape.current.setSelected(true);
+        clearAndDraw();
+        setIsOpen(true);
+        // placeTextField();
+
         return;
       } else {
         console.log('NOT dbclick in shape');
@@ -280,18 +284,19 @@ const CanvasComponent = () => {
     });
   }
 
-  function placeTextField() {
-    let boxd = document.getElementById('box-div');
-    setShowInput(true);
-    setShapeInputText(currentShape.current.text);
+  // function placeTextField() {
+  //   let boxd = document.getElementById('box-div');
+  //   setShowInput(true);
+  //   setShapeInputText(currentShape.current.text);
 
-    console.log('double cliick');
-    boxd.style.position = 'absolute';
+  //   console.log('double cliick');
+  //   boxd.style.position = 'absolute';
 
-    boxd.style.left =
-      currentShape.current.x - currentShape.current.width / 2 + 2 + 'px';
-    boxd.style.top = currentShape.current.y - 19 + 'px';
-  }
+  //   boxd.style.left =
+  //     currentShape.current.x - currentShape.current.width / 2 + 2 + 'px';
+  //   boxd.style.top = currentShape.current.y - 19 + 'px';
+  // }
+
   const handleReset = () => {
     stageGroup.current.getShapes().splice(0);
     setShowInput(false);

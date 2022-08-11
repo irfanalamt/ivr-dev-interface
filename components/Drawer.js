@@ -306,12 +306,11 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
           {tabValue == '0' && (
             <>
               <ListItem>
-                <Typography variant='body1'>Select object type: </Typography>
+                <Typography variant='subtitle1'>Select object type:</Typography>
                 <Select
                   defaultValue='prompt'
                   value={msgObjType}
                   sx={{ marginX: 2 }}
-                  label='Object Type'
                   onChange={(e) => {
                     setMsgObjType(e.target.value);
                   }}
@@ -410,7 +409,7 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
               }}
               variant='h5'
             >
-              Play Message
+              Play Menu
             </Typography>
           </ListItem>
           {nameField()}
@@ -434,6 +433,7 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
         open={isOpen}
         onClose={() => {
           shape.setText(shapeName);
+          shape.setSelected(false);
           handleCloseDrawer();
         }}
       >
