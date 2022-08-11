@@ -18,6 +18,7 @@ import Drawer from '@mui/material/Drawer';
 import { Box } from '@mui/system';
 import { useState } from 'react';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 
 const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
   const [inputList, setInputList] = useState([]);
@@ -277,11 +278,11 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
     if (shape?.type == 'roundedRectangle') {
       return (
         <List>
-          <ListItem>
+          <ListItem sx={{ position: 'relative' }}>
             <Typography
               sx={{
                 marginX: 'auto',
-                marginY: 1,
+                marginY: 2,
                 boxShadow: 1,
                 paddingX: 1,
                 borderRadius: 2,
@@ -291,6 +292,13 @@ const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
             >
               Play Message
             </Typography>
+            <Button
+              color='info'
+              sx={{ position: 'absolute', left: 10, top: 0 }}
+              variant='outlined'
+            >
+              save <SaveRoundedIcon />
+            </Button>
           </ListItem>
           {nameField()}
           <ListItem>
