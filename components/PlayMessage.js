@@ -22,6 +22,31 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
   const [repeatOption, setRepeatOption] = useState(9);
   const [inputList, setInputList] = useState([]);
   const [msgObjType, setMsgObjType] = useState('prompt');
+  const [msgObj, setMsgObj] = useState([]);
+
+  function handleMsgObjChange(e, key) {
+    const { value, name } = e.target;
+    console.log('name:', name, 'key', key);
+
+    setMsgObj((prevObj) => {
+      let tempMsgObj = [...prevObj];
+      tempMsgObj[key] = {
+        ...tempMsgObj[key],
+        [name]: { value: value },
+      };
+      return tempMsgObj;
+    });
+  }
+
+  // function handleMsgObjChange(e, key) {
+  //   const { value, name } = e.target;
+  //   console.log('name:', name, 'key', key);
+  //   console.log(msgObj);
+
+  //   setMsgObj((prevObj) => {
+  //     return { ...prevObj, [key]: { value: value, name: name } };
+  //   });
+  // }
 
   function addNewInput() {
     const key = inputList.length;
@@ -32,7 +57,16 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <Typography sx={{ marginX: 2 }} variant='body1'>
               prompt:
             </Typography>
-            <TextField size='small' variant='outlined' fullWidth />
+            <TextField
+              size='small'
+              variant='outlined'
+              fullWidth
+              name='prompt'
+              value={msgObj[key]?.prompt.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
+            />
           </ListItem>
         );
 
@@ -45,7 +79,15 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <Typography sx={{ marginX: 2 }} variant='body1'>
               ordinal:
             </Typography>
-            <TextField size='small' sx={{ maxWidth: 100 }} />
+            <TextField
+              size='small'
+              sx={{ maxWidth: 100 }}
+              name='ordinal'
+              value={msgObj[key]?.ordinal.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
+            />
           </ListItem>
         );
 
@@ -58,7 +100,15 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <Typography sx={{ marginX: 2 }} variant='body1'>
               number:
             </Typography>
-            <TextField size='small' sx={{ maxWidth: 100 }} />
+            <TextField
+              size='small'
+              sx={{ maxWidth: 100 }}
+              name='number'
+              value={msgObj[key]?.number.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
+            />
           </ListItem>
         );
 
@@ -71,7 +121,15 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <Typography sx={{ marginX: 2 }} variant='body1'>
               amount:
             </Typography>
-            <TextField size='small' sx={{ maxWidth: 100 }} />
+            <TextField
+              size='small'
+              sx={{ maxWidth: 100 }}
+              name='amount'
+              value={msgObj[key]?.amount.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
+            />
             <Typography sx={{ marginLeft: 4 }} variant='body1'>
               currency:
             </Typography>
@@ -80,6 +138,11 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
               variant='outlined'
               defaultValue='SAR'
               size='small'
+              name='currency'
+              value={msgObj[key]?.currency.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
             />
           </ListItem>
         );
@@ -98,6 +161,11 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
               placeholder='yyyymmdd'
               variant='outlined'
               size='small'
+              name='date'
+              value={msgObj[key]?.date.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               playYear:
@@ -105,7 +173,11 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <RadioGroup
               defaultValue={false}
               row
-              name='playYear-radio-buttons-group'
+              name='playYear'
+              value={msgObj[key]?.playYear.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
             >
               <FormControlLabel
                 sx={{ marginLeft: 1 }}
@@ -131,7 +203,16 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <Typography sx={{ marginX: 2 }} variant='body1'>
               day:
             </Typography>
-            <Select placeholder='day' defaultValue='mon' size='small'>
+            <Select
+              placeholder='day'
+              defaultValue='mon'
+              size='small'
+              name='day'
+              value={msgObj[key]?.day.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
+            >
               <MenuItem value='mon'>Monday</MenuItem>
               <MenuItem value='tue'>Tuesday</MenuItem>
               <MenuItem value='wed'>Wednesday</MenuItem>
@@ -152,7 +233,15 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <Typography sx={{ marginX: 2 }} variant='body1'>
               digit:
             </Typography>
-            <TextField sx={{ maxWidth: 100 }} size='small' />
+            <TextField
+              sx={{ maxWidth: 100 }}
+              size='small'
+              name='digit'
+              value={msgObj[key]?.digit.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
+            />
           </ListItem>
         );
 
@@ -165,7 +254,15 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <Typography sx={{ marginX: 2 }} variant='body1'>
               month:
             </Typography>
-            <Select defaultValue={1} size='small'>
+            <Select
+              defaultValue={1}
+              size='small'
+              name='month'
+              value={msgObj[key]?.month.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
+            >
               <MenuItem value={1}>January</MenuItem>
               <MenuItem value={2}>February</MenuItem>
               <MenuItem value={3}>March</MenuItem>
@@ -185,7 +282,11 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <RadioGroup
               defaultValue={false}
               row
-              name='isHijri-radio-buttons-group'
+              name='isHijri'
+              value={msgObj[key]?.isHijri.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
             >
               <FormControlLabel
                 sx={{ marginLeft: 1 }}
@@ -215,6 +316,11 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
               variant='outlined'
               placeholder='hhmm'
               size='small'
+              name='time'
+              value={msgObj[key]?.time.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               is24:
@@ -222,7 +328,11 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
             <RadioGroup
               defaultValue={false}
               row
-              name='is24-radio-buttons-group'
+              name='is24'
+              value={msgObj[key]?.is24.value}
+              onChange={(e) => {
+                handleMsgObjChange(e, key);
+              }}
             >
               <FormControlLabel
                 sx={{ marginLeft: 1 }}
@@ -323,6 +433,7 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
               <AddBoxRoundedIcon />
             </Button>
           </ListItem>
+          <pre>{JSON.stringify(msgObj, undefined, 2)}</pre>
           <List>{inputList}</List>
         </>
       )}
