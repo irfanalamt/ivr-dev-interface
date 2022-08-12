@@ -24,236 +24,221 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
   const [msgObjType, setMsgObjType] = useState('prompt');
 
   function addNewInput() {
+    const key = inputList.length;
     switch (msgObjType) {
       case 'prompt':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                prompt:
-              </Typography>
-              <TextField size='small' variant='outlined' fullWidth />
-            </ListItem>
-          )
+        const promptCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              prompt:
+            </Typography>
+            <TextField size='small' variant='outlined' fullWidth />
+          </ListItem>
         );
+
+        setInputList([...inputList, promptCode]);
         break;
 
       case 'ordinal':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                ordinal:
-              </Typography>
-              <TextField size='small' sx={{ maxWidth: 100 }} />
-            </ListItem>
-          )
+        const ordinalCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              ordinal:
+            </Typography>
+            <TextField size='small' sx={{ maxWidth: 100 }} />
+          </ListItem>
         );
+
+        setInputList([...inputList, ordinalCode]);
         break;
 
       case 'number':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                number:
-              </Typography>
-              <TextField size='small' sx={{ maxWidth: 100 }} />
-            </ListItem>
-          )
+        const numberCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              number:
+            </Typography>
+            <TextField size='small' sx={{ maxWidth: 100 }} />
+          </ListItem>
         );
+
+        setInputList([...inputList, numberCode]);
         break;
 
       case 'amount':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                amount:
-              </Typography>
-              <TextField size='small' sx={{ maxWidth: 100 }} />
-              <Typography sx={{ marginLeft: 4 }} variant='body1'>
-                currency:
-              </Typography>
-              <TextField
-                sx={{ maxWidth: 100, marginX: 2 }}
-                variant='outlined'
-                defaultValue='SAR'
-                size='small'
-              />
-            </ListItem>
-          )
+        const amountCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              amount:
+            </Typography>
+            <TextField size='small' sx={{ maxWidth: 100 }} />
+            <Typography sx={{ marginLeft: 4 }} variant='body1'>
+              currency:
+            </Typography>
+            <TextField
+              sx={{ maxWidth: 100, marginX: 2 }}
+              variant='outlined'
+              defaultValue='SAR'
+              size='small'
+            />
+          </ListItem>
         );
+
+        setInputList([...inputList, amountCode]);
         break;
 
       case 'date':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                date:
-              </Typography>
-              <TextField
-                sx={{ maxWidth: 150 }}
-                placeholder='yyyymmdd'
-                variant='outlined'
-                size='small'
+        const dateCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              date:
+            </Typography>
+            <TextField
+              sx={{ maxWidth: 150 }}
+              placeholder='yyyymmdd'
+              variant='outlined'
+              size='small'
+            />
+            <Typography sx={{ marginLeft: 2 }} variant='body1'>
+              playYear:
+            </Typography>
+            <RadioGroup
+              defaultValue={false}
+              row
+              name='playYear-radio-buttons-group'
+            >
+              <FormControlLabel
+                sx={{ marginLeft: 1 }}
+                value={true}
+                control={<Radio />}
+                label='true'
               />
-              <Typography sx={{ marginLeft: 2 }} variant='body1'>
-                playYear:
-              </Typography>
-              <RadioGroup
-                defaultValue={false}
-                row
-                name='playYear-radio-buttons-group'
-              >
-                <FormControlLabel
-                  sx={{ marginLeft: 1 }}
-                  value={true}
-                  control={<Radio />}
-                  label='true'
-                />
-                <FormControlLabel
-                  value={false}
-                  control={<Radio />}
-                  label='false'
-                />
-              </RadioGroup>
-            </ListItem>
-          )
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label='false'
+              />
+            </RadioGroup>
+          </ListItem>
         );
+
+        setInputList([...inputList, dateCode]);
         break;
 
       case 'day':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                day:
-              </Typography>
-              <Select placeholder='day' defaultValue='mon' size='small'>
-                <MenuItem value='mon'>Monday</MenuItem>
-                <MenuItem value='tue'>Tuesday</MenuItem>
-                <MenuItem value='wed'>Wednesday</MenuItem>
-                <MenuItem value='thu'>Thursday</MenuItem>
-                <MenuItem value='fri'>Friday</MenuItem>
-                <MenuItem value='sat'>Saturday</MenuItem>
-                <MenuItem value='sun'>Sunday</MenuItem>
-              </Select>
-            </ListItem>
-          )
+        const dayCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              day:
+            </Typography>
+            <Select placeholder='day' defaultValue='mon' size='small'>
+              <MenuItem value='mon'>Monday</MenuItem>
+              <MenuItem value='tue'>Tuesday</MenuItem>
+              <MenuItem value='wed'>Wednesday</MenuItem>
+              <MenuItem value='thu'>Thursday</MenuItem>
+              <MenuItem value='fri'>Friday</MenuItem>
+              <MenuItem value='sat'>Saturday</MenuItem>
+              <MenuItem value='sun'>Sunday</MenuItem>
+            </Select>
+          </ListItem>
         );
-        break;
 
-      case 'number':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <TextField
-                sx={{ maxWidth: 100 }}
-                label='Enter number'
-                variant='outlined'
-              />
-            </ListItem>
-          )
-        );
+        setInputList([...inputList, dayCode]);
         break;
 
       case 'digits':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                digit:
-              </Typography>
-              <TextField sx={{ maxWidth: 100 }} size='small' />
-            </ListItem>
-          )
+        const digitCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              digit:
+            </Typography>
+            <TextField sx={{ maxWidth: 100 }} size='small' />
+          </ListItem>
         );
+
+        setInputList([...inputList, digitCode]);
         break;
 
       case 'month':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                month:
-              </Typography>
-              <Select defaultValue={1} size='small'>
-                <MenuItem value={1}>January</MenuItem>
-                <MenuItem value={2}>February</MenuItem>
-                <MenuItem value={3}>March</MenuItem>
-                <MenuItem value={4}>April</MenuItem>
-                <MenuItem value={5}>May</MenuItem>
-                <MenuItem value={6}>June</MenuItem>
-                <MenuItem value={7}>July</MenuItem>
-                <MenuItem value={8}>August</MenuItem>
-                <MenuItem value={9}>September</MenuItem>
-                <MenuItem value={10}>October</MenuItem>
-                <MenuItem value={11}>November</MenuItem>
-                <MenuItem value={12}>December</MenuItem>
-              </Select>
-              <Typography sx={{ marginLeft: 2 }} variant='body1'>
-                isHijri:
-              </Typography>
-              <RadioGroup
-                defaultValue={false}
-                row
-                name='isHijri-radio-buttons-group'
-              >
-                <FormControlLabel
-                  sx={{ marginLeft: 1 }}
-                  value={true}
-                  control={<Radio />}
-                  label='true'
-                />
-                <FormControlLabel
-                  value={false}
-                  control={<Radio />}
-                  label='false'
-                />
-              </RadioGroup>
-            </ListItem>
-          )
+        const monthCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              month:
+            </Typography>
+            <Select defaultValue={1} size='small'>
+              <MenuItem value={1}>January</MenuItem>
+              <MenuItem value={2}>February</MenuItem>
+              <MenuItem value={3}>March</MenuItem>
+              <MenuItem value={4}>April</MenuItem>
+              <MenuItem value={5}>May</MenuItem>
+              <MenuItem value={6}>June</MenuItem>
+              <MenuItem value={7}>July</MenuItem>
+              <MenuItem value={8}>August</MenuItem>
+              <MenuItem value={9}>September</MenuItem>
+              <MenuItem value={10}>October</MenuItem>
+              <MenuItem value={11}>November</MenuItem>
+              <MenuItem value={12}>December</MenuItem>
+            </Select>
+            <Typography sx={{ marginLeft: 2 }} variant='body1'>
+              isHijri:
+            </Typography>
+            <RadioGroup
+              defaultValue={false}
+              row
+              name='isHijri-radio-buttons-group'
+            >
+              <FormControlLabel
+                sx={{ marginLeft: 1 }}
+                value={true}
+                control={<Radio />}
+                label='true'
+              />
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label='false'
+              />
+            </RadioGroup>
+          </ListItem>
         );
+        setInputList([...inputList, monthCode]);
         break;
 
       case 'time':
-        setInputList(
-          inputList.concat(
-            <ListItem>
-              <Typography sx={{ marginX: 2 }} variant='body1'>
-                time:
-              </Typography>
-              <TextField
-                sx={{ maxWidth: 100 }}
-                variant='outlined'
-                placeholder='hhmm'
-                size='small'
+        const timeCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              time:
+            </Typography>
+            <TextField
+              sx={{ maxWidth: 100 }}
+              variant='outlined'
+              placeholder='hhmm'
+              size='small'
+            />
+            <Typography sx={{ marginLeft: 2 }} variant='body1'>
+              is24:
+            </Typography>
+            <RadioGroup
+              defaultValue={false}
+              row
+              name='is24-radio-buttons-group'
+            >
+              <FormControlLabel
+                sx={{ marginLeft: 1 }}
+                value={true}
+                control={<Radio />}
+                label='true'
               />
-              <Typography sx={{ marginLeft: 2 }} variant='body1'>
-                is24:
-              </Typography>
-              <RadioGroup
-                defaultValue={false}
-                row
-                name='is24-radio-buttons-group'
-              >
-                <FormControlLabel
-                  sx={{ marginLeft: 1 }}
-                  value={true}
-                  control={<Radio />}
-                  label='true'
-                />
-                <FormControlLabel
-                  value={false}
-                  control={<Radio />}
-                  label='false'
-                />
-              </RadioGroup>
-            </ListItem>
-          )
+              <FormControlLabel
+                value={false}
+                control={<Radio />}
+                label='false'
+              />
+            </RadioGroup>
+          </ListItem>
         );
+        setInputList([...inputList, timeCode]);
         break;
     }
   }
