@@ -150,11 +150,10 @@ const CanvasComponent = () => {
 
   function handleMouseUp({ nativeEvent }) {
     let { offsetX, offsetY, clientX, clientY } = nativeEvent;
-    if (!isDragging) {
-      // handleDoubleClickX(offsetX, offsetY);
-      // console.log('hmu Not dragging');
-    } else if (isPalletShape) {
+    if (isPalletShape) {
       console.log('mouse up while dragging pallet');
+      console.log('offsetX', offsetX, 'clientX', clientX);
+      console.log('offsetY', offsetY, 'clientY', clientY);
       let palletFigureDragged = currentShape.current;
       let stageFigure;
       if (palletFigureDragged.type === 'rectangle') {
@@ -212,7 +211,8 @@ const CanvasComponent = () => {
       palletFigureDragged.x = palletFigureDragged.getInitPos()[0];
       palletFigureDragged.y = palletFigureDragged.getInitPos()[1];
       //add figure to stage
-      stageGroup.current.addShape(stageFigure);
+      if (clientX > 120) stageGroup.current.addShape(stageFigure);
+
       clearAndDraw();
 
       // stageFigure.drawShape(contextRef.current);
@@ -253,6 +253,7 @@ const CanvasComponent = () => {
         }
       });
     } else if (isResizing) {
+      //Change width, height - mousemove
       let dx = mouseX - startX;
       let dy = mouseY - startY;
       let current_shape = currentShape.current;
@@ -264,7 +265,7 @@ const CanvasComponent = () => {
       isOnEdge = false;
     } else {
       nativeEvent.preventDefault();
-
+      // drag shape - mousemove
       let dx = mouseX - startX;
       let dy = mouseY - startY;
       let current_shape = currentShape.current;

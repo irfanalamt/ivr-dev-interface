@@ -26,7 +26,7 @@ class Shape {
     this.selected = bool;
   }
   fillSelected(ctx) {
-    ctx.fillStyle = '#c0c0c0';
+    ctx.fillStyle = '#eceff1';
     ctx.fill();
   }
 
@@ -44,6 +44,15 @@ class Shape {
     switch (this.type) {
       case 'rectangle':
         if (this.stroke) {
+          if (this.selected) {
+            ctx.fillStyle = '#eceff1';
+            ctx.fillRect(
+              this.x - this.width / 2,
+              this.y - this.height / 2,
+              this.width,
+              this.height
+            );
+          }
           ctx.font = '19px sans-serif';
           ctx.fillStyle = 'black';
           ctx.lineWidth = 2;
@@ -57,15 +66,6 @@ class Shape {
             this.width,
             this.height
           );
-          if (this.selected) {
-            ctx.fillStyle = '#b0bec5';
-            ctx.fillRect(
-              this.x - this.width / 2,
-              this.y - this.height / 2,
-              this.width,
-              this.height
-            );
-          }
         } else {
           ctx.fillStyle = this.style;
           ctx.strokeStyle = '#ff5722';
@@ -88,30 +88,7 @@ class Shape {
         break;
 
       case 'circle':
-        ctx.beginPath();
-
-        if (this.stroke) {
-          ctx.font = '19px sans-serif';
-          ctx.fillStyle = 'black';
-          ctx.lineWidth = 2;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(this.text, this.x, this.y);
-          ctx.strokeStyle = '#2196f3';
-          ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
-          ctx.stroke();
-          // fill color when selected
-          if (this.selected) {
-            this.fillSelected(ctx);
-          }
-        } else {
-          ctx.fillStyle = this.style;
-          ctx.strokeStyle = '#2196f3';
-          ctx.lineWidth = 2;
-          ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.stroke();
-        }
+        this.drawCircle(ctx);
         break;
 
       case 'hexagon':
@@ -128,6 +105,34 @@ class Shape {
     }
   }
 
+  drawCircle(ctx) {
+    ctx.beginPath();
+
+    if (this.stroke) {
+      ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
+      // fill color when selected
+      if (this.selected) {
+        this.fillSelected(ctx);
+      }
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.strokeStyle = '#2196f3';
+
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = this.style;
+      ctx.strokeStyle = '#2196f3';
+      ctx.lineWidth = 2;
+      ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
+
   drawParallelogram(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
@@ -139,6 +144,10 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      // fill color when selected
+      if (this.selected) {
+        this.fillSelected(ctx);
+      }
       ctx.font = '19px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
@@ -147,10 +156,6 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = this.style;
       ctx.stroke();
-      // fill color when selected
-      if (this.selected) {
-        this.fillSelected(ctx);
-      }
     } else {
       ctx.fillStyle = this.style;
       ctx.strokeStyle = '#9c27b0';
@@ -175,6 +180,10 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      // fill color when selected
+      if (this.selected) {
+        this.fillSelected(ctx);
+      }
       ctx.font = '19px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
@@ -183,10 +192,6 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = this.style;
       ctx.stroke();
-      // fill color when selected
-      if (this.selected) {
-        this.fillSelected(ctx);
-      }
     } else {
       ctx.fillStyle = this.style;
       ctx.strokeStyle = '#009688';
