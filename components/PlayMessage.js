@@ -29,12 +29,10 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
-              <TextField
-                label='Enter prompt'
-                variant='outlined'
-                fullWidth
-                focused
-              />
+              <Typography sx={{ marginX: 2 }} variant='body1'>
+                prompt:
+              </Typography>
+              <TextField size='small' variant='outlined' fullWidth />
             </ListItem>
           )
         );
@@ -44,12 +42,10 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
-              <TextField
-                sx={{ maxWidth: 100 }}
-                label='Enter ordinal'
-                variant='outlined'
-                focused
-              />
+              <Typography sx={{ marginX: 2 }} variant='body1'>
+                ordinal:
+              </Typography>
+              <TextField size='small' sx={{ maxWidth: 100 }} />
             </ListItem>
           )
         );
@@ -59,10 +55,10 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
-              <Typography sx={{ marginX: 1 }} variant='body2'>
+              <Typography sx={{ marginX: 2 }} variant='body1'>
                 number:
               </Typography>
-              <TextField sx={{ maxWidth: 100, borderColor: '#333' }} focused />
+              <TextField size='small' sx={{ maxWidth: 100 }} />
             </ListItem>
           )
         );
@@ -72,17 +68,18 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
+              <Typography sx={{ marginX: 2 }} variant='body1'>
+                amount:
+              </Typography>
+              <TextField size='small' sx={{ maxWidth: 100 }} />
+              <Typography sx={{ marginLeft: 4 }} variant='body1'>
+                currency:
+              </Typography>
               <TextField
-                sx={{ maxWidth: 100 }}
-                label='Enter amount'
-                variant='outlined'
-                focused
-              />
-              <TextField
-                sx={{ maxWidth: 150, marginX: 2 }}
-                label='Select currency'
+                sx={{ maxWidth: 100, marginX: 2 }}
                 variant='outlined'
                 defaultValue='SAR'
+                size='small'
               />
             </ListItem>
           )
@@ -93,14 +90,16 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
+              <Typography sx={{ marginX: 2 }} variant='body1'>
+                date:
+              </Typography>
               <TextField
                 sx={{ maxWidth: 150 }}
-                label='Enter date'
                 placeholder='yyyymmdd'
                 variant='outlined'
-                focused
+                size='small'
               />
-              <Typography sx={{ marginX: 1 }} variant='body1'>
+              <Typography sx={{ marginLeft: 2 }} variant='body1'>
                 playYear:
               </Typography>
               <RadioGroup
@@ -109,13 +108,12 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
                 name='playYear-radio-buttons-group'
               >
                 <FormControlLabel
-                  sx={{ marginX: 1 }}
+                  sx={{ marginLeft: 1 }}
                   value={true}
                   control={<Radio />}
                   label='true'
                 />
                 <FormControlLabel
-                  sx={{ marginX: 1 }}
                   value={false}
                   control={<Radio />}
                   label='false'
@@ -130,10 +128,10 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
-              <Typography sx={{ marginX: 1 }} variant='body2'>
-                select day:
+              <Typography sx={{ marginX: 2 }} variant='body1'>
+                day:
               </Typography>
-              <Select placeholder='day' defaultValue='mon'>
+              <Select placeholder='day' defaultValue='mon' size='small'>
                 <MenuItem value='mon'>Monday</MenuItem>
                 <MenuItem value='tue'>Tuesday</MenuItem>
                 <MenuItem value='wed'>Wednesday</MenuItem>
@@ -155,7 +153,6 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
                 sx={{ maxWidth: 100 }}
                 label='Enter number'
                 variant='outlined'
-                focused
               />
             </ListItem>
           )
@@ -166,12 +163,10 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
-              <TextField
-                sx={{ maxWidth: 100 }}
-                label='Enter digit'
-                variant='outlined'
-                focused
-              />
+              <Typography sx={{ marginX: 2 }} variant='body1'>
+                digit:
+              </Typography>
+              <TextField sx={{ maxWidth: 100 }} size='small' />
             </ListItem>
           )
         );
@@ -181,13 +176,24 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
-              <TextField
-                sx={{ maxWidth: 150 }}
-                label='Enter month'
-                variant='outlined'
-                focused
-              />
-              <Typography sx={{ marginX: 1 }} variant='body1'>
+              <Typography sx={{ marginX: 2 }} variant='body1'>
+                month:
+              </Typography>
+              <Select defaultValue={1} size='small'>
+                <MenuItem value={1}>January</MenuItem>
+                <MenuItem value={2}>February</MenuItem>
+                <MenuItem value={3}>March</MenuItem>
+                <MenuItem value={4}>April</MenuItem>
+                <MenuItem value={5}>May</MenuItem>
+                <MenuItem value={6}>June</MenuItem>
+                <MenuItem value={7}>July</MenuItem>
+                <MenuItem value={8}>August</MenuItem>
+                <MenuItem value={9}>September</MenuItem>
+                <MenuItem value={10}>October</MenuItem>
+                <MenuItem value={11}>November</MenuItem>
+                <MenuItem value={12}>December</MenuItem>
+              </Select>
+              <Typography sx={{ marginLeft: 2 }} variant='body1'>
                 isHijri:
               </Typography>
               <RadioGroup
@@ -196,13 +202,12 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
                 name='isHijri-radio-buttons-group'
               >
                 <FormControlLabel
-                  sx={{ marginX: 1 }}
+                  sx={{ marginLeft: 1 }}
                   value={true}
                   control={<Radio />}
                   label='true'
                 />
                 <FormControlLabel
-                  sx={{ marginX: 1 }}
                   value={false}
                   control={<Radio />}
                   label='false'
@@ -217,14 +222,16 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
         setInputList(
           inputList.concat(
             <ListItem>
+              <Typography sx={{ marginX: 2 }} variant='body1'>
+                time:
+              </Typography>
               <TextField
                 sx={{ maxWidth: 100 }}
-                label='Enter time'
                 variant='outlined'
                 placeholder='hhmm'
-                focused
+                size='small'
               />
-              <Typography sx={{ marginX: 1 }} variant='body1'>
+              <Typography sx={{ marginLeft: 2 }} variant='body1'>
                 is24:
               </Typography>
               <RadioGroup
@@ -233,13 +240,12 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
                 name='is24-radio-buttons-group'
               >
                 <FormControlLabel
-                  sx={{ marginX: 1 }}
+                  sx={{ marginLeft: 1 }}
                   value={true}
                   control={<Radio />}
                   label='true'
                 />
                 <FormControlLabel
-                  sx={{ marginX: 1 }}
                   value={false}
                   control={<Radio />}
                   label='false'
