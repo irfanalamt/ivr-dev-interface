@@ -32,7 +32,7 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
       let tempMsgObj = [...prevObj];
       tempMsgObj[key] = {
         ...tempMsgObj[key],
-        [name]: { value: value },
+        [name]: value,
       };
       return tempMsgObj;
     });
