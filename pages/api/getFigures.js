@@ -12,8 +12,9 @@ export default async function handler(req, res) {
       res.send('error');
     } else {
       // parse JSON string to JSON object
-      const figuresJson = JSON.parse(data);
+      const figuresJson = JSON.parse(data.toString());
 
+      console.log('file READ');
       res.send(figuresJson);
       return;
     }

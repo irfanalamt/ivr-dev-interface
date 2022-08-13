@@ -12,9 +12,23 @@ const StageCanvas = () => {
   useEffect(() => {
     const check = JSON.parse(localStorage.getItem('isExisting'));
     if (check == true) {
+      handleClickLoadFile;
       setIsExisting(true);
     }
   }, []);
+
+  const handleClickLoadFile = () => {
+    fetch('/api/getFigures')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(JSON.stringify(data));
+
+        alert('loaded from JSON');
+      })
+      .catch((err) => {
+        alert('figure fetch api error');
+      });
+  };
 
   return (
     <Container
@@ -36,7 +50,7 @@ const StageCanvas = () => {
       </Typography>
       {isExisting && <Typography variant='h6'>isExisting project</Typography>}
       <Box>
-        <DynamicCanvas />
+        <DynamicCanvas isExisting={isExisting} />
       </Box>
     </Container>
   );

@@ -3,6 +3,10 @@ class Shapes {
     this.groupname = groupname;
     this.shapes = shapes;
   }
+  setShapes({ groupname, shapes }) {
+    this.groupname = groupname;
+    this.shapes = shapes;
+  }
   displayAll() {
     return `name=${this.groupname} shapes=${this.shapes}`;
   }

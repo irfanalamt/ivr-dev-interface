@@ -1,11 +1,13 @@
 import { Box, Button, Container, Stack, TextField } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
 import DrawerComponent from './Drawer';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
+import SaveAltRoundedIcon from '@mui/icons-material/SaveAltRounded';
 
-const CanvasComponent = () => {
+const CanvasComponent = ({ isExisting }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [shapeInputText, setShapeInputText] = useState('');
   const canvasRef = useRef(null);
@@ -69,7 +71,13 @@ const CanvasComponent = () => {
       palletParallelogram,
       palletRoundedRectangle,
     ]);
-    stageGroup.current = new Shapes('stage', []);
+    if (isExisting) {
+      handleClickLoadFile();
+      console.log(palletGroup.current);
+      stageGroup.current = new Shapes('stage', []);
+    } else {
+      stageGroup.current = new Shapes('stage', []);
+    }
 
     contextRef.current = context;
     bgContext.current = context2;
@@ -90,6 +98,19 @@ const CanvasComponent = () => {
     stageGroup.current.getShapes().forEach((el) => {
       el.drawShape(contextRef.current);
     });
+  }
+
+  function handleClickLoadFile() {
+    fetch('/api/getFigures')
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        stageGroup.current.setShapes(data);
+        alert('loaded from JSON');
+      })
+      .catch((err) => {
+        alert('figure fetch api error');
+      });
   }
 
   function handleMouseDown({ nativeEvent }) {
@@ -319,6 +340,19 @@ const CanvasComponent = () => {
 
     clearAndDraw();
   }
+  function handleSaveState() {
+    axios
+      .post('/api/saveFigures', {
+        msg: JSON.stringify(stageGroup.current),
+      })
+      .then((result) => {
+        console.log(result.data.message);
+        alert(result.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
   return (
     <Box sx={{ marginY: 1 }}>
@@ -346,21 +380,35 @@ const CanvasComponent = () => {
         ref={bgRef}
       ></canvas>
       <Button
+        sx={{
+          marginX: 'auto',
+          position: 'fixed',
+          textAlign: 'center',
+          maxWidth: 200,
+          left: 450,
+          bottom: 20,
+          zIndex: 5,
+        }}
+        variant='contained'
+        onClick={handleSaveState}
+      >
+        Save state <SaveAltRoundedIcon sx={{ marginLeft: 1 }} />
+      </Button>
+      <Button
         onClick={handleReset}
         sx={{
           marginX: 'auto',
-          position: 'absolute',
+          position: 'fixed',
           textAlign: 'center',
-          maxWidth: 150,
-          left: 0,
-          right: 0,
+          maxWidth: 200,
+          right: 450,
           bottom: 20,
           zIndex: 5,
         }}
         variant='contained'
       >
         RESET
-        <RestartAltRoundedIcon />
+        <RestartAltRoundedIcon sx={{ marginLeft: 1 }} />
       </Button>
 
       {isOpen && (
