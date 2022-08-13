@@ -4,11 +4,8 @@ import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
 import DrawerComponent from './Drawer';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
-import InputRoundedIcon from '@mui/icons-material/InputRounded';
-import TuneRoundedIcon from '@mui/icons-material/TuneRounded';
 
 const CanvasComponent = () => {
-  const [showInput, setShowInput] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [shapeInputText, setShapeInputText] = useState('');
   const canvasRef = useRef(null);
@@ -18,7 +15,6 @@ const CanvasComponent = () => {
   const currentShape = useRef(null);
   const palletGroup = useRef(null);
   const stageGroup = useRef(null);
-  const textBoxRef = useRef(null);
 
   let isDragging = false;
   let isPalletShape = false;
@@ -82,12 +78,6 @@ const CanvasComponent = () => {
     clearAndDraw();
   }, []);
 
-  useEffect(() => {
-    if (showInput) {
-      textBoxRef.current.style.width = currentShape.current.width + 'px';
-    }
-  }, [showInput]);
-
   function drawBackground() {
     bgContext.current.strokeRect(30, 100, 70, 400);
   }
@@ -142,10 +132,6 @@ const CanvasComponent = () => {
         return;
       }
     });
-    if (showInput) {
-      setShowInput(false);
-      clearAndDraw();
-    }
   }
 
   function handleMouseUp({ nativeEvent }) {
@@ -316,7 +302,7 @@ const CanvasComponent = () => {
 
   const handleReset = () => {
     stageGroup.current.getShapes().splice(0);
-    setShowInput(false);
+
     clearAndDraw();
   };
 
@@ -326,12 +312,11 @@ const CanvasComponent = () => {
     currentShape.current.setText(shapeInputText);
 
     clearAndDraw();
-    setShowInput(false);
   }
 
   function handleCloseDrawer() {
     setIsOpen(false);
-    setShowInput(false);
+
     clearAndDraw();
   }
 
@@ -385,46 +370,6 @@ const CanvasComponent = () => {
           shape={currentShape.current}
         />
       )}
-
-      <div style={{ position: 'relative', display: 'flex' }} id='box-div'>
-        {showInput && (
-          <>
-            <TextField
-              style={{
-                zIndex: 5,
-                maxWidth: 500,
-                backgroundColor: '#fafafa',
-              }}
-              value={shapeInputText}
-              ref={textBoxRef}
-              variant='standard'
-              size='small'
-              onChange={(e) => {
-                setShapeInputText(e.target.value);
-              }}
-            />
-            <Stack spacing={4}>
-              <Button
-                onClick={handleTextSave}
-                sx={{ marginX: 2, zIndex: 5, backgroundColor: '#42a5f5' }}
-                variant='standard'
-              >
-                <InputRoundedIcon />
-              </Button>
-              <Button
-                onClick={() => {
-                  setIsOpen(true);
-                }}
-                sx={{ zIndex: 6, borderRadius: 4 }}
-                variant='contained'
-                color='secondary'
-              >
-                Edit <TuneRoundedIcon sx={{ marginX: 1 }} />
-              </Button>
-            </Stack>
-          </>
-        )}
-      </div>
     </Box>
   );
 };
