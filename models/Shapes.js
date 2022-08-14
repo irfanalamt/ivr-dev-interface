@@ -1,11 +1,21 @@
+import Shape from './Shape';
+
 class Shapes {
   constructor(groupname, shapes) {
     this.groupname = groupname;
     this.shapes = shapes;
   }
-  setShapes({ groupname, shapes }) {
-    this.groupname = groupname;
-    this.shapes = shapes;
+  setShapes(data) {
+    let newShapesArray = [];
+    data.forEach((el) => {
+      let { x, y, width, height, type, name } = el;
+      console.log('set shapes', name, type);
+      let newShape = new Shape(x, y, width, height, type, null, true);
+      newShape.setText(name);
+      newShapesArray.push(newShape);
+    });
+    let newShapes = new Shapes('stage', newShapesArray);
+    return newShapes;
   }
   displayAll() {
     return `name=${this.groupname} shapes=${this.shapes}`;

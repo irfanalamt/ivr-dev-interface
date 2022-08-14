@@ -105,7 +105,9 @@ const CanvasComponent = ({ isExisting }) => {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        stageGroup.current.setShapes(data);
+        stageGroup.current = stageGroup.current.setShapes(data);
+        clearAndDraw();
+        //stageGroup.current = new Shapes(data);
         alert('loaded from JSON');
       })
       .catch((err) => {
@@ -341,9 +343,26 @@ const CanvasComponent = ({ isExisting }) => {
     clearAndDraw();
   }
   function handleSaveState() {
+    console.log('handleSaveState length=', stageGroup.current.shapes.length);
+    console.log('shape0', stageGroup.current.shapes[0]);
+
+    let tempSave = [];
+    for (let i = 0; i < stageGroup.current.shapes.length; i++) {
+      let shape = stageGroup.current.shapes[i];
+      let data = {
+        name: shape.text,
+        type: shape.type,
+        x: shape.x,
+        y: shape.y,
+        width: shape.width,
+        height: shape.height,
+      };
+      tempSave.push(data);
+    }
+
     axios
       .post('/api/saveFigures', {
-        msg: JSON.stringify(stageGroup.current),
+        msg: JSON.stringify(tempSave),
       })
       .then((result) => {
         console.log(result.data.message);

@@ -154,7 +154,7 @@ class Shape {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(this.text, this.x, this.y);
-      ctx.strokeStyle = this.style;
+      ctx.strokeStyle = '#9c27b0';
       ctx.stroke();
     } else {
       ctx.fillStyle = this.style;
@@ -190,7 +190,7 @@ class Shape {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(this.text, this.x, this.y);
-      ctx.strokeStyle = this.style;
+      ctx.strokeStyle = '#009688';
       ctx.stroke();
     } else {
       ctx.fillStyle = this.style;
@@ -234,7 +234,7 @@ class Shape {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(this.text, this.x, this.y);
-      ctx.strokeStyle = this.style;
+      ctx.strokeStyle = '#c0ca33';
       ctx.stroke();
       // fill color when selected
     } else {
