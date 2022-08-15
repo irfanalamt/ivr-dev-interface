@@ -196,7 +196,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               variant='outlined'
               size='small'
               name='date'
-              value={msgObj[key]?.date.value}
+              value={msgObj[key]?.date}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -208,7 +208,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={false}
               row
               name='playYear'
-              value={msgObj[key]?.playYear.value}
+              value={msgObj[key]?.playYear}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -242,7 +242,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue='mon'
               size='small'
               name='day'
-              value={msgObj[key]?.day.value}
+              value={msgObj[key]?.day}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -271,7 +271,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               sx={{ maxWidth: 100 }}
               size='small'
               name='digit'
-              value={msgObj[key]?.digit.value}
+              value={msgObj[key]?.digit}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -292,7 +292,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={1}
               size='small'
               name='month'
-              value={msgObj[key]?.month.value}
+              value={msgObj[key]?.month}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -317,7 +317,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={false}
               row
               name='isHijri'
-              value={msgObj[key]?.isHijri.value}
+              value={msgObj[key]?.isHijri}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -351,7 +351,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               placeholder='hhmm'
               size='small'
               name='time'
-              value={msgObj[key]?.time.value}
+              value={msgObj[key]?.time}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -363,7 +363,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={false}
               row
               name='is24'
-              value={msgObj[key]?.is24.value}
+              value={msgObj[key]?.is24}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
