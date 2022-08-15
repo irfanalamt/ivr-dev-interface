@@ -12,7 +12,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 
@@ -23,6 +23,22 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
   const [inputList, setInputList] = useState([]);
   const [msgObjType, setMsgObjType] = useState('prompt');
   const [msgObj, setMsgObj] = useState([]);
+
+  useEffect(() => {
+    if (shape.userValues) {
+      let { params, messageList } = shape.userValues;
+      setInterruptible(params.interruptible);
+      setRepeatOption(params.repeatOption);
+      setMsgObj(messageList);
+      messageList.forEach((el, i) => {
+        if (el.prompt) {
+          setMsgObjType('prompt');
+          addNewInput();
+          setMsgObj([...msgObj, messageList]);
+        }
+      });
+    }
+  }, []);
 
   function handleMsgObjChange(e, key) {
     const { value, name } = e.target;
@@ -51,7 +67,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
   function saveUserValues() {
     shape.setUserValues({
       params: { interruptible, repeatOption },
-      messageList: { msgObj },
+      messageList: msgObj,
     });
     console.log('PLAYMESSAGE INPUT SAVED');
     console.log(shape.userValues);
@@ -71,7 +87,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               variant='outlined'
               fullWidth
               name='prompt'
-              value={msgObj[key]?.prompt.value}
+              defaultValue={msgObj[key]?.prompt}
+              value={msgObj[key]?.prompt}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -92,7 +109,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               size='small'
               sx={{ maxWidth: 100 }}
               name='ordinal'
-              value={msgObj[key]?.ordinal.value}
+              value={msgObj[key]?.ordinal}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -113,7 +130,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               size='small'
               sx={{ maxWidth: 100 }}
               name='number'
-              value={msgObj[key]?.number.value}
+              value={msgObj[key]?.number}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -134,7 +151,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               size='small'
               sx={{ maxWidth: 100 }}
               name='amount'
-              value={msgObj[key]?.amount.value}
+              value={msgObj[key]?.amount}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -148,7 +165,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue='SAR'
               size='small'
               name='currency'
-              value={msgObj[key]?.currency.value}
+              value={msgObj[key]?.currency}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}

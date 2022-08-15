@@ -20,7 +20,7 @@ class Shape {
       this.text = 'playMessage';
     } else this.text = '';
     this.selected = false;
-    this.userValues = {};
+    this.userValues = null;
   }
 
   setSelected(bool) {
