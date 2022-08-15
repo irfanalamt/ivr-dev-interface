@@ -22,6 +22,7 @@ const CanvasComponent = ({ isExisting }) => {
   let isPalletShape = false;
   let isResizing = false;
   let isOnEdge = false;
+  let userValues = {};
   console.log('loopsie');
 
   let startX, startY;
@@ -339,6 +340,7 @@ const CanvasComponent = ({ isExisting }) => {
 
   function handleCloseDrawer() {
     setIsOpen(false);
+    console.log('userValues are:', userValues);
 
     clearAndDraw();
   }
@@ -356,6 +358,7 @@ const CanvasComponent = ({ isExisting }) => {
         y: shape.y,
         width: shape.width,
         height: shape.height,
+        userValues: shape.userValues,
       };
       tempSave.push(data);
     }

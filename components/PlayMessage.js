@@ -16,7 +16,7 @@ import { useState } from 'react';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 
-const PlayMessage = ({ shapeName, setShapeName }) => {
+const PlayMessage = ({ shapeName, setShapeName, shape }) => {
   const [tabValue, setTabValue] = useState(0);
   const [interruptible, setInterruptible] = useState(true);
   const [repeatOption, setRepeatOption] = useState(9);
@@ -47,6 +47,15 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
   //     return { ...prevObj, [key]: { value: value, name: name } };
   //   });
   // }
+
+  function saveUserValues() {
+    shape.setUserValues({
+      params: { interruptible, repeatOption },
+      messageList: { msgObj },
+    });
+    console.log('PLAYMESSAGE INPUT SAVED');
+    console.log(shape.userValues);
+  }
 
   function addNewInput() {
     const key = inputList.length;
@@ -377,6 +386,7 @@ const PlayMessage = ({ shapeName, setShapeName }) => {
           color='info'
           sx={{ position: 'absolute', left: 10, top: 0 }}
           variant='outlined'
+          onClick={saveUserValues}
         >
           save <SaveRoundedIcon />
         </Button>

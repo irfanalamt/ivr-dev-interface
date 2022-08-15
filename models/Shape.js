@@ -20,10 +20,14 @@ class Shape {
       this.text = 'playMessage';
     } else this.text = '';
     this.selected = false;
+    this.userValues = {};
   }
 
   setSelected(bool) {
     this.selected = bool;
+  }
+  setUserValues(userValues) {
+    this.userValues = { ...userValues };
   }
   fillSelected(ctx) {
     ctx.fillStyle = '#eceff1';

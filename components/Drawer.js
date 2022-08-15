@@ -19,12 +19,23 @@ import { useState } from 'react';
 
 import PlayMessage from './PlayMessage';
 
-const DrawerComponent = ({ isOpen, handleCloseDrawer, shape = null }) => {
+const DrawerComponent = ({
+  isOpen,
+  handleCloseDrawer,
+  shape = null,
+  userValues,
+}) => {
   const [shapeName, setShapeName] = useState(shape.text);
 
   const myList = () => {
     if (shape?.type == 'roundedRectangle') {
-      return <PlayMessage shapeName={shapeName} setShapeName={setShapeName} />;
+      return (
+        <PlayMessage
+          shapeName={shapeName}
+          setShapeName={setShapeName}
+          shape={shape}
+        />
+      );
     } else {
       return (
         <List>
