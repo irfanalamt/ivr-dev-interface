@@ -30,15 +30,24 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
       setInterruptible(params.interruptible);
       setRepeatOption(params.repeatOption);
       setMsgObj(messageList);
-      messageList.forEach((el, i) => {
-        if (el.prompt) {
-          setMsgObjType('prompt');
-          addNewInput();
-          setMsgObj([...msgObj, messageList]);
-        }
-      });
+      console.log('ue 1');
     }
   }, []);
+
+  function fillInputFields() {
+    if (msgObj.length > inputList.length) {
+      let curValue = msgObj[inputList.length];
+      if (curValue.prompt) addNewInput('prompt');
+      else if (curValue.ordinal) addNewInput('ordinal');
+      else if (curValue.number) addNewInput('number');
+      else if (curValue.amount) addNewInput('amount');
+      else if (curValue.date) addNewInput('date');
+      else if (curValue.day) addNewInput('day');
+      else if (curValue.digit) addNewInput('digit');
+      else if (curValue.month) addNewInput('month');
+      else if (curValue.time) addNewInput('time');
+    }
+  }
 
   function handleMsgObjChange(e, key) {
     const { value, name } = e.target;
@@ -73,9 +82,9 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
     console.log(shape.userValues);
   }
 
-  function addNewInput() {
+  function addNewInput(objType) {
     const key = inputList.length;
-    switch (msgObjType) {
+    switch (objType) {
       case 'prompt':
         const promptCode = (
           <ListItem key={key}>
@@ -87,7 +96,6 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               variant='outlined'
               fullWidth
               name='prompt'
-              defaultValue={msgObj[key]?.prompt}
               value={msgObj[key]?.prompt}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
@@ -454,13 +462,16 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               sx={{ maxWidth: 150, marginX: 'auto' }}
               color='success'
               variant='outlined'
-              onClick={addNewInput}
+              onClick={() => {
+                addNewInput(msgObjType);
+              }}
             >
               ADD NEW
               <AddBoxRoundedIcon />
             </Button>
           </ListItem>
           <pre>{JSON.stringify(msgObj, undefined, 2)}</pre>
+          {fillInputFields()}
           <List>{inputList}</List>
         </>
       )}

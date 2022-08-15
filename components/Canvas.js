@@ -85,6 +85,8 @@ const CanvasComponent = ({ isExisting }) => {
 
     drawBackground();
     clearAndDraw();
+
+    console.log('ue canvas');
   }, []);
 
   function drawBackground() {
@@ -105,9 +107,10 @@ const CanvasComponent = ({ isExisting }) => {
     fetch('/api/getFigures')
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
+        console.log('loaded data', data);
         stageGroup.current = stageGroup.current.setShapes(data);
         clearAndDraw();
+        console.log('loaded stage group', stageGroup.current);
         //stageGroup.current = new Shapes(data);
         alert('loaded from JSON');
       })

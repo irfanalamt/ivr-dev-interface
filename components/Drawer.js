@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import PlayMessage from './PlayMessage';
 
@@ -25,6 +25,9 @@ const DrawerComponent = ({
   shape = null,
   userValues,
 }) => {
+  useEffect(() => {
+    console.log('ue drawer');
+  }, []);
   const [shapeName, setShapeName] = useState(shape.text);
 
   const myList = () => {

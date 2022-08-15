@@ -12,23 +12,10 @@ const StageCanvas = () => {
   useEffect(() => {
     const check = JSON.parse(localStorage.getItem('isExisting'));
     if (check == true) {
-      handleClickLoadFile;
       setIsExisting(true);
     }
+    console.log('ue stage canvas');
   }, []);
-
-  const handleClickLoadFile = () => {
-    fetch('/api/getFigures')
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(JSON.stringify(data));
-
-        alert('loaded from JSON');
-      })
-      .catch((err) => {
-        alert('figure fetch api error');
-      });
-  };
 
   return (
     <Container

@@ -9,6 +9,7 @@ export default function Home() {
 
   useEffect(() => {
     localStorage.setItem('isExisting', JSON.stringify(isExisting));
+    console.log('ue index');
   }, [isExisting]);
 
   return (

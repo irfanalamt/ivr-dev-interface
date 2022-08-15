@@ -1,1 +1,1 @@
-[{"name":"playMessage","type":"roundedRectangle","x":475,"y":371,"width":130,"height":50,"userValues":{"params":{"interruptible":true,"repeatOption":9},"messageList":[{"prompt":"nklnjjli"},{"time":"777","is24":"true"}]}}]
+[{"name":"playMessage","type":"roundedRectangle","x":316,"y":371,"width":130,"height":50,"userValues":{"params":{"interruptible":"false","repeatOption":1},"messageList":[{"prompt":"dasd"}]}}]
