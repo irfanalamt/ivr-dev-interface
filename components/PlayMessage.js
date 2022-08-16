@@ -342,7 +342,7 @@ const PlayMessage = ({ shape }) => {
               placeholder='day'
               size='small'
               name='day'
-              defaultValue={msgObj[key]?.day || 'mon'}
+              defaultValue={msgObj[key]?.day || ''}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -392,7 +392,7 @@ const PlayMessage = ({ shape }) => {
             <Select
               size='small'
               name='month'
-              defaultValue={msgObj[key]?.month || 1}
+              defaultValue={msgObj[key]?.month || ''}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
