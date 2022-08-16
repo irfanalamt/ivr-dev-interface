@@ -29,17 +29,10 @@ const DrawerComponent = ({
   useEffect(() => {
     console.log('ue drawer');
   }, []);
-  const [shapeName, setShapeName] = useState(shape.text);
 
   const myList = () => {
     if (shape?.type == 'roundedRectangle') {
-      return (
-        <PlayMessage
-          shapeName={shapeName}
-          setShapeName={setShapeName}
-          shape={shape}
-        />
-      );
+      return <PlayMessage shape={shape} />;
     } else if (shape?.type == 'parallelogram') {
       return <GetDigits shape={shape} />;
     } else {

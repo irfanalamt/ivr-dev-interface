@@ -17,7 +17,8 @@ import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import { Container } from '@mui/system';
 
-const PlayMessage = ({ shapeName, setShapeName, shape }) => {
+const PlayMessage = ({ shape }) => {
+  const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
   const [interruptible, setInterruptible] = useState(true);
   const [repeatOption, setRepeatOption] = useState(9);
@@ -26,7 +27,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
   const [msgObj, setMsgObj] = useState([]);
 
   useEffect(() => {
-    if (shape.userValues) {
+    if (shape.userValues?.messageList) {
       let { params, messageList } = shape.userValues;
       setInterruptible(params.interruptible);
       setRepeatOption(params.repeatOption);
@@ -74,7 +75,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
 
     switch (name) {
       case 'prompt':
-        let promptRegex = /^[a-zA-Z]+(-[a-z]+)+$/g;
+        let promptRegex = /^[a-zA-z][a-zA-Z0-9]+(-[a-z0-9]+)+$/;
 
         if (value == '' || value == null) {
           messages.push('Prompt is required');
@@ -98,7 +99,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
         break;
 
       case 'amount':
-        let amountRegex = /^\d+$/;
+        let amountRegex = /^\d+\.?\d+$/;
         if (value == '' || value == null) {
           messages.push('amount is required');
           e.target.style.backgroundColor = '#ffebee';
@@ -109,23 +110,12 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
         break;
 
       case 'ordinal':
-        let ordinalRegex = /^\d+$/;
+        let ordinalRegex = /^\d{1,2}$/;
         if (value == '' || value == null) {
           messages.push('ordinal is required');
           e.target.style.backgroundColor = '#ffebee';
         } else if (!ordinalRegex.test(value)) {
-          messages.push('ordinal not in valid format');
-          e.target.style.backgroundColor = '#ffebee';
-        }
-        break;
-
-      case 'currency':
-        let currencyRegex = /^[a-zA-z]{3}$/;
-        if (value == '' || value == null) {
-          messages.push('currency is required');
-          e.target.style.backgroundColor = '#ffebee';
-        } else if (!currencyRegex.test(value)) {
-          messages.push('currency not in valid format');
+          messages.push('ordinal not in valid format. (0-99)');
           e.target.style.backgroundColor = '#ffebee';
         }
         break;
@@ -142,7 +132,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
         break;
 
       case 'date':
-        let dateRegex = /^\d{8}$/;
+        let dateRegex =
+          /^(1[3-5]|19|2[0-1])\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/;
         if (value == '' || value == null) {
           messages.push('date is required');
           e.target.style.backgroundColor = '#ffebee';
@@ -175,6 +166,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
   }
 
   function saveUserValues() {
+    shape.setText(shapeName);
     shape.setUserValues({
       params: { interruptible, repeatOption },
       messageList: msgObj,
@@ -270,20 +262,23 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
                 handleInputValidation(e);
               }}
             />
-            <Typography sx={{ marginLeft: 4 }} variant='body1'>
+            <Typography sx={{ marginX: 2, marginLeft: 4 }} variant='body1'>
               currency:
             </Typography>
-            <TextField
-              sx={{ maxWidth: 100, marginX: 2 }}
-              variant='outlined'
+            <Select
               size='small'
               name='currency'
               defaultValue={msgObj[key]?.currency || 'SAR'}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
-                handleInputValidation(e);
               }}
-            />
+            >
+              <MenuItem value='SAR'>SAR</MenuItem>
+              <MenuItem value='USD'>USD</MenuItem>
+              <MenuItem value='CAD'>CAD</MenuItem>
+              <MenuItem value='GBP'>GBP</MenuItem>
+              <MenuItem value='AUD'>AUD</MenuItem>
+            </Select>
           </ListItem>
         );
 
@@ -528,6 +523,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
           onChange={(e) => {
             setShapeName(e.target.value);
           }}
+          onBlur={saveUserValues}
         />
       </ListItem>
       <ListItem>

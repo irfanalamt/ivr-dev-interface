@@ -48,6 +48,7 @@ const GetDigits = ({ shape }) => {
           onChange={(e) => {
             setShapeName(e.target.value);
           }}
+          onBlur={saveUserValues}
         />
       </ListItem>
       <ListItem>
