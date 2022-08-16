@@ -29,10 +29,11 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
       let { params, messageList } = shape.userValues;
       setInterruptible(params.interruptible);
       setRepeatOption(params.repeatOption);
+      setInputList([]);
       setMsgObj(messageList);
       console.log('ue 1');
     }
-  }, []);
+  }, [tabValue]);
 
   function fillInputFields() {
     if (msgObj.length > inputList.length) {
@@ -43,7 +44,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
       else if (curValue.amount) addNewInput('amount');
       else if (curValue.date) addNewInput('date');
       else if (curValue.day) addNewInput('day');
-      else if (curValue.digit) addNewInput('digit');
+      else if (curValue.digit) addNewInput('digits');
       else if (curValue.month) addNewInput('month');
       else if (curValue.time) addNewInput('time');
     }
@@ -55,8 +56,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
 
     setMsgObj((prevObj) => {
       let tempMsgObj = [...prevObj];
-      tempMsgObj[key] = {
-        ...tempMsgObj[key],
+      tempMsgObj[inputList.length] = {
+        ...tempMsgObj[inputList.length],
         [name]: value,
       };
       return tempMsgObj;
@@ -96,7 +97,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               variant='outlined'
               fullWidth
               name='prompt'
-              value={msgObj[key]?.prompt}
+              defaultValue={msgObj[key]?.prompt}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -117,7 +118,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               size='small'
               sx={{ maxWidth: 100 }}
               name='ordinal'
-              value={msgObj[key]?.ordinal}
+              defaultValue={msgObj[key]?.ordinal}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -138,7 +139,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               size='small'
               sx={{ maxWidth: 100 }}
               name='number'
-              value={msgObj[key]?.number}
+              defaultValue={msgObj[key]?.number}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -159,7 +160,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               size='small'
               sx={{ maxWidth: 100 }}
               name='amount'
-              value={msgObj[key]?.amount}
+              defaultValue={msgObj[key]?.amount}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -170,10 +171,9 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
             <TextField
               sx={{ maxWidth: 100, marginX: 2 }}
               variant='outlined'
-              defaultValue='SAR'
               size='small'
               name='currency'
-              value={msgObj[key]?.currency}
+              defaultValue={msgObj[key]?.currency || 'SAR'}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -196,7 +196,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               variant='outlined'
               size='small'
               name='date'
-              value={msgObj[key]?.date}
+              defaultValue={msgObj[key]?.date}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -205,10 +205,9 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               playYear:
             </Typography>
             <RadioGroup
-              defaultValue={false}
               row
               name='playYear'
-              value={msgObj[key]?.playYear}
+              defaultValue={msgObj[key]?.playYear || false}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -239,10 +238,9 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
             </Typography>
             <Select
               placeholder='day'
-              defaultValue='mon'
               size='small'
               name='day'
-              value={msgObj[key]?.day}
+              defaultValue={msgObj[key]?.day || 'mon'}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -271,7 +269,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               sx={{ maxWidth: 100 }}
               size='small'
               name='digit'
-              value={msgObj[key]?.digit}
+              defaultValue={msgObj[key]?.digit}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -289,10 +287,9 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               month:
             </Typography>
             <Select
-              defaultValue={1}
               size='small'
               name='month'
-              value={msgObj[key]?.month}
+              defaultValue={msgObj[key]?.month || 1}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -314,10 +311,9 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               isHijri:
             </Typography>
             <RadioGroup
-              defaultValue={false}
               row
               name='isHijri'
-              value={msgObj[key]?.isHijri}
+              defaultValue={msgObj[key]?.isHijri || false}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -351,7 +347,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               placeholder='hhmm'
               size='small'
               name='time'
-              value={msgObj[key]?.time}
+              defaultValue={msgObj[key]?.time}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -360,10 +356,9 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               is24:
             </Typography>
             <RadioGroup
-              defaultValue={false}
               row
               name='is24'
-              value={msgObj[key]?.is24}
+              defaultValue={msgObj[key]?.is24 || false}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
@@ -433,7 +428,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
           onChange={handleTabChange}
         >
           <Tab label='Message List' />
-          <Tab label='Parameters' />
+          <Tab onClick={saveUserValues} label='Parameters' />
         </Tabs>
       </ListItem>
       {tabValue == '0' && (
