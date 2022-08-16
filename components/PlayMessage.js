@@ -165,8 +165,10 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
     }
 
     if (messages.length > 0) {
+      errorBox.style.visibility = 'visible';
       errorBox.innerText = messages.join('.  ');
     } else {
+      errorBox.style.visibility = 'hidden';
       e.target.style.backgroundColor = '#f1f8e9';
       errorBox.innerText = '';
     }
@@ -199,8 +201,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={msgObj[key]?.prompt}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
+                handleInputValidation(e);
               }}
-              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -221,8 +223,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={msgObj[key]?.ordinal}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
+                handleInputValidation(e);
               }}
-              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -243,8 +245,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={msgObj[key]?.number}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
+                handleInputValidation(e);
               }}
-              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -265,8 +267,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={msgObj[key]?.amount}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
+                handleInputValidation(e);
               }}
-              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginLeft: 4 }} variant='body1'>
               currency:
@@ -279,8 +281,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={msgObj[key]?.currency || 'SAR'}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
+                handleInputValidation(e);
               }}
-              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -303,8 +305,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={msgObj[key]?.date}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
+                handleInputValidation(e);
               }}
-              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               playYear:
@@ -377,8 +379,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={msgObj[key]?.digit}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
+                handleInputValidation(e);
               }}
-              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -456,8 +458,8 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               defaultValue={msgObj[key]?.time}
               onChange={(e) => {
                 handleMsgObjChange(e, key);
+                handleInputValidation(e);
               }}
-              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               is24:
@@ -577,7 +579,12 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
           <List>{inputList}</List>
           <Container sx={{ textAlign: 'center' }}>
             <Typography
-              sx={{ color: '#e53935' }}
+              sx={{
+                color: '#e53935',
+                paddingX: 2,
+                boxShadow: 2,
+                visibility: 'hidden',
+              }}
               id='error-box'
               variant='button'
             ></Typography>

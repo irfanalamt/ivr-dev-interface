@@ -18,6 +18,7 @@ import Drawer from '@mui/material/Drawer';
 import { useEffect, useState } from 'react';
 
 import PlayMessage from './PlayMessage';
+import GetDigits from './Getdigits';
 
 const DrawerComponent = ({
   isOpen,
@@ -39,6 +40,8 @@ const DrawerComponent = ({
           shape={shape}
         />
       );
+    } else if (shape?.type == 'parallelogram') {
+      return <GetDigits shape={shape} />;
     } else {
       return (
         <List>
@@ -58,7 +61,7 @@ const DrawerComponent = ({
         anchor='right'
         open={isOpen}
         onClose={() => {
-          shape.setText(shapeName);
+          // shape.setText(shapeName);
           shape.setSelected(false);
           handleCloseDrawer();
         }}
