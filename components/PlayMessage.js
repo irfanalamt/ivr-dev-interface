@@ -15,6 +15,7 @@ import {
 import { useEffect, useState } from 'react';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import { Container } from '@mui/system';
 
 const PlayMessage = ({ shapeName, setShapeName, shape }) => {
   const [tabValue, setTabValue] = useState(0);
@@ -64,15 +65,112 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
     });
   }
 
-  // function handleMsgObjChange(e, key) {
-  //   const { value, name } = e.target;
-  //   console.log('name:', name, 'key', key);
-  //   console.log(msgObj);
+  function handleInputValidation(e) {
+    e.preventDefault();
+    let { name, value } = e.target;
+    let messages = [];
+    let errorBox = document.getElementById('error-box');
+    console.log('onblur name', name);
 
-  //   setMsgObj((prevObj) => {
-  //     return { ...prevObj, [key]: { value: value, name: name } };
-  //   });
-  // }
+    switch (name) {
+      case 'prompt':
+        let promptRegex = /^[a-zA-Z]+(-[a-z]+)+$/g;
+
+        if (value == '' || value == null) {
+          messages.push('Prompt is required');
+          e.target.style.backgroundColor = '#ffebee';
+        } else if (!promptRegex.test(value)) {
+          messages.push('prompt not in valid format');
+          e.target.style.backgroundColor = '#ffebee';
+        }
+        break;
+
+      case 'number':
+        let numberRegex = /^\d+$/;
+
+        if (value == '' || value == null) {
+          messages.push('number is required');
+          e.target.style.backgroundColor = '#ffebee';
+        } else if (!numberRegex.test(value)) {
+          messages.push('number not in valid format');
+          e.target.style.backgroundColor = '#ffebee';
+        }
+        break;
+
+      case 'amount':
+        let amountRegex = /^\d+$/;
+        if (value == '' || value == null) {
+          messages.push('amount is required');
+          e.target.style.backgroundColor = '#ffebee';
+        } else if (!amountRegex.test(value)) {
+          messages.push('amount not in valid format');
+          e.target.style.backgroundColor = '#ffebee';
+        }
+        break;
+
+      case 'ordinal':
+        let ordinalRegex = /^\d+$/;
+        if (value == '' || value == null) {
+          messages.push('ordinal is required');
+          e.target.style.backgroundColor = '#ffebee';
+        } else if (!ordinalRegex.test(value)) {
+          messages.push('ordinal not in valid format');
+          e.target.style.backgroundColor = '#ffebee';
+        }
+        break;
+
+      case 'currency':
+        let currencyRegex = /^[a-zA-z]{3}$/;
+        if (value == '' || value == null) {
+          messages.push('currency is required');
+          e.target.style.backgroundColor = '#ffebee';
+        } else if (!currencyRegex.test(value)) {
+          messages.push('currency not in valid format');
+          e.target.style.backgroundColor = '#ffebee';
+        }
+        break;
+
+      case 'digit':
+        let digitRegex = /^\d+$/;
+        if (value == '' || value == null) {
+          messages.push('digit is required');
+          e.target.style.backgroundColor = '#ffebee';
+        } else if (!digitRegex.test(value)) {
+          messages.push('digit not in valid format');
+          e.target.style.backgroundColor = '#ffebee';
+        }
+        break;
+
+      case 'date':
+        let dateRegex = /^\d{8}$/;
+        if (value == '' || value == null) {
+          messages.push('date is required');
+          e.target.style.backgroundColor = '#ffebee';
+        } else if (!dateRegex.test(value)) {
+          messages.push('date not in valid format');
+          e.target.style.backgroundColor = '#ffebee';
+        }
+        break;
+
+      case 'time':
+        let timeRegex = /^([0-1]?[0-9]|2[0-3])[0-5][0-9]$/;
+        if (value == '' || value == null) {
+          messages.push('time is required');
+          e.target.style.backgroundColor = '#ffebee';
+        } else if (!timeRegex.test(value)) {
+          messages.push('time not in valid format');
+          e.target.style.backgroundColor = '#ffebee';
+        }
+        break;
+    }
+
+    if (messages.length > 0) {
+      errorBox.innerText = messages.join('.  ');
+    } else {
+      e.target.style.backgroundColor = '#f1f8e9';
+      errorBox.innerText = '';
+    }
+  }
 
   function saveUserValues() {
     shape.setUserValues({
@@ -85,6 +183,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
 
   function addNewInput(objType) {
     const key = inputList.length;
+
     switch (objType) {
       case 'prompt':
         const promptCode = (
@@ -101,6 +200,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -122,6 +222,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -143,6 +244,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -164,6 +266,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
+              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginLeft: 4 }} variant='body1'>
               currency:
@@ -177,6 +280,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -200,6 +304,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
+              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               playYear:
@@ -273,6 +378,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -351,6 +457,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
               onChange={(e) => {
                 handleMsgObjChange(e, key);
               }}
+              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               is24:
@@ -427,7 +534,7 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
           value={tabValue}
           onChange={handleTabChange}
         >
-          <Tab label='Message List' />
+          <Tab onClick={saveUserValues} label='Message List' />
           <Tab onClick={saveUserValues} label='Parameters' />
         </Tabs>
       </ListItem>
@@ -468,6 +575,13 @@ const PlayMessage = ({ shapeName, setShapeName, shape }) => {
           <pre>{JSON.stringify(msgObj, undefined, 2)}</pre>
           {fillInputFields()}
           <List>{inputList}</List>
+          <Container sx={{ textAlign: 'center' }}>
+            <Typography
+              sx={{ color: '#e53935' }}
+              id='error-box'
+              variant='button'
+            ></Typography>
+          </Container>
         </>
       )}
       {tabValue == '1' && (
