@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   FormControlLabel,
   List,
@@ -15,6 +16,7 @@ import {
 import { useEffect, useState } from 'react';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import { Container } from '@mui/system';
 
 const PlayMessage = ({ shape }) => {
@@ -40,15 +42,15 @@ const PlayMessage = ({ shape }) => {
   function fillInputFields() {
     if (msgObj.length > inputList.length) {
       let curValue = msgObj[inputList.length];
-      if (curValue.prompt) addNewInput('prompt');
-      else if (curValue.ordinal) addNewInput('ordinal');
-      else if (curValue.number) addNewInput('number');
-      else if (curValue.amount) addNewInput('amount');
-      else if (curValue.date) addNewInput('date');
-      else if (curValue.day) addNewInput('day');
-      else if (curValue.digit) addNewInput('digits');
-      else if (curValue.month) addNewInput('month');
-      else if (curValue.time) addNewInput('time');
+      if (curValue?.prompt) addNewInput('prompt');
+      else if (curValue?.ordinal) addNewInput('ordinal');
+      else if (curValue?.number) addNewInput('number');
+      else if (curValue?.amount) addNewInput('amount');
+      else if (curValue?.date) addNewInput('date');
+      else if (curValue?.day) addNewInput('day');
+      else if (curValue?.digit) addNewInput('digits');
+      else if (curValue?.month) addNewInput('month');
+      else if (curValue?.time) addNewInput('time');
     }
   }
 
@@ -558,17 +560,38 @@ const PlayMessage = ({ shape }) => {
               <MenuItem value='month'>Month</MenuItem>
               <MenuItem value='time'>Time</MenuItem>
             </Select>
-            <Button
-              sx={{ maxWidth: 150, marginX: 'auto' }}
-              color='success'
-              variant='outlined'
-              onClick={() => {
-                addNewInput(msgObjType);
-              }}
-            >
-              ADD NEW
-              <AddBoxRoundedIcon />
-            </Button>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Button
+                sx={{ maxWidth: 150, marginX: 'auto', marginY: 2 }}
+                color='success'
+                variant='outlined'
+                onClick={() => {
+                  addNewInput(msgObjType);
+                }}
+              >
+                ADD NEW
+                <AddBoxRoundedIcon sx={{ marginLeft: 1 }} />
+              </Button>
+              <Button
+                variant='outlined'
+                color='error'
+                onClick={() => {
+                  if (inputList.length > 0) {
+                    let tempInputList = [...inputList];
+                    tempInputList.pop();
+                    setInputList(tempInputList);
+                    if (msgObj[inputList.length - 1]) {
+                      let tempMsgObj = [...msgObj];
+                      tempMsgObj.pop();
+                      setMsgObj(tempMsgObj);
+                    }
+                  }
+                }}
+              >
+                Remove
+                <RemoveCircleRoundedIcon sx={{ marginLeft: 1 }} />
+              </Button>
+            </Box>
           </ListItem>
           <pre>{JSON.stringify(msgObj, undefined, 2)}</pre>
           {fillInputFields()}
