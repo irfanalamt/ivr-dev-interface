@@ -73,7 +73,6 @@ const PlayMessage = ({ shape }) => {
     let { name, value } = e.target;
     let messages = [];
     let errorBox = document.getElementById('error-box');
-    console.log('onblur name', name);
 
     switch (name) {
       case 'prompt':
@@ -135,7 +134,7 @@ const PlayMessage = ({ shape }) => {
 
       case 'date':
         let dateRegex =
-          /^(1[3-5]|19|2[0-1])\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/;
+          /^(1[3-4]|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/;
         if (value == '' || value == null) {
           messages.push('date is required');
           e.target.style.backgroundColor = '#ffebee';
