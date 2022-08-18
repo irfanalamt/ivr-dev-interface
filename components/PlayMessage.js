@@ -576,19 +576,19 @@ const PlayMessage = ({ shape }) => {
               <MenuItem value='month'>Month</MenuItem>
               <MenuItem value='time'>Time</MenuItem>
             </Select>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{ display: 'flex' }}>
               <Button
-                sx={{ maxWidth: 150, marginX: 'auto', marginY: 2 }}
+                sx={{ marginX: 1, marginY: 2, width: 50 }}
                 color='success'
                 variant='outlined'
                 onClick={() => {
                   addNewInput(msgObjType);
                 }}
               >
-                ADD NEW
-                <AddBoxRoundedIcon sx={{ marginLeft: 1 }} />
+                <AddBoxRoundedIcon sx={{ marginX: 1 }} />
               </Button>
               <Button
+                sx={{ marginY: 2, width: 50 }}
                 variant='outlined'
                 color='error'
                 onClick={() => {
@@ -604,8 +604,7 @@ const PlayMessage = ({ shape }) => {
                   }
                 }}
               >
-                Remove
-                <RemoveCircleRoundedIcon sx={{ marginLeft: 1 }} />
+                <RemoveCircleRoundedIcon sx={{ marginX: 1 }} />
               </Button>
             </Box>
           </ListItem>
