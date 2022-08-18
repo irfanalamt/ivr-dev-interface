@@ -17,7 +17,7 @@ import {
 import Drawer from '@mui/material/Drawer';
 import { useEffect, useState } from 'react';
 
-import PlayMessage from './PlayMessage';
+import PlayMessage2 from './PlayMessage2';
 import GetDigits from './Getdigits';
 
 const DrawerComponent = ({
@@ -32,7 +32,9 @@ const DrawerComponent = ({
 
   const myList = () => {
     if (shape?.type == 'roundedRectangle') {
-      return <PlayMessage shape={shape} />;
+      return (
+        <PlayMessage2 shape={shape} handleCloseDrawer={handleCloseDrawer} />
+      );
     } else if (shape?.type == 'parallelogram') {
       return <GetDigits shape={shape} />;
     } else {
@@ -53,11 +55,11 @@ const DrawerComponent = ({
       <Drawer
         anchor='right'
         open={isOpen}
-        onClose={() => {
-          // shape.setText(shapeName);
-          shape.setSelected(false);
-          handleCloseDrawer();
-        }}
+        // onClose={() => {
+
+        //   shape.setSelected(false);
+        //   handleCloseDrawer();
+        // }}
       >
         {myList()}
       </Drawer>
