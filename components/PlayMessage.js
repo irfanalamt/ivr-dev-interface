@@ -28,6 +28,8 @@ const PlayMessage = ({ shape }) => {
   const [msgObjType, setMsgObjType] = useState('prompt');
   const [msgObj, setMsgObj] = useState([]);
 
+  let isValid = false;
+
   useEffect(() => {
     if (shape.userValues?.messageList) {
       let { params, messageList } = shape.userValues;
@@ -73,10 +75,10 @@ const PlayMessage = ({ shape }) => {
     let { name, value } = e.target;
     let messages = [];
     let errorBox = document.getElementById('error-box');
-
+    console.log('ip validation,e.target', e.type);
     switch (name) {
       case 'prompt':
-        let promptRegex = /^[a-zA-z][a-zA-Z0-9]+(-[a-z0-9]+)+$/;
+        let promptRegex = /^[a-zA-z][a-zA-Z0-9]+(-?[a-z0-9]+)+$/;
 
         if (value == '' || value == null) {
           messages.push('Prompt is required');
@@ -159,10 +161,18 @@ const PlayMessage = ({ shape }) => {
     if (messages.length > 0) {
       errorBox.style.visibility = 'visible';
       errorBox.innerText = messages.join('.  ');
+      isValid = false;
     } else {
       errorBox.style.visibility = 'hidden';
       e.target.style.backgroundColor = '#f1f8e9';
       errorBox.innerText = '';
+      isValid = true;
+    }
+    if (e.type == 'blur') {
+      if (!isValid) {
+        e.target.value = '';
+        handleMsgObjChange(e);
+      }
     }
   }
 
@@ -196,6 +206,7 @@ const PlayMessage = ({ shape }) => {
                 handleMsgObjChange(e, key);
                 handleInputValidation(e);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -218,6 +229,7 @@ const PlayMessage = ({ shape }) => {
                 handleMsgObjChange(e, key);
                 handleInputValidation(e);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -240,6 +252,7 @@ const PlayMessage = ({ shape }) => {
                 handleMsgObjChange(e, key);
                 handleInputValidation(e);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -262,6 +275,7 @@ const PlayMessage = ({ shape }) => {
                 handleMsgObjChange(e, key);
                 handleInputValidation(e);
               }}
+              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginX: 2, marginLeft: 4 }} variant='body1'>
               currency:
@@ -303,6 +317,7 @@ const PlayMessage = ({ shape }) => {
                 handleMsgObjChange(e, key);
                 handleInputValidation(e);
               }}
+              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               playYear:
@@ -377,6 +392,7 @@ const PlayMessage = ({ shape }) => {
                 handleMsgObjChange(e, key);
                 handleInputValidation(e);
               }}
+              onBlur={handleInputValidation}
             />
           </ListItem>
         );
@@ -456,6 +472,7 @@ const PlayMessage = ({ shape }) => {
                 handleMsgObjChange(e, key);
                 handleInputValidation(e);
               }}
+              onBlur={handleInputValidation}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               is24:
