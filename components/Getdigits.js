@@ -37,6 +37,7 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
   const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
   const [inputList, setInputList] = useState([]);
   const [msgObjType, setMsgObjType] = useState('prompt');
+  const [paramsObjType, setParamsObjType] = useState('');
 
   useEffect(() => {
     let tabPanel1 = document.getElementById('tabPanel1');
@@ -549,7 +550,7 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
             }}
             variant='h6'
           >
-            GET DIGITS
+            Get Digits
           </Typography>
         </ListItem>
 
@@ -650,8 +651,6 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               />
             </Tooltip>
           </ListItem>
-
-          <pre>{JSON.stringify(msgObj, undefined, 2)}</pre>
           {fillInputFields()}
           <List>{inputList}</List>
           <ListItem>
@@ -668,10 +667,13 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
           </ListItem>
         </Box>
         <Box id='tabPanel2' sx={{ display: 'none' }}>
-          <ListItem sx={{ marginTop: 3 }}>
-            <Typography variant='h6'>minDigits:</Typography>
+          <ListItem sx={{ marginTop: 2 }}>
+            <Typography sx={{ fontSize: 18 }} variant='h6'>
+              minDigits:
+            </Typography>
             <Select
-              sx={{ marginX: 1 }}
+              size='small'
+              sx={{ marginX: 2 }}
               id='minDigits-select'
               value={minDigits}
               onChange={(e) => {
@@ -687,13 +689,26 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               <MenuItem value={7}>7</MenuItem>
               <MenuItem value={8}>8</MenuItem>
               <MenuItem value={9}>9</MenuItem>
-              <MenuItem value={9}>10</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={11}>11</MenuItem>
+              <MenuItem value={12}>12</MenuItem>
+              <MenuItem value={13}>13</MenuItem>
+              <MenuItem value={14}>14</MenuItem>
+              <MenuItem value={15}>15</MenuItem>
+              <MenuItem value={16}>16</MenuItem>
+              <MenuItem value={17}>17</MenuItem>
+              <MenuItem value={18}>18</MenuItem>
+              <MenuItem value={19}>19</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
             </Select>
           </ListItem>
-          <ListItem sx={{ marginTop: 3 }}>
-            <Typography variant='h6'>maxDigits:</Typography>
+          <ListItem sx={{ marginTop: 2 }}>
+            <Typography sx={{ fontSize: 18 }} variant='h6'>
+              maxDigits:
+            </Typography>
             <Select
-              sx={{ marginX: 1 }}
+              size='small'
+              sx={{ marginX: 2 }}
               id='maxDigits-select'
               value={maxDigits}
               onChange={(e) => {
@@ -709,8 +724,68 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               <MenuItem value={7}>7</MenuItem>
               <MenuItem value={8}>8</MenuItem>
               <MenuItem value={9}>9</MenuItem>
-              <MenuItem value={9}>10</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={11}>11</MenuItem>
+              <MenuItem value={12}>12</MenuItem>
+              <MenuItem value={13}>13</MenuItem>
+              <MenuItem value={14}>14</MenuItem>
+              <MenuItem value={15}>15</MenuItem>
+              <MenuItem value={16}>16</MenuItem>
+              <MenuItem value={17}>17</MenuItem>
+              <MenuItem value={18}>18</MenuItem>
+              <MenuItem value={19}>19</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
             </Select>
+          </ListItem>
+          <ListItem>
+            <Typography
+              sx={{
+                fontWeight: 410,
+                marginTop: 4,
+                borderBottom: 1,
+              }}
+              variant='subtitle1'
+            >
+              Optional Params
+            </Typography>
+          </ListItem>
+          <ListItem>
+            <Select
+              size='small'
+              sx={{ marginX: 2 }}
+              value={paramsObjType}
+              onChange={(e) => {
+                setParamsObjType(e.target.value);
+              }}
+            >
+              <MenuItem value='terminator'>terminator</MenuItem>
+            </Select>
+            <Tooltip title='Add'>
+              <AddBoxRoundedIcon
+                sx={{
+                  color: '#69f0ae',
+                  marginX: 0.5,
+                  border: '1.2px solid black',
+                  width: 25,
+                  height: 25,
+                  padding: 0.2,
+                  borderRadius: 1,
+                }}
+              />
+            </Tooltip>
+            <Tooltip title='Remove'>
+              <RemoveCircleRoundedIcon
+                sx={{
+                  color: '#ff5252',
+                  marginX: 0.5,
+                  border: '1.2px solid black',
+                  width: 25,
+                  height: 25,
+                  padding: 0.2,
+                  borderRadius: 1,
+                }}
+              />
+            </Tooltip>
           </ListItem>
         </Box>
       </List>

@@ -551,7 +551,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
             }}
             variant='h6'
           >
-            PLAY MESSAGE
+            Play Message
           </Typography>
         </ListItem>
 
@@ -671,7 +671,9 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
         </Box>
         <Box id='tabPanel2' sx={{ display: 'none' }}>
           <ListItem>
-            <Typography variant='h6'>interruptible:</Typography>
+            <Typography sx={{ fontSize: 18 }} variant='h6'>
+              interruptible:
+            </Typography>
             <RadioGroup
               value={interruptible}
               row
@@ -695,8 +697,11 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
             </RadioGroup>
           </ListItem>
           <ListItem sx={{ marginTop: 3 }}>
-            <Typography variant='h6'>repeatOption:</Typography>
+            <Typography sx={{ fontSize: 18 }} variant='h6'>
+              repeatOption:
+            </Typography>
             <Select
+              size='small'
               sx={{ marginX: 1 }}
               id='repeatOption-select'
               value={repeatOption}
