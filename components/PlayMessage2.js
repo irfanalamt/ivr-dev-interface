@@ -25,7 +25,8 @@ import { useEffect, useRef, useState } from 'react';
 
 const PlayMessage = ({ shape, handleCloseDrawer }) => {
   const [shapeName, setShapeName] = useState(shape.text);
-  const [alert, setAlert] = useState(false);
+  const [alertError, setAlertError] = useState(false);
+  const [alertSuccess, setAlertSuccess] = useState(false);
   const [tabValue, setTabValue] = useState(0);
   const [allErrors, setAllErrors] = useState({});
   const [interruptible, setInterruptible] = useState(
@@ -55,11 +56,12 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
   function saveUserValues() {
     console.log('Errors before saving:', Object.keys(allErrors).length);
     if (Object.keys(allErrors).length > 0) {
-      setAlert(true);
+      setAlertError(true);
       return;
     }
-    setAlert(false);
 
+    setAlertError(false);
+    setAlertSuccess(true);
     shape.setText(shapeName);
     shape.setUserValues({
       params: { interruptible, repeatOption },
@@ -703,20 +705,28 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
         </Box>
       </List>
 
-      {alert && (
-        <Snackbar
-          open={alert}
-          autoHideDuration={6000}
-          onClose={() => {
-            setAlert(false);
-          }}
-          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        >
-          <Alert severity='error'>
-            Save unsuccessfull. Some fields are invalid!
-          </Alert>
-        </Snackbar>
-      )}
+      <Snackbar
+        open={alertError}
+        autoHideDuration={6000}
+        onClose={() => {
+          setAlertError(false);
+        }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        <Alert severity='error'>
+          Save unsuccessfull. Some fields are invalid!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={alertSuccess}
+        autoHideDuration={6000}
+        onClose={() => {
+          setAlertSuccess(false);
+        }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+      >
+        <Alert severity='success'>Play Message saved!</Alert>
+      </Snackbar>
     </>
   );
 };
