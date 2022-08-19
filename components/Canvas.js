@@ -404,38 +404,40 @@ const CanvasComponent = ({ isExisting }) => {
         height={window.innerHeight}
         ref={bgRef}
       ></canvas>
-      <Button
+      <Box
         sx={{
-          marginX: 'auto',
-          position: 'fixed',
-          textAlign: 'center',
-          maxWidth: 200,
-          left: 450,
-          bottom: 20,
-          zIndex: 5,
+          position: 'absolute',
+          bottom: 10,
+          left: 0,
+          right: 0,
         }}
-        variant='contained'
-        onClick={handleSaveState}
       >
-        Save state <SaveAltRoundedIcon sx={{ marginLeft: 1 }} />
-      </Button>
-      <Button
-        onClick={handleReset}
-        sx={{
-          marginX: 'auto',
-          position: 'fixed',
-          textAlign: 'center',
-          maxWidth: 200,
-          right: 450,
-          bottom: 20,
-          zIndex: 5,
-        }}
-        variant='contained'
-      >
-        RESET
-        <RestartAltRoundedIcon sx={{ marginLeft: 1 }} />
-      </Button>
-
+        <Button
+          sx={{
+            position: 'relative',
+            width: 150,
+            zIndex: 5,
+            right: 50,
+          }}
+          variant='contained'
+          onClick={handleSaveState}
+        >
+          Save state <SaveAltRoundedIcon sx={{ marginLeft: 1 }} />
+        </Button>
+        <Button
+          onClick={handleReset}
+          sx={{
+            position: 'relative',
+            width: 150,
+            zIndex: 5,
+            left: 50,
+          }}
+          variant='contained'
+        >
+          RESET
+          <RestartAltRoundedIcon sx={{ marginLeft: 1 }} />
+        </Button>
+      </Box>
       {isOpen && (
         <DrawerComponent
           isOpen={isOpen}
