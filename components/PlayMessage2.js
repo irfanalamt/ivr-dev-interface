@@ -54,12 +54,14 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
   }, [tabValue]);
 
   function saveUserValues() {
+    //If errrors present, setAlertError;return
     console.log('Errors before saving:', Object.keys(allErrors).length);
     if (Object.keys(allErrors).length > 0) {
       setAlertError(true);
       return;
     }
 
+    //else, save current state to shape
     setAlertError(false);
     setAlertSuccess(true);
     shape.setText(shapeName);
@@ -83,6 +85,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
       setAllErrors({ ...allErrors, name: true });
       return;
     }
+    //if regex match ,then delete error from allErrors
     setAllErrors((obj) => {
       delete obj.name;
       return obj;
@@ -92,6 +95,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
     errorBox.innerText = '';
   }
   function handleMsgObjChange(e) {
+    // update msgObj when inputList value changes; handle validation
     const { value, name } = e.target;
 
     setMsgObj((prevObj) => {
@@ -105,6 +109,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
     handleInputValidation(e);
   }
   function fillInputFields() {
+    // When loading from saved msgObj, we update our inputList accordingly
     if (msgObj.length > inputList.length) {
       let curValue = msgObj[inputList.length];
       if (curValue?.prompt) addNewInput('prompt');
@@ -119,6 +124,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
     }
   }
   function handleInputValidation(e) {
+    // validation conditions for all input fields
     let { name, value } = e.target;
     let messages = [];
     let errorBox = document.getElementById('error-box');
@@ -211,6 +217,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
       errorBox.innerText = messages.join('.  ');
       return;
     }
+    // no errors condition
     setAllErrors((obj) => {
       delete obj[inputList.length];
       return obj;
@@ -221,6 +228,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
   }
 
   function addNewInput(objType) {
+    // add input fields to msgList
     const key = inputList.length;
 
     switch (objType) {
@@ -684,7 +692,6 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
             <Select
               sx={{ marginX: 1 }}
               id='repeatOption-select'
-              label='0-9'
               value={repeatOption}
               onChange={(e) => {
                 setRepeatOption(e.target.value);
