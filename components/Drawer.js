@@ -36,17 +36,21 @@ const DrawerComponent = ({
         <PlayMessage2 shape={shape} handleCloseDrawer={handleCloseDrawer} />
       );
     } else if (shape?.type == 'parallelogram') {
-      return <GetDigits shape={shape} />;
+      return <GetDigits shape={shape} handleCloseDrawer={handleCloseDrawer} />;
     } else {
       return (
-        <List>
-          <ListItem>
-            <Typography variant='h5'> not playMessage</Typography>
-          </ListItem>
-          <ListItem>
-            <Typography variant='h5'> Work in progress ⚒️⚒️🏗️</Typography>
-          </ListItem>
-        </List>
+        <>
+          <Typography sx={{ marginY: 3 }} variant='h5'>
+            Under Construction 🏗️
+          </Typography>
+          <Button
+            variant='contained'
+            sx={{ width: 200, position: 'relative', top: 200, marginX: 'auto' }}
+            onClick={handleCloseDrawer}
+          >
+            Close
+          </Button>
+        </>
       );
     }
   };
@@ -56,8 +60,6 @@ const DrawerComponent = ({
         anchor='right'
         open={isOpen}
         // onClose={() => {
-
-        //   shape.setSelected(false);
         //   handleCloseDrawer();
         // }}
       >
