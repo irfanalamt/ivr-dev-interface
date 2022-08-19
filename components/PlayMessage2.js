@@ -610,24 +610,33 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               <MenuItem value='time'>Time</MenuItem>
             </Select>
             <Tooltip title='Add'>
-              <Button
-                sx={{ marginX: 0.5 }}
-                size='small'
-                color='inherit'
-                variant='outlined'
+              <AddBoxRoundedIcon
+                sx={{
+                  color: '#69f0ae',
+                  marginX: 0.5,
+                  border: '1.2px solid black',
+                  width: 30,
+                  height: 30,
+                  padding: 0.2,
+                  borderRadius: 1,
+                }}
                 onClick={() => {
                   addNewInput(msgObjType);
                   setMsgObjType('prompt');
                 }}
-              >
-                <AddBoxRoundedIcon sx={{ color: '#ff5252' }} />
-              </Button>
+              />
             </Tooltip>
             <Tooltip title='Remove'>
-              <Button
-                size='small'
-                color='inherit'
-                variant='outlined'
+              <RemoveCircleRoundedIcon
+                sx={{
+                  color: '#ff5252',
+                  marginX: 0.5,
+                  border: '1.2px solid black',
+                  width: 30,
+                  height: 30,
+                  padding: 0.2,
+                  borderRadius: 1,
+                }}
                 onClick={() => {
                   if (inputList.length > 0) {
                     let tempObj = [...inputList];
@@ -640,9 +649,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
                     }
                   }
                 }}
-              >
-                <RemoveCircleRoundedIcon sx={{ color: '#69f0ae' }} />
-              </Button>
+              />
             </Tooltip>
           </ListItem>
 
