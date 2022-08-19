@@ -29,6 +29,7 @@ class Shape {
   setUserValues(userValues) {
     this.userValues = { ...userValues };
   }
+
   fillSelected(ctx) {
     ctx.fillStyle = '#eceff1';
     ctx.fill();
