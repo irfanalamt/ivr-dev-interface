@@ -38,6 +38,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
   const [inputList, setInputList] = useState([]);
   const [msgObjType, setMsgObjType] = useState('prompt');
   const [paramsObjType, setParamsObjType] = useState('');
+  const [paramsInputList, setParamsInputList] = useState([]);
+  const [paramsObj, setParamsObj] = useState(
+    shape.userValues?.params.paramsList || []
+  );
 
   useEffect(() => {
     let tabPanel1 = document.getElementById('tabPanel1');
@@ -66,7 +70,7 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
     setAlertSuccess(true);
     shape.setText(shapeName);
     shape.setUserValues({
-      params: { minDigits, maxDigits },
+      params: { minDigits, maxDigits, paramsList: paramsObj },
       messageList: msgObj,
     });
 
@@ -107,6 +111,20 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
     });
     handleInputValidation(e);
   }
+
+  function handleParamsObjChange(e) {
+    // update paramsObj when paramsList value changes
+    const { value, name } = e.target;
+    setParamsObj((prevObj) => {
+      let tempParamsObj = [...prevObj];
+      tempParamsObj[paramsInputList.length] = {
+        ...tempParamsObj[paramsInputList.length],
+        [name]: value,
+      };
+      return tempParamsObj;
+    });
+  }
+
   function fillInputFields() {
     // When loading from saved msgObj, we update our inputList accordingly
     if (msgObj.length > inputList.length) {
@@ -122,6 +140,15 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
       else if (curValue?.time) addNewInput('time');
     }
   }
+
+  function fillParamsList() {
+    // when loading from saved paramsObj; we update paramsList accordingly
+    if (paramsObj.length > paramsInputList.length) {
+      let curValue = paramsObj[paramsInputList.length];
+      if (curValue?.terminator) addNewParams('terminator');
+    }
+  }
+
   function handleInputValidation(e) {
     // validation conditions for all input fields
     let { name, value } = e.target;
@@ -507,6 +534,42 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
     }
   }
 
+  function addNewParams(paramsType) {
+    const key = paramsInputList.length;
+
+    switch (paramsType) {
+      case 'terminator':
+        const terminatorCode = (
+          <ListItem sx={{ marginTop: 1 }} key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              terminator:
+            </Typography>
+            <Select
+              size='small'
+              name='terminator'
+              defaultValue={paramsObj[key]?.terminator}
+              onChange={handleParamsObjChange}
+              autoFocus
+            >
+              <MenuItem value='#'>#</MenuItem>
+              <MenuItem value='*'>*</MenuItem>
+              <MenuItem value='1'>1</MenuItem>
+              <MenuItem value='2'>2</MenuItem>
+              <MenuItem value='3'>3</MenuItem>
+              <MenuItem value='4'>4</MenuItem>
+              <MenuItem value='5'>5</MenuItem>
+              <MenuItem value='6'>6</MenuItem>
+              <MenuItem value='7'>7</MenuItem>
+              <MenuItem value='8'>8</MenuItem>
+              <MenuItem value='9'>9</MenuItem>
+            </Select>
+          </ListItem>
+        );
+        setParamsInputList([...paramsInputList, terminatorCode]);
+        break;
+    }
+  }
+
   return (
     <>
       <List>
@@ -737,6 +800,7 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               <MenuItem value={20}>20</MenuItem>
             </Select>
           </ListItem>
+          <pre>{JSON.stringify(paramsObj, undefined, 2)}</pre>
           <ListItem>
             <Typography
               sx={{
@@ -764,12 +828,16 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               <AddBoxRoundedIcon
                 sx={{
                   color: '#69f0ae',
-                  marginX: 0.5,
+                  marginLeft: 'auto',
+                  marginRight: 0.5,
                   border: '1.2px solid black',
                   width: 25,
                   height: 25,
                   padding: 0.2,
                   borderRadius: 1,
+                }}
+                onClick={() => {
+                  addNewParams(paramsObjType);
                 }}
               />
             </Tooltip>
@@ -777,16 +845,31 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               <RemoveCircleRoundedIcon
                 sx={{
                   color: '#ff5252',
-                  marginX: 0.5,
+                  marginLeft: 0.5,
+                  marginRight: 2,
                   border: '1.2px solid black',
                   width: 25,
                   height: 25,
                   padding: 0.2,
                   borderRadius: 1,
                 }}
+                onClick={() => {
+                  if (paramsInputList.length > 0) {
+                    let tempObj = [...paramsInputList];
+                    tempObj.pop();
+                    setParamsInputList(tempObj);
+                    if (paramsObj[paramsInputList.length - 1]) {
+                      let tempParamsObj = [...paramsObj];
+                      tempParamsObj.pop();
+                      setParamsObj(tempParamsObj);
+                    }
+                  }
+                }}
               />
             </Tooltip>
           </ListItem>
+          {fillParamsList()}
+          {paramsInputList}
         </Box>
       </List>
       <Snackbar
