@@ -106,7 +106,6 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
       };
       return tempMsgObj;
     });
-    handleInputValidation(e);
   }
   function fillInputFields() {
     // When loading from saved msgObj, we update our inputList accordingly
@@ -125,6 +124,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
   }
   function handleInputValidation(e) {
     // validation conditions for all input fields
+    console.log('handlevalidation e.target', e.target);
     let { name, value } = e.target;
     let messages = [];
     let errorBox = document.getElementById('error-box');
@@ -244,7 +244,10 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               fullWidth
               name='prompt'
               defaultValue={msgObj[key]?.prompt}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
           </ListItem>
         );
@@ -263,7 +266,10 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               sx={{ maxWidth: 100 }}
               name='ordinal'
               defaultValue={msgObj[key]?.ordinal}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
           </ListItem>
         );
@@ -282,7 +288,10 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               sx={{ maxWidth: 100 }}
               name='number'
               defaultValue={msgObj[key]?.number}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
           </ListItem>
         );
@@ -301,7 +310,10 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               sx={{ maxWidth: 100 }}
               name='amount'
               defaultValue={msgObj[key]?.amount}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
             <Typography sx={{ marginX: 2, marginLeft: 4 }} variant='body1'>
               currency:
@@ -310,7 +322,9 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='currency'
               defaultValue={msgObj[key]?.currency || 'SAR'}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+              }}
             >
               <MenuItem value='SAR'>SAR</MenuItem>
               <MenuItem value='USD'>USD</MenuItem>
@@ -337,7 +351,10 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='date'
               defaultValue={msgObj[key]?.date}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               playYear:
@@ -346,7 +363,9 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               row
               name='playYear'
               defaultValue={msgObj[key]?.playYear || false}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+              }}
             >
               <FormControlLabel
                 sx={{ marginLeft: 1 }}
@@ -377,7 +396,9 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='day'
               defaultValue={msgObj[key]?.day || ''}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+              }}
             >
               <MenuItem value='mon'>Monday</MenuItem>
               <MenuItem value='tue'>Tuesday</MenuItem>
@@ -404,7 +425,10 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='digit'
               defaultValue={msgObj[key]?.digit}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
           </ListItem>
         );
@@ -422,7 +446,9 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='month'
               defaultValue={msgObj[key]?.month || ''}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+              }}
             >
               <MenuItem value={1}>January</MenuItem>
               <MenuItem value={2}>February</MenuItem>
@@ -445,7 +471,9 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               name='isHijri'
               value={msgObj[key]?.isHijri}
               defaultValue={false}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+              }}
             >
               <FormControlLabel
                 sx={{ marginLeft: 1 }}
@@ -477,7 +505,10 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='time'
               defaultValue={msgObj[key]?.time}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               is24:

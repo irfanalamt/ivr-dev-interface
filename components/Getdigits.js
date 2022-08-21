@@ -109,7 +109,6 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
       };
       return tempMsgObj;
     });
-    handleInputValidation(e);
   }
 
   function handleParamsObjChange(e) {
@@ -270,7 +269,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               fullWidth
               name='prompt'
               defaultValue={msgObj[key]?.prompt}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
           </ListItem>
         );
@@ -289,7 +291,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               sx={{ maxWidth: 100 }}
               name='ordinal'
               defaultValue={msgObj[key]?.ordinal}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
           </ListItem>
         );
@@ -308,7 +313,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               sx={{ maxWidth: 100 }}
               name='number'
               defaultValue={msgObj[key]?.number}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
           </ListItem>
         );
@@ -327,7 +335,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               sx={{ maxWidth: 100 }}
               name='amount'
               defaultValue={msgObj[key]?.amount}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
             <Typography sx={{ marginX: 2, marginLeft: 4 }} variant='body1'>
               currency:
@@ -363,7 +374,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='date'
               defaultValue={msgObj[key]?.date}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               playYear:
@@ -430,7 +444,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='digit'
               defaultValue={msgObj[key]?.digit}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
           </ListItem>
         );
@@ -503,7 +520,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               size='small'
               name='time'
               defaultValue={msgObj[key]?.time}
-              onChange={handleMsgObjChange}
+              onChange={(e) => {
+                handleMsgObjChange(e);
+                handleInputValidation(e);
+              }}
             />
             <Typography sx={{ marginLeft: 2 }} variant='body1'>
               is24:
