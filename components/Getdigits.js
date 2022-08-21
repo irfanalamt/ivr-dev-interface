@@ -64,14 +64,24 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
       setAlertError(true);
       return;
     }
-
+    // filter out null values from msg, params array
+    let filteredMsgObj = msgObj.filter((element) => {
+      return element !== null;
+    });
+    let filteredParamsObj = paramsObj.filter((element) => {
+      return element !== null;
+    });
+    console.log(
+      '🚀 ~ filteredParamsObj ~ filteredParamsObj',
+      filteredParamsObj
+    );
     //else, save current state to shape
     setAlertError(false);
     setAlertSuccess(true);
     shape.setText(shapeName);
     shape.setUserValues({
-      params: { minDigits, maxDigits, paramsList: paramsObj },
-      messageList: msgObj,
+      params: { minDigits, maxDigits, paramsList: filteredParamsObj },
+      messageList: filteredMsgObj,
     });
 
     console.log('shapeSaved: ', shape);
@@ -145,6 +155,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
     if (paramsObj.length > paramsInputList.length) {
       let curValue = paramsObj[paramsInputList.length];
       if (curValue?.terminator) addNewParams('terminator');
+      else if (curValue?.maxRetries) addNewParams('maxRetries');
+      else if (curValue?.invalidAction) addNewParams('invalidAction');
+      else if (curValue?.timeoutAction) addNewParams('timeoutAction');
+      else if (curValue?.invalidPrompt) addNewParams('invalidPrompt');
     }
   }
 
@@ -567,7 +581,7 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
             <Select
               size='small'
               name='terminator'
-              defaultValue={paramsObj[key]?.terminator}
+              defaultValue={paramsObj[key]?.terminator || ''}
               onChange={handleParamsObjChange}
               autoFocus
             >
@@ -586,6 +600,79 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
           </ListItem>
         );
         setParamsInputList([...paramsInputList, terminatorCode]);
+        break;
+
+      case 'maxRetries':
+        const maxRetriesCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              maxRetries:
+            </Typography>
+            <Select
+              size='small'
+              name='maxRetries'
+              defaultValue={paramsObj[key]?.maxRetries || ''}
+              onChange={handleParamsObjChange}
+              autoFocus
+            >
+              <MenuItem value='0'>0</MenuItem>
+              <MenuItem value='1'>1</MenuItem>
+              <MenuItem value='2'>2</MenuItem>
+              <MenuItem value='3'>3</MenuItem>
+              <MenuItem value='4'>4</MenuItem>
+              <MenuItem value='5'>5</MenuItem>
+              <MenuItem value='6'>6</MenuItem>
+              <MenuItem value='7'>7</MenuItem>
+              <MenuItem value='8'>8</MenuItem>
+              <MenuItem value='9'>9</MenuItem>
+            </Select>
+          </ListItem>
+        );
+        setParamsInputList([...paramsInputList, maxRetriesCode]);
+        break;
+
+      case 'invalidAction':
+        const invalidActionCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              invalidAction:
+            </Typography>
+            <Select
+              size='small'
+              name='invalidAction'
+              defaultValue={paramsObj[key]?.invalidAction || ''}
+              onChange={handleParamsObjChange}
+              autoFocus
+            >
+              <MenuItem value='disconnect'>disconnect</MenuItem>
+              <MenuItem value='transfer'>transfer</MenuItem>
+              <MenuItem value='function'>function</MenuItem>
+            </Select>
+          </ListItem>
+        );
+        setParamsInputList([...paramsInputList, invalidActionCode]);
+        break;
+
+      case 'timeoutAction':
+        const timeoutActionCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              timeoutAction:
+            </Typography>
+            <Select
+              size='small'
+              name='timeoutAction'
+              defaultValue={paramsObj[key]?.timeoutAction || ''}
+              onChange={handleParamsObjChange}
+              autoFocus
+            >
+              <MenuItem value='disconnect'>disconnect</MenuItem>
+              <MenuItem value='transfer'>transfer</MenuItem>
+              <MenuItem value='function'>function</MenuItem>
+            </Select>
+          </ListItem>
+        );
+        setParamsInputList([...paramsInputList, timeoutActionCode]);
         break;
     }
   }
@@ -728,6 +815,9 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
                       let tempMsgObj = [...msgObj];
                       tempMsgObj.pop();
                       setMsgObj(tempMsgObj);
+                      let tempObj = { ...allErrors };
+                      delete tempObj[inputList.length - 1];
+                      setAllErrors(tempObj);
                     }
                   }
                 }}
@@ -843,6 +933,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               }}
             >
               <MenuItem value='terminator'>terminator</MenuItem>
+              <MenuItem value='maxRetries'>maxRetries</MenuItem>
+              <MenuItem value='invalidAction'>invalidAction</MenuItem>
+              <MenuItem value='timeoutAction'>timeoutAction</MenuItem>
+              <MenuItem value='invalidPrompt'>invalidPrompt</MenuItem>
             </Select>
             <Tooltip title='Add'>
               <AddBoxRoundedIcon

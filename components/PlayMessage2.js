@@ -60,6 +60,10 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
       setAlertError(true);
       return;
     }
+    // filter out null values from msg array
+    let filteredMsgObj = msgObj.filter((element) => {
+      return element !== null;
+    });
 
     //else, save current state to shape
     setAlertError(false);
@@ -67,7 +71,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
     shape.setText(shapeName);
     shape.setUserValues({
       params: { interruptible, repeatOption },
-      messageList: msgObj,
+      messageList: filteredMsgObj,
     });
 
     console.log('shapeSaved: ', shape);
@@ -675,6 +679,15 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
                     setInputList(tempObj);
                     if (msgObj[inputList.length - 1]) {
                       let tempMsgObj = [...msgObj];
+                      console.log('msgObj before pop:', tempMsgObj);
+                      console.log('errors before pop', allErrors);
+                      if (allErrors[inputList.length - 1]) {
+                        console.log('deleted item had error');
+
+                        let tempObj = { ...allErrors };
+                        delete tempObj[inputList.length - 1];
+                        setAllErrors(tempObj);
+                      }
                       tempMsgObj.pop();
                       setMsgObj(tempMsgObj);
                     }
