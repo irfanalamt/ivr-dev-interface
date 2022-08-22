@@ -22,7 +22,10 @@ import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import { useEffect, useRef, useState } from 'react';
 
-const GetDigits = ({ shape, handleCloseDrawer }) => {
+const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
+  const [resultName, setResultName] = useState(
+    shape.userValues?.variableName || ''
+  );
   const [shapeName, setShapeName] = useState(shape.text);
   const [alertError, setAlertError] = useState(false);
   const [alertSuccess, setAlertSuccess] = useState(false);
@@ -82,8 +85,18 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
     shape.setUserValues({
       params: { minDigits, maxDigits, paramsList: filteredParamsObj },
       messageList: filteredMsgObj,
+      variableName: resultName,
     });
 
+    let varIndex = userVariables.findIndex((el) => el.name === resultName);
+    if (varIndex === -1) {
+      console.log('index not found for variable');
+      userVariables.push({ name: resultName, result: msgObj[0] });
+      return;
+    }
+
+    userVariables[varIndex] = { name: resultName, result: msgObj[0] };
+    console.log('after save user vars', userVariables);
     console.log('shapeSaved: ', shape);
   }
   function handleNameValidation(e) {
@@ -758,10 +771,23 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
         </ListItem>
         <ListItem>
           <Typography
-            sx={{ marginX: 'auto', boxShadow: 1, paddingX: 1 }}
+            sx={{ marginX: 'auto', boxShadow: 1, paddingX: 1, display: 'none' }}
             variant='subtitle2'
             id='name-error-box'
           ></Typography>
+        </ListItem>
+        <ListItem>
+          <Typography variant='button' sx={{ marginX: 1, fontSize: 15 }}>
+            Result Variable =
+          </Typography>
+          <TextField
+            sx={{ width: 180, marginX: 1 }}
+            size='small'
+            value={resultName}
+            onChange={(e) => {
+              setResultName(e.target.value);
+            }}
+          ></TextField>
         </ListItem>
         <ListItem>
           <Tabs
@@ -808,8 +834,10 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
                   borderRadius: 1,
                 }}
                 onClick={() => {
-                  addNewInput(msgObjType);
-                  setMsgObjType('prompt');
+                  if (inputList.length === 0) {
+                    addNewInput(msgObjType);
+                    setMsgObjType('prompt');
+                  }
                 }}
               />
             </Tooltip>
@@ -842,6 +870,7 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
               />
             </Tooltip>
           </ListItem>
+          <pre>{JSON.stringify(msgObj, undefined, 2)}</pre>
           {fillInputFields()}
           <List>{inputList}</List>
           <ListItem>

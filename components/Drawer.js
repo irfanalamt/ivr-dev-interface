@@ -24,7 +24,7 @@ const DrawerComponent = ({
   isOpen,
   handleCloseDrawer,
   shape = null,
-  userValues,
+  userVariables,
 }) => {
   useEffect(() => {
     console.log('ue drawer');
@@ -33,10 +33,20 @@ const DrawerComponent = ({
   const myList = () => {
     if (shape?.type == 'roundedRectangle') {
       return (
-        <PlayMessage2 shape={shape} handleCloseDrawer={handleCloseDrawer} />
+        <PlayMessage2
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          userVariables={userVariables}
+        />
       );
     } else if (shape?.type == 'parallelogram') {
-      return <GetDigits shape={shape} handleCloseDrawer={handleCloseDrawer} />;
+      return (
+        <GetDigits
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          userVariables={userVariables}
+        />
+      );
     } else {
       return (
         <>

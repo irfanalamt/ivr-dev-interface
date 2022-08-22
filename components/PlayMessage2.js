@@ -2,6 +2,7 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Divider,
   FormControlLabel,
   List,
@@ -22,8 +23,10 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import { useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import { render } from 'react-dom';
 
-const PlayMessage = ({ shape, handleCloseDrawer }) => {
+const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [alertError, setAlertError] = useState(false);
   const [alertSuccess, setAlertSuccess] = useState(false);
@@ -40,6 +43,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
   const [msgObjType, setMsgObjType] = useState('prompt');
 
   useEffect(() => {
+    console.log('userVariables:', userVariables);
     let tabPanel1 = document.getElementById('tabPanel1');
     let tabPanel2 = document.getElementById('tabPanel2');
     if (tabValue === 0) {
@@ -232,6 +236,51 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
     errorBox.innerText = '';
   }
 
+  function handleIfVariable(e, id, name, div) {
+    let { checked } = e.target;
+    console.log('🚀 ~ handleIfVariable ~ checked', checked, name);
+    if (checked === true) {
+      let tf = document.getElementById(id);
+
+      let selectElement = fillSelectFieldVariables(name);
+      console.log('🚀 ~ handleIfVariable ~ selectElement', selectElement);
+      if (selectElement === null) return;
+      let insertDiv = ReactDOM.createRoot(document.getElementById(div));
+      console.log(typeof selectElement);
+
+      tf.parentNode.removeChild(tf);
+
+      insertDiv.render(selectElement);
+    }
+  }
+
+  function fillSelectFieldVariables(name) {
+    let valueInVar = [];
+    userVariables.forEach((el) => {
+      if (el?.result[name]) {
+        valueInVar.push({ name: el.name, value: el.result[name] });
+        console.log('prompt in var:', valueInVar);
+      }
+    });
+
+    if (valueInVar.length === 0) return null;
+
+    const variableSelectCode = (
+      <ListItem>
+        <Select defaultValue=''>
+          {valueInVar.map((el, index) => {
+            return (
+              <MenuItem key={index} value={el.value}>
+                {el.name}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </ListItem>
+    );
+    return variableSelectCode;
+  }
+
   function addNewInput(objType) {
     // add input fields to msgList
     const key = inputList.length;
@@ -240,10 +289,23 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
       case 'prompt':
         const promptCode = (
           <ListItem key={key}>
-            <Typography sx={{ marginX: 2 }} variant='body1'>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(
+                  e,
+                  `prompt${key}`,
+                  'prompt',
+                  `prompt${key}-div`
+                );
+              }}
+            />
+            <Typography sx={{ marginRight: 2, marginLeft: 1 }} variant='body1'>
               prompt:
             </Typography>
+            <Box id={`prompt${key}-div`}></Box>
             <TextField
+              id={`prompt${key}`}
               size='small'
               variant='outlined'
               fullWidth

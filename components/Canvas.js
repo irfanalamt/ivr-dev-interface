@@ -27,6 +27,7 @@ const CanvasComponent = ({ isExisting }) => {
 
   let startX, startY;
   let startX1, startY1;
+  const userVariables = useRef([]);
 
   //   const circle = {
   //     centreX: 50,
@@ -443,6 +444,7 @@ const CanvasComponent = ({ isExisting }) => {
           isOpen={isOpen}
           handleCloseDrawer={handleCloseDrawer}
           shape={currentShape.current}
+          userVariables={userVariables.current}
         />
       )}
     </Box>
