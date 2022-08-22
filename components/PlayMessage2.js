@@ -54,6 +54,7 @@ const PlayMessage = ({ shape, handleCloseDrawer }) => {
   }, [tabValue]);
 
   function saveUserValues() {
+    console.log('🚀 ~ saveUserValues ~ allErrors', allErrors);
     //If errrors present, setAlertError;return
     console.log('Errors before saving:', Object.keys(allErrors).length);
     if (Object.keys(allErrors).length > 0) {

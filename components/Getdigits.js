@@ -674,6 +674,24 @@ const GetDigits = ({ shape, handleCloseDrawer }) => {
         );
         setParamsInputList([...paramsInputList, timeoutActionCode]);
         break;
+
+      case 'invalidPrompt':
+        const invalidPromptCode = (
+          <ListItem key={key}>
+            <Typography sx={{ marginX: 2 }} variant='body1'>
+              invalidPrompt:
+            </Typography>
+            <TextField
+              defaultValue={paramsObj[key]?.invalidPrompt || ''}
+              onChange={handleParamsObjChange}
+              variant='outlined'
+              size='small'
+              name='invalidPrompt'
+            />
+          </ListItem>
+        );
+        setParamsInputList([...paramsInputList, invalidPromptCode]);
+        break;
     }
   }
 
