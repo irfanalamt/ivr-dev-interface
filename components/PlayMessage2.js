@@ -42,6 +42,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
   const [inputList, setInputList] = useState([]);
   const [msgObjType, setMsgObjType] = useState('prompt');
 
+  let insertDiv = false;
+
   useEffect(() => {
     console.log('userVariables:', userVariables);
     let tabPanel1 = document.getElementById('tabPanel1');
@@ -237,20 +239,30 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
   }
 
   function handleIfVariable(e, id, name, div) {
+    //when isVar checked, check if variables of type name present; fill select field
     let { checked } = e.target;
+    let tf = document.getElementById(id);
+    let boxDiv = document.getElementById(div);
     console.log('🚀 ~ handleIfVariable ~ checked', checked, name);
     if (checked === true) {
-      let tf = document.getElementById(id);
-
       let selectElement = fillSelectFieldVariables(name);
       console.log('🚀 ~ handleIfVariable ~ selectElement', selectElement);
+      insertDiv = ReactDOM.createRoot(boxDiv);
+
+      // console.log(typeof selectElement);
+
+      tf.disabled = true;
+      tf.style.width = '10px';
+      tf.style.backgroundColor = '#cfd8dc';
       if (selectElement === null) return;
-      let insertDiv = ReactDOM.createRoot(document.getElementById(div));
-      console.log(typeof selectElement);
-
-      tf.parentNode.removeChild(tf);
-
       insertDiv.render(selectElement);
+      return;
+    }
+    if (checked === false) {
+      tf.disabled = false;
+      tf.style.width = null;
+      tf.style.backgroundColor = null;
+      insertDiv.unmount();
     }
   }
 
@@ -267,7 +279,13 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
 
     const variableSelectCode = (
       <ListItem>
-        <Select defaultValue=''>
+        <Select
+          name={name}
+          defaultValue=''
+          onChange={handleMsgObjChange}
+          onBlur={handleMsgObjChange}
+          autoFocus
+        >
           {valueInVar.map((el, index) => {
             return (
               <MenuItem key={index} value={el.value}>
@@ -308,7 +326,6 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
               id={`prompt${key}`}
               size='small'
               variant='outlined'
-              fullWidth
               name='prompt'
               defaultValue={msgObj[key]?.prompt}
               onChange={(e) => {
