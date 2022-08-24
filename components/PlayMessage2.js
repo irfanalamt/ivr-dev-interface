@@ -342,10 +342,23 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'ordinal':
         const ordinalCode = (
           <ListItem key={key}>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(
+                  e,
+                  `ordinal${key}`,
+                  'ordinal',
+                  `ordinal${key}-div`
+                );
+              }}
+            />
             <Typography sx={{ marginX: 2 }} variant='body1'>
               ordinal:
             </Typography>
+            <Box id={`ordinal${key}-div`}></Box>
             <TextField
+              id={`ordinal${key}`}
               size='small'
               sx={{ maxWidth: 100 }}
               name='ordinal'
@@ -364,10 +377,23 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'number':
         const numberCode = (
           <ListItem key={key}>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(
+                  e,
+                  `number${key}`,
+                  'number',
+                  `number${key}-div`
+                );
+              }}
+            />
             <Typography sx={{ marginX: 2 }} variant='body1'>
               number:
             </Typography>
+            <Box id={`number${key}-div`}></Box>
             <TextField
+              id={`number${key}`}
               size='small'
               sx={{ maxWidth: 100 }}
               name='number'
@@ -386,10 +412,23 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'amount':
         const amountCode = (
           <ListItem key={key}>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(
+                  e,
+                  `amount${key}`,
+                  'amount',
+                  `amount${key}-div`
+                );
+              }}
+            />
             <Typography sx={{ marginX: 2 }} variant='body1'>
               amount:
             </Typography>
+            <Box id={`amount${key}-div`}></Box>
             <TextField
+              id={`amount${key}`}
               size='small'
               sx={{ maxWidth: 100 }}
               name='amount'
@@ -425,10 +464,18 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'date':
         const dateCode = (
           <ListItem key={key}>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(e, `date${key}`, 'date', `date${key}-div`);
+              }}
+            />
             <Typography sx={{ marginX: 2 }} variant='body1'>
               date:
             </Typography>
+            <Box id={`date${key}-div`}></Box>
             <TextField
+              id={`date${key}`}
               sx={{ maxWidth: 150 }}
               placeholder='yyyymmdd'
               variant='outlined'
@@ -472,10 +519,18 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'day':
         const dayCode = (
           <ListItem key={key}>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(e, `day${key}`, 'day', `day${key}-div`);
+              }}
+            />
             <Typography sx={{ marginX: 2 }} variant='body1'>
               day:
             </Typography>
+            <Box id={`day${key}-div`}></Box>
             <Select
+              id={`day${key}`}
               placeholder='day'
               size='small'
               name='day'
@@ -501,10 +556,18 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'digits':
         const digitCode = (
           <ListItem key={key}>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(e, `digit${key}`, 'digit', `digit${key}-div`);
+              }}
+            />
             <Typography sx={{ marginX: 2 }} variant='body1'>
               digit:
             </Typography>
+            <Box id={`digit${key}-div`}></Box>
             <TextField
+              id={`digit${key}`}
               sx={{ maxWidth: 100 }}
               size='small'
               name='digit'
@@ -523,10 +586,18 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'month':
         const monthCode = (
           <ListItem key={key}>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(e, `month${key}`, 'month', `month${key}-div`);
+              }}
+            />
             <Typography sx={{ marginX: 2 }} variant='body1'>
               month:
             </Typography>
+            <Box id={`month${key}-div`}></Box>
             <Select
+              id={`month${key}`}
               size='small'
               name='month'
               defaultValue={msgObj[key]?.month || ''}
@@ -579,10 +650,18 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'time':
         const timeCode = (
           <ListItem key={key}>
+            <Typography variant='body2'>variable:</Typography>
+            <Checkbox
+              onChange={(e) => {
+                handleIfVariable(e, `time${key}`, 'time', `time${key}-div`);
+              }}
+            />
             <Typography sx={{ marginX: 2 }} variant='body1'>
               time:
             </Typography>
+            <Box id={`time${key}-div`}></Box>
             <TextField
+              id={`time${key}`}
               sx={{ maxWidth: 100 }}
               variant='outlined'
               placeholder='hhmm'
