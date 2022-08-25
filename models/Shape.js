@@ -13,7 +13,7 @@ class Shape {
     } else if (type === 'hexagon') {
       this.text = 'playMenu';
     } else if (type === 'circle') {
-      this.text = 'addNew';
+      this.text = 'addVariables';
     } else if (type === 'parallelogram') {
       this.text = 'getDigits';
     } else if (type === 'roundedRectangle') {
