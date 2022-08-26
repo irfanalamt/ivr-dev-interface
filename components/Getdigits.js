@@ -88,16 +88,16 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
       variableName: resultName,
     });
 
-    let varIndex = userVariables.findIndex((el) => el.name === resultName);
-    if (varIndex === -1) {
-      console.log('index not found for variable');
-      userVariables.push({ name: resultName, result: msgObj[0] });
-      return;
-    }
+    // let varIndex = userVariables.findIndex((el) => el.name === resultName);
+    // if (varIndex === -1) {
+    //   console.log('index not found for variable');
+    //   userVariables.push({ name: resultName, result: msgObj[0] });
+    //   return;
+    // }
 
-    userVariables[varIndex] = { name: resultName, result: msgObj[0] };
-    console.log('after save user vars', userVariables);
-    console.log('shapeSaved: ', shape);
+    // userVariables[varIndex] = { name: resultName, result: msgObj[0] };
+    // console.log('after save user vars', userVariables);
+    // console.log('shapeSaved: ', shape);
   }
   function handleNameValidation(e) {
     let { value } = e.target;
@@ -120,6 +120,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
     e.target.style.backgroundColor = '#f1f8e9';
     errorBox.innerText = '';
   }
+
   function handleMsgObjChange(e) {
     // update msgObj when inputList value changes; handle validation
     const { value, name } = e.target;
@@ -780,14 +781,25 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
           <Typography variant='button' sx={{ marginX: 1, fontSize: 15 }}>
             Result Variable =
           </Typography>
-          <TextField
-            sx={{ width: 180, marginX: 1 }}
-            size='small'
-            value={resultName}
-            onChange={(e) => {
-              setResultName(e.target.value);
-            }}
-          ></TextField>
+
+          {userVariables.length > 0 ? (
+            <Select
+              value={resultName}
+              onChange={(e) => {
+                setResultName(e.target.value);
+              }}
+            >
+              {userVariables.map((el, i) => {
+                return (
+                  <MenuItem key={i} value={el.default ? el.default : ''}>
+                    {el.prompt || el.number}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          ) : (
+            <Typography variant='h6'>No variables added</Typography>
+          )}
         </ListItem>
         <ListItem>
           <Tabs
