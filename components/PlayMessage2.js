@@ -128,7 +128,7 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       else if (curValue?.amount) addNewInput('amount');
       else if (curValue?.date) addNewInput('date');
       else if (curValue?.day) addNewInput('day');
-      else if (curValue?.digit) addNewInput('digits');
+      else if (curValue?.digit) addNewInput('digit');
       else if (curValue?.month) addNewInput('month');
       else if (curValue?.time) addNewInput('time');
     }
@@ -268,12 +268,25 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
 
   function fillSelectFieldVariables(name) {
     let valueInVar = [];
-    userVariables.forEach((el) => {
-      if (el?.result[name]) {
-        valueInVar.push({ name: el.name, value: el.result[name] });
-        console.log('prompt in var:', valueInVar);
-      }
-    });
+
+    if (
+      name === 'number' ||
+      name === 'ordinal' ||
+      name === 'amount' ||
+      name === 'digit'
+    ) {
+      userVariables.forEach((el) => {
+        if (el.number) {
+          valueInVar.push({ name: el.number, value: el.default });
+        }
+      });
+    } else if (name === 'prompt') {
+      userVariables.forEach((el) => {
+        if (el.prompt) {
+          valueInVar.push({ name: el.prompt, value: el.default });
+        }
+      });
+    }
 
     if (valueInVar.length === 0) return null;
 
@@ -553,7 +566,7 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
         setInputList([...inputList, dayCode]);
         break;
 
-      case 'digits':
+      case 'digit':
         const digitCode = (
           <ListItem key={key}>
             <Typography variant='body2'>variable:</Typography>
@@ -797,7 +810,7 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
               <MenuItem value='number'>Number</MenuItem>
               <MenuItem value='ordinal'>Ordinal</MenuItem>
               <MenuItem value='amount'>Amount</MenuItem>
-              <MenuItem value='digits'>Digits</MenuItem>
+              <MenuItem value='digit'>Digit</MenuItem>
               <MenuItem value='date'>Date</MenuItem>
               <MenuItem value='day'>Day</MenuItem>
               <MenuItem value='month'>Month</MenuItem>
