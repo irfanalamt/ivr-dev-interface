@@ -14,14 +14,16 @@ import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import { useState } from 'react';
 
-const UseVariables = ({ shape, handleCloseDrawer }) => {
+const UseVariables = ({ shape, handleCloseDrawer, userVariables }) => {
   const [shapeName, setShapeName] = useState(shape.text || '');
   const [inputList, setInputList] = useState([]);
-  const [msgObj, setMsgObj] = useState([]);
+  const [msgObj, setMsgObj] = useState(userVariables || []);
   const [varType, setVarType] = useState('prompt');
 
   function saveUserValues() {
+    console.log('🚀 ~ saveUserValues ');
     shape.setText(shapeName);
+    userVariables.push(...msgObj);
   }
   function handleMsgObjChange(e) {
     // update msgObj when inputList value changes; handle validation
@@ -36,6 +38,14 @@ const UseVariables = ({ shape, handleCloseDrawer }) => {
       return tempMsgObj;
     });
   }
+  function fillInputFields() {
+    if (msgObj.length > inputList.length) {
+      let curValue = msgObj[inputList.length];
+      if (curValue?.prompt) addNewVariable('prompt');
+      else if (curValue?.number) addNewVariable('number');
+    }
+  }
+
   function addNewVariable(objType) {
     console.log('🚀  addNewVariable');
     const key = inputList.length;
@@ -233,6 +243,7 @@ const UseVariables = ({ shape, handleCloseDrawer }) => {
           </Tooltip>
         </ListItem>
         <pre>{JSON.stringify(msgObj, undefined, 2)}</pre>
+        {fillInputFields()}
         <List>{inputList}</List>
       </List>
     </>

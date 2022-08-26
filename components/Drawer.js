@@ -50,7 +50,11 @@ const DrawerComponent = ({
       );
     } else if (shape?.type == 'circle') {
       return (
-        <UseVariables shape={shape} handleCloseDrawer={handleCloseDrawer} />
+        <UseVariables
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          userVariables={userVariables}
+        />
       );
     } else {
       return (
