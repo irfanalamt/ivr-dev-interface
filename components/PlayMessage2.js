@@ -278,13 +278,13 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
     ) {
       userVariables.forEach((el) => {
         if (el.number) {
-          valueInVar.push({ name: el.number, value: el.default });
+          valueInVar.push({ name: el.number, value: `$${el.number}` });
         }
       });
     } else if (name === 'prompt') {
       userVariables.forEach((el) => {
         if (el.prompt) {
-          valueInVar.push({ name: el.prompt, value: el.default });
+          valueInVar.push({ name: el.prompt, value: `$${el.prompt}` });
         }
       });
     }
