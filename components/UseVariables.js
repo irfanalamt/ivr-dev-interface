@@ -14,15 +14,14 @@ import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import { useState } from 'react';
 
-const UseVariables = ({ shape, handleCloseDrawer, userVariables }) => {
-  const [shapeName, setShapeName] = useState(shape.text || '');
+const UseVariables = ({ handleCloseDrawer, userVariables }) => {
   const [inputList, setInputList] = useState([]);
   const [msgObj, setMsgObj] = useState(userVariables || []);
   const [varType, setVarType] = useState('prompt');
 
   function saveUserValues() {
     console.log('🚀 ~ saveUserValues ');
-    shape.setText(shapeName);
+
     userVariables.push(...msgObj);
   }
   function handleMsgObjChange(e) {
@@ -130,7 +129,6 @@ const UseVariables = ({ shape, handleCloseDrawer, userVariables }) => {
               color='error'
               sx={{ height: 30 }}
               onClick={() => {
-                shape.setSelected(false);
                 handleCloseDrawer();
               }}
             >
@@ -165,20 +163,7 @@ const UseVariables = ({ shape, handleCloseDrawer, userVariables }) => {
             Use Variables
           </Typography>
         </ListItem>
-        <ListItem sx={{ marginTop: 1 }}>
-          <Typography variant='button' sx={{ marginX: 1, fontSize: 15 }}>
-            Name:
-          </Typography>
-          <TextField
-            sx={{ width: 180, marginX: 1 }}
-            size='small'
-            value={shapeName}
-            onChange={(e) => {
-              setShapeName(e.target.value);
-              // handleNameValidation(e);
-            }}
-          ></TextField>
-        </ListItem>
+
         <ListItem>
           <Typography variant='subtitle1'>Select variable type:</Typography>
           <Select

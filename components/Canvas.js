@@ -1,4 +1,12 @@
-import { Box, Button, Container, Stack, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  Container,
+  Drawer,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import Shape from '../models/Shape';
@@ -6,10 +14,12 @@ import Shapes from '../models/Shapes';
 import DrawerComponent from './Drawer';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import SaveAltRoundedIcon from '@mui/icons-material/SaveAltRounded';
+import UseVariables from './UseVariables';
 
 const CanvasComponent = ({ isExisting }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [shapeInputText, setShapeInputText] = useState('');
+  const [isOpenVars, setIsOpenVars] = useState(false);
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const bgRef = useRef(null);
@@ -447,6 +457,27 @@ const CanvasComponent = ({ isExisting }) => {
           userVariables={userVariables.current}
         />
       )}
+      {isOpenVars && (
+        <Drawer anchor='right' open={isOpenVars}>
+          <UseVariables
+            handleCloseDrawer={() => {
+              setIsOpenVars(false);
+            }}
+            userVariables={userVariables.current}
+          />
+        </Drawer>
+      )}
+      <Button
+        sx={{ position: 'absolute', left: 25, top: 45, zIndex: 5 }}
+        size='small'
+        variant='outlined'
+        color='success'
+        onClick={() => {
+          setIsOpenVars(true);
+        }}
+      >
+        Set Variables
+      </Button>
     </Box>
   );
 };

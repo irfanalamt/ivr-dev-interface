@@ -48,14 +48,6 @@ const DrawerComponent = ({
           userVariables={userVariables}
         />
       );
-    } else if (shape?.type == 'circle') {
-      return (
-        <UseVariables
-          shape={shape}
-          handleCloseDrawer={handleCloseDrawer}
-          userVariables={userVariables}
-        />
-      );
     } else {
       return (
         <>
