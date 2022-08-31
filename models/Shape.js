@@ -114,7 +114,7 @@ class Shape {
     ctx.beginPath();
 
     if (this.stroke) {
-      ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
       // fill color when selected
       if (this.selected) {
         this.fillSelected(ctx);
@@ -132,7 +132,7 @@ class Shape {
       ctx.fillStyle = this.style;
       ctx.strokeStyle = '#2196f3';
       ctx.lineWidth = 2;
-      ctx.arc(this.x, this.y, this.width * 0.5, 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
     }
