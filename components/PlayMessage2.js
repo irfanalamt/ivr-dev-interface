@@ -12,6 +12,7 @@ import {
   RadioGroup,
   Select,
   Snackbar,
+  Switch,
   Tab,
   Tabs,
   TextField,
@@ -320,8 +321,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'prompt':
         const promptCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(
                   e,
@@ -330,7 +331,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
                   `prompt${key}-div`
                 );
               }}
-            />
+            ></Switch>
+
             <Typography sx={{ marginRight: 2, marginLeft: 1 }} variant='body1'>
               prompt:
             </Typography>
@@ -355,8 +357,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'ordinal':
         const ordinalCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(
                   e,
@@ -365,7 +367,7 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
                   `ordinal${key}-div`
                 );
               }}
-            />
+            ></Switch>
             <Typography sx={{ marginX: 2 }} variant='body1'>
               ordinal:
             </Typography>
@@ -390,8 +392,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'number':
         const numberCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(
                   e,
@@ -400,7 +402,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
                   `number${key}-div`
                 );
               }}
-            />
+            ></Switch>
+
             <Typography sx={{ marginX: 2 }} variant='body1'>
               number:
             </Typography>
@@ -425,8 +428,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'amount':
         const amountCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(
                   e,
@@ -435,7 +438,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
                   `amount${key}-div`
                 );
               }}
-            />
+            ></Switch>
+
             <Typography sx={{ marginX: 2 }} variant='body1'>
               amount:
             </Typography>
@@ -477,12 +481,13 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'date':
         const dateCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(e, `date${key}`, 'date', `date${key}-div`);
               }}
-            />
+            ></Switch>
+
             <Typography sx={{ marginX: 2 }} variant='body1'>
               date:
             </Typography>
@@ -532,12 +537,13 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'day':
         const dayCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(e, `day${key}`, 'day', `day${key}-div`);
               }}
-            />
+            ></Switch>
+
             <Typography sx={{ marginX: 2 }} variant='body1'>
               day:
             </Typography>
@@ -569,12 +575,13 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'digit':
         const digitCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(e, `digit${key}`, 'digit', `digit${key}-div`);
               }}
-            />
+            ></Switch>
+
             <Typography sx={{ marginX: 2 }} variant='body1'>
               digit:
             </Typography>
@@ -599,12 +606,13 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'month':
         const monthCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(e, `month${key}`, 'month', `month${key}-div`);
               }}
-            />
+            ></Switch>
+
             <Typography sx={{ marginX: 2 }} variant='body1'>
               month:
             </Typography>
@@ -663,12 +671,13 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'time':
         const timeCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>variable:</Typography>
-            <Checkbox
+            <Typography variant='body2'>v:</Typography>
+            <Switch
               onChange={(e) => {
                 handleIfVariable(e, `time${key}`, 'time', `time${key}-div`);
               }}
-            />
+            ></Switch>
+
             <Typography sx={{ marginX: 2 }} variant='body1'>
               time:
             </Typography>
