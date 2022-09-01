@@ -9,8 +9,14 @@ import {
 } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import { useState } from 'react';
 
 const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
+  const [inputVars, setInputVars] = useState([]);
+  function handleInputVarChange(e) {
+    console.log(e.target.value);
+  }
+
   return (
     <>
       {console.log(userVariables)}
@@ -61,11 +67,11 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
 
         <ListItem>
           <Typography variant='body1'>Input Variables:</Typography>
-          <Select>
+          <Select value={inputVars} multiple onChange={handleInputVarChange}>
             {userVariables.map((el, i) => {
               return (
-                <MenuItem key={i} value={el.prompt || el.name}>
-                  {el.prompt || el.number}
+                <MenuItem key={i} value={el.name}>
+                  {el.name}
                 </MenuItem>
               );
             })}

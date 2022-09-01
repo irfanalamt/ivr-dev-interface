@@ -277,14 +277,14 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       name === 'digit'
     ) {
       userVariables.forEach((el) => {
-        if (el.number) {
-          valueInVar.push({ name: el.number, value: `$${el.number}` });
+        if (el.type == 'number') {
+          valueInVar.push({ name: el.name, value: `$${el.name}` });
         }
       });
     } else if (name === 'prompt') {
       userVariables.forEach((el) => {
-        if (el.prompt) {
-          valueInVar.push({ name: el.prompt, value: `$${el.prompt}` });
+        if (el.type == 'prompt') {
+          valueInVar.push({ name: el.name, value: `$${el.name}` });
         }
       });
     }
@@ -321,7 +321,7 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'prompt':
         const promptCode = (
           <ListItem key={key}>
-            <Typography sx={{ fontSize: '1.2rem' }} variant='body2'>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
               V
             </Typography>
             <Switch
@@ -361,7 +361,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'ordinal':
         const ordinalCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+              V
+            </Typography>
             <Switch
               onChange={(e) => {
                 handleIfVariable(
@@ -396,7 +398,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'number':
         const numberCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+              V
+            </Typography>
             <Switch
               onChange={(e) => {
                 handleIfVariable(
@@ -432,7 +436,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'amount':
         const amountCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+              V
+            </Typography>
             <Switch
               onChange={(e) => {
                 handleIfVariable(
@@ -485,7 +491,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'date':
         const dateCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+              V
+            </Typography>
             <Switch
               onChange={(e) => {
                 handleIfVariable(e, `date${key}`, 'date', `date${key}-div`);
@@ -541,7 +549,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'day':
         const dayCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+              V
+            </Typography>
             <Switch
               onChange={(e) => {
                 handleIfVariable(e, `day${key}`, 'day', `day${key}-div`);
@@ -579,7 +589,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'digit':
         const digitCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+              V
+            </Typography>
             <Switch
               onChange={(e) => {
                 handleIfVariable(e, `digit${key}`, 'digit', `digit${key}-div`);
@@ -610,7 +622,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'month':
         const monthCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+              V
+            </Typography>
             <Switch
               onChange={(e) => {
                 handleIfVariable(e, `month${key}`, 'month', `month${key}-div`);
@@ -675,7 +689,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'time':
         const timeCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+              V
+            </Typography>
             <Switch
               onChange={(e) => {
                 handleIfVariable(e, `time${key}`, 'time', `time${key}-div`);
