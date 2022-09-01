@@ -15,7 +15,7 @@ import Shapes from '../models/Shapes';
 import DrawerComponent from './Drawer';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import SaveAltRoundedIcon from '@mui/icons-material/SaveAltRounded';
-import UseVariables from './UseVariables';
+import InitVariables from './InitVariables';
 
 const CanvasComponent = ({ isExisting }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,11 +51,11 @@ const CanvasComponent = ({ isExisting }) => {
     context.strokeStyle = 'black';
     context.lineWidth = 3;
 
-    let palletRectangle = new Shape(65, 220, 40, 30, 'rectangle', '#bf360c');
-    let palletCircle = new Shape(65, 275, 40, 40, 'circle', '#0d47a1');
-    let palletHexagon = new Shape(65, 330, 50, 30, 'hexagon', '#004d40');
+    let palletRectangle = new Shape(70, 220, 40, 30, 'rectangle', '#bf360c');
+    let palletCircle = new Shape(70, 275, 40, 40, 'circle', '#0d47a1');
+    let palletHexagon = new Shape(70, 330, 50, 30, 'hexagon', '#004d40');
     let palletParallelogram = new Shape(
-      65,
+      70,
       377,
       36,
       22,
@@ -63,7 +63,7 @@ const CanvasComponent = ({ isExisting }) => {
       '#4a148c'
     );
     let palletRoundedRectangle = new Shape(
-      65,
+      70,
       420,
       50,
       30,
@@ -95,7 +95,7 @@ const CanvasComponent = ({ isExisting }) => {
   }, []);
 
   function drawBackground() {
-    bgContext.current.strokeRect(30, 100, 70, 400);
+    bgContext.current.strokeRect(30, 100, 80, 400);
   }
 
   function clearAndDraw() {
@@ -269,7 +269,7 @@ const CanvasComponent = ({ isExisting }) => {
           // isDragging = true;
           // isPalletShape = true;
 
-          tooltip.style.top = offsetY + 'px';
+          tooltip.style.top = offsetY - 5 + 'px';
           tooltip.style.left = offsetX + 'px';
           tooltip.textContent = element.text;
           tooltip.style.visibility = 'visible';
@@ -473,7 +473,7 @@ const CanvasComponent = ({ isExisting }) => {
       )}
       {isOpenVars && (
         <Drawer anchor='right' open={isOpenVars}>
-          <UseVariables
+          <InitVariables
             handleCloseDrawer={() => {
               setIsOpenVars(false);
             }}
@@ -481,17 +481,25 @@ const CanvasComponent = ({ isExisting }) => {
           />
         </Drawer>
       )}
-      <Button
-        sx={{ position: 'absolute', left: 25, top: 45, zIndex: 5 }}
-        size='small'
-        variant='outlined'
-        color='success'
-        onClick={() => {
-          setIsOpenVars(true);
-        }}
-      >
-        Set Variables
-      </Button>
+      <Tooltip title='InitVariables' placement='right-end'>
+        <Button
+          sx={{
+            position: 'absolute',
+            left: 32,
+            top: 105,
+            zIndex: 5,
+            width: 75,
+          }}
+          size='small'
+          variant='outlined'
+          color='info'
+          onClick={() => {
+            setIsOpenVars(true);
+          }}
+        >
+          Variables
+        </Button>
+      </Tooltip>
       <Typography
         sx={{
           visibility: 'hidden',

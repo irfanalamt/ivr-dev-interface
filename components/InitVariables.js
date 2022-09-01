@@ -14,7 +14,7 @@ import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import { useState } from 'react';
 
-const UseVariables = ({ handleCloseDrawer, userVariables }) => {
+const InitVariables = ({ handleCloseDrawer, userVariables }) => {
   const [inputList, setInputList] = useState([]);
   const [msgObj, setMsgObj] = useState(userVariables || []);
   const [varType, setVarType] = useState('prompt');
@@ -41,6 +41,7 @@ const UseVariables = ({ handleCloseDrawer, userVariables }) => {
       return tempMsgObj;
     });
   }
+
   function fillInputFields() {
     if (msgObj.length > inputList.length) {
       let curValue = msgObj[inputList.length];
@@ -164,7 +165,7 @@ const UseVariables = ({ handleCloseDrawer, userVariables }) => {
             }}
             variant='h6'
           >
-            Use Variables
+            InitVariables
           </Typography>
         </ListItem>
 
@@ -239,4 +240,4 @@ const UseVariables = ({ handleCloseDrawer, userVariables }) => {
   );
 };
 
-export default UseVariables;
+export default InitVariables;
