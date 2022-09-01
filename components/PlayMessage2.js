@@ -321,8 +321,12 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       case 'prompt':
         const promptCode = (
           <ListItem key={key}>
-            <Typography variant='body2'>v:</Typography>
+            <Typography sx={{ fontSize: '1.2rem' }} variant='body2'>
+              V
+            </Typography>
             <Switch
+              sx={{ ml: 0 }}
+              size='large'
               onChange={(e) => {
                 handleIfVariable(
                   e,

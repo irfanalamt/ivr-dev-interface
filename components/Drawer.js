@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 
 import PlayMessage2 from './PlayMessage2';
 import GetDigits from './Getdigits';
-import UseVariables from './UseVariables';
+import CallApi from './CallApi';
 
 const DrawerComponent = ({
   isOpen,
@@ -35,6 +35,14 @@ const DrawerComponent = ({
     if (shape?.type == 'roundedRectangle') {
       return (
         <PlayMessage2
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          userVariables={userVariables}
+        />
+      );
+    } else if (shape?.type == 'circle') {
+      return (
+        <CallApi
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
           userVariables={userVariables}

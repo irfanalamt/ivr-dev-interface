@@ -5,6 +5,7 @@ import {
   Drawer,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
@@ -38,13 +39,6 @@ const CanvasComponent = ({ isExisting }) => {
   let startX, startY;
   let startX1, startY1;
   const userVariables = useRef([]);
-
-  //   const circle = {
-  //     centreX: 50,
-  //     centreY: 150,
-  //     totalWidth: 34,
-  //     totalHeight: 67,
-  //   };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -261,9 +255,28 @@ const CanvasComponent = ({ isExisting }) => {
     let initPosResizeX, initPosResizeY;
     let mouseX = parseInt(clientX);
     let mouseY = parseInt(clientY);
+    let tooltip = document.getElementById('my-tooltip');
     if (!isDragging && !isResizing) {
       isOnEdge = false;
       canvasRef.current.style.cursor = 'default';
+      tooltip.style.visibility = 'hidden';
+      palletGroup.current.getShapes().forEach((element, i) => {
+        if (element.isMouseInShape(offsetX, offsetY)) {
+          console.log(`YES in pallet shape ${element.type}`);
+          // currentShape.current = element;
+          // startX = clientX;
+          // startY = clientY;
+          // isDragging = true;
+          // isPalletShape = true;
+
+          tooltip.style.top = offsetY + 'px';
+          tooltip.style.left = offsetX + 'px';
+          tooltip.textContent = element.text;
+          tooltip.style.visibility = 'visible';
+          return;
+        }
+      });
+      console.log('tesssss');
 
       stageGroup.current.getShapes().forEach((element, i) => {
         if (element.isMouseNearVertex(offsetX, offsetY)) {
@@ -403,6 +416,7 @@ const CanvasComponent = ({ isExisting }) => {
         onDoubleClick={handleDoubleClick}
         ref={canvasRef}
       ></canvas>
+
       <canvas
         style={{
           position: 'absolute',
@@ -478,6 +492,21 @@ const CanvasComponent = ({ isExisting }) => {
       >
         Set Variables
       </Button>
+      <Typography
+        sx={{
+          visibility: 'hidden',
+          position: 'absolute',
+          zIndex: 6,
+          backgroundColor: '#e0f2f1',
+          px: 1,
+          boxShadow: 1,
+          borderRadius: 1,
+        }}
+        id='my-tooltip'
+        variant='subtitle1'
+      >
+        Im a tooltip
+      </Typography>
     </Box>
   );
 };

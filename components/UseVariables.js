@@ -21,13 +21,12 @@ const UseVariables = ({ handleCloseDrawer, userVariables }) => {
 
   function saveUserValues() {
     console.log('🚀 ~ saveUserValues ');
-    let newVars = [];
+
     msgObj.forEach((el, i) => {
       if (userVariables.indexOf(el) == -1) {
-        newVars.push(msgObj[i]);
+        userVariables.push(el);
       }
     });
-    userVariables.push(...newVars);
   }
   function handleMsgObjChange(e) {
     // update msgObj when inputList value changes; handle validation
