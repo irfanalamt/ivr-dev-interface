@@ -32,11 +32,24 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
     // update msgObj when inputList value changes; handle validation
     const { value, name } = e.target;
 
+    if (name === 'default') {
+      setMsgObj((prevObj) => {
+        let tempMsgObj = [...prevObj];
+        tempMsgObj[inputList.length] = {
+          ...tempMsgObj[inputList.length],
+          default: value,
+        };
+        return tempMsgObj;
+      });
+      return;
+    }
+
     setMsgObj((prevObj) => {
       let tempMsgObj = [...prevObj];
       tempMsgObj[inputList.length] = {
         ...tempMsgObj[inputList.length],
-        [name]: value,
+        name: value,
+        type: name,
       };
       return tempMsgObj;
     });
@@ -45,8 +58,8 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
   function fillInputFields() {
     if (msgObj.length > inputList.length) {
       let curValue = msgObj[inputList.length];
-      if (curValue?.prompt) addNewVariable('prompt');
-      else if (curValue?.number) addNewVariable('number');
+      if (curValue?.type == 'prompt') addNewVariable('prompt');
+      else if (curValue?.type == 'number') addNewVariable('number');
     }
   }
 
@@ -67,7 +80,7 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
             name='prompt'
             placeholder='variable name'
             helperText='variable name'
-            defaultValue={msgObj[key]?.prompt}
+            defaultValue={msgObj[key]?.name}
             onChange={(e) => {
               handleMsgObjChange(e);
             }}
@@ -100,7 +113,7 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
             name='number'
             placeholder='variable name'
             helperText='variable name'
-            defaultValue={msgObj[key]?.number}
+            defaultValue={msgObj[key]?.name}
             onChange={(e) => {
               handleMsgObjChange(e);
             }}
@@ -160,7 +173,7 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
               boxShadow: 1,
               paddingX: 3,
               paddingY: 1,
-              backgroundColor: '#90caf9',
+              backgroundColor: '#e3f2fd',
               borderRadius: 1,
             }}
             variant='h6'

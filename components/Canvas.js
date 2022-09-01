@@ -269,7 +269,7 @@ const CanvasComponent = ({ isExisting }) => {
           // isDragging = true;
           // isPalletShape = true;
 
-          tooltip.style.top = offsetY - 5 + 'px';
+          tooltip.style.top = offsetY + 'px';
           tooltip.style.left = offsetX + 'px';
           tooltip.textContent = element.text;
           tooltip.style.visibility = 'visible';
