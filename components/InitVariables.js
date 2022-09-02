@@ -37,7 +37,7 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
         let tempMsgObj = [...prevObj];
         tempMsgObj[inputList.length] = {
           ...tempMsgObj[inputList.length],
-          default: value,
+          value: value,
         };
         return tempMsgObj;
       });

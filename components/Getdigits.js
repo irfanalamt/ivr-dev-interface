@@ -791,8 +791,8 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
             >
               {userVariables.map((el, i) => {
                 return (
-                  <MenuItem key={i} value={el.default ? el.default : ''}>
-                    {el.prompt || el.number}
+                  <MenuItem key={i} value={el.value}>
+                    {el.name}
                   </MenuItem>
                 );
               })}
