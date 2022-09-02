@@ -10,6 +10,22 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+
+function handleInputValidation(name, e) {
+  let errorBox = document.getElementById('error-box');
+  let errorMessage = checkValidity(name, e);
+  if (errorMessage !== -1) {
+    e.target.style.backgroundColor = '#ffebee';
+    errorBox.style.visibility = 'visible';
+    errorBox.innerText = errorMessage;
+    return;
+  }
+  // no error condition
+  e.target.style.backgroundColor = '#f1f8e9';
+  errorBox.style.visibility = 'hidden';
+  errorBox.innerText = '';
+}
+
 export function addInputElements(type, key, msgObj, setMsgObj) {
   function handleMsgObjChange(e, index, name = null) {
     e.preventDefault();
@@ -28,6 +44,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
       return newArr;
     });
   }
+
   switch (type) {
     case 'prompt':
       const promptCode = (
@@ -49,6 +66,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
             value={msgObj[key].value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
+              handleInputValidation('prompt', e);
             }}
           />
         </ListItem>
@@ -74,6 +92,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
             value={msgObj[key]?.value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
+              handleInputValidation('ordinal', e);
             }}
           />
         </ListItem>
@@ -100,6 +119,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
             value={msgObj[key]?.value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
+              handleInputValidation('number', e);
             }}
           />
         </ListItem>
@@ -126,6 +146,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
             value={msgObj[key]?.value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
+              handleInputValidation('amount', e);
             }}
           />
           <Typography sx={{ marginX: 2, marginLeft: 4 }} variant='body1'>
@@ -172,6 +193,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
             value={msgObj[key]?.value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
+              handleInputValidation('date', e);
             }}
           />
           <Typography sx={{ marginLeft: 2 }} variant='body1'>
@@ -251,6 +273,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
             value={msgObj[key]?.value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
+              handleInputValidation('digit', e);
             }}
           />
         </ListItem>
@@ -337,6 +360,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
             value={msgObj[key]?.value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
+              handleInputValidation('time', e);
             }}
           />
           <Typography sx={{ marginLeft: 2 }} variant='body1'>
@@ -361,5 +385,60 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
         </ListItem>
       );
       return timeCode;
+  }
+}
+
+export function checkValidity(name, e) {
+  let { value } = e.target;
+  // return error string if invalid; else returns -1
+  switch (name) {
+    case 'object':
+      let objectRegex = /^[a-zA-z_]+[a-zA-z0-9_]*$/;
+      if (!objectRegex.test(value)) return 'name not in valid format';
+      return -1;
+
+    case 'prompt':
+      let promptRegex = /^[a-zA-z][a-zA-Z0-9]+(-?[a-z0-9]+)+$/;
+      if (value == '' || value == null) return 'Prompt is required';
+      if (!promptRegex.test(value)) return 'prompt not in valid format';
+      return -1;
+
+    case 'number':
+      let numberRegex = /^\d+$/;
+      if (value == '' || value == null) return 'number is required';
+      if (!numberRegex.test(value)) return 'number not in valid format';
+      return -1;
+
+    case 'amount':
+      let amountRegex = /^\d+\.?\d+$/;
+      if (value == '' || value == null) return 'amount is required';
+      if (!amountRegex.test(value)) return 'amount not in valid format';
+      return -1;
+
+    case 'ordinal':
+      let ordinalRegex = /^\d{1,2}$/;
+      if (value == '' || value == null) return 'ordinal is required';
+      if (!ordinalRegex.test(value))
+        return 'ordinal not in valid format. (0-99)';
+      return -1;
+
+    case 'digit':
+      let digitRegex = /^\d+$/;
+      if (value == '' || value == null) return 'digit is required';
+      if (!digitRegex.test(value)) return 'digit not in valid format';
+      return -1;
+
+    case 'date':
+      let dateRegex =
+        /^(1[3-4]|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/;
+      if (value == '' || value == null) return 'date is required';
+      if (!dateRegex.test(value)) return 'date not in valid format';
+      return -1;
+
+    case 'time':
+      let timeRegex = /^([0-1]?[0-9]|2[0-3])[0-5][0-9]$/;
+      if (value == '' || value == null) return 'time is required';
+      if (!timeRegex.test(value)) return 'time not in valid format';
+      return -1;
   }
 }

@@ -19,7 +19,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { addInputElements } from '../src/helpers';
+import { addInputElements, checkValidity } from '../src/helpers';
 
 const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
   const [shapeName, setShapeName] = useState(shape.text);
@@ -72,6 +72,21 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       newArr.pop();
       return newArr;
     });
+  }
+
+  function handleNameValidation(e) {
+    let errorBox = document.getElementById('name-error-box');
+    let errorMessage = checkValidity('object', e);
+    if (errorMessage !== -1) {
+      errorBox.style.display = 'block';
+      e.target.style.backgroundColor = '#ffebee';
+      errorBox.innerText = errorMessage;
+      return;
+    }
+    // no error condition
+    errorBox.style.display = 'none';
+    e.target.style.backgroundColor = '#f1f8e9';
+    errorBox.innerText = '';
   }
 
   return (
@@ -129,9 +144,22 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
             size='small'
             value={shapeName}
             onChange={(e) => {
+              handleNameValidation(e);
               setShapeName(e.target.value);
             }}
           ></TextField>
+        </ListItem>
+        <ListItem>
+          <Typography
+            sx={{
+              marginX: 'auto',
+              boxShadow: 1,
+              paddingX: 1,
+              backgroundColor: '#ffcdd2',
+            }}
+            variant='subtitle2'
+            id='name-error-box'
+          ></Typography>
         </ListItem>
         <ListItem>
           <Tabs
@@ -204,6 +232,18 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
             return addInputElements(el.type, i, msgObj, setMsgObj);
           })}
         </List>
+        <ListItem>
+          <Typography
+            sx={{
+              color: '#e53935',
+              paddingX: 2,
+              boxShadow: 2,
+              visibility: 'hidden',
+            }}
+            id='error-box'
+            variant='button'
+          ></Typography>
+        </ListItem>
       </Box>
       <Box id='tabPanel2' sx={{ display: 'none' }}>
         <ListItem>
