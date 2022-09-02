@@ -206,8 +206,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
                 borderRadius: 1,
               }}
               onClick={() => {
-                addInput();
                 setMsgObjType('prompt');
+                addInput();
               }}
             />
           </Tooltip>

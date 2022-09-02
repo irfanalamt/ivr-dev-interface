@@ -791,7 +791,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
             >
               {userVariables.map((el, i) => {
                 return (
-                  <MenuItem key={i} value={el.value}>
+                  <MenuItem key={i} value={el.name}>
                     {el.name}
                   </MenuItem>
                 );

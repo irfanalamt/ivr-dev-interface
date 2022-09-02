@@ -442,3 +442,151 @@ export function checkValidity(name, e) {
       return -1;
   }
 }
+
+export function addParamsElements(type, key, paramsObj, setParamsObj) {
+  function handleParamsObjChange(e, index, name = null) {
+    e.preventDefault();
+    console.log('🚀 ~ handleParamsObjChange ~ index', index);
+    if (name === null) {
+      setParamsObj((s) => {
+        const newArr = [...s];
+        newArr[index].value = e.target.value;
+        return newArr;
+      });
+      return;
+    }
+    setParamsObj((s) => {
+      const newArr = [...s];
+      newArr[index][name] = e.target.value;
+      return newArr;
+    });
+  }
+
+  switch (type) {
+    case 'terminator':
+      const terminatorCode = (
+        <ListItem sx={{ marginTop: 1 }} key={key}>
+          <Typography sx={{ marginX: 2 }} variant='body1'>
+            terminator:
+          </Typography>
+          <Select
+            size='small'
+            name='terminator'
+            value={paramsObj[key]?.value || ''}
+            onChange={(e) => {
+              handleParamsObjChange(e, key);
+            }}
+            autoFocus
+          >
+            <MenuItem value='#'>#</MenuItem>
+            <MenuItem value='*'>*</MenuItem>
+            <MenuItem value='1'>1</MenuItem>
+            <MenuItem value='2'>2</MenuItem>
+            <MenuItem value='3'>3</MenuItem>
+            <MenuItem value='4'>4</MenuItem>
+            <MenuItem value='5'>5</MenuItem>
+            <MenuItem value='6'>6</MenuItem>
+            <MenuItem value='7'>7</MenuItem>
+            <MenuItem value='8'>8</MenuItem>
+            <MenuItem value='9'>9</MenuItem>
+          </Select>
+        </ListItem>
+      );
+      return terminatorCode;
+
+    case 'maxRetries':
+      const maxRetriesCode = (
+        <ListItem key={key}>
+          <Typography sx={{ marginX: 2 }} variant='body1'>
+            maxRetries:
+          </Typography>
+          <Select
+            size='small'
+            name='maxRetries'
+            value={paramsObj[key]?.value || ''}
+            onChange={(e) => {
+              handleParamsObjChange(e, key);
+            }}
+            autoFocus
+          >
+            <MenuItem value='0'>0</MenuItem>
+            <MenuItem value='1'>1</MenuItem>
+            <MenuItem value='2'>2</MenuItem>
+            <MenuItem value='3'>3</MenuItem>
+            <MenuItem value='4'>4</MenuItem>
+            <MenuItem value='5'>5</MenuItem>
+            <MenuItem value='6'>6</MenuItem>
+            <MenuItem value='7'>7</MenuItem>
+            <MenuItem value='8'>8</MenuItem>
+            <MenuItem value='9'>9</MenuItem>
+          </Select>
+        </ListItem>
+      );
+      return maxRetriesCode;
+
+    case 'invalidAction':
+      const invalidActionCode = (
+        <ListItem key={key}>
+          <Typography sx={{ marginX: 2 }} variant='body1'>
+            invalidAction:
+          </Typography>
+          <Select
+            size='small'
+            name='invalidAction'
+            value={paramsObj[key]?.value || ''}
+            onChange={(e) => {
+              handleParamsObjChange(e, key);
+            }}
+            autoFocus
+          >
+            <MenuItem value='disconnect'>disconnect</MenuItem>
+            <MenuItem value='transfer'>transfer</MenuItem>
+            <MenuItem value='function'>function</MenuItem>
+          </Select>
+        </ListItem>
+      );
+      return invalidActionCode;
+
+    case 'timeoutAction':
+      const timeoutActionCode = (
+        <ListItem key={key}>
+          <Typography sx={{ marginX: 2 }} variant='body1'>
+            timeoutAction:
+          </Typography>
+          <Select
+            size='small'
+            name='timeoutAction'
+            value={paramsObj[key]?.value || ''}
+            onChange={(e) => {
+              handleParamsObjChange(e, key);
+            }}
+            autoFocus
+          >
+            <MenuItem value='disconnect'>disconnect</MenuItem>
+            <MenuItem value='transfer'>transfer</MenuItem>
+            <MenuItem value='function'>function</MenuItem>
+          </Select>
+        </ListItem>
+      );
+      return timeoutActionCode;
+
+    case 'invalidPrompt':
+      const invalidPromptCode = (
+        <ListItem key={key}>
+          <Typography sx={{ marginX: 2 }} variant='body1'>
+            invalidPrompt:
+          </Typography>
+          <TextField
+            value={paramsObj[key]?.value || ''}
+            onChange={(e) => {
+              handleParamsObjChange(e, key);
+            }}
+            variant='outlined'
+            size='small'
+            name='invalidPrompt'
+          />
+        </ListItem>
+      );
+      return invalidPromptCode;
+  }
+}
