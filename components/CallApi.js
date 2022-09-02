@@ -5,6 +5,7 @@ import {
   ListItem,
   MenuItem,
   Select,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -12,6 +13,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
+import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { useState } from 'react';
 
 const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
@@ -25,11 +27,11 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
       value: '',
     },
   ]);
+  const [endpoint, setEndpoint] = useState('');
 
-  function handleInputArrChange(e, i) {
+  function handleInputArrChange(e, index) {
     console.log('🚀 ~ handleInputArrChange ~ e', e);
     e.preventDefault();
-    const index = i;
     console.log('🚀 ~ handleInputArrChange ~ index', index);
     setInputArr((s) => {
       const newArr = [...s];
@@ -37,10 +39,9 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
       return newArr;
     });
   }
-  function handleOutputArrChange(e, i) {
+  function handleOutputArrChange(e, index) {
     console.log('🚀 ~ handleOutputArrChange ~ e', e);
     e.preventDefault();
-    const index = i;
     console.log('🚀 ~ handleOutputArrChange ~ index', index);
     setOutputArr((s) => {
       const newArr = [...s];
@@ -83,12 +84,23 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
       return newArr;
     });
   }
+
+  function handleApiCall() {
+    const inputVarList = inputArr.map((el, i) => {
+      return el.value;
+    });
+    const outputVarList = outputArr.map((el, i) => {
+      return el.value;
+    });
+    console.log('inputVarList', inputVarList);
+    console.log('outputVarList', outputVarList);
+    console.log('endpoint', endpoint);
+  }
+
   return (
     <>
-      {console.log(userVariables)}
       <List sx={{ minWidth: 300 }}>
         <ListItem>
-          {console.log(userVariables)}
           <Tooltip title='CLOSE'>
             <Button
               size='small'
@@ -130,7 +142,23 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
             Call API
           </Typography>
         </ListItem>
-
+        <ListItem>
+          <Typography sx={{ fontSize: '1.1rem', mr: 1 }} variant='h6'>
+            REST endpoint:
+          </Typography>
+        </ListItem>
+        <ListItem>
+          <TextField
+            size='small'
+            placeholder='https://example.com/function'
+            fullWidth
+            value={endpoint}
+            onChange={(e) => {
+              setEndpoint(e.target.value);
+            }}
+          />
+        </ListItem>
+        <Divider sx={{ my: 1 }} />
         <ListItem>
           <Typography sx={{ fontSize: '1rem', mr: 1 }} variant='h6'>
             Input Variables:
@@ -227,6 +255,16 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
           })}
         </ListItem>
         <Divider sx={{ my: 1 }} />
+
+        <ListItem>
+          <Button
+            onClick={handleApiCall}
+            sx={{ mx: 'auto' }}
+            variant='contained'
+          >
+            <SendRoundedIcon />
+          </Button>
+        </ListItem>
       </List>
     </>
   );

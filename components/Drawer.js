@@ -17,7 +17,7 @@ import {
 import Drawer from '@mui/material/Drawer';
 import { useEffect, useState } from 'react';
 
-import PlayMessage2 from './PlayMessage2';
+import PlayMessage from './PlayMessage3';
 import GetDigits from './Getdigits';
 import CallApi from './CallApi';
 
@@ -34,7 +34,7 @@ const DrawerComponent = ({
   const myList = () => {
     if (shape?.type == 'roundedRectangle') {
       return (
-        <PlayMessage2
+        <PlayMessage
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
           userVariables={userVariables}
