@@ -550,7 +550,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
 
           {paramsObj[key]?.value === 'transfer' && (
             <TextField
-              sx={{ mx: 0.5 }}
+              sx={{ mx: 0.5, width: 150 }}
               size='small'
               placeholder='transferPoint'
               value={paramsObj[key]?.transferPoint || ''}
@@ -561,7 +561,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
           )}
           {paramsObj[key]?.value === 'function' && (
             <TextField
-              sx={{ mx: 0.5 }}
+              sx={{ mx: 0.5, width: 150 }}
               size='small'
               placeholder='functionName'
               value={paramsObj[key]?.functionName || ''}
@@ -596,7 +596,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
 
           {paramsObj[key]?.value === 'transfer' && (
             <TextField
-              sx={{ mx: 0.5 }}
+              sx={{ mx: 0.5, width: 150 }}
               size='small'
               placeholder='transferPoint'
               value={paramsObj[key]?.transferPoint || ''}
@@ -607,7 +607,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
           )}
           {paramsObj[key]?.value === 'function' && (
             <TextField
-              sx={{ mx: 0.5 }}
+              sx={{ mx: 0.5, width: 150 }}
               size='small'
               placeholder='functionName'
               value={paramsObj[key]?.functionName || ''}
