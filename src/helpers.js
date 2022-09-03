@@ -1005,7 +1005,7 @@ export function addVariableElements(type, key, varObj, setVarObj) {
           value={varObj[key]?.name}
           onChange={(e) => {
             handleVarObjChange(e, key, 'name');
-            handleVariableValidation(type, e);
+            handleVariableValidation('object', e);
           }}
         />
         <TextField
@@ -1017,6 +1017,7 @@ export function addVariableElements(type, key, varObj, setVarObj) {
           value={varObj[key]?.value}
           onChange={(e) => {
             handleVarObjChange(e, key, 'value');
+            handleVariableValidation(type, e);
           }}
         />
       </ListItem>
