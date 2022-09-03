@@ -138,6 +138,18 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
             return addVariableElements(el.type, i, varObj, setVarObj);
           })}
         </List>
+        <ListItem>
+          <Typography
+            sx={{
+              color: '#e53935',
+              paddingX: 2,
+              boxShadow: 2,
+              visibility: 'hidden',
+            }}
+            id='error-box-var'
+            variant='button'
+          ></Typography>
+        </ListItem>
       </List>
     </>
   );

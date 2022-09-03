@@ -963,6 +963,21 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
   }
 }
 
+function handleVariableValidation(name, e) {
+  let errorBox = document.getElementById('error-box-var');
+  let errorMessage = checkValidity(name, e);
+  if (errorMessage !== -1) {
+    e.target.style.backgroundColor = '#ffebee';
+    errorBox.style.visibility = 'visible';
+    errorBox.innerText = errorMessage;
+    return;
+  }
+  // no error condition
+  e.target.style.backgroundColor = '#f1f8e9';
+  errorBox.style.visibility = 'hidden';
+  errorBox.innerText = '';
+}
+
 export function addVariableElements(type, key, varObj, setVarObj) {
   function handleVarObjChange(e, index, name) {
     e.preventDefault();
@@ -990,6 +1005,7 @@ export function addVariableElements(type, key, varObj, setVarObj) {
           value={varObj[key]?.name}
           onChange={(e) => {
             handleVarObjChange(e, key, 'name');
+            handleVariableValidation(type, e);
           }}
         />
         <TextField
