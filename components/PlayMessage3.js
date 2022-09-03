@@ -71,7 +71,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
   function removeInput() {
     if (msgObj === null || msgObj === undefined) return;
     setMsgObj((s) => {
-      return [...s].pop();
+      const newArr = [...s];
+      newArr.pop();
+      return newArr;
     });
   }
 
@@ -230,7 +232,13 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
         <pre>{JSON.stringify(msgObj, null, 2)}</pre>
         <List>
           {msgObj?.map((el, i) => {
-            return addInputElements(el.type, i, msgObj, setMsgObj);
+            return addInputElements(
+              el.type,
+              i,
+              msgObj,
+              setMsgObj,
+              userVariables
+            );
           })}
         </List>
         <ListItem>

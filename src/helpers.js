@@ -10,6 +10,7 @@ import {
   Select,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import ReactDOM from 'react-dom';
@@ -30,7 +31,13 @@ function handleInputValidation(name, e) {
   errorBox.innerText = '';
 }
 
-export function addInputElements(type, key, msgObj, setMsgObj) {
+export function addInputElements(
+  type,
+  key,
+  msgObj,
+  setMsgObj,
+  userVariables = null
+) {
   function handleMsgObjChange(e, index, name = null) {
     e.preventDefault();
     console.log('🚀 ~ handleMsgObjChange ~ index', index);
@@ -42,9 +49,41 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
       });
       return;
     }
+
     setMsgObj((s) => {
       const newArr = [...s];
       newArr[index][name] = e.target.value;
+      return newArr;
+    });
+  }
+
+  function handleUseVar(e, index) {
+    let { checked } = e.target;
+    if (checked === true) {
+      console.log('checked true');
+
+      setMsgObj((s) => {
+        const newArr = [...s];
+        newArr[index].useVar = true;
+        return newArr;
+      });
+      return;
+    }
+    if (checked === false) {
+      console.log('checked false');
+      setMsgObj((s) => {
+        const newArr = [...s];
+        newArr[index].useVar = false;
+        return newArr;
+      });
+      return;
+    }
+  }
+
+  function handleVarSelect(e, index) {
+    setMsgObj((s) => {
+      const newArr = [...s];
+      newArr[index].value = `$${e.target.value}`;
       return newArr;
     });
   }
@@ -56,14 +95,46 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch sx={{ ml: 0 }} size='large'></Switch>
-
-          <Typography sx={{ marginRight: 2, marginLeft: 1 }} variant='body1'>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
+          <Typography sx={{ mx: 1 }} variant='body1'>
             prompt:
           </Typography>
-          <Box id={`prompt${key}-div`}></Box>
+
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'prompt')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <TextField
-            id={`prompt${key}`}
+            sx={{ mx: 0.5 }}
             size='small'
             variant='outlined'
             name='prompt'
@@ -83,15 +154,46 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch></Switch>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
           <Typography sx={{ marginX: 2 }} variant='body1'>
             ordinal:
           </Typography>
-          <Box id={`ordinal${key}-div`}></Box>
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'number')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <TextField
-            id={`ordinal${key}`}
+            sx={{ mx: 0.5 }}
             size='small'
-            sx={{ maxWidth: 100 }}
             name='ordinal'
             value={msgObj[key]?.value}
             onChange={(e) => {
@@ -109,16 +211,47 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch></Switch>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
 
           <Typography sx={{ marginX: 2 }} variant='body1'>
             number:
           </Typography>
-          <Box id={`number${key}-div`}></Box>
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'number')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <TextField
-            id={`number${key}`}
             size='small'
-            sx={{ maxWidth: 100 }}
+            sx={{ mx: 0.5 }}
             name='number'
             value={msgObj[key]?.value}
             onChange={(e) => {
@@ -136,16 +269,47 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch></Switch>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
 
           <Typography sx={{ marginX: 2 }} variant='body1'>
             amount:
           </Typography>
-          <Box id={`amount${key}-div`}></Box>
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'number')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <TextField
-            id={`amount${key}`}
             size='small'
-            sx={{ maxWidth: 100 }}
+            sx={{ mx: 0.5 }}
             name='amount'
             value={msgObj[key]?.value}
             onChange={(e) => {
@@ -153,7 +317,7 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
               handleInputValidation('amount', e);
             }}
           />
-          <Typography sx={{ marginX: 2, marginLeft: 4 }} variant='body1'>
+          <Typography sx={{ marginX: 1 }} variant='body1'>
             currency:
           </Typography>
           <Select
@@ -181,15 +345,46 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch></Switch>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
 
           <Typography sx={{ marginX: 2 }} variant='body1'>
             date:
           </Typography>
-          <Box id={`date${key}-div`}></Box>
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'date')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <TextField
-            id={`date${key}`}
-            sx={{ maxWidth: 150 }}
+            sx={{ mx: 0.5 }}
             placeholder='yyyymmdd'
             variant='outlined'
             size='small'
@@ -229,14 +424,46 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch></Switch>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
 
           <Typography sx={{ marginX: 2 }} variant='body1'>
             day:
           </Typography>
-          <Box id={`day${key}-div`}></Box>
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'day')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <Select
-            id={`day${key}`}
+            sx={{ mx: 0.5 }}
             placeholder='day'
             size='small'
             name='day'
@@ -263,15 +490,47 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch></Switch>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
 
           <Typography sx={{ marginX: 2 }} variant='body1'>
             digit:
           </Typography>
-          <Box id={`digit${key}-div`}></Box>
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'number')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <TextField
             id={`digit${key}`}
-            sx={{ maxWidth: 100 }}
+            sx={{ mx: 0.5 }}
             size='small'
             name='digit'
             value={msgObj[key]?.value}
@@ -291,14 +550,46 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch></Switch>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
 
           <Typography sx={{ marginX: 2 }} variant='body1'>
             month:
           </Typography>
-          <Box id={`month${key}-div`}></Box>
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'month')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <Select
-            id={`month${key}`}
+            sx={{ mx: 0.5 }}
             size='small'
             name='month'
             value={msgObj[key]?.value || ''}
@@ -348,15 +639,46 @@ export function addInputElements(type, key, msgObj, setMsgObj) {
           <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
             V
           </Typography>
-          <Switch></Switch>
+          <Tooltip placement='top-end' title='use variable'>
+            <Switch
+              checked={msgObj[key].useVar || false}
+              onChange={(e) => {
+                handleUseVar(e, key);
+              }}
+            ></Switch>
+          </Tooltip>
 
           <Typography sx={{ marginX: 2 }} variant='body1'>
             time:
           </Typography>
-          <Box id={`time${key}-div`}></Box>
+          {msgObj[key].useVar === true && userVariables.length > 0 && (
+            <Select
+              defaultValue={''}
+              onChange={(e) => {
+                handleVarSelect(e, key);
+              }}
+            >
+              {userVariables
+                .filter((el) => el.type === 'time')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name || ''}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          )}
+          {msgObj[key].useVar === true && userVariables.length == 0 && (
+            <Typography
+              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
+              variant='subtitle2'
+            >
+              No variables added
+            </Typography>
+          )}
           <TextField
-            id={`time${key}`}
-            sx={{ maxWidth: 100 }}
+            sx={{ mx: 0.5 }}
             variant='outlined'
             placeholder='hhmm'
             size='small'

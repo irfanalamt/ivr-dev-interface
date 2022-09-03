@@ -27,7 +27,9 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
   function removeVar() {
     if (varObj === null || varObj === undefined) return;
     setVarObj((s) => {
-      return [...s].pop();
+      const newArr = [...s];
+      newArr.pop();
+      return newArr;
     });
   }
   function saveValues() {
