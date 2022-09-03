@@ -41,7 +41,9 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
   );
   const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
   const [msgObjType, setMsgObjType] = useState('prompt');
-  const [paramsObj, setParamsObj] = useState([]);
+  const [paramsObj, setParamsObj] = useState(
+    shape.userValues?.params.paramsList || []
+  );
   const [paramsObjType, setParamsObjType] = useState('');
 
   useEffect(() => {
@@ -66,7 +68,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
   function saveUserValues() {
     shape.setText(shapeName);
     shape.setUserValues({
-      params: { minDigits, maxDigits },
+      params: { minDigits, maxDigits, paramsList: paramsObj },
       messageList: msgObj,
       variableName: resultName,
     });
