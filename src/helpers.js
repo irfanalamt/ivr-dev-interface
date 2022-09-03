@@ -464,42 +464,6 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
     });
   }
 
-  function handleAddTextField(e, key) {
-    const { value } = e.target;
-    const tfDiv = document.getElementById(`optional-textField${key}`);
-    const root = createRoot(tfDiv);
-    root.render(<></>);
-    if (value === 'transfer') {
-      console.log('transfer option');
-      const transferCode = (
-        <TextField
-          sx={{ mx: 0.5 }}
-          size='small'
-          placeholder='transferPoint'
-          defaultValue={paramsObj[key]?.transferPoint || ''}
-          onChange={(e) => {
-            handleParamsObjChange(e, key, 'transferPoint');
-          }}
-        />
-      );
-      root.render(transferCode);
-    }
-    if (value === 'function') {
-      const functionCode = (
-        <TextField
-          sx={{ mx: 0.5 }}
-          size='small'
-          placeholder='functionName'
-          defaultValue={paramsObj[key]?.functionName || ''}
-          onChange={(e) => {
-            handleParamsObjChange(e, key, 'functionName');
-          }}
-        />
-      );
-      root.render(functionCode);
-    }
-  }
-
   switch (type) {
     case 'terminator':
       const terminatorCode = (
@@ -574,7 +538,6 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             value={paramsObj[key]?.value || ''}
             onChange={(e) => {
               handleParamsObjChange(e, key);
-              handleAddTextField(e, key);
             }}
             autoFocus
           >
@@ -582,7 +545,29 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             <MenuItem value='transfer'>transfer</MenuItem>
             <MenuItem value='function'>function</MenuItem>
           </Select>
-          <div id={`optional-textField${key}`}></div>
+
+          {paramsObj[key]?.value === 'transfer' && (
+            <TextField
+              sx={{ mx: 0.5 }}
+              size='small'
+              placeholder='transferPoint'
+              value={paramsObj[key]?.transferPoint || ''}
+              onChange={(e) => {
+                handleParamsObjChange(e, key, 'transferPoint');
+              }}
+            />
+          )}
+          {paramsObj[key]?.value === 'function' && (
+            <TextField
+              sx={{ mx: 0.5 }}
+              size='small'
+              placeholder='functionName'
+              value={paramsObj[key]?.functionName || ''}
+              onChange={(e) => {
+                handleParamsObjChange(e, key, 'functionName');
+              }}
+            />
+          )}
         </ListItem>
       );
       return invalidActionCode;
@@ -599,7 +584,6 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             value={paramsObj[key]?.value || ''}
             onChange={(e) => {
               handleParamsObjChange(e, key);
-              handleAddTextField(e, key);
             }}
             autoFocus
           >
@@ -607,7 +591,28 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             <MenuItem value='transfer'>transfer</MenuItem>
             <MenuItem value='function'>function</MenuItem>
           </Select>
-          <div id={`optional-textField${key}`}></div>
+          {paramsObj[key]?.value === 'transfer' && (
+            <TextField
+              sx={{ mx: 0.5 }}
+              size='small'
+              placeholder='transferPoint'
+              value={paramsObj[key]?.transferPoint || ''}
+              onChange={(e) => {
+                handleParamsObjChange(e, key, 'transferPoint');
+              }}
+            />
+          )}
+          {paramsObj[key]?.value === 'function' && (
+            <TextField
+              sx={{ mx: 0.5 }}
+              size='small'
+              placeholder='functionName'
+              value={paramsObj[key]?.functionName || ''}
+              onChange={(e) => {
+                handleParamsObjChange(e, key, 'functionName');
+              }}
+            />
+          )}
         </ListItem>
       );
       return timeoutActionCode;
