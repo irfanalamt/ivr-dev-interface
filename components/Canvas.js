@@ -15,7 +15,7 @@ import Shapes from '../models/Shapes';
 import DrawerComponent from './Drawer';
 import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
 import SaveAltRoundedIcon from '@mui/icons-material/SaveAltRounded';
-import InitVariables from './InitVariables';
+import InitVariables from './InitVariables2';
 
 const CanvasComponent = ({ isExisting }) => {
   const [isOpen, setIsOpen] = useState(false);

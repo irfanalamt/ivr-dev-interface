@@ -66,10 +66,13 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
   }
 
   function saveUserValues() {
+    // remove null values; SAVE
+    const filteredMsgObj = msgObj.filter((n) => n.value);
+    const filteredParamsObj = paramsObj.filter((n) => n.value);
     shape.setText(shapeName);
     shape.setUserValues({
-      params: { minDigits, maxDigits, paramsList: paramsObj },
-      messageList: msgObj,
+      params: { minDigits, maxDigits, paramsList: filteredParamsObj },
+      messageList: filteredMsgObj,
       variableName: resultName,
     });
   }
@@ -95,9 +98,9 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
     });
   }
   function removeInput() {
+    if (msgObj === null || msgObj === undefined) return;
     setMsgObj((s) => {
-      [...s].pop();
-      return newArr;
+      return [...s].pop();
     });
   }
 
@@ -107,9 +110,9 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
     });
   }
   function removeParamsInput() {
+    if (paramsObj === null || paramsObj === undefined) return;
     setParamsObj((s) => {
-      [...s].pop();
-      return newArr;
+      return [...s].pop();
     });
   }
 
@@ -192,7 +195,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
                 setResultName(e.target.value);
               }}
             >
-              {userVariables.map((el, i) => {
+              {userVariables?.map((el, i) => {
                 return (
                   <MenuItem key={i} value={el.name}>
                     {el.name}
@@ -272,7 +275,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
           </ListItem>
           <pre>{JSON.stringify(msgObj, null, 2)}</pre>{' '}
           <List>
-            {msgObj.map((el, i) => {
+            {msgObj?.map((el, i) => {
               return addInputElements(el.type, i, msgObj, setMsgObj);
             })}
           </List>
@@ -397,7 +400,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
             </Tooltip>
           </ListItem>
           <List>
-            {paramsObj.map((el, i) => {
+            {paramsObj?.map((el, i) => {
               return addParamsElements(el.type, i, paramsObj, setParamsObj);
             })}
           </List>

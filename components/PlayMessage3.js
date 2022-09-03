@@ -53,10 +53,12 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
   }
 
   function saveUserValues() {
+    // remove null values; SAVE
+    const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
     shape.setUserValues({
       params: { interruptible, repeatOption },
-      messageList: msgObj,
+      messageList: filteredMsgObj,
     });
   }
 
@@ -67,10 +69,9 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
   }
 
   function removeInput() {
+    if (msgObj === null || msgObj === undefined) return;
     setMsgObj((s) => {
-      const newArr = [...s];
-      newArr.pop();
-      return newArr;
+      return [...s].pop();
     });
   }
 
@@ -206,8 +207,8 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
                 borderRadius: 1,
               }}
               onClick={() => {
-                setMsgObjType('prompt');
                 addInput();
+                setMsgObjType('prompt');
               }}
             />
           </Tooltip>
@@ -228,7 +229,7 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
         </ListItem>
         <pre>{JSON.stringify(msgObj, null, 2)}</pre>
         <List>
-          {msgObj.map((el, i) => {
+          {msgObj?.map((el, i) => {
             return addInputElements(el.type, i, msgObj, setMsgObj);
           })}
         </List>

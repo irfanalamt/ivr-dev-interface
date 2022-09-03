@@ -1,6 +1,8 @@
 import {
   Box,
+  Divider,
   FormControlLabel,
+  List,
   ListItem,
   MenuItem,
   Radio,
@@ -591,6 +593,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             <MenuItem value='transfer'>transfer</MenuItem>
             <MenuItem value='function'>function</MenuItem>
           </Select>
+
           {paramsObj[key]?.value === 'transfer' && (
             <TextField
               sx={{ mx: 0.5 }}
@@ -636,4 +639,64 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
       );
       return invalidPromptCode;
   }
+}
+
+export function addVariableElements(type, key, varObj, setVarObj) {
+  function handleVarObjChange(e, index, name) {
+    e.preventDefault();
+    setVarObj((s) => {
+      const newArr = [...s];
+      newArr[index][name] = e.target.value;
+      return newArr;
+    });
+  }
+
+  return (
+    <List key={key}>
+      <ListItem>
+        <Typography
+          sx={{ marginRight: 2, marginLeft: 1, fontWeight: 500 }}
+          variant='body1'
+        >
+          {type}
+        </Typography>
+        <TextField
+          sx={{ width: 130 }}
+          size='small'
+          variant='outlined'
+          helperText='variable name'
+          value={varObj[key]?.name}
+          onChange={(e) => {
+            handleVarObjChange(e, key, 'name');
+          }}
+        />
+        <TextField
+          sx={{ width: 130, mx: 1 }}
+          size='small'
+          variant='outlined'
+          name='default'
+          helperText='initial value'
+          value={varObj[key]?.value}
+          onChange={(e) => {
+            handleVarObjChange(e, key, 'value');
+          }}
+        />
+      </ListItem>
+      <ListItem>
+        <TextField
+          sx={{ mx: 1, mb: 2 }}
+          size='small'
+          variant='outlined'
+          name='description'
+          placeholder='description'
+          value={varObj[key]?.description}
+          onChange={(e) => {
+            handleVarObjChange(e, key, 'description');
+          }}
+          fullWidth
+        />
+      </ListItem>
+      <Divider />
+    </List>
+  );
 }
