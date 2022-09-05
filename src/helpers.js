@@ -81,6 +81,15 @@ export function addInputElements(
     }
   }
 
+  function handleSwitch(e, index, name) {
+    let { checked } = e.target;
+    setMsgObj((s) => {
+      const newArr = [...s];
+      newArr[index][name] = checked;
+      return newArr;
+    });
+  }
+
   function handleVarSelect(e, index) {
     setMsgObj((s) => {
       const newArr = [...s];
@@ -194,7 +203,11 @@ export function addInputElements(
             </Typography>
           )}
           <TextField
-            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
+            sx={{
+              mx: 0.5,
+              backgroundColor: msgObj[key].useVar && '#eeeeee',
+              width: 120,
+            }}
             size='small'
             name='ordinal'
             value={msgObj[key]?.value}
@@ -254,7 +267,11 @@ export function addInputElements(
           )}
           <TextField
             size='small'
-            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
+            sx={{
+              mx: 0.5,
+              backgroundColor: msgObj[key].useVar && '#eeeeee',
+              width: 120,
+            }}
             name='number'
             value={msgObj[key]?.value}
             onChange={(e) => {
@@ -313,7 +330,11 @@ export function addInputElements(
           )}
           <TextField
             size='small'
-            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
+            sx={{
+              mx: 0.5,
+              backgroundColor: msgObj[key].useVar && '#eeeeee',
+              width: 120,
+            }}
             name='amount'
             value={msgObj[key]?.value}
             onChange={(e) => {
@@ -389,7 +410,11 @@ export function addInputElements(
             </Typography>
           )}
           <TextField
-            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
+            sx={{
+              mx: 0.5,
+              backgroundColor: msgObj[key].useVar && '#eeeeee',
+              width: 120,
+            }}
             placeholder='yyyymmdd'
             variant='outlined'
             size='small'
@@ -404,22 +429,13 @@ export function addInputElements(
           <Typography sx={{ marginLeft: 2 }} variant='body1'>
             playYear:
           </Typography>
-          <RadioGroup
-            row
+          <Switch
             name='playYear'
-            value={msgObj[key]?.playYear || false}
+            checked={msgObj[key]?.playYear || false}
             onChange={(e) => {
-              handleMsgObjChange(e, key, 'playYear');
+              handleSwitch(e, key, 'playYear');
             }}
-          >
-            <FormControlLabel
-              sx={{ marginLeft: 1 }}
-              value={true}
-              control={<Radio />}
-              label='true'
-            />
-            <FormControlLabel value={false} control={<Radio />} label='false' />
-          </RadioGroup>
+          ></Switch>
         </ListItem>
       );
       return dateCode;
@@ -536,7 +552,11 @@ export function addInputElements(
           )}
           <TextField
             id={`digit${key}`}
-            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
+            sx={{
+              mx: 0.5,
+              backgroundColor: msgObj[key].useVar && '#eeeeee',
+              width: 120,
+            }}
             size='small'
             name='digit'
             value={msgObj[key]?.value}
@@ -620,22 +640,13 @@ export function addInputElements(
           <Typography sx={{ marginLeft: 2 }} variant='body1'>
             isHijri:
           </Typography>
-          <RadioGroup
-            row
+          <Switch
             name='isHijri'
-            value={msgObj[key]?.isHijri || false}
+            checked={msgObj[key]?.isHijri || false}
             onChange={(e) => {
-              handleMsgObjChange(e, key, 'isHijri');
+              handleSwitch(e, key, 'isHijri');
             }}
-          >
-            <FormControlLabel
-              sx={{ marginLeft: 1 }}
-              value={true}
-              control={<Radio />}
-              label='true'
-            />
-            <FormControlLabel value={false} control={<Radio />} label='false' />
-          </RadioGroup>
+          ></Switch>
         </ListItem>
       );
       return monthCode;
@@ -685,7 +696,11 @@ export function addInputElements(
             </Typography>
           )}
           <TextField
-            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
+            sx={{
+              mx: 0.5,
+              backgroundColor: msgObj[key].useVar && '#eeeeee',
+              width: 120,
+            }}
             variant='outlined'
             placeholder='hhmm'
             size='small'
@@ -700,22 +715,13 @@ export function addInputElements(
           <Typography sx={{ marginLeft: 2 }} variant='body1'>
             is24:
           </Typography>
-          <RadioGroup
-            row
+          <Switch
             name='is24'
-            value={msgObj[key]?.is24 || false}
+            checked={msgObj[key]?.is24 || false}
             onChange={(e) => {
-              handleMsgObjChange(e, key, 'is24');
+              handleSwitch(e, key, 'is24');
             }}
-          >
-            <FormControlLabel
-              sx={{ marginLeft: 1 }}
-              value={true}
-              control={<Radio />}
-              label='true'
-            />
-            <FormControlLabel value={false} control={<Radio />} label='false' />
-          </RadioGroup>
+          ></Switch>
         </ListItem>
       );
       return timeCode;
