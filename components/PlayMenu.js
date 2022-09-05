@@ -234,22 +234,6 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               fontWeight: 405,
             }}
           >
-            invalidPrompt:
-          </Typography>
-          <TextField sx={{ width: 180, mx: 0.5 }} size='small' />
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
             maxRetries:
           </Typography>
           <Select size='small'>

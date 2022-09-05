@@ -50,6 +50,14 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
     switchTab();
   }, [tabValue]);
 
+  const paramsObjOptions = [
+    'terminator',
+    'maxRetries',
+    'invalidAction',
+    'timeoutAction',
+    'invalidPrompt',
+  ];
+
   function switchTab() {
     console.log('userVariables:', userVariables);
     let tabPanel1 = document.getElementById('tabPanel1');
@@ -200,7 +208,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
               }}
             >
               {userVariables
-                ?.filter((el) => el.type !== 'prompt')
+                ?.filter((el) => el.type == 'number')
                 .map((el, i) => {
                   return (
                     <MenuItem key={i} value={el.name}>
@@ -352,7 +360,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
               })}
             </Select>
           </ListItem>
-          {/* <pre>{JSON.stringify(paramsObj, undefined, 2)}</pre> */}
+          <pre>{JSON.stringify(paramsObj, undefined, 2)}</pre>
           <ListItem>
             <Typography
               sx={{
@@ -374,11 +382,24 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
                 setParamsObjType(e.target.value);
               }}
             >
-              <MenuItem value='terminator'>terminator</MenuItem>
-              <MenuItem value='maxRetries'>maxRetries</MenuItem>
-              <MenuItem value='invalidAction'>invalidAction</MenuItem>
-              <MenuItem value='timeoutAction'>timeoutAction</MenuItem>
-              <MenuItem value='invalidPrompt'>invalidPrompt</MenuItem>
+              {
+                // remove params already added
+                paramsObj.length > 0
+                  ? paramsObjOptions
+                      .filter((el) => {
+                        return !paramsObj.some((e) => e.type == el);
+                      })
+                      .map((el, i) => (
+                        <MenuItem key={i} value={el}>
+                          {el}
+                        </MenuItem>
+                      ))
+                  : paramsObjOptions.map((el, i) => (
+                      <MenuItem key={i} value={el}>
+                        {el}
+                      </MenuItem>
+                    ))
+              }
             </Select>
             <Tooltip title='Add'>
               <AddBoxRoundedIcon
