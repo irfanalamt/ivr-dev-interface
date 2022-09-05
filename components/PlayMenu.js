@@ -22,6 +22,39 @@ import {
 import { useEffect, useState } from 'react';
 
 const PlayMenu = ({ shape, handleCloseDrawer }) => {
+  const [tabValue, setTabValue] = useState(0);
+  const [menuObj, setMenuObj] = useState(shape.userValues || {});
+
+  useEffect(() => {
+    switchTab();
+  }, [tabValue]);
+
+  function switchTab() {
+    let tabPanel1 = document.getElementById('tabPanel1');
+    let tabPanel2 = document.getElementById('tabPanel2');
+    if (tabValue === 0) {
+      tabPanel1.style.display = 'block';
+      tabPanel2.style.display = 'none';
+      return;
+    }
+    if (tabValue === 1) {
+      tabPanel1.style.display = 'none';
+      tabPanel2.style.display = 'block';
+    }
+  }
+
+  function handleMenuObjChange(value, name) {
+    setMenuObj((s) => {
+      const newArr = { ...s };
+      newArr[name] = value;
+      return newArr;
+    });
+  }
+
+  function saveUserValues() {
+    shape.setText(menuObj.menuId);
+    shape.setUserValues(menuObj);
+  }
   return (
     <>
       <List sx={{ minWidth: 300 }}>
@@ -46,7 +79,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               size='small'
               variant='contained'
               color='success'
-              //onClick={saveUserValues}
+              onClick={saveUserValues}
             >
               <SaveRoundedIcon sx={{ fontSize: 20 }} />
             </Button>
@@ -68,262 +101,115 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
             Play Menu
           </Typography>
         </ListItem>
-        <ListItem sx={{ mt: 2 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
+        <ListItem>
+          <Tabs
+            sx={{ marginX: 'auto' }}
+            value={tabValue}
+            onChange={(e, newVal) => {
+              setTabValue(newVal);
             }}
           >
-            menuId:
-          </Typography>
-          <TextField sx={{ width: 180, mx: 0.5 }} size='small' />
+            <Tab label='General' />
+            <Tab label='Items' />
+          </Tabs>
         </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            desc:
-          </Typography>
-          <TextField size='small' sx={{ mx: 0.5 }} />
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            transferPoint:
-          </Typography>
-          <TextField size='small' sx={{ mx: 0.5, width: 120 }} />
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            invalidAction:
-          </Typography>
-          <Select size='small' defaultValue={''}>
-            <MenuItem value=''> </MenuItem>
-            <MenuItem value='disconnect'>disconnect</MenuItem>
-            <MenuItem value='transfer'>transfer</MenuItem>
-            <MenuItem value='function'>function</MenuItem>
-          </Select>
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            invalidTransferPoint:
-          </Typography>
-          <TextField size='small' sx={{ mx: 0.5, width: 120 }} />
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            timeoutAction:
-          </Typography>
-          <Select size='small' defaultValue={''}>
-            <MenuItem value=''> </MenuItem>
-            <MenuItem value='disconnect'>disconnect</MenuItem>
-            <MenuItem value='transfer'>transfer</MenuItem>
-            <MenuItem value='function'>function</MenuItem>
-          </Select>
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            timeoutTransferPoint:
-          </Typography>
-          <TextField size='small' sx={{ mx: 0.5, width: 120 }} />
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            invalidPrompt:
-          </Typography>
-          <TextField sx={{ width: 180, mx: 0.5 }} size='small' />
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            timeoutPrompt:
-          </Typography>
-          <TextField sx={{ width: 180, mx: 0.5 }} size='small' />
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            maxRetries:
-          </Typography>
-          <Select size='small'>
-            {
-              // Array of 1..10
-              [...Array(11).keys()].slice(1).map((el, i) => {
-                return (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                );
-              })
-            }
-          </Select>
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            menuTimeout:
-          </Typography>
-          <Select size='small'>
-            {
-              // Array of 1..10
-              [...Array(11).keys()].slice(1).map((el, i) => {
-                return (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                );
-              })
-            }
-          </Select>
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            previousMenuId:
-          </Typography>
-          <TextField sx={{ width: 180, mx: 0.5 }} size='small' />
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            ignoreBuffer:
-          </Typography>
-          <Switch sx={{ mx: 0.5 }}></Switch>
-        </ListItem>
-        <ListItem sx={{ mx: 0.5 }}>
-          <Typography
-            variant='subtitle2'
-            sx={{
-              marginX: 1,
-              fontSize: 16,
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 0.5,
-              fontWeight: 405,
-            }}
-          >
-            logDb:
-          </Typography>
-          <Switch sx={{ mx: 0.5 }}></Switch>
-        </ListItem>
+        <Box id='tabPanel1'>
+          <pre>{JSON.stringify(menuObj, undefined, 2)}</pre>
+          <ListItem sx={{ mt: 2 }}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                boxShadow: 1,
+                px: 1,
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              menuId:
+            </Typography>
+            <TextField
+              value={menuObj.menuId || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'menuId');
+              }}
+              sx={{ width: 180, mx: 0.5 }}
+              size='small'
+            />
+          </ListItem>
+          <ListItem sx={{ mx: 0.5 }}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                boxShadow: 1,
+                px: 1,
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              desc:
+            </Typography>
+            <TextField
+              value={menuObj.desc || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'desc');
+              }}
+              size='small'
+              sx={{ mx: 0.5 }}
+            />
+          </ListItem>
+
+          <ListItem sx={{ mx: 0.5 }}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                boxShadow: 1,
+                px: 1,
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              ignoreBuffer:
+            </Typography>
+            <Switch
+              checked={menuObj.ignoreBuffer || false}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.checked, 'ignoreBuffer');
+              }}
+              sx={{ mx: 0.5 }}
+            ></Switch>
+          </ListItem>
+          <ListItem sx={{ mx: 0.5 }}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                boxShadow: 1,
+                px: 1,
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              logDb:
+            </Typography>
+            <Switch
+              checked={menuObj.logDb || false}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.checked, 'logDb');
+              }}
+              sx={{ mx: 0.5 }}
+            ></Switch>
+          </ListItem>
+        </Box>
+        <Box id='tabPanel2' sx={{ display: 'none' }}>
+          <h2>Items</h2>
+        </Box>
       </List>
     </>
   );
