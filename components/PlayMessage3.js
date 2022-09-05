@@ -229,7 +229,7 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
             />
           </Tooltip>
         </ListItem>
-        <pre>{JSON.stringify(msgObj, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
         <List>
           {msgObj?.map((el, i) => {
             return addInputElements(

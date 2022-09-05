@@ -199,13 +199,15 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
                 setResultName(e.target.value);
               }}
             >
-              {userVariables?.map((el, i) => {
-                return (
-                  <MenuItem key={i} value={el.name}>
-                    {el.name}
-                  </MenuItem>
-                );
-              })}
+              {userVariables
+                ?.filter((el) => el.type !== 'prompt')
+                .map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
             </Select>
           ) : (
             <Typography sx={{ color: '#f44336', fontSize: 18 }} variant='h6'>
@@ -277,7 +279,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
               />
             </Tooltip>
           </ListItem>
-          <pre>{JSON.stringify(msgObj, null, 2)}</pre>{' '}
+          {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre>{' '} */}
           <List>
             {msgObj?.map((el, i) => {
               return addInputElements(
@@ -350,7 +352,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
               })}
             </Select>
           </ListItem>
-          <pre>{JSON.stringify(paramsObj, undefined, 2)}</pre>
+          {/* <pre>{JSON.stringify(paramsObj, undefined, 2)}</pre> */}
           <ListItem>
             <Typography
               sx={{

@@ -74,6 +74,7 @@ export function addInputElements(
       setMsgObj((s) => {
         const newArr = [...s];
         newArr[index].useVar = false;
+        newArr[index].value = '';
         return newArr;
       });
       return;
@@ -134,7 +135,7 @@ export function addInputElements(
             </Typography>
           )}
           <TextField
-            sx={{ mx: 0.5 }}
+            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
             size='small'
             variant='outlined'
             name='prompt'
@@ -143,6 +144,7 @@ export function addInputElements(
               handleMsgObjChange(e, key);
               handleInputValidation('prompt', e);
             }}
+            disabled={msgObj[key].useVar}
           />
         </ListItem>
       );
@@ -192,7 +194,7 @@ export function addInputElements(
             </Typography>
           )}
           <TextField
-            sx={{ mx: 0.5 }}
+            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
             size='small'
             name='ordinal'
             value={msgObj[key]?.value}
@@ -200,6 +202,7 @@ export function addInputElements(
               handleMsgObjChange(e, key);
               handleInputValidation('ordinal', e);
             }}
+            disabled={msgObj[key].useVar}
           />
         </ListItem>
       );
@@ -251,13 +254,14 @@ export function addInputElements(
           )}
           <TextField
             size='small'
-            sx={{ mx: 0.5 }}
+            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
             name='number'
             value={msgObj[key]?.value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
               handleInputValidation('number', e);
             }}
+            disabled={msgObj[key].useVar}
           />
         </ListItem>
       );
@@ -309,13 +313,14 @@ export function addInputElements(
           )}
           <TextField
             size='small'
-            sx={{ mx: 0.5 }}
+            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
             name='amount'
             value={msgObj[key]?.value}
             onChange={(e) => {
               handleMsgObjChange(e, key);
               handleInputValidation('amount', e);
             }}
+            disabled={msgObj[key].useVar}
           />
           <Typography sx={{ marginX: 1 }} variant='body1'>
             currency:
@@ -384,7 +389,7 @@ export function addInputElements(
             </Typography>
           )}
           <TextField
-            sx={{ mx: 0.5 }}
+            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
             placeholder='yyyymmdd'
             variant='outlined'
             size='small'
@@ -394,6 +399,7 @@ export function addInputElements(
               handleMsgObjChange(e, key);
               handleInputValidation('date', e);
             }}
+            disabled={msgObj[key].useVar}
           />
           <Typography sx={{ marginLeft: 2 }} variant='body1'>
             playYear:
@@ -530,7 +536,7 @@ export function addInputElements(
           )}
           <TextField
             id={`digit${key}`}
-            sx={{ mx: 0.5 }}
+            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
             size='small'
             name='digit'
             value={msgObj[key]?.value}
@@ -538,6 +544,7 @@ export function addInputElements(
               handleMsgObjChange(e, key);
               handleInputValidation('digit', e);
             }}
+            disabled={msgObj[key].useVar}
           />
         </ListItem>
       );
@@ -678,7 +685,7 @@ export function addInputElements(
             </Typography>
           )}
           <TextField
-            sx={{ mx: 0.5 }}
+            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
             variant='outlined'
             placeholder='hhmm'
             size='small'
@@ -688,6 +695,7 @@ export function addInputElements(
               handleMsgObjChange(e, key);
               handleInputValidation('time', e);
             }}
+            disabled={msgObj[key].useVar}
           />
           <Typography sx={{ marginLeft: 2 }} variant='body1'>
             is24:
@@ -765,6 +773,9 @@ export function checkValidity(name, e) {
       let timeRegex = /^([0-1]?[0-9]|2[0-3])[0-5][0-9]$/;
       if (value == '' || value == null) return 'time is required';
       if (!timeRegex.test(value)) return 'time not in valid format';
+      return -1;
+
+    default:
       return -1;
   }
 }
