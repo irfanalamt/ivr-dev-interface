@@ -20,10 +20,14 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 
 const PlayMenu = ({ shape, handleCloseDrawer }) => {
   const [tabValue, setTabValue] = useState(0);
   const [menuObj, setMenuObj] = useState(shape.userValues || {});
+  const [paramSelected, setParamSelected] = useState('');
+  const [paramSelectedList, setParamSelectedList] = useState([]);
 
   useEffect(() => {
     switchTab();
@@ -55,6 +59,22 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
     shape.setText(menuObj.menuId);
     shape.setUserValues(menuObj);
   }
+
+  const optionalParamsList = [
+    'invalidAction',
+    'timeoutAction',
+    'invalidPrompt',
+    'timeoutPrompt',
+    'maxRetries',
+    'previousMenuId',
+  ];
+
+  function handleAddParameter() {
+    setParamSelectedList((s) => {
+      return [...s, { [paramSelected]: '' }];
+    });
+  }
+
   return (
     <>
       <List sx={{ minWidth: 300 }}>
@@ -205,6 +225,60 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               }}
               sx={{ mx: 0.5 }}
             ></Switch>
+          </ListItem>
+          <ListItem>
+            <Typography
+              sx={{
+                fontWeight: 410,
+                marginTop: 4,
+                borderBottom: 1,
+              }}
+              variant='subtitle1'
+            >
+              Optional Params
+            </Typography>
+          </ListItem>
+          <pre>{JSON.stringify(paramSelectedList, undefined, 2)}</pre>
+          <ListItem>
+            <Select
+              value={paramSelected}
+              onChange={(e) => {
+                setParamSelected(e.target.value);
+              }}
+              size='small'
+            >
+              {optionalParamsList.map((el, i) => (
+                <MenuItem key={i} value={el}>
+                  {el}
+                </MenuItem>
+              ))}
+            </Select>
+            <Tooltip title='Add parameter'>
+              <AddCircleOutlineRoundedIcon
+                sx={{
+                  mx: 1,
+                  ml: 2,
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 28,
+                  height: 28,
+                }}
+                color='success'
+                onclick={handleAddParameter}
+              />
+            </Tooltip>
+            <Tooltip title='Remove parameter'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  mx: 0.5,
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 28,
+                  height: 28,
+                }}
+                color='error'
+              />
+            </Tooltip>
           </ListItem>
         </Box>
         <Box id='tabPanel2' sx={{ display: 'none' }}>
