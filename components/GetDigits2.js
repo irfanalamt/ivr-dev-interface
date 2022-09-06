@@ -131,7 +131,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
 
   return (
     <>
-      <List>
+      <List sx={{ minWidth: 370 }}>
         <ListItem>
           <Tooltip title='CLOSE'>
             <Button
@@ -176,7 +176,10 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
           </Typography>
         </ListItem>
         <ListItem sx={{ marginTop: 1 }}>
-          <Typography variant='button' sx={{ marginX: 1, fontSize: 15 }}>
+          <Typography
+            variant='button'
+            sx={{ marginX: 'auto', fontSize: 16, width: '40%' }}
+          >
             Name:
           </Typography>
           <TextField
@@ -197,8 +200,8 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
           ></Typography>
         </ListItem>
         <ListItem>
-          <Typography variant='button' sx={{ marginX: 1, fontSize: 15 }}>
-            Result Variable =
+          <Typography variant='button' sx={{ marginX: 1, width: '40%' }}>
+            Result Variable:
           </Typography>
 
           {userVariables.length > 0 ? (
@@ -207,6 +210,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
               onChange={(e) => {
                 setResultName(e.target.value);
               }}
+              size='small'
             >
               {userVariables
                 ?.filter((el) => el.type == 'number')
@@ -315,7 +319,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
         </Box>
         <Box sx={{ display: 'none' }} id='tabPanel2'>
           <ListItem sx={{ marginTop: 2 }}>
-            <Typography sx={{ fontSize: 18 }} variant='h6'>
+            <Typography sx={{ fontSize: 18, width: '30%' }} variant='h6'>
               minDigits:
             </Typography>
             <Select
@@ -340,7 +344,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
             </Select>
           </ListItem>
           <ListItem sx={{ marginTop: 2 }}>
-            <Typography sx={{ fontSize: 18 }} variant='h6'>
+            <Typography sx={{ fontSize: 18, width: '30%' }} variant='h6'>
               maxDigits:
             </Typography>
             <Select
@@ -377,7 +381,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
           <ListItem>
             <Select
               size='small'
-              sx={{ marginX: 2 }}
+              sx={{ marginX: 2, minWidth: '40%' }}
               value={paramsObjType}
               onChange={(e) => {
                 setParamsObjType(e.target.value);

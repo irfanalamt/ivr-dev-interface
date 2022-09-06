@@ -12,6 +12,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Switch,
   Tab,
   Tabs,
   TextField,
@@ -256,33 +257,18 @@ const PlayMessage = ({ shape, handleCloseDrawer, userVariables }) => {
       </Box>
       <Box id='tabPanel2' sx={{ display: 'none' }}>
         <ListItem>
-          <Typography sx={{ fontSize: 18 }} variant='h6'>
+          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
             interruptible:
           </Typography>
-          <RadioGroup
-            value={interruptible}
-            row
-            name='interruptible-radio-buttons-group'
+          <Switch
+            checked={interruptible}
             onChange={(e) => {
-              setInterruptible(e.target.value);
+              setInterruptible(e.target.checked);
             }}
-          >
-            <FormControlLabel
-              sx={{ marginX: 1 }}
-              value={true}
-              control={<Radio />}
-              label='true'
-            />
-            <FormControlLabel
-              sx={{ marginX: 1 }}
-              value={false}
-              control={<Radio />}
-              label='false'
-            />
-          </RadioGroup>
+          ></Switch>
         </ListItem>
         <ListItem sx={{ marginTop: 3 }}>
-          <Typography sx={{ fontSize: 18 }} variant='h6'>
+          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
             repeatOption:
           </Typography>
           <Select

@@ -78,6 +78,16 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
     });
     setParamSelected('');
   }
+  function handleRemoveParameter() {
+    if (paramSelectedList.length < 1) return;
+
+    setParamSelectedList((s) => {
+      const newArr = [...s];
+      newArr.pop();
+      return newArr;
+    });
+  }
+
   function addParamsElements(type, key) {
     switch (type) {
       case 'invalidAction':
@@ -448,6 +458,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           {/* <pre>{JSON.stringify(paramSelectedList, undefined, 2)}</pre> */}
           <ListItem>
             <Select
+              sx={{ width: '35%' }}
               value={paramSelected}
               onChange={(e) => {
                 setParamSelected(e.target.value);
@@ -493,6 +504,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
                   height: 28,
                 }}
                 color='error'
+                onClick={handleRemoveParameter}
               />
             </Tooltip>
           </ListItem>
