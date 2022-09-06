@@ -25,9 +25,11 @@ import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutl
 
 const PlayMenu = ({ shape, handleCloseDrawer }) => {
   const [tabValue, setTabValue] = useState(0);
-  const [menuObj, setMenuObj] = useState(shape.userValues || {});
+  const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
   const [paramSelected, setParamSelected] = useState('');
-  const [paramSelectedList, setParamSelectedList] = useState([]);
+  const [paramSelectedList, setParamSelectedList] = useState(
+    shape.userValues?.paramSelectedList || []
+  );
 
   useEffect(() => {
     switchTab();
@@ -56,8 +58,8 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
   }
 
   function saveUserValues() {
-    shape.setText(menuObj.menuId);
-    shape.setUserValues(menuObj);
+    shape.setText(menuObj.menuId || 'playMenu');
+    shape.setUserValues({ params: menuObj, paramSelectedList });
   }
 
   const optionalParamsList = [
@@ -70,14 +72,223 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
   ];
 
   function handleAddParameter() {
+    console.log('handleaddparameter');
     setParamSelectedList((s) => {
-      return [...s, { [paramSelected]: '' }];
+      return [...s, `${paramSelected}`];
     });
+    setParamSelected('');
+  }
+  function addParamsElements(type, key) {
+    switch (type) {
+      case 'invalidAction':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                borderRadius: 0.5,
+                fontWeight: 405,
+                width: '35%',
+              }}
+            >
+              invalidAction:
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Select
+                value={menuObj.invalidAction || ''}
+                onChange={(e) => {
+                  handleMenuObjChange(e.target.value, 'invalidAction');
+                }}
+                size='small'
+              >
+                <MenuItem value='disconnect'>Disconnect</MenuItem>
+                <MenuItem value='transfer'>Transfer</MenuItem>
+                <MenuItem value='function'>Function</MenuItem>
+              </Select>
+              {menuObj.invalidAction === 'transfer' && (
+                <TextField
+                  placeholder='transferPoint'
+                  sx={{ my: 0.5, width: 150 }}
+                  size='small'
+                />
+              )}
+              {menuObj.invalidAction === 'function' && (
+                <TextField
+                  placeholder='functionName'
+                  sx={{ my: 0.5, width: 150 }}
+                  size='small'
+                />
+              )}
+            </Box>
+          </ListItem>
+        );
+
+      case 'timeoutAction':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+
+                borderRadius: 0.5,
+                fontWeight: 405,
+                width: '35%',
+              }}
+            >
+              timeoutAction:
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Select
+                value={menuObj.timeoutAction || ''}
+                onChange={(e) => {
+                  handleMenuObjChange(e.target.value, 'timeoutAction');
+                }}
+                size='small'
+              >
+                <MenuItem value='disconnect'>Disconnect</MenuItem>
+                <MenuItem value='transfer'>Transfer</MenuItem>
+                <MenuItem value='function'>Function</MenuItem>
+              </Select>
+              {menuObj.timeoutAction === 'transfer' && (
+                <TextField
+                  placeholder='transferPoint'
+                  sx={{ my: 0.5, width: 150 }}
+                  size='small'
+                />
+              )}
+              {menuObj.timeoutAction === 'function' && (
+                <TextField
+                  placeholder='functionName'
+                  sx={{ my: 0.5, width: 150 }}
+                  size='small'
+                />
+              )}
+            </Box>
+          </ListItem>
+        );
+      case 'timeoutPrompt':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              timeoutPrompt:
+            </Typography>
+            <TextField
+              value={menuObj.timeoutPrompt || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'timeoutPrompt');
+              }}
+              sx={{ mx: 0.5 }}
+              size='small'
+            />
+          </ListItem>
+        );
+      case 'invalidPrompt':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              invalidPrompt:
+            </Typography>
+            <TextField
+              value={menuObj.invalidPrompt || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'invalidPrompt');
+              }}
+              sx={{ mx: 0.5 }}
+              size='small'
+            />
+          </ListItem>
+        );
+      case 'maxRetries':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              maxRetries:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ marginX: 2 }}
+              value={menuObj.maxRetries || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'maxRetries');
+              }}
+            >
+              {
+                // Array of 1..10
+                [...Array(11).keys()].slice(1).map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el}>
+                      {el}
+                    </MenuItem>
+                  );
+                })
+              }
+            </Select>
+          </ListItem>
+        );
+      case 'previousMenuId':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              previousMenuId:
+            </Typography>
+            <TextField
+              value={menuObj.previousMenuId || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'previousMenuId');
+              }}
+              sx={{ mx: 0.5 }}
+              size='small'
+            />
+          </ListItem>
+        );
+    }
   }
 
   return (
     <>
-      <List sx={{ minWidth: 300 }}>
+      <List>
         <ListItem>
           <Tooltip title='CLOSE'>
             <Button
@@ -134,15 +345,14 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           </Tabs>
         </ListItem>
         <Box id='tabPanel1'>
-          <pre>{JSON.stringify(menuObj, undefined, 2)}</pre>
+          {/* <pre>{JSON.stringify(menuObj, undefined, 2)}</pre> */}
           <ListItem sx={{ mt: 2 }}>
             <Typography
               variant='subtitle2'
               sx={{
                 marginX: 1,
                 fontSize: 16,
-                boxShadow: 1,
-                px: 1,
+                width: '35%',
                 borderRadius: 0.5,
                 fontWeight: 405,
               }}
@@ -154,18 +364,19 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'menuId');
               }}
-              sx={{ width: 180, mx: 0.5 }}
+              sx={{
+                mx: 0.5,
+              }}
               size='small'
             />
           </ListItem>
-          <ListItem sx={{ mx: 0.5 }}>
+          <ListItem sx={{ my: 0.5 }}>
             <Typography
               variant='subtitle2'
               sx={{
                 marginX: 1,
                 fontSize: 16,
-                boxShadow: 1,
-                px: 1,
+                width: '35%',
                 borderRadius: 0.5,
                 fontWeight: 405,
               }}
@@ -182,14 +393,13 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
             />
           </ListItem>
 
-          <ListItem sx={{ mx: 0.5 }}>
+          <ListItem sx={{ my: 0.5 }}>
             <Typography
               variant='subtitle2'
               sx={{
                 marginX: 1,
                 fontSize: 16,
-                boxShadow: 1,
-                px: 1,
+                width: '35%',
                 borderRadius: 0.5,
                 fontWeight: 405,
               }}
@@ -201,17 +411,15 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               onChange={(e) => {
                 handleMenuObjChange(e.target.checked, 'ignoreBuffer');
               }}
-              sx={{ mx: 0.5 }}
             ></Switch>
           </ListItem>
-          <ListItem sx={{ mx: 0.5 }}>
+          <ListItem sx={{ my: 0.5 }}>
             <Typography
               variant='subtitle2'
               sx={{
                 marginX: 1,
                 fontSize: 16,
-                boxShadow: 1,
-                px: 1,
+                width: '35%',
                 borderRadius: 0.5,
                 fontWeight: 405,
               }}
@@ -223,7 +431,6 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               onChange={(e) => {
                 handleMenuObjChange(e.target.checked, 'logDb');
               }}
-              sx={{ mx: 0.5 }}
             ></Switch>
           </ListItem>
           <ListItem>
@@ -238,7 +445,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               Optional Params
             </Typography>
           </ListItem>
-          <pre>{JSON.stringify(paramSelectedList, undefined, 2)}</pre>
+          {/* <pre>{JSON.stringify(paramSelectedList, undefined, 2)}</pre> */}
           <ListItem>
             <Select
               value={paramSelected}
@@ -247,11 +454,20 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               }}
               size='small'
             >
-              {optionalParamsList.map((el, i) => (
-                <MenuItem key={i} value={el}>
-                  {el}
-                </MenuItem>
-              ))}
+              {paramSelectedList.length > 0
+                ? optionalParamsList
+                    .filter((el) => !paramSelectedList.includes(el))
+                    .map((el, i) => (
+                      <MenuItem key={i} value={el}>
+                        {el}
+                      </MenuItem>
+                    ))
+                : optionalParamsList.map((el, i) => (
+                    <MenuItem key={i} value={el}>
+                      {el}
+                    </MenuItem>
+                  ))}
+              {}
             </Select>
             <Tooltip title='Add parameter'>
               <AddCircleOutlineRoundedIcon
@@ -264,7 +480,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
                   height: 28,
                 }}
                 color='success'
-                onclick={handleAddParameter}
+                onClick={handleAddParameter}
               />
             </Tooltip>
             <Tooltip title='Remove parameter'>
@@ -280,6 +496,9 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               />
             </Tooltip>
           </ListItem>
+          <List>
+            {paramSelectedList.map((el, i) => addParamsElements(el, i))}
+          </List>
         </Box>
         <Box id='tabPanel2' sx={{ display: 'none' }}>
           <h2>Items</h2>

@@ -118,6 +118,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
     setParamsObj((s) => {
       return [...s, { type: paramsObjType, value: '' }];
     });
+    setParamsObjType('');
   }
   function removeParamsInput() {
     if (paramsObj === null || paramsObj === undefined) return;
@@ -433,9 +434,9 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
             </Tooltip>
           </ListItem>
           <List>
-            {paramsObj?.map((el, i) => {
-              return addParamsElements(el.type, i, paramsObj, setParamsObj);
-            })}
+            {paramsObj?.map((el, i) =>
+              addParamsElements(el.type, i, paramsObj, setParamsObj)
+            )}
           </List>
         </Box>
       </List>
