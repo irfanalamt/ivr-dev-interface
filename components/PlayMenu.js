@@ -5,6 +5,7 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
   Button,
+  Divider,
   FormControlLabel,
   List,
   ListItem,
@@ -22,6 +23,8 @@ import {
 import { useEffect, useState } from 'react';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 
 const PlayMenu = ({ shape, handleCloseDrawer }) => {
   const [tabValue, setTabValue] = useState(0);
@@ -30,6 +33,8 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
   const [paramSelectedList, setParamSelectedList] = useState(
     shape.userValues?.paramSelectedList || []
   );
+  const [itemsObj, setItemsObj] = useState(shape.userValues?.items || []);
+  const [itemSelected, setItemSelected] = useState('');
 
   useEffect(() => {
     switchTab();
@@ -59,7 +64,11 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
 
   function saveUserValues() {
     shape.setText(menuObj.menuId || 'playMenu');
-    shape.setUserValues({ params: menuObj, paramSelectedList });
+    shape.setUserValues({
+      params: menuObj,
+      paramSelectedList,
+      items: itemsObj,
+    });
   }
 
   const optionalParamsList = [
@@ -86,6 +95,132 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
       newArr.pop();
       return newArr;
     });
+  }
+  function handleAddItem() {
+    setItemsObj((s) => {
+      return [...s, { digit: itemSelected }];
+    });
+    setItemSelected('');
+  }
+  function handleRemoveItem(e, key) {
+    setItemsObj((s) => {
+      const newArr = [...s];
+      newArr.splice(key, 1);
+      return newArr;
+    });
+  }
+
+  function handleItemsObjChange(value, key, name) {
+    setItemsObj((s) => {
+      const newArr = [...s];
+      newArr[key][name] = value;
+      return newArr;
+    });
+  }
+
+  function addItemElements(digit, key) {
+    return (
+      <List key={key}>
+        <ListItem>
+          <Typography
+            sx={{
+              boxShadow: 1,
+              px: 1,
+              borderRadius: 1,
+              backgroundColor: '#f1f8e9',
+            }}
+            variant='h6'
+          >
+            {digit}
+          </Typography>
+        </ListItem>
+        <ListItem>
+          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+            action:
+          </Typography>
+          <TextField
+            value={itemsObj[key].action || ''}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.value, key, 'action');
+            }}
+            sx={{ mx: 1 }}
+            size='small'
+          />
+        </ListItem>
+        <ListItem>
+          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+            prompt:
+          </Typography>
+          <TextField
+            value={itemsObj[key].prompt || ''}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.value, key, 'prompt');
+            }}
+            sx={{ mx: 1 }}
+            size='small'
+          />
+        </ListItem>
+        <ListItem>
+          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+            disable:
+          </Typography>
+          <Switch
+            checked={itemsObj[key].disable || false}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.checked, key, 'disable');
+            }}
+            sx={{ mx: 0.5 }}
+          ></Switch>
+        </ListItem>
+        <ListItem>
+          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+            silent:
+          </Typography>
+          <Switch
+            checked={itemsObj[key].silent || false}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.checked, key, 'silent');
+            }}
+            sx={{ mx: 0.5 }}
+          ></Switch>
+        </ListItem>
+        <ListItem>
+          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+            skip:
+          </Typography>
+          <Select
+            value={itemsObj[key].skip || ''}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.value, key, 'skip');
+            }}
+            size='small'
+            sx={{ minWidth: '25%' }}
+          >
+            {[...Array(10).keys()].slice(1).map((el, i) => (
+              <MenuItem key={i} value={el}>
+                {el}
+              </MenuItem>
+            ))}
+          </Select>
+          <Tooltip title='Remove item' placement='top-start'>
+            <RemoveCircleIcon
+              sx={{
+                ml: 'auto',
+                color: '#ef5350',
+                boxShadow: 1,
+                width: 'max-content',
+                borderRadius: 1,
+                fontSize: '1.5rem',
+              }}
+              onClick={(e) => {
+                handleRemoveItem(e, key);
+              }}
+            />
+          </Tooltip>
+        </ListItem>
+        <Divider sx={{ my: 2 }} />
+      </List>
+    );
   }
 
   function addParamsElements(type, key) {
@@ -298,7 +433,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
 
   return (
     <>
-      <List>
+      <List sx={{ minWidth: 350 }}>
         <ListItem>
           <Tooltip title='CLOSE'>
             <Button
@@ -458,7 +593,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           {/* <pre>{JSON.stringify(paramSelectedList, undefined, 2)}</pre> */}
           <ListItem>
             <Select
-              sx={{ width: '35%' }}
+              sx={{ minWidth: '35%' }}
               value={paramSelected}
               onChange={(e) => {
                 setParamSelected(e.target.value);
@@ -478,7 +613,6 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
                       {el}
                     </MenuItem>
                   ))}
-              {}
             </Select>
             <Tooltip title='Add parameter'>
               <AddCircleOutlineRoundedIcon
@@ -513,7 +647,64 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           </List>
         </Box>
         <Box id='tabPanel2' sx={{ display: 'none' }}>
-          <h2>Items</h2>
+          <ListItem sx={{ mt: 2 }}>
+            <Typography
+              sx={{ width: '35%', fontSize: 17, fontWeight: 405 }}
+              variant='subtitle1'
+            >
+              Select Item
+            </Typography>
+            <Select
+              value={itemSelected}
+              onChange={(e) => {
+                setItemSelected(e.target.value);
+              }}
+              sx={{ mx: 1 }}
+              size='small'
+            >
+              {itemsObj.length > 0
+                ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*']
+                    .filter((el) => !itemsObj.some((e) => e.digit == el))
+                    .map((el, i) => (
+                      <MenuItem key={i} value={el}>
+                        {el}
+                      </MenuItem>
+                    ))
+                : [
+                    '0',
+                    '1',
+                    '2',
+                    '3',
+                    '4',
+                    '5',
+                    '6',
+                    '7',
+                    '8',
+                    '9',
+                    '#',
+                    '*',
+                  ].map((el, i) => (
+                    <MenuItem key={i} value={el}>
+                      {el}
+                    </MenuItem>
+                  ))}
+            </Select>
+            <Tooltip title='Add Item' placement='right-start'>
+              <AddCircleIcon
+                sx={{
+                  mx: 2,
+                  color: '#4caf50',
+                  boxShadow: 1,
+                  width: 'max-content',
+                  borderRadius: 1,
+                  fontSize: '1.5rem',
+                }}
+                onClick={handleAddItem}
+              />
+            </Tooltip>
+          </ListItem>
+          {/* <pre>{JSON.stringify(itemsObj, null, 2)}</pre> */}
+          {itemsObj?.map((el, i) => addItemElements(el.digit, i))}
         </Box>
       </List>
     </>
