@@ -123,11 +123,17 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
     let errorMessage = checkValidity(type, e);
     if (errorMessage !== -1) {
       e.target.style.backgroundColor = '#ffebee';
-      setErrorObj({ [name]: errorMessage });
+      setErrorObj((s) => {
+        return { ...s, [name]: errorMessage };
+      });
       return;
     }
     // no error condition
-    setErrorObj({ [name]: '' });
+    setErrorObj((s) => {
+      const newObj = { ...s };
+      delete newObj[name];
+      return newObj;
+    });
     e.target.style.backgroundColor = '#f1f8e9';
   }
 
@@ -148,7 +154,10 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           </Typography>
         </ListItem>
         <ListItem>
-          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+          <Typography
+            sx={{ width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
             action:
           </Typography>
           <TextField
@@ -163,7 +172,10 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           />
         </ListItem>
         <ListItem>
-          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+          <Typography
+            sx={{ width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
             prompt:
           </Typography>
           <TextField
@@ -178,7 +190,10 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           />
         </ListItem>
         <ListItem>
-          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+          <Typography
+            sx={{ width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
             disable:
           </Typography>
           <Switch
@@ -190,7 +205,10 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           ></Switch>
         </ListItem>
         <ListItem>
-          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+          <Typography
+            sx={{ width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
             silent:
           </Typography>
           <Switch
@@ -202,7 +220,10 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           ></Switch>
         </ListItem>
         <ListItem>
-          <Typography sx={{ width: '35%' }} variant='subtitle1'>
+          <Typography
+            sx={{ width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
             skip:
           </Typography>
           <Select
@@ -601,6 +622,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               }}
             ></Switch>
           </ListItem>
+          {/* <pre>{JSON.stringify(errorObj, undefined, 2)}</pre> */}
           <ListItem>
             <Typography
               sx={{
