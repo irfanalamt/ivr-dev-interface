@@ -25,6 +25,7 @@ import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRou
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { checkValidity } from '../src/helpers';
 
 const PlayMenu = ({ shape, handleCloseDrawer }) => {
   const [tabValue, setTabValue] = useState(0);
@@ -35,6 +36,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
   );
   const [itemsObj, setItemsObj] = useState(shape.userValues?.items || []);
   const [itemSelected, setItemSelected] = useState('');
+  const [errorObj, setErrorObj] = useState({});
 
   useEffect(() => {
     switchTab();
@@ -117,6 +119,17 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
       return newArr;
     });
   }
+  function handleValidation(e, name, type) {
+    let errorMessage = checkValidity(type, e);
+    if (errorMessage !== -1) {
+      e.target.style.backgroundColor = '#ffebee';
+      setErrorObj({ [name]: errorMessage });
+      return;
+    }
+    // no error condition
+    setErrorObj({ [name]: '' });
+    e.target.style.backgroundColor = '#f1f8e9';
+  }
 
   function addItemElements(digit, key) {
     return (
@@ -142,7 +155,9 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
             value={itemsObj[key].action || ''}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'action');
+              handleValidation(e, `action${key}`, 'object');
             }}
+            helperText={errorObj[`action${key}`]}
             sx={{ mx: 1 }}
             size='small'
           />
@@ -155,7 +170,9 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
             value={itemsObj[key].prompt || ''}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'prompt');
+              handleValidation(e, `prompt${key}`, 'prompt');
             }}
+            helperText={errorObj[`prompt${key}`]}
             sx={{ mx: 1 }}
             size='small'
           />
@@ -335,7 +352,9 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               value={menuObj.timeoutPrompt || ''}
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'timeoutPrompt');
+                handleValidation(e, 'timeoutPrompt', 'prompt');
               }}
+              helperText={errorObj.timeoutPrompt}
               sx={{ mx: 0.5 }}
               size='small'
             />
@@ -361,9 +380,11 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               value={menuObj.invalidPrompt || ''}
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'invalidPrompt');
+                handleValidation(e, 'invalidPrompt', 'prompt');
               }}
               sx={{ mx: 0.5 }}
               size='small'
+              helperText={errorObj.invalidPrompt}
             />
           </ListItem>
         );
@@ -508,10 +529,12 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
               value={menuObj.menuId || ''}
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'menuId');
+                handleValidation(e, 'menuId', 'object');
               }}
               sx={{
                 mx: 0.5,
               }}
+              helperText={errorObj.menuId}
               size='small'
             />
           </ListItem>
