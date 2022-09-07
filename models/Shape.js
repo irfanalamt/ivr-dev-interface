@@ -18,6 +18,8 @@ class Shape {
       this.text = 'getDigits';
     } else if (type === 'roundedRectangle') {
       this.text = 'playMessage';
+    } else if (type === 'pentagon') {
+      this.text = 'setParams';
     } else this.text = '';
     this.selected = false;
     this.userValues = null;
@@ -96,6 +98,10 @@ class Shape {
         this.drawCircle(ctx);
         break;
 
+      case 'pentagon':
+        this.drawPentagon(ctx);
+        break;
+
       case 'hexagon':
         this.drawHexagon(ctx);
         break;
@@ -133,6 +139,41 @@ class Shape {
       ctx.strokeStyle = '#2196f3';
       ctx.lineWidth = 2;
       ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+  }
+
+  drawPentagon(ctx) {
+    ctx.beginPath();
+    ctx.translate(this.x, this.y);
+
+    ctx.lineTo(this.width * 0.5, -10);
+    ctx.lineTo(this.width * 0.5, this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5, this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5, -10);
+    ctx.lineTo(0, -this.height * 0.5);
+
+    ctx.closePath();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    if (this.stroke) {
+      // fill color when selected
+      if (this.selected) {
+        this.fillSelected(ctx);
+      }
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y + 5);
+      ctx.strokeStyle = '#e91e63';
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = this.style;
+      ctx.strokeStyle = '#e91e63';
+      ctx.lineWidth = 2;
       ctx.fill();
       ctx.stroke();
     }

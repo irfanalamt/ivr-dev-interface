@@ -51,12 +51,13 @@ const CanvasComponent = ({ isExisting }) => {
     context.strokeStyle = 'black';
     context.lineWidth = 3;
 
-    let palletRectangle = new Shape(70, 220, 40, 30, 'rectangle', '#bf360c');
-    let palletCircle = new Shape(70, 275, 40, 40, 'circle', '#0d47a1');
-    let palletHexagon = new Shape(70, 330, 50, 30, 'hexagon', '#004d40');
+    let palletPentagon = new Shape(70, 185, 40, 30, 'pentagon', '#880e4f');
+    let palletRectangle = new Shape(70, 235, 40, 30, 'rectangle', '#bf360c');
+    let palletCircle = new Shape(70, 290, 40, 40, 'circle', '#0d47a1');
+    let palletHexagon = new Shape(70, 345, 50, 30, 'hexagon', '#004d40');
     let palletParallelogram = new Shape(
       70,
-      377,
+      390,
       36,
       22,
       'parallelogram',
@@ -64,18 +65,20 @@ const CanvasComponent = ({ isExisting }) => {
     );
     let palletRoundedRectangle = new Shape(
       70,
-      420,
+      435,
       50,
       30,
       'roundedRectangle',
       '#827717'
     );
+
     palletGroup.current = new Shapes('palette', [
       palletRectangle,
       palletCircle,
       palletHexagon,
       palletParallelogram,
       palletRoundedRectangle,
+      palletPentagon,
     ]);
     if (isExisting) {
       handleClickLoadFile();
@@ -222,6 +225,16 @@ const CanvasComponent = ({ isExisting }) => {
           50,
           'roundedRectangle',
           '#c0ca33',
+          true
+        );
+      } else if (palletFigureDragged.type === 'pentagon') {
+        stageFigure = new Shape(
+          offsetX,
+          offsetY,
+          135,
+          50,
+          'pentagon',
+          '#e91e63',
           true
         );
       }
