@@ -32,12 +32,21 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
   const [errorObj, setErrorObj] = useState({});
 
   const optionalParamsList = [
+    'language',
+    'terminator',
+    'maxRetries',
+    'maxRepeats',
+    'firstTimeout',
+    'interTimeout',
+    'menuTimeout',
     'invalidAction',
     'timeoutAction',
+    'currency',
     'invalidPrompt',
     'timeoutPrompt',
-    'maxRetries',
-    'previousMenuId',
+    'hotkeyMainMenu',
+    'hotkeyTransfer',
+    'logDb',
   ];
 
   function saveUserValues() {
@@ -364,13 +373,11 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
             >
               {
                 // Array of 1..10
-                [...Array(11).keys()].slice(1).map((el, i) => {
-                  return (
-                    <MenuItem key={i} value={el}>
-                      {el}
-                    </MenuItem>
-                  );
-                })
+                [...Array(11).keys()].slice(1).map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                ))
               }
             </Select>
             <Tooltip title='Remove parameter' placement='top-start'>
@@ -390,7 +397,7 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
             </Tooltip>
           </ListItem>
         );
-      case 'previousMenuId':
+      case 'maxRepeats':
         return (
           <ListItem key={key}>
             <Typography
@@ -403,16 +410,25 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
                 fontWeight: 405,
               }}
             >
-              previousMenuId:
+              maxRepeats:
             </Typography>
-            <TextField
-              value={menuObj.previousMenuId || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'previousMenuId');
-              }}
-              sx={{ width: '50%', mr: 'auto' }}
+            <Select
               size='small'
-            />
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.maxRepeats || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'maxRepeats');
+              }}
+            >
+              {
+                // Array of 1..10
+                [...Array(11).keys()].slice(1).map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                ))
+              }
+            </Select>
             <Tooltip title='Remove parameter' placement='top-start'>
               <RemoveCircleOutlineRoundedIcon
                 sx={{
@@ -424,7 +440,432 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
                 }}
                 color='error'
                 onClick={() => {
-                  handleRemoveParameter('previousMenuId');
+                  handleRemoveParameter('maxRepeats');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'firstTimeout':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              firstTimeout:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.firstTimeout || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'firstTimeout');
+              }}
+            >
+              {
+                // Array of 1..10
+                [...Array(11).keys()].slice(1).map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                ))
+              }
+            </Select>
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('firstTimeout');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'interTimeout':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              interTimeout:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.interTimeout || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'interTimeout');
+              }}
+            >
+              {
+                // Array of 1..10
+                [...Array(11).keys()].slice(1).map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                ))
+              }
+            </Select>
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('interTimeout');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'menuTimeout':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              menuTimeout:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.menuTimeout || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'menuTimeout');
+              }}
+            >
+              {
+                // Array of 1..10
+                [...Array(11).keys()].slice(1).map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                ))
+              }
+            </Select>
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('menuTimeout');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'currency':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              currency:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.currency || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'currency');
+              }}
+            >
+              {['SAR', 'EUR', 'GBP', 'USD', 'CNY', 'RUB', 'JPY'].map(
+                (el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                )
+              )}
+            </Select>
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('currency');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'language':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              language:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.language || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'language');
+              }}
+            >
+              {['English', 'Arabic', 'French', 'Hindi', 'German'].map(
+                (el, i) => (
+                  <MenuItem key={i} value={el.toLowerCase()}>
+                    {el}
+                  </MenuItem>
+                )
+              )}
+            </Select>
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('language');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'terminator':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              terminator:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.terminator || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'terminator');
+              }}
+            >
+              {['#', '*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
+                (el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                )
+              )}
+            </Select>
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('terminator');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'hotkeyMainMenu':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              hotkeyMainMenu:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.hotkeyMainMenu || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'hotkeyMainMenu');
+              }}
+            >
+              {['#', '*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
+                (el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                )
+              )}
+            </Select>
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('hotkeyMainMenu');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'hotkeyTransfer':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              hotkeyTransfer:
+            </Typography>
+            <Select
+              size='small'
+              sx={{ mr: 'auto', minWidth: '35%' }}
+              value={menuObj.hotkeyTransfer || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'hotkeyTransfer');
+              }}
+            >
+              {['#', '*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
+                (el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                )
+              )}
+            </Select>
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('hotkeyTransfer');
+                }}
+              />
+            </Tooltip>
+          </ListItem>
+        );
+      case 'logDb':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                fontSize: 16,
+                marginX: 1,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              logDb:
+            </Typography>
+            <Switch
+              sx={{ mx: 0.5 }}
+              checked={menuObj.logDb}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.checked, 'logDb');
+              }}
+            />
+
+            <Tooltip title='Remove parameter' placement='top-start'>
+              <RemoveCircleOutlineRoundedIcon
+                sx={{
+                  ml: 'auto',
+                  borderRadius: 1,
+                  boxShadow: 1,
+                  width: 22,
+                  height: 22,
+                }}
+                color='error'
+                onClick={() => {
+                  handleRemoveParameter('logDb');
                 }}
               />
             </Tooltip>
@@ -529,22 +970,9 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
               onClick={handleAddParameter}
             />
           </Tooltip>
-          <Tooltip title='Remove parameter' placement='top-start'>
-            <RemoveCircleOutlineRoundedIcon
-              sx={{
-                mx: 1,
-                borderRadius: 1,
-                boxShadow: 1,
-                width: 28,
-                height: 28,
-              }}
-              color='error'
-              // onClick={handleRemoveParameter}
-            />
-          </Tooltip>
         </ListItem>
-        <pre>{JSON.stringify(paramSelectedList, null, 2)}</pre>
-        <pre>{JSON.stringify(menuObj, null, 2)}</pre>
+        {/* <pre>{JSON.stringify(paramSelectedList, null, 2)}</pre>
+        <pre>{JSON.stringify(menuObj, null, 2)}</pre> */}
         {paramSelectedList.map((el, i) => addParamsElements(el, i))}
       </List>
     </>
