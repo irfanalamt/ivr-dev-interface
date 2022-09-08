@@ -22,6 +22,7 @@ import PlayMessage from './PlayMessage3';
 import CallApi from './CallApi';
 import GetDigits from './GetDigits2';
 import PlayMenu from './PlayMenu';
+import SetParams from './SetParams';
 
 const DrawerComponent = ({
   isOpen,
@@ -60,6 +61,8 @@ const DrawerComponent = ({
       );
     } else if (shape?.type == 'hexagon') {
       return <PlayMenu shape={shape} handleCloseDrawer={handleCloseDrawer} />;
+    } else if (shape?.type == 'pentagon') {
+      return <SetParams shape={shape} handleCloseDrawer={handleCloseDrawer} />;
     } else {
       return (
         <>
