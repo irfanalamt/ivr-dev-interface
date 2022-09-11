@@ -160,6 +160,7 @@ const CanvasComponent = ({ isExisting }) => {
       if (element.isMouseInShape(offsetX, offsetY)) {
         console.log(`YES in pallet shape ${element.type}`);
         currentShape.current = element;
+        canvasRef.current.style.cursor = 'grabbing';
         startX = clientX;
         startY = clientY;
         isDragging = true;
@@ -281,7 +282,7 @@ const CanvasComponent = ({ isExisting }) => {
           // startY = clientY;
           // isDragging = true;
           // isPalletShape = true;
-
+          canvasRef.current.style.cursor = 'grab';
           tooltip.style.top = offsetY + 'px';
           tooltip.style.left = offsetX + 'px';
           tooltip.textContent = element.text;
