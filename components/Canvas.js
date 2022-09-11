@@ -482,6 +482,7 @@ const CanvasComponent = ({ isExisting }) => {
           handleCloseDrawer={handleCloseDrawer}
           shape={currentShape.current}
           userVariables={userVariables.current}
+          stageGroup={stageGroup.current}
         />
       )}
       {isOpenVars && (

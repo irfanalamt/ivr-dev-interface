@@ -27,7 +27,8 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { checkValidity } from '../src/helpers';
 
-const PlayMenu = ({ shape, handleCloseDrawer }) => {
+const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
+  const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
   const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
   const [paramSelected, setParamSelected] = useState('');
@@ -38,8 +39,15 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
   const [itemSelected, setItemSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
 
+  const menuActionList = stageGroup.shapes.filter(
+    (s) =>
+      (s.type === 'hexagon' && s.text !== shapeName && s.text !== 'playMenu') ||
+      s.type === 'rectangle'
+  );
+
   useEffect(() => {
     switchTab();
+    console.log('menuActionList', menuActionList);
   }, [tabValue]);
 
   function switchTab() {
@@ -65,7 +73,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
   }
 
   function saveUserValues() {
-    shape.setText(menuObj.menuId || 'playMenu');
+    shape.setText(shapeName || 'playMenu');
     shape.setUserValues({
       params: menuObj,
       paramSelectedList,
@@ -160,7 +168,31 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
           >
             action:
           </Typography>
-          <TextField
+          {menuActionList.length > 0 ? (
+            <Select
+              size='small'
+              value={itemsObj[key].action || ''}
+              onChange={(e) => {
+                handleItemsObjChange(e.target.value, key, 'action');
+              }}
+            >
+              {menuActionList.map((el, i) => (
+                <MenuItem key={i} value={el.text}>
+                  {el.text}
+                  {el.type === 'rectangle' && ' [function]'}
+                  {el.type === 'hexagon' && ' [menu]'}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            <Typography
+              sx={{ mx: 0.5, color: '#f44336', fontSize: 16 }}
+              variant='h6'
+            >
+              No action added
+            </Typography>
+          )}
+          {/* <TextField
             value={itemsObj[key].action || ''}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'action');
@@ -169,7 +201,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
             helperText={errorObj[`action${key}`]}
             sx={{ mx: 1 }}
             size='small'
-          />
+          /> */}
         </ListItem>
         <ListItem>
           <Typography
@@ -519,6 +551,26 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
             Play Menu
           </Typography>
         </ListItem>
+        <ListItem sx={{ my: 2 }}>
+          <Typography
+            variant='button'
+            sx={{ marginX: 1, fontSize: 16, width: '35%' }}
+          >
+            Name:
+          </Typography>
+          <TextField
+            value={shapeName || ''}
+            onChange={(e) => {
+              setShapeName(e.target.value);
+              handleValidation(e, 'menuId', 'object');
+            }}
+            sx={{
+              mx: 0.5,
+            }}
+            helperText={errorObj.menuId}
+            size='small'
+          />
+        </ListItem>
         <ListItem>
           <Tabs
             sx={{ marginX: 'auto' }}
@@ -533,32 +585,7 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
         </ListItem>
         <Box id='tabPanel1'>
           {/* <pre>{JSON.stringify(menuObj, undefined, 2)}</pre> */}
-          <ListItem sx={{ mt: 2 }}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              menuId:
-            </Typography>
-            <TextField
-              value={menuObj.menuId || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'menuId');
-                handleValidation(e, 'menuId', 'object');
-              }}
-              sx={{
-                mx: 0.5,
-              }}
-              helperText={errorObj.menuId}
-              size='small'
-            />
-          </ListItem>
+
           <ListItem sx={{ my: 0.5 }}>
             <Typography
               variant='subtitle2'
@@ -566,7 +593,6 @@ const PlayMenu = ({ shape, handleCloseDrawer }) => {
                 marginX: 1,
                 fontSize: 16,
                 width: '35%',
-                borderRadius: 0.5,
                 fontWeight: 405,
               }}
             >

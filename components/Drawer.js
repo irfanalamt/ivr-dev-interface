@@ -23,12 +23,14 @@ import CallApi from './CallApi';
 import GetDigits from './GetDigits2';
 import PlayMenu from './PlayMenu';
 import SetParams from './SetParams';
+import FunctionBlock from './FunctionBlock';
 
 const DrawerComponent = ({
   isOpen,
   handleCloseDrawer,
   shape = null,
   userVariables,
+  stageGroup,
 }) => {
   useEffect(() => {
     console.log('ue drawer');
@@ -60,9 +62,22 @@ const DrawerComponent = ({
         />
       );
     } else if (shape?.type == 'hexagon') {
-      return <PlayMenu shape={shape} handleCloseDrawer={handleCloseDrawer} />;
+      return (
+        <PlayMenu
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          stageGroup={stageGroup}
+        />
+      );
     } else if (shape?.type == 'pentagon') {
       return <SetParams shape={shape} handleCloseDrawer={handleCloseDrawer} />;
+    } else if (shape?.type == 'rectangle') {
+      return (
+        <FunctionBlock
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+        ></FunctionBlock>
+      );
     } else {
       return (
         <>
