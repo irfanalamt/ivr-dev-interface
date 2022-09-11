@@ -25,6 +25,7 @@ import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRou
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import CircleIcon from '@mui/icons-material/Circle';
 import { checkValidity } from '../src/helpers';
 
 const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
@@ -179,8 +180,30 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
               {menuActionList.map((el, i) => (
                 <MenuItem key={i} value={el.text}>
                   {el.text}
-                  {el.type === 'rectangle' && ' [function]'}
-                  {el.type === 'hexagon' && ' [menu]'}
+                  {el.type === 'rectangle' && (
+                    <>
+                      <CircleIcon
+                        sx={{
+                          ml: 1.5,
+                          fontSize: '0.9rem',
+                          color: '#ff5722',
+                        }}
+                      />
+                      <Typography variant='subtitle2'>[fn]</Typography>
+                    </>
+                  )}
+                  {el.type === 'hexagon' && (
+                    <>
+                      <CircleIcon
+                        sx={{
+                          ml: 1.5,
+                          fontSize: '0.9rem',
+                          color: '#009688',
+                        }}
+                      />
+                      <Typography variant='subtitle2'>[menu]</Typography>
+                    </>
+                  )}
                 </MenuItem>
               ))}
             </Select>
