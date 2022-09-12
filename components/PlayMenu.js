@@ -42,8 +42,13 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
 
   const menuActionList = stageGroup.shapes.filter(
     (s) =>
-      (s.type === 'hexagon' && s.text !== shapeName && s.text !== 'playMenu') ||
-      s.type === 'rectangle'
+      s.text !== shapeName &&
+      s.text !== 'playMenu' &&
+      s.text !== 'playMessage' &&
+      s.text !== 'function' &&
+      s.text !== 'setParams' &&
+      s.text !== 'getDigits' &&
+      s.text !== 'callAPI'
   );
 
   useEffect(() => {
@@ -179,12 +184,26 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             >
               {menuActionList.map((el, i) => (
                 <MenuItem key={i} value={el.text}>
-                  {el.text}
+                  <Typography
+                    sx={{ display: 'inline', minWidth: '40%', mr: 1 }}
+                  >
+                    {el.text}
+                  </Typography>
+                  {el.type === 'pentagon' && (
+                    <>
+                      <CircleIcon
+                        sx={{
+                          fontSize: '0.9rem',
+                          color: '#e91e63',
+                        }}
+                      />
+                      <Typography variant='subtitle2'>[params]</Typography>
+                    </>
+                  )}
                   {el.type === 'rectangle' && (
                     <>
                       <CircleIcon
                         sx={{
-                          ml: 1.5,
                           fontSize: '0.9rem',
                           color: '#ff5722',
                         }}
@@ -196,12 +215,44 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
                     <>
                       <CircleIcon
                         sx={{
-                          ml: 1.5,
                           fontSize: '0.9rem',
                           color: '#009688',
                         }}
                       />
                       <Typography variant='subtitle2'>[menu]</Typography>
+                    </>
+                  )}
+                  {el.type === 'parallelogram' && (
+                    <>
+                      <CircleIcon
+                        sx={{
+                          fontSize: '0.9rem',
+                          color: '#9c27b0',
+                        }}
+                      />
+                      <Typography variant='subtitle2'>[digits]</Typography>
+                    </>
+                  )}
+                  {el.type === 'roundedRectangle' && (
+                    <>
+                      <CircleIcon
+                        sx={{
+                          fontSize: '0.9rem',
+                          color: '#c0ca33',
+                        }}
+                      />
+                      <Typography variant='subtitle2'>[message]</Typography>
+                    </>
+                  )}
+                  {el.type === 'circle' && (
+                    <>
+                      <CircleIcon
+                        sx={{
+                          fontSize: '0.9rem',
+                          color: '#2196f3',
+                        }}
+                      />
+                      <Typography variant='subtitle2'>[API]</Typography>
                     </>
                   )}
                 </MenuItem>

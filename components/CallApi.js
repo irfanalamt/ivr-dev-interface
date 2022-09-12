@@ -17,6 +17,7 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { useState } from 'react';
 
 const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
+  const [shapeName, setShapeName] = useState(shape.text);
   const [inputArr, setInputArr] = useState([
     {
       value: '',
@@ -48,6 +49,10 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
       newArr[index].value = e.target.value;
       return newArr;
     });
+  }
+
+  function saveUserValues() {
+    shape.setText(shapeName || 'callAPI');
   }
 
   function addInput() {
@@ -121,6 +126,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
               size='small'
               variant='contained'
               color='success'
+              onClick={saveUserValues}
             >
               <SaveRoundedIcon sx={{ fontSize: 20 }} />
             </Button>
@@ -141,6 +147,24 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
           >
             Call API
           </Typography>
+        </ListItem>
+        <ListItem sx={{ mb: 3 }}>
+          <Typography
+            variant='button'
+            sx={{ marginX: 1, fontSize: 16, width: '35%' }}
+          >
+            Name:
+          </Typography>
+          <TextField
+            value={shapeName || ''}
+            onChange={(e) => {
+              setShapeName(e.target.value);
+            }}
+            sx={{
+              mx: 0.5,
+            }}
+            size='small'
+          />
         </ListItem>
         <ListItem>
           <Typography sx={{ fontSize: '1.1rem', mr: 1 }} variant='h6'>
