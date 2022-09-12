@@ -470,8 +470,8 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
               }}
             >
               {
-                // Array of 1..10
-                [...Array(11).keys()].slice(1).map((el, i) => (
+                // Array of 1..15
+                [...Array(16).keys()].slice(1).map((el, i) => (
                   <MenuItem key={i} value={el}>
                     {el}
                   </MenuItem>
@@ -519,8 +519,8 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
               }}
             >
               {
-                // Array of 1..10
-                [...Array(11).keys()].slice(1).map((el, i) => (
+                // Array of 1..15
+                [...Array(16).keys()].slice(1).map((el, i) => (
                   <MenuItem key={i} value={el}>
                     {el}
                   </MenuItem>
@@ -568,8 +568,8 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
               }}
             >
               {
-                // Array of 1..10
-                [...Array(11).keys()].slice(1).map((el, i) => (
+                // Array of 1..15
+                [...Array(16).keys()].slice(1).map((el, i) => (
                   <MenuItem key={i} value={el}>
                     {el}
                   </MenuItem>
