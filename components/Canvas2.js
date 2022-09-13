@@ -157,11 +157,13 @@ const CanvasComponent = () => {
       if (element.isMouseNearVertex(clientX, clientY)) {
         console.log('Mouse near vertex');
         canvasRef.current.style.cursor = 'w-resize';
-        startX = clientX;
-        startY = clientY;
         isOnEdge = true;
         currentShape.current = element;
         return;
+      }
+      // if in stage shape; change cursor to grab
+      if (element.isMouseInShape(clientX, clientY)) {
+        canvasRef.current.style.cursor = 'grab';
       }
     });
   }
