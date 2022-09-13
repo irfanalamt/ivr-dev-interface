@@ -128,8 +128,11 @@ const CanvasComponent = () => {
       let dx = clientX - startX;
       let dy = clientY - startY;
       let current_shape = currentShape.current;
-      current_shape.width += dx;
-      current_shape.height += dy;
+      let newWidth = Math.abs(current_shape.width + dx);
+      let newHeight = Math.abs(current_shape.height + dy);
+      if (newWidth < 40 || newHeight < 40) return;
+      current_shape.width = newWidth;
+      current_shape.height = newHeight;
       clearAndDraw();
       startX = clientX;
       startY = clientY;
