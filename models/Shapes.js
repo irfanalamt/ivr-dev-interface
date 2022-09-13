@@ -38,7 +38,7 @@ class Shapes {
 
   connectPoints(ctx, point1, point2) {
     console.log('line from', point1, point2);
-    const headLength = 12;
+    const headLength = 8;
     let dx = point2[0] - point1[0];
     let dy = point2[1] - point1[1];
     let angle = Math.atan2(dy, dx);

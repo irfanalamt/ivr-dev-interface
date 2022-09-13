@@ -1,20 +1,9 @@
-import {
-  Box,
-  Button,
-  Container,
-  Drawer,
-  Stack,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import { Box, Button, Drawer, Tooltip, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
 import DrawerComponent from './Drawer';
-import RestartAltRoundedIcon from '@mui/icons-material/RestartAltRounded';
-import SaveAltRoundedIcon from '@mui/icons-material/SaveAltRounded';
 import InitVariables from './InitVariables2';
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
@@ -362,6 +351,18 @@ const CanvasComponent = () => {
         userVariables={userVariables.current}
         stageGroup={stageGroup.current}
       />
+      <Tooltip title='connect shapes' placement='right-end'>
+        <ArrowRightAltIcon
+          sx={{
+            position: 'absolute',
+            left: 32,
+            top: 450,
+            zIndex: 5,
+            width: 75,
+            fontSize: '3rem',
+          }}
+        />
+      </Tooltip>
       <Tooltip title='InitVariables' placement='right-end'>
         <Button
           sx={{

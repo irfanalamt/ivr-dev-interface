@@ -1,17 +1,16 @@
-import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
   Button,
   Divider,
-  FormControlLabel,
   List,
   ListItem,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
   Switch,
   Tab,
@@ -21,11 +20,6 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import CircleIcon from '@mui/icons-material/Circle';
 import { checkValidity } from '../src/helpers';
 
 const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {

@@ -55,48 +55,7 @@ class Shape {
   drawShape(ctx) {
     switch (this.type) {
       case 'rectangle':
-        if (this.stroke) {
-          if (this.selected) {
-            ctx.fillStyle = '#eceff1';
-            ctx.fillRect(
-              this.x - this.width / 2,
-              this.y - this.height / 2,
-              this.width,
-              this.height
-            );
-          }
-          ctx.font = '19px sans-serif';
-          ctx.fillStyle = 'black';
-          ctx.lineWidth = 2;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(this.text, this.x, this.y);
-          ctx.strokeStyle = '#ff5722';
-          ctx.strokeRect(
-            this.x - this.width / 2,
-            this.y - this.height / 2,
-            this.width,
-            this.height
-          );
-        } else {
-          ctx.fillStyle = this.style;
-          ctx.strokeStyle = '#ff5722';
-          ctx.lineWidth = 2;
-
-          ctx.fillRect(
-            this.x - this.width / 2,
-            this.y - this.height / 2,
-            this.width,
-            this.height
-          );
-
-          ctx.strokeRect(
-            this.x - this.width / 2,
-            this.y - this.height / 2,
-            this.width,
-            this.height
-          );
-        }
+        this.drawRectangle(ctx);
         break;
 
       case 'circle':
@@ -118,6 +77,51 @@ class Shape {
       case 'roundedRectangle':
         this.drawRoundedRectangle(ctx);
         break;
+    }
+  }
+
+  drawRectangle(ctx) {
+    if (this.stroke) {
+      if (this.selected) {
+        ctx.fillStyle = '#eceff1';
+        ctx.fillRect(
+          this.x - this.width / 2,
+          this.y - this.height / 2,
+          this.width,
+          this.height
+        );
+      }
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.strokeStyle = '#ff5722';
+      ctx.strokeRect(
+        this.x - this.width / 2,
+        this.y - this.height / 2,
+        this.width,
+        this.height
+      );
+    } else {
+      ctx.fillStyle = this.style;
+      ctx.strokeStyle = '#ff5722';
+      ctx.lineWidth = 2;
+
+      ctx.fillRect(
+        this.x - this.width / 2,
+        this.y - this.height / 2,
+        this.width,
+        this.height
+      );
+
+      ctx.strokeRect(
+        this.x - this.width / 2,
+        this.y - this.height / 2,
+        this.width,
+        this.height
+      );
     }
   }
 
@@ -327,6 +331,7 @@ class Shape {
       return true;
     } else return false;
   }
+
   isMouseInShape(x, y) {
     let shapeLeft, shapeRight, shapeTop, shapeBottom;
 

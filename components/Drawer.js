@@ -1,29 +1,14 @@
-import {
-  Button,
-  FormControlLabel,
-  Input,
-  InputLabel,
-  List,
-  ListItem,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  Tab,
-  Tabs,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import PlayMessage from './PlayMessage3';
 
 import CallApi from './CallApi';
+import FunctionBlock from './FunctionBlock';
 import GetDigits from './GetDigits2';
 import PlayMenu from './PlayMenu';
 import SetParams from './SetParams';
-import FunctionBlock from './FunctionBlock';
 
 const DrawerComponent = ({
   isOpen,
