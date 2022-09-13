@@ -243,7 +243,7 @@ const CanvasComponent = ({ isExisting }) => {
       palletFigureDragged.x = palletFigureDragged.getInitPos()[0];
       palletFigureDragged.y = palletFigureDragged.getInitPos()[1];
       //add figure to stage
-      if (clientX > 120) stageGroup.current.addShape(stageFigure);
+      if (clientX > 160) stageGroup.current.addShape(stageFigure);
 
       clearAndDraw();
 
@@ -315,11 +315,14 @@ const CanvasComponent = ({ isExisting }) => {
       startY = mouseY;
       isOnEdge = false;
     } else {
-      nativeEvent.preventDefault();
+      console.log('dragging');
+
       // drag shape - mousemove
       let dx = mouseX - startX;
       let dy = mouseY - startY;
       let current_shape = currentShape.current;
+      console.log('dx', dx);
+      console.log('dy', dy);
       current_shape.x += dx;
       current_shape.y += dy;
       clearAndDraw();
@@ -430,7 +433,6 @@ const CanvasComponent = ({ isExisting }) => {
         onDoubleClick={handleDoubleClick}
         ref={canvasRef}
       ></canvas>
-
       <canvas
         style={{
           position: 'absolute',

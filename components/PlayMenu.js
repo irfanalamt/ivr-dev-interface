@@ -190,70 +190,67 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
                     {el.text}
                   </Typography>
                   {el.type === 'pentagon' && (
-                    <>
-                      <CircleIcon
-                        sx={{
-                          fontSize: '0.9rem',
-                          color: '#e91e63',
-                        }}
-                      />
-                      <Typography variant='subtitle2'>[params]</Typography>
-                    </>
+                    <Typography
+                      sx={{ color: '#e91e63', pr: 1 }}
+                      variant='subtitle2'
+                    >
+                      [setParams]
+                    </Typography>
                   )}
                   {el.type === 'rectangle' && (
-                    <>
-                      <CircleIcon
-                        sx={{
-                          fontSize: '0.9rem',
-                          color: '#ff5722',
-                        }}
-                      />
-                      <Typography variant='subtitle2'>[fn]</Typography>
-                    </>
+                    <Typography
+                      sx={{
+                        color: '#ff5722',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [function]
+                    </Typography>
                   )}
                   {el.type === 'hexagon' && (
-                    <>
-                      <CircleIcon
-                        sx={{
-                          fontSize: '0.9rem',
-                          color: '#009688',
-                        }}
-                      />
-                      <Typography variant='subtitle2'>[menu]</Typography>
-                    </>
+                    <Typography
+                      sx={{
+                        color: '#009688',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [playMenu]
+                    </Typography>
                   )}
                   {el.type === 'parallelogram' && (
-                    <>
-                      <CircleIcon
-                        sx={{
-                          fontSize: '0.9rem',
-                          color: '#9c27b0',
-                        }}
-                      />
-                      <Typography variant='subtitle2'>[digits]</Typography>
-                    </>
+                    <Typography
+                      sx={{
+                        color: '#9c27b0',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [getDigits]
+                    </Typography>
                   )}
                   {el.type === 'roundedRectangle' && (
-                    <>
-                      <CircleIcon
-                        sx={{
-                          fontSize: '0.9rem',
-                          color: '#c0ca33',
-                        }}
-                      />
-                      <Typography variant='subtitle2'>[message]</Typography>
-                    </>
+                    <Typography
+                      sx={{
+                        color: '#c0ca33',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [playMessage]
+                    </Typography>
                   )}
                   {el.type === 'circle' && (
-                    <>
-                      <CircleIcon
-                        sx={{
-                          fontSize: '0.9rem',
-                          color: '#2196f3',
-                        }}
-                      />
-                      <Typography variant='subtitle2'>[API]</Typography>
-                    </>
+                    <Typography
+                      sx={{
+                        color: '#2196f3',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [callAPI]
+                    </Typography>
                   )}
                 </MenuItem>
               ))}

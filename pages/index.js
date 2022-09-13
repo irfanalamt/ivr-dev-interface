@@ -14,7 +14,6 @@ export default function Home() {
 
   return (
     <Container
-      on
       sx={{
         marginX: 'auto',
         marginY: 2,
@@ -79,6 +78,7 @@ export default function Home() {
           Open existing project <FileOpenRoundedIcon sx={{ fontSize: 40 }} />
         </Button>
       </Box>
+      <Button href='/stageCanvas2'>New Canvas</Button>
     </Container>
   );
 }

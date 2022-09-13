@@ -11,15 +11,11 @@ const StageCanvas = () => {
 
   useEffect(() => {
     const check = JSON.parse(localStorage.getItem('isExisting'));
-    if (check == true) {
-      setIsExisting(true);
-    }
-    console.log('ue stage canvas');
+    if (check == true) setIsExisting(true);
   }, []);
 
   return (
     <Container
-      on
       sx={{ marginX: 'auto', marginY: 2, padding: 2, textAlign: 'center' }}
     >
       <Typography
