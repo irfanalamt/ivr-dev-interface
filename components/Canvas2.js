@@ -18,6 +18,7 @@ import SaveAltRoundedIcon from '@mui/icons-material/SaveAltRounded';
 import InitVariables from './InitVariables2';
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const canvasRef = useRef(null);
   const bgCanvasRef = useRef(null);
@@ -31,8 +32,11 @@ const CanvasComponent = () => {
   const userVariables = useRef([]);
 
   let startX, startY;
+  let startX1, startY1;
   let isDragging = false,
-    isPalletShape = false;
+    isPalletShape = false,
+    isOnEdge = false,
+    isResizing = false;
 
   useEffect(() => {
     initializeCanvas();
@@ -102,10 +106,9 @@ const CanvasComponent = () => {
     let { clientX, clientY } = e;
 
     let tooltip = document.getElementById('my-tooltip');
-
+    isOnEdge = false;
     if (isDragging) {
       // drag shape - mousemove
-
       let dx = clientX - startX;
       let dy = clientY - startY;
       let current_shape = currentShape.current;
@@ -116,19 +119,45 @@ const CanvasComponent = () => {
       clearAndDraw();
       startX = clientX;
       startY = clientY;
-
       return;
     }
+
+    if (isResizing) {
+      //Change width, height - mousemove
+      let dx = clientX - startX;
+      let dy = clientY - startY;
+      let current_shape = currentShape.current;
+      current_shape.width += dx;
+      current_shape.height += dy;
+      clearAndDraw();
+      startX = clientX;
+      startY = clientY;
+      return;
+    }
+
+    // reset cursor,tooltip; place tooltip on mouse pallet shape
     canvasRef.current.style.cursor = 'default';
     tooltip.style.visibility = 'hidden';
-    palletGroup.current.getShapes().forEach((element, i) => {
+    palletGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(clientX, clientY)) {
         console.log(`YES in pallet shape ${element.type}`);
         canvasRef.current.style.cursor = 'grab';
-        tooltip.style.top = element.y - element.height - 2 + 'px';
-        tooltip.style.left = element.x + 'px';
+        tooltip.style.top = element.y - element.height / 2 + 2 + 'px';
+        tooltip.style.left = element.x + 45 + 'px';
         tooltip.textContent = element.text;
         tooltip.style.visibility = 'visible';
+      }
+    });
+    // if mouse near left/right edge mid, change cursor; set isOnEdge
+    stageGroup.current.getShapes().forEach((element) => {
+      if (element.isMouseNearVertex(clientX, clientY)) {
+        console.log('Mouse near vertex');
+        canvasRef.current.style.cursor = 'w-resize';
+        startX = clientX;
+        startY = clientY;
+        isOnEdge = true;
+        currentShape.current = element;
+        return;
       }
     });
   }
@@ -136,8 +165,17 @@ const CanvasComponent = () => {
     e.preventDefault();
     let { clientX, clientY } = e;
     console.log('🚀 ~ handleMouseDown ~ clientX, clientY', clientX, clientY);
+    // if is onEdge mouseDown, set isResizing
+    isResizing = false;
+    if (isOnEdge) {
+      isResizing = true;
+      startX = clientX;
+      startY = clientY;
+      return;
+    }
 
-    stageGroup.current.getShapes().forEach((element, i) => {
+    //Check mouse in stage shape
+    stageGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(clientX, clientY)) {
         console.log(`YES in stage shape ${element.type}`);
         currentShape.current = element;
@@ -145,10 +183,13 @@ const CanvasComponent = () => {
         isPalletShape = false;
         startX = clientX;
         startY = clientY;
+        startX1 = clientX;
+        startY1 = clientY;
         return;
       }
     });
 
+    // check mouse in palette shape
     palletGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(clientX, clientY)) {
         console.log(`YES in pallet shape ${element.type}`);
@@ -165,8 +206,11 @@ const CanvasComponent = () => {
   function handleMouseUp(e) {
     e.preventDefault();
     let { clientX, clientY } = e;
+    isDragging = false;
 
     if (isPalletShape) {
+      isPalletShape = false;
+      // create new stage shape on dragdrop
       let palletFigureDragged = currentShape.current;
       let stageFigure;
       switch (palletFigureDragged.type) {
@@ -249,10 +293,29 @@ const CanvasComponent = () => {
       //add figure to stage
       if (clientX > 160) stageGroup.current.addShape(stageFigure);
       clearAndDraw();
-      isDragging = false;
       return;
     }
-    isDragging = false;
+
+    if (clientX == startX1 && clientY == startY1) {
+      (startX1 = null), (startY1 = null);
+      console.log('isDragging', isDragging);
+      // mouse clicked, released same spot in stage shape, check mouse in stage shape
+      stageGroup.current.getShapes().forEach((element) => {
+        if (element.isMouseInShape(clientX, clientY)) {
+          console.log(`YES in pallet shape mouseUp ${element.type}`);
+          currentShape.current = element;
+          currentShape.current.setSelected(true);
+          clearAndDraw();
+          setIsOpen(true);
+          return;
+        }
+      });
+    }
+  }
+
+  function handleCloseDrawer() {
+    setIsOpen(false);
+    clearAndDraw();
   }
 
   return (
@@ -286,6 +349,13 @@ const CanvasComponent = () => {
           userVariables={userVariables.current}
         />
       </Drawer>
+      <DrawerComponent
+        isOpen={isOpen}
+        handleCloseDrawer={handleCloseDrawer}
+        shape={currentShape.current}
+        userVariables={userVariables.current}
+        stageGroup={stageGroup.current}
+      />
       <Tooltip title='InitVariables' placement='right-end'>
         <Button
           sx={{
@@ -310,13 +380,12 @@ const CanvasComponent = () => {
           visibility: 'hidden',
           position: 'absolute',
           zIndex: 6,
-          backgroundColor: '#e0f2f1',
+          backgroundColor: '#e1f5fe',
           px: 1,
           boxShadow: 1,
-          borderRadius: 1,
         }}
         id='my-tooltip'
-        variant='subtitle1'
+        variant='subtitle2'
       >
         Im a tooltip
       </Typography>
