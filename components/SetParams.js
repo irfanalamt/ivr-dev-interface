@@ -22,7 +22,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { checkValidity } from '../src/helpers';
 
-const SetParams = ({ shape, handleCloseDrawer }) => {
+const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
   const [shapeName, setShapeName] = useState(shape.text || '');
   const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
   const [paramSelectedList, setParamSelectedList] = useState(
@@ -30,6 +30,7 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
   );
   const [paramSelected, setParamSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
+  const [nextItem, setNextItem] = useState(shape.nextItem || '');
 
   const optionalParamsList = [
     'language',
@@ -48,9 +49,21 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
     'hotkeyTransfer',
     'logDb',
   ];
+  const menuActionList = stageGroup.shapes.filter(
+    (s) =>
+      s.text !== shapeName &&
+      s.text !== 'playMenu' &&
+      s.text !== 'playMessage' &&
+      s.text !== 'function' &&
+      s.text !== 'setParams' &&
+      s.text !== 'getDigits' &&
+      s.text !== 'callAPI'
+  );
+  if (menuActionList.length > 0) menuActionList.push({ text: 'null' });
 
   function saveUserValues() {
     shape.setText(shapeName);
+    shape.setNextItem(nextItem);
     shape.setUserValues({
       params: menuObj,
       paramSelectedList,
@@ -932,7 +945,101 @@ const SetParams = ({ shape, handleCloseDrawer }) => {
             size='small'
           />
         </ListItem>
-
+        <ListItem>
+          <Typography
+            sx={{ mx: 1, width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
+            nextItem:
+          </Typography>
+          {menuActionList.length > 0 ? (
+            <Select
+              size='small'
+              value={nextItem}
+              onChange={(e) => setNextItem(e.target.value)}
+            >
+              {menuActionList.map((el, i) => (
+                <MenuItem key={i} value={el.text}>
+                  <Typography
+                    sx={{ display: 'inline', minWidth: '40%', mr: 1 }}
+                  >
+                    {el.text}
+                  </Typography>
+                  {el.type === 'pentagon' && (
+                    <Typography
+                      sx={{ color: '#e91e63', pr: 1 }}
+                      variant='subtitle2'
+                    >
+                      [setParams]
+                    </Typography>
+                  )}
+                  {el.type === 'rectangle' && (
+                    <Typography
+                      sx={{
+                        color: '#ff5722',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [function]
+                    </Typography>
+                  )}
+                  {el.type === 'hexagon' && (
+                    <Typography
+                      sx={{
+                        color: '#009688',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [playMenu]
+                    </Typography>
+                  )}
+                  {el.type === 'parallelogram' && (
+                    <Typography
+                      sx={{
+                        color: '#9c27b0',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [getDigits]
+                    </Typography>
+                  )}
+                  {el.type === 'roundedRectangle' && (
+                    <Typography
+                      sx={{
+                        color: '#c0ca33',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [playMessage]
+                    </Typography>
+                  )}
+                  {el.type === 'circle' && (
+                    <Typography
+                      sx={{
+                        color: '#2196f3',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [callAPI]
+                    </Typography>
+                  )}
+                </MenuItem>
+              ))}
+            </Select>
+          ) : (
+            <Typography
+              sx={{ mx: 0.5, color: '#f44336', fontSize: 16 }}
+              variant='h6'
+            >
+              No action added
+            </Typography>
+          )}
+        </ListItem>
         <ListItem sx={{ my: 2 }}>
           <Select
             sx={{ minWidth: '35%' }}

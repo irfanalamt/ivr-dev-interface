@@ -71,7 +71,13 @@ const DrawerComponent = ({
         />
       );
     } else if (shape?.type == 'pentagon') {
-      return <SetParams shape={shape} handleCloseDrawer={handleCloseDrawer} />;
+      return (
+        <SetParams
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          stageGroup={stageGroup}
+        />
+      );
     } else if (shape?.type == 'rectangle') {
       return (
         <FunctionBlock
