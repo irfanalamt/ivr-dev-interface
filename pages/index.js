@@ -48,7 +48,7 @@ export default function Home() {
             top: 150,
             right: 50,
           }}
-          href='/stageCanvas'
+          href='/stageCanvas2'
           variant='outlined'
           color='success'
           onClick={() => {
@@ -78,7 +78,6 @@ export default function Home() {
           Open existing project <FileOpenRoundedIcon sx={{ fontSize: 40 }} />
         </Button>
       </Box>
-      <Button href='/stageCanvas2'>New Canvas</Button>
     </Container>
   );
 }

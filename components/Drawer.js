@@ -43,6 +43,7 @@ const DrawerComponent = ({
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
           userVariables={userVariables}
+          stageGroup={stageGroup}
         />
       );
     } else if (shape?.type == 'circle') {
@@ -76,6 +77,7 @@ const DrawerComponent = ({
         <FunctionBlock
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
+          stageGroup={stageGroup}
         ></FunctionBlock>
       );
     } else {

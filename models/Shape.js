@@ -23,6 +23,7 @@ class Shape {
     } else this.text = '';
     this.selected = false;
     this.userValues = null;
+    this.nextItem = null;
   }
 
   setSelected(bool) {
@@ -35,6 +36,10 @@ class Shape {
   fillSelected(ctx) {
     ctx.fillStyle = '#eceff1';
     ctx.fill();
+  }
+
+  setNextItem(item) {
+    this.nextItem = item;
   }
 
   setText(inputText) {
@@ -290,6 +295,14 @@ class Shape {
       ctx.fill();
       ctx.stroke();
     }
+  }
+
+  getEntryPoint() {
+    return [this.x, this.y - this.height / 2];
+  }
+
+  getExitPoint() {
+    return [this.x, this.y + this.height / 2];
   }
 
   isMouseNearVertex(x, y) {

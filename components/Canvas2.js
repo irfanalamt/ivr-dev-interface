@@ -99,6 +99,7 @@ const CanvasComponent = () => {
     stageGroup.current.getShapes().forEach((el) => {
       el.drawShape(contextRef.current);
     });
+    stageGroup.current.drawConnections(contextRef.current);
   }
 
   function handleMouseMove(e) {
