@@ -59,7 +59,6 @@ class Shapes {
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.stroke();
-    ctx.closePath();
   }
 
   displayAll() {

@@ -8,6 +8,7 @@ import InitVariables from './InitVariables2';
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(0);
 
   const canvasRef = useRef(null);
   const bgCanvasRef = useRef(null);
@@ -26,6 +27,8 @@ const CanvasComponent = () => {
     isPalletShape = false,
     isOnEdge = false,
     isResizing = false;
+  const connectShape1 = useRef(null),
+    connectShape2 = useRef(null);
 
   useEffect(() => {
     initializeCanvas();
@@ -128,6 +131,8 @@ const CanvasComponent = () => {
       return;
     }
 
+    if (isConnecting > 0) return;
+
     // reset cursor,tooltip; place tooltip on mouse pallet shape
     canvasRef.current.style.cursor = 'default';
     tooltip.style.visibility = 'hidden';
@@ -173,6 +178,21 @@ const CanvasComponent = () => {
     stageGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(clientX, clientY)) {
         console.log(`YES in stage shape ${element.type}`);
+        if (isConnecting === 1) {
+          connectShape1.current = element;
+          connectShape1.current.setSelected(true);
+          clearAndDraw();
+          setIsConnecting(2);
+          return;
+        }
+        if (isConnecting === 2) {
+          connectShape2.current = element;
+          connectShape2.current.setSelected(true);
+          clearAndDraw();
+          setIsConnecting(0);
+          connectShapes();
+          return;
+        }
         currentShape.current = element;
         isDragging = true;
         isPalletShape = false;
@@ -188,6 +208,7 @@ const CanvasComponent = () => {
     palletGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(clientX, clientY)) {
         console.log(`YES in pallet shape ${element.type}`);
+        setIsConnecting(0);
         canvasRef.current.style.cursor = 'grabbing';
         currentShape.current = element;
         isDragging = true;
@@ -291,6 +312,8 @@ const CanvasComponent = () => {
       return;
     }
 
+    if (isConnecting > 0) return;
+
     if (clientX == startX1 && clientY == startY1) {
       (startX1 = null), (startY1 = null);
       console.log('isDragging', isDragging);
@@ -310,6 +333,37 @@ const CanvasComponent = () => {
 
   function handleCloseDrawer() {
     setIsOpen(false);
+    clearAndDraw();
+  }
+
+  function setPalletArrowColor() {
+    if (isConnecting === 0) return 'black';
+    if (isConnecting === 1) return 'green';
+    if (isConnecting === 2) return 'blue';
+  }
+
+  function setPalletFontSize() {
+    if (isConnecting === 0) return '3rem';
+
+    return '3.5rem';
+  }
+
+  function connectShapes() {
+    console.log('🚀 ~ connectShapes ~ connectShape1', connectShape1.current);
+    console.log('🚀 ~ connectShapes ~ connectShape2', connectShape2.current);
+    if (
+      connectShape2.current.text !== 'playMenu' &&
+      connectShape2.current.text !== 'playMessage' &&
+      connectShape2.current.text !== 'function' &&
+      connectShape2.current.text !== 'setParams' &&
+      connectShape2.current.text !== 'getDigits' &&
+      connectShape2.current.text !== 'callAPI'
+    ) {
+      connectShape1.current.setNextItem(connectShape2.current.text);
+    }
+
+    connectShape1.current.setSelected(false);
+    connectShape2.current.setSelected(false);
     clearAndDraw();
   }
 
@@ -359,7 +413,12 @@ const CanvasComponent = () => {
             top: 450,
             zIndex: 5,
             width: 75,
-            fontSize: '3rem',
+            fontSize: setPalletFontSize(),
+            color: setPalletArrowColor(),
+          }}
+          onClick={() => {
+            setIsConnecting(1);
+            canvasRef.current.style.cursor = 'crosshair';
           }}
         />
       </Tooltip>
