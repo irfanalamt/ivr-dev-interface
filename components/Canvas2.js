@@ -85,12 +85,13 @@ const CanvasComponent = () => {
 
   function clearAndDraw() {
     contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    palletGroup.current.getShapes().forEach((el) => {
-      el.drawShape(contextRef.current);
-    });
-    stageGroup.current.getShapes().forEach((el) => {
-      el.drawShape(contextRef.current);
-    });
+    palletGroup.current
+      .getShapes()
+      .forEach((el) => el.drawShape(contextRef.current));
+    stageGroup.current
+      .getShapes()
+      .forEach((el) => el.drawShape(contextRef.current));
+
     stageGroup.current.drawConnections(contextRef.current);
   }
 
@@ -351,6 +352,7 @@ const CanvasComponent = () => {
   function connectShapes() {
     console.log('🚀 ~ connectShapes ~ connectShape1', connectShape1.current);
     console.log('🚀 ~ connectShapes ~ connectShape2', connectShape2.current);
+    // only connect if shape2 not default text
     if (
       connectShape2.current.text !== 'playMenu' &&
       connectShape2.current.text !== 'playMessage' &&
@@ -417,7 +419,8 @@ const CanvasComponent = () => {
             color: setPalletArrowColor(),
           }}
           onClick={() => {
-            setIsConnecting(1);
+            isConnecting === 0 && setIsConnecting(1);
+            isConnecting > 0 && setIsConnecting(0);
             canvasRef.current.style.cursor = 'crosshair';
           }}
         />
