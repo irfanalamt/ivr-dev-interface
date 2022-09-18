@@ -120,8 +120,7 @@ const CanvasComponent = () => {
       let dx = clientX - startX;
       let dy = clientY - startY;
       let current_shape = currentShape.current;
-      console.log('dx', dx);
-      console.log('dy', dy);
+
       current_shape.x += dx;
       current_shape.y += dy;
       // change connected lines position also if present
@@ -274,6 +273,26 @@ const CanvasComponent = () => {
         startY = clientY;
         return;
       }
+    });
+
+    // check mouse on line
+    lineGroup.current.getLines().forEach((el) => {
+      const linepoint = el.linepointNearestMouse(clientX, clientY);
+      let dx = clientX - linepoint.x;
+      let dy = clientY - linepoint.y;
+      // root of dx^2 + dy^2
+      let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+
+      if (distance < 5) {
+        console.log('mouse on line 🐁');
+        el.setColor('#1e88e5');
+        clearAndDraw();
+        return;
+      }
+
+      el.setColor('#424242');
+      clearAndDraw();
+      return;
     });
   }
   function handleMouseUp(e) {

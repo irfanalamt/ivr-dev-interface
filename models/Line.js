@@ -6,6 +6,7 @@ class Line {
     this.y2 = y2;
     this.startItem = startItem;
     this.endItem = endItem;
+    this.color = '#424242';
   }
 
   connectPoints(ctx) {
@@ -26,10 +27,31 @@ class Line {
       this.y2 - headLength * Math.sin(angle + Math.PI / 6)
     );
 
-    ctx.strokeStyle = '#424242';
+    ctx.strokeStyle = this.color;
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.stroke();
+  }
+
+  linepointNearestMouse(x, y) {
+    const lerp = (a, b, x) => {
+      return a + x * (b - a);
+    };
+
+    let dx = this.x2 - this.x1;
+    let dy = this.y2 - this.y1;
+    let t = ((x - this.x1) * dx + (y - this.y1) * dy) / (dx * dx + dy * dy);
+    let lineX = lerp(this.x1, this.x2, t);
+    let lineY = lerp(this.y1, this.y2, t);
+
+    return {
+      x: lineX,
+      y: lineY,
+    };
+  }
+
+  setColor(color) {
+    this.color = color;
   }
 
   setStartPoint(x1, y1) {
