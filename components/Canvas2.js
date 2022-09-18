@@ -3,6 +3,8 @@ import { Box, Button, Drawer, Tooltip, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
+import Line from '../models/Line';
+import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
 import InitVariables from './InitVariables2';
 const CanvasComponent = () => {
@@ -19,6 +21,7 @@ const CanvasComponent = () => {
   const currentShape = useRef(null);
   const palletGroup = useRef(null);
   const stageGroup = useRef(null);
+  const lineGroup = useRef(null);
   const userVariables = useRef([]);
 
   let startX, startY;
@@ -74,6 +77,8 @@ const CanvasComponent = () => {
 
     // Initialize stageGroup
     stageGroup.current = new Shapes('stage', []);
+    // init lineGroup
+    lineGroup.current = new Lines([]);
 
     contextRef.current = context1;
     bgContextRef.current = context2;
@@ -88,11 +93,20 @@ const CanvasComponent = () => {
     palletGroup.current
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
+
     stageGroup.current
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
 
-    stageGroup.current.drawConnections(contextRef.current);
+    lineGroup.current.getLines().forEach((el) => {
+      el.connectPoints(contextRef.current);
+    });
+
+    // stageGroup.current.getShapes().forEach((el) => {
+    //   // el.checkAndDrawLine()
+    // });
+
+    // stageGroup.current.drawConnections(contextRef.current);
   }
 
   function handleMouseMove(e) {
@@ -110,6 +124,27 @@ const CanvasComponent = () => {
       console.log('dy', dy);
       current_shape.x += dx;
       current_shape.y += dy;
+      // change connected lines position also if present
+      const posStart = lineGroup.current
+        .getLines()
+        .findIndex((el) => el.startItem === current_shape.text);
+      if (posStart !== -1) {
+        // dragged element is a line start item
+        lineGroup.current
+          .getLines()
+          [posStart].setStartPoint(...currentShape.current.getExitPoint());
+      }
+
+      const posEnd = lineGroup.current
+        .getLines()
+        .findIndex((el) => el.endItem === current_shape.text);
+      if (posEnd !== -1) {
+        // dragged element is a line End item
+        lineGroup.current
+          .getLines()
+          [posEnd].setEndPoint(...currentShape.current.getEntryPoint());
+      }
+
       clearAndDraw();
       startX = clientX;
       startY = clientY;
@@ -126,6 +161,27 @@ const CanvasComponent = () => {
       if (newWidth < 40 || newHeight < 40) return;
       current_shape.width = newWidth;
       current_shape.height = newHeight;
+      // change connected lines position also if present
+      const posStart = lineGroup.current
+        .getLines()
+        .findIndex((el) => el.startItem === current_shape.text);
+      if (posStart !== -1) {
+        // resized element is a line start item
+        lineGroup.current
+          .getLines()
+          [posStart].setStartPoint(...currentShape.current.getExitPoint());
+      }
+
+      const posEnd = lineGroup.current
+        .getLines()
+        .findIndex((el) => el.endItem === current_shape.text);
+      if (posEnd !== -1) {
+        // resized element is a line End item
+        lineGroup.current
+          .getLines()
+          [posEnd].setEndPoint(...currentShape.current.getEntryPoint());
+      }
+
       clearAndDraw();
       startX = clientX;
       startY = clientY;
@@ -362,6 +418,13 @@ const CanvasComponent = () => {
       connectShape2.current.text !== 'callAPI'
     ) {
       connectShape1.current.setNextItem(connectShape2.current.text);
+      let newLine = new Line(
+        ...connectShape1.current.getExitPoint(),
+        ...connectShape2.current.getEntryPoint(),
+        connectShape1.current.text,
+        connectShape2.current.text
+      );
+      lineGroup.current.addLine(newLine);
     }
 
     connectShape1.current.setSelected(false);
