@@ -22,6 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -29,6 +30,8 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [nextItem, setNextItem] = useState(shape.nextItem || '');
+  const [functionString, setFunctionString] = useState('');
+  const [isFunctionError, setIsFunctionError] = useState(false);
 
   const menuActionList = stageGroup.shapes.filter(
     (s) =>
@@ -47,6 +50,30 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
     shape.setNextItem(nextItem);
     console.log('shape after save', shape);
     console.log('shapeGroup ', stageGroup);
+  }
+
+  function handleFunctionValidation() {
+    console.log('Function text', functionString);
+    let isValid = isValidJs();
+    if (isValid) {
+      console.log('its valid! ✅');
+      setIsFunctionError(false);
+      return;
+    }
+
+    console.log('its NOT valid!❌');
+    setIsFunctionError(true);
+  }
+
+  function isValidJs() {
+    let isValid = true;
+    let esprima = require('esprima');
+    try {
+      esprima.parseScript(functionString);
+    } catch (e) {
+      isValid = false;
+    }
+    return isValid;
   }
 
   return (
@@ -209,6 +236,33 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
               No action added
             </Typography>
           )}
+        </ListItem>
+        <ListItem>
+          <TextField
+            sx={{
+              mx: 'auto',
+              mt: 2,
+              backgroundColor: isFunctionError ? '#ffebee' : '#e8f5e9',
+            }}
+            label={isFunctionError ? 'code invalid' : 'Function code'}
+            value={functionString}
+            onChange={(e) => {
+              setFunctionString(e.target.value);
+            }}
+            placeholder='Enter JS code'
+            minRows={9}
+            multiline
+          />
+        </ListItem>
+        <ListItem>
+          <Button
+            sx={{ mx: 'auto' }}
+            variant='outlined'
+            color='success'
+            onClick={handleFunctionValidation}
+          >
+            Validate
+          </Button>
         </ListItem>
       </List>
     </>

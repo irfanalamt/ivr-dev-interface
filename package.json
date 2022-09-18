@@ -16,6 +16,7 @@
     "@mui/material": "^5.9.2",
     "axios": "^0.27.2",
     "canvas": "^2.9.3",
+    "esprima": "^4.0.1",
     "next": "12.2.3",
     "next-connect": "^0.13.0",
     "react": "18.2.0",
