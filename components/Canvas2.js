@@ -18,6 +18,7 @@ const CanvasComponent = () => {
   const contextRef = useRef(null);
   const bgContextRef = useRef(null);
 
+  const currentLine = useRef(null);
   const currentShape = useRef(null);
   const palletGroup = useRef(null);
   const stageGroup = useRef(null);
@@ -29,7 +30,8 @@ const CanvasComponent = () => {
   let isDragging = false,
     isPalletShape = false,
     isOnEdge = false,
-    isResizing = false;
+    isResizing = false,
+    isDraggingLine = false;
   const connectShape1 = useRef(null),
     connectShape2 = useRef(null);
 
@@ -187,6 +189,23 @@ const CanvasComponent = () => {
       return;
     }
 
+    if (isDraggingLine) {
+      let dx = clientX - startX;
+      let dy = clientY - startY;
+
+      let current_line = currentLine.current;
+      if (current_line.segments.length === 1) return;
+      current_line.segments.at(-1).x1 += dx;
+      current_line.segments.at(-1).y1 += dy;
+      current_line.segments[0].x2 += dx;
+      current_line.segments[0].y2 += dy;
+      clearAndDraw();
+      startX = clientX;
+      startY = clientY;
+
+      return;
+    }
+
     if (isConnecting > 0) return;
 
     // reset cursor,tooltip; place tooltip on mouse pallet shape
@@ -278,13 +297,36 @@ const CanvasComponent = () => {
     // check mouse on line
     lineGroup.current.getLines().forEach((el) => {
       const linepoint = el.linepointNearestMouse(clientX, clientY);
-      let dx = clientX - linepoint.x;
-      let dy = clientY - linepoint.y;
-      // root of dx^2 + dy^2
-      let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+      const distanceArray = [];
+      const distanceSegmentsObj = {};
 
-      if (distance < 5) {
+      linepoint.forEach((el) => {
+        let dx = clientX - el.x;
+        let dy = clientY - el.y;
+        // root of dx^2 + dy^2
+        let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+        distanceArray.push(distance);
+        distanceSegmentsObj[distance] = { x: el.x, y: el.y };
+      });
+
+      const minDistance = distanceArray.reduce((prev, cur) => {
+        return prev < cur ? prev : cur;
+      }, +Infinity);
+
+      if (minDistance < 5) {
         console.log('mouse on line 🐁');
+
+        if (el.segments.length < 2) {
+          el.addSegment(
+            distanceSegmentsObj[minDistance].x,
+            distanceSegmentsObj[minDistance].y
+          );
+        }
+        isDraggingLine = true;
+        startX = clientX;
+        startY = clientY;
+        el.dragCount++;
+        currentLine.current = el;
         el.setColor('#1e88e5');
         clearAndDraw();
         return;
@@ -299,6 +341,7 @@ const CanvasComponent = () => {
     e.preventDefault();
     let { clientX, clientY } = e;
     isDragging = false;
+    isDraggingLine = false;
 
     if (isPalletShape) {
       isPalletShape = false;

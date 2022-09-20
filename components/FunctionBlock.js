@@ -242,7 +242,7 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
             sx={{
               mx: 'auto',
               mt: 2,
-              backgroundColor: isFunctionError ? '#ffebee' : '#e8f5e9',
+              backgroundColor: isFunctionError && '#ffebee',
             }}
             label={isFunctionError ? 'code invalid' : 'Function code'}
             value={functionString}
