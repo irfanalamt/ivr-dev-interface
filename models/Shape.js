@@ -24,6 +24,7 @@ class Shape {
     this.selected = false;
     this.userValues = null;
     this.nextItem = null;
+    this.functionString = '';
   }
 
   setSelected(bool) {
@@ -40,6 +41,10 @@ class Shape {
 
   setNextItem(item) {
     this.nextItem = item;
+  }
+
+  setFunctionString(text) {
+    this.functionString = text;
   }
 
   setText(inputText) {

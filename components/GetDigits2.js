@@ -58,12 +58,34 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
     // remove null values; SAVE
     const filteredMsgObj = msgObj.filter((n) => n.value);
     const filteredParamsObj = paramsObj.filter((n) => n.value);
+    const entireParamsObj = {
+      minDigits,
+      maxDigits,
+      paramsList: filteredParamsObj,
+    };
+
     shape.setText(shapeName);
     shape.setUserValues({
-      params: { minDigits, maxDigits, paramsList: filteredParamsObj },
+      params: paramsObj,
       messageList: filteredMsgObj,
       variableName: resultName,
     });
+
+    generateJS(filteredMsgObj, entireParamsObj);
+  }
+
+  function generateJS(filteredMsgObj, entireParamsObj) {
+    let codeString = `function ${shapeName}(){
+
+let msgList = ${JSON.stringify(filteredMsgObj)};
+
+let params = ${JSON.stringify(entireParamsObj)};
+
+${resultName} = await IVR.getDigits(msgList,params);
+    
+}`;
+    shape.setFunctionString(codeString);
+    console.log('🚀 ~ generateJS ~ codeString', codeString);
   }
 
   function handleNameValidation(e) {
