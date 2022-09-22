@@ -23,21 +23,6 @@ class Line {
       ctx.moveTo(x1, y1);
       ctx.lineTo(x2, y2);
       ctx.arc(x2, y2, 2, 0, Math.PI * 2);
-
-      // arr = this.segments.slice(0, -1);
-      // arr.every((el) => {
-      //   let slope = (el.y2 - el.y1) / (el.x2 - el.x1);
-      //   if (slope === this.slope) {
-      //     console.log('slope1', this.slope, 'current slope', slope);
-      //     this.removeSegment();
-      //     return false;
-      //   }
-      //   console.log('slope1', this.slope, 'current slope', slope);
-      //   ctx.moveTo(el.x1, el.y1);
-      //   ctx.lineTo(el.x2, el.y2);
-      //   ctx.arc(el.x2, el.y2, 2, 0, Math.PI * 2);
-      //   return true;
-      // });
     }
 
     // draw last segment with arrow at endPoint
@@ -75,41 +60,25 @@ class Line {
     }
   }
 
-  // connectPoints1(ctx) {
-  //   const headLength = 8;
-  //   let dx = this.x2 - this.x1;
-  //   let dy = this.y2 - this.y1;
-  //   let angle = Math.atan2(dy, dx);
-  //   ctx.beginPath();
-  //   ctx.moveTo(this.x1, this.y1);
-  //   ctx.lineTo(this.x2, this.y2);
-  //   ctx.lineTo(
-  //     this.x2 - headLength * Math.cos(angle - Math.PI / 6),
-  //     this.y2 - headLength * Math.sin(angle - Math.PI / 6)
-  //   );
-  //   ctx.moveTo(this.x2, this.y2);
-  //   ctx.lineTo(
-  //     this.x2 - headLength * Math.cos(angle + Math.PI / 6),
-  //     this.y2 - headLength * Math.sin(angle + Math.PI / 6)
-  //   );
-
-  //   ctx.strokeStyle = this.color;
-  //   ctx.lineWidth = 2;
-  //   ctx.lineCap = 'round';
-  //   ctx.stroke();
-  // }
-
   linepointNearestMouse(x, y) {
     const lerp = (a, b, x) => a + x * (b - a);
     const linePointsArray = [];
 
     this.segments.forEach((el) => {
-      let dx = el.x2 - el.x1;
-      let dy = el.y2 - el.y1;
-      let t = ((x - el.x1) * dx + (y - el.y1) * dy) / (dx * dx + dy * dy);
-      let lineX = lerp(el.x1, el.x2, t);
-      let lineY = lerp(el.y1, el.y2, t);
-      linePointsArray.push({ x: lineX, y: lineY });
+      const dx = el.x2 - el.x1;
+      const dy = el.y2 - el.y1;
+      const t = ((x - el.x1) * dx + (y - el.y1) * dy) / (dx * dx + dy * dy);
+      const lineX = lerp(el.x1, el.x2, t);
+      const lineY = lerp(el.y1, el.y2, t);
+
+      const xSmall = el.x1 < el.x2 ? el.x1 : el.x2;
+      const xBig = el.x1 > el.x2 ? el.x1 : el.x2;
+      const ySmall = el.y1 < el.y2 ? el.y1 : el.y2;
+      const yBig = el.y1 > el.y2 ? el.y1 : el.y2;
+      // check if mousepoint inside that line enclosing rectangle
+      if (xSmall < x && x < xBig && ySmall < y && y < yBig) {
+        linePointsArray.push({ x: lineX, y: lineY });
+      }
     });
 
     return linePointsArray;

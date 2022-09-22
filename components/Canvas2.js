@@ -300,21 +300,22 @@ const CanvasComponent = () => {
       const distanceArray = [];
       const distanceSegmentsObj = {};
 
-      linepoint.forEach((el) => {
-        let dx = clientX - el.x;
-        let dy = clientY - el.y;
+      linepoint.forEach((elm) => {
+        let dx = clientX - elm.x;
+        let dy = clientY - elm.y;
         // root of dx^2 + dy^2
         let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
         distanceArray.push(distance);
-        distanceSegmentsObj[distance] = { x: el.x, y: el.y };
+        distanceSegmentsObj[distance] = { x: elm.x, y: elm.y };
       });
 
-      const minDistance = distanceArray.reduce((prev, cur) => {
-        return prev < cur ? prev : cur;
-      }, +Infinity);
+      const minDistance = distanceArray.reduce(
+        (prev, cur) => (prev < cur ? prev : cur),
+        +Infinity
+      );
 
       if (minDistance < 5) {
-        console.log('mouse on line 🐁');
+        console.log('mouse on line🐁');
 
         if (el.segments.length < 2) {
           el.addSegment(
