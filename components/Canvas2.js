@@ -13,10 +13,7 @@ const CanvasComponent = () => {
   const [isConnecting, setIsConnecting] = useState(0);
 
   const canvasRef = useRef(null);
-  const bgCanvasRef = useRef(null);
-
   const contextRef = useRef(null);
-  const bgContextRef = useRef(null);
 
   const currentLine = useRef(null);
   const currentShape = useRef(null);
@@ -41,7 +38,6 @@ const CanvasComponent = () => {
 
   function initializeCanvas() {
     const context1 = canvasRef.current.getContext('2d');
-    const context2 = bgCanvasRef.current.getContext('2d');
 
     context1.lineCap = 'round';
     context1.strokeStyle = 'black';
@@ -83,15 +79,20 @@ const CanvasComponent = () => {
     lineGroup.current = new Lines([]);
 
     contextRef.current = context1;
-    bgContextRef.current = context2;
-    // draw background palette rectangle
-    bgContextRef.current.strokeRect(30, 100, 80, 400);
 
     clearAndDraw();
   }
 
   function clearAndDraw() {
+    // clear canvas
     contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    contextRef.current.lineCap = 'round';
+    contextRef.current.strokeStyle = 'black';
+    contextRef.current.lineWidth = 2;
+    // draw bg rectangle
+    contextRef.current.strokeRect(30, 100, 80, 400);
+
+    // draw shapes and lines
     palletGroup.current
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
@@ -103,12 +104,6 @@ const CanvasComponent = () => {
     lineGroup.current.getLines().forEach((el) => {
       el.connectPoints(contextRef.current);
     });
-
-    // stageGroup.current.getShapes().forEach((el) => {
-    //   // el.checkAndDrawLine()
-    // });
-
-    // stageGroup.current.drawConnections(contextRef.current);
   }
 
   function handleMouseMove(e) {
@@ -505,18 +500,6 @@ const CanvasComponent = () => {
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
-      ></canvas>
-      <canvas
-        style={{
-          position: 'absolute',
-          zIndex: -1,
-          left: 0,
-          bottom: 0,
-          backgroundColor: '#fafafa',
-        }}
-        width={window.innerWidth}
-        height={window.innerHeight}
-        ref={bgCanvasRef}
       ></canvas>
       <Drawer anchor='right' open={isOpenVars}>
         <InitVariables
