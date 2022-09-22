@@ -104,6 +104,15 @@ const PlayMessage = ({
       errorBox.innerText = errorMessage;
       return;
     }
+
+    // check name unique
+    if (stageGroup.getShapes().some((el) => el.text === e.target.value)) {
+      errorBox.style.display = 'block';
+      e.target.style.backgroundColor = '#ffebee';
+      errorBox.innerText = 'name NOT unique';
+      return;
+    }
+
     // no error condition
     errorBox.style.display = 'none';
     e.target.style.backgroundColor = '#f1f8e9';

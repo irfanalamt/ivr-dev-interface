@@ -27,7 +27,7 @@ import {
   addParamsElements,
 } from '../src/helpers';
 
-const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
+const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
   const [resultName, setResultName] = useState(
     shape.userValues?.variableName || ''
   );
@@ -94,6 +94,15 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables }) => {
       errorBox.innerText = errorMessage;
       return;
     }
+
+    // check name unique
+    if (stageGroup.getShapes().some((el) => el.text === e.target.value)) {
+      errorBox.style.display = 'block';
+      e.target.style.backgroundColor = '#ffebee';
+      errorBox.innerText = 'name NOT unique';
+      return;
+    }
+
     // no error condition
     errorBox.style.display = 'none';
     e.target.style.backgroundColor = '#f1f8e9';

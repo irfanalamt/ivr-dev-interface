@@ -27,11 +27,14 @@ import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRou
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import { checkValidity } from '../src/helpers';
+
 const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [nextItem, setNextItem] = useState(shape.nextItem || '');
   const [functionString, setFunctionString] = useState('');
   const [isFunctionError, setIsFunctionError] = useState(false);
+  const [errorObj, setErrorObj] = useState({});
 
   const menuActionList = stageGroup.shapes.filter(
     (s) =>
@@ -74,6 +77,32 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
       isValid = false;
     }
     return isValid;
+  }
+
+  function handleValidation(e, name, type) {
+    let errorMessage = checkValidity(type, e);
+    if (errorMessage !== -1) {
+      e.target.style.backgroundColor = '#ffebee';
+      setErrorObj((s) => {
+        return { ...s, [name]: errorMessage };
+      });
+      return;
+    }
+
+    if (stageGroup.getShapes().some((el) => el.text === e.target.value)) {
+      e.target.style.backgroundColor = '#ffebee';
+      setErrorObj((s) => {
+        return { ...s, [name]: 'name NOT unique' };
+      });
+      return;
+    }
+    // no error condition
+    setErrorObj((s) => {
+      const newObj = { ...s };
+      delete newObj[name];
+      return newObj;
+    });
+    e.target.style.backgroundColor = '#f1f8e9';
   }
 
   return (
@@ -133,12 +162,13 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
             value={shapeName || ''}
             onChange={(e) => {
               setShapeName(e.target.value);
-              // handleValidation(e, 'menuId', 'object');
+              handleValidation(e, 'menuId', 'object');
             }}
             sx={{
               mx: 0.5,
             }}
-            // helperText={errorObj.menuId}
+            helperText={errorObj.menuId}
+            error={errorObj.menuId}
             size='small'
           />
         </ListItem>

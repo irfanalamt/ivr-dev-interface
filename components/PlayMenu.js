@@ -136,6 +136,14 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
       });
       return;
     }
+    // check name unique
+    if (stageGroup.getShapes().some((el) => el.text === e.target.value)) {
+      e.target.style.backgroundColor = '#ffebee';
+      setErrorObj((s) => {
+        return { ...s, [name]: 'name NOT unique' };
+      });
+      return;
+    }
     // no error condition
     setErrorObj((s) => {
       const newObj = { ...s };
@@ -633,6 +641,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
               mx: 0.5,
             }}
             helperText={errorObj.menuId}
+            error={errorObj.menuId}
             size='small'
           />
         </ListItem>

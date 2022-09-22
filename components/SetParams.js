@@ -73,6 +73,14 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
       });
       return;
     }
+    // check name unique
+    if (stageGroup.getShapes().some((el) => el.text === e.target.value)) {
+      e.target.style.backgroundColor = '#ffebee';
+      setErrorObj((s) => {
+        return { ...s, [name]: 'name NOT unique' };
+      });
+      return;
+    }
     // no error condition
     setErrorObj((s) => {
       const newObj = { ...s };
@@ -936,7 +944,10 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
             value={shapeName}
             onChange={(e) => {
               setShapeName(e.target.value);
+              handleValidation(e, 'menuId', 'object');
             }}
+            helperText={errorObj.menuId}
+            error={errorObj.menuId}
             size='small'
           />
         </ListItem>
