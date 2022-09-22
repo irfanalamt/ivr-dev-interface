@@ -50,25 +50,6 @@ const PlayMessage = ({
   );
   if (menuActionList.length > 0) menuActionList.push({ text: 'null' });
 
-  useEffect(() => {
-    switchTab();
-  }, [tabValue]);
-
-  function switchTab() {
-    console.log('userVariables:', userVariables);
-    let tabPanel1 = document.getElementById('tabPanel1');
-    let tabPanel2 = document.getElementById('tabPanel2');
-    if (tabValue === 0) {
-      tabPanel1.style.display = 'block';
-      tabPanel2.style.display = 'none';
-      return;
-    }
-    if (tabValue === 1) {
-      tabPanel1.style.display = 'none';
-      tabPanel2.style.display = 'block';
-    }
-  }
-
   function saveUserValues() {
     // remove null values; SAVE
     const filteredMsgObj = msgObj.filter((n) => n.value);
@@ -299,7 +280,7 @@ const PlayMessage = ({
           </Tabs>
         </ListItem>
       </List>
-      <Box id='tabPanel1'>
+      <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
         <ListItem>
           <Typography variant='subtitle1'>Select object type:</Typography>
           <Select
@@ -376,7 +357,7 @@ const PlayMessage = ({
           ></Typography>
         </ListItem>
       </Box>
-      <Box id='tabPanel2' sx={{ display: 'none' }}>
+      <Box id='tabPanel2' sx={{ display: tabValue === 1 ? 'block' : 'none' }}>
         <ListItem>
           <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
             interruptible:

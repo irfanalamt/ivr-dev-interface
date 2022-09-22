@@ -46,10 +46,6 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
   );
   const [paramsObjType, setParamsObjType] = useState('');
 
-  useEffect(() => {
-    switchTab();
-  }, [tabValue]);
-
   const paramsObjOptions = [
     'terminator',
     'maxRetries',
@@ -57,21 +53,6 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
     'timeoutAction',
     'invalidPrompt',
   ];
-
-  function switchTab() {
-    console.log('userVariables:', userVariables);
-    let tabPanel1 = document.getElementById('tabPanel1');
-    let tabPanel2 = document.getElementById('tabPanel2');
-    if (tabValue === 0) {
-      tabPanel1.style.display = 'block';
-      tabPanel2.style.display = 'none';
-      return;
-    }
-    if (tabValue === 1) {
-      tabPanel1.style.display = 'none';
-      tabPanel2.style.display = 'block';
-    }
-  }
 
   function saveUserValues() {
     // remove null values; SAVE
@@ -243,13 +224,14 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
             value={tabValue}
             onChange={(e, newVal) => {
               setTabValue(newVal);
+              console.log('tabVA', tabValue, typeof tabValue);
             }}
           >
             <Tab label='Message List' />
             <Tab label='Parameters' />
           </Tabs>
         </ListItem>
-        <Box id='tabPanel1'>
+        <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
           <ListItem>
             <Typography variant='subtitle1'>Select object type:</Typography>
             <Select
@@ -326,7 +308,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
             ></Typography>
           </ListItem>
         </Box>
-        <Box sx={{ display: 'none' }} id='tabPanel2'>
+        <Box sx={{ display: tabValue === 1 ? 'block' : 'none' }} id='tabPanel2'>
           <ListItem sx={{ marginTop: 2 }}>
             <Typography sx={{ fontSize: 18, width: '30%' }} variant='h6'>
               minDigits:

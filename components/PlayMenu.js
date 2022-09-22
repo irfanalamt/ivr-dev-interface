@@ -45,25 +45,6 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
       s.text !== 'callAPI'
   );
 
-  useEffect(() => {
-    switchTab();
-    console.log('menuActionList', menuActionList);
-  }, [tabValue]);
-
-  function switchTab() {
-    let tabPanel1 = document.getElementById('tabPanel1');
-    let tabPanel2 = document.getElementById('tabPanel2');
-    if (tabValue === 0) {
-      tabPanel1.style.display = 'block';
-      tabPanel2.style.display = 'none';
-      return;
-    }
-    if (tabValue === 1) {
-      tabPanel1.style.display = 'none';
-      tabPanel2.style.display = 'block';
-    }
-  }
-
   function handleMenuObjChange(value, name) {
     setMenuObj((s) => {
       const newArr = { ...s };
@@ -657,7 +638,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             <Tab label='Items' />
           </Tabs>
         </ListItem>
-        <Box id='tabPanel1'>
+        <Box id='tabPanel1' sx={{ display: tabValue == 0 ? 'block' : 'none' }}>
           {/* <pre>{JSON.stringify(menuObj, undefined, 2)}</pre> */}
 
           <ListItem sx={{ my: 0.5 }}>
@@ -791,7 +772,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             {paramSelectedList.map((el, i) => addParamsElements(el, i))}
           </List>
         </Box>
-        <Box id='tabPanel2' sx={{ display: 'none' }}>
+        <Box id='tabPanel2' sx={{ display: tabValue == 1 ? 'block' : 'none' }}>
           <ListItem sx={{ mt: 2 }}>
             <Typography
               sx={{ width: '35%', fontSize: 17, fontWeight: 405 }}
