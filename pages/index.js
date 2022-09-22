@@ -70,7 +70,7 @@ export default function Home() {
           }}
           variant='outlined'
           color='info'
-          href='/stageCanvas'
+          href='/stageCanvas2'
           onClick={() => {
             setIsExisting(true);
           }}
