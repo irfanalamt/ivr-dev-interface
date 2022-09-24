@@ -320,21 +320,17 @@ class Shape {
     leftVertex = [this.x - this.width / 2, this.y];
     rightVertex = [this.x + this.width / 2, this.y];
     console.log('.is near vertex.');
-    if (
+
+    return (
       this.isNearPoint(x, y, ...leftVertex) ||
       this.isNearPoint(x, y, ...rightVertex)
-    ) {
-      return true;
-    }
-
-    return false;
+    );
   }
 
   isNearPoint(x1, y1, x2, y2) {
     const dist = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
-    if (parseInt(dist) < 10) {
-      return true;
-    } else return false;
+
+    return parseInt(dist) < 10;
   }
 
   isMouseInShape(x, y) {
@@ -345,10 +341,7 @@ class Shape {
     shapeTop = this.y - this.height / 2;
     shapeBottom = this.y + this.height / 2;
 
-    if (x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom) {
-      return true;
-    }
-    return false;
+    return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
   }
 }
 
