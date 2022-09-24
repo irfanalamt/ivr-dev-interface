@@ -601,6 +601,9 @@ const CanvasComponent = () => {
             width: 75,
             color: isDeleting ? '#2e7d32' : '#37474f',
             fontSize: isDeleting ? '2.5rem' : '2rem',
+            boxShadow: isDeleting ? 1 : 0,
+            borderRadius: 2,
+            backgroundColor: isDeleting && '#ffcdd2',
           }}
           onClick={() => {
             !isConnecting && setIsDeleting(!isDeleting);
