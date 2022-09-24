@@ -14,5 +14,8 @@ class Lines {
 
     this.lines.splice(index, 1);
   }
+  removeLineIndex(index) {
+    this.lines.splice(index, 1);
+  }
 }
 export default Lines;

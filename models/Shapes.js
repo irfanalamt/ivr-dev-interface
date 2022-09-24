@@ -28,6 +28,9 @@ class Shapes {
   addShape(newShape) {
     this.shapes.push(newShape);
   }
+  removeShape(index) {
+    this.shapes.splice(index, 1);
+  }
 }
 
 export default Shapes;

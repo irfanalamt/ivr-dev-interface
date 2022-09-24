@@ -1,4 +1,5 @@
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, Drawer, Tooltip, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/Shape';
@@ -12,6 +13,7 @@ const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -44,13 +46,13 @@ const CanvasComponent = () => {
     context1.strokeStyle = 'black';
     context1.lineWidth = 3;
     // Initialize palette shapes; add to palette group
-    const palletPentagon = new Shape(70, 185, 40, 30, 'pentagon', '#880e4f');
-    const palletRectangle = new Shape(70, 235, 40, 30, 'rectangle', '#bf360c');
-    const palletCircle = new Shape(70, 290, 40, 40, 'circle', '#0d47a1');
-    const palletHexagon = new Shape(70, 345, 50, 30, 'hexagon', '#004d40');
+    const palletPentagon = new Shape(70, 165, 40, 30, 'pentagon', '#880e4f');
+    const palletRectangle = new Shape(70, 215, 40, 30, 'rectangle', '#bf360c');
+    const palletCircle = new Shape(70, 270, 40, 40, 'circle', '#0d47a1');
+    const palletHexagon = new Shape(70, 325, 50, 30, 'hexagon', '#004d40');
     const palletParallelogram = new Shape(
       70,
-      390,
+      370,
       36,
       22,
       'parallelogram',
@@ -58,7 +60,7 @@ const CanvasComponent = () => {
     );
     const palletRoundedRectangle = new Shape(
       70,
-      435,
+      415,
       50,
       30,
       'roundedRectangle',
@@ -91,7 +93,7 @@ const CanvasComponent = () => {
     contextRef.current.strokeStyle = 'black';
     contextRef.current.lineWidth = 2;
     // draw bg rectangle
-    contextRef.current.strokeRect(30, 100, 80, 400);
+    contextRef.current.strokeRect(30, 100, 80, 415);
 
     // draw shapes and lines
     palletGroup.current
@@ -203,6 +205,7 @@ const CanvasComponent = () => {
     }
 
     if (isConnecting > 0) return;
+    if (isDeleting) return;
 
     // reset cursor,tooltip; place tooltip on mouse pallet shape
     canvasRef.current.style.cursor = 'default';
@@ -246,8 +249,12 @@ const CanvasComponent = () => {
     }
 
     //Check mouse in stage shape
-    stageGroup.current.getShapes().forEach((element) => {
+    stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(clientX, clientY)) {
+        if (isDeleting) {
+          stageGroup.current.removeShape(i);
+          clearAndDraw();
+        }
         console.log(`YES in stage shape ${element.type}`);
         if (isConnecting === 1) {
           connectShape1.current = element;
@@ -279,6 +286,7 @@ const CanvasComponent = () => {
     palletGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(clientX, clientY)) {
         console.log(`YES in pallet shape ${element.type}`);
+        setIsDeleting(false);
         setIsConnecting(0);
         canvasRef.current.style.cursor = 'grabbing';
         currentShape.current = element;
@@ -291,7 +299,7 @@ const CanvasComponent = () => {
     });
 
     // check mouse on line
-    lineGroup.current.getLines().forEach((el) => {
+    lineGroup.current.getLines().forEach((el, i) => {
       const linepoint = el.linepointNearestMouse(clientX, clientY);
       const distanceArray = [];
       const distanceSegmentsObj = {};
@@ -312,7 +320,11 @@ const CanvasComponent = () => {
 
       if (minDistance < 5) {
         console.log('mouse on line🐁');
-
+        if (isDeleting) {
+          lineGroup.current.removeLineIndex(i);
+          clearAndDraw();
+          return;
+        }
         if (el.segments.length < 2) {
           el.addSegment(
             distanceSegmentsObj[minDistance].x,
@@ -453,9 +465,9 @@ const CanvasComponent = () => {
   }
 
   function setPalletArrowColor() {
-    if (isConnecting === 0) return 'black';
-    if (isConnecting === 1) return 'green';
-    if (isConnecting === 2) return 'blue';
+    if (isConnecting === 0) return '#37474f';
+    if (isConnecting === 1) return '#2e7d32';
+    if (isConnecting === 2) return '#1565c0';
   }
 
   function setPalletFontSize() {
@@ -507,6 +519,36 @@ const CanvasComponent = () => {
 
   return (
     <Box>
+      <Typography
+        sx={{
+          mt: 2,
+          alignItems: 'center',
+          justifyContent: 'center',
+          display: isDeleting ? 'flex' : 'none',
+          fontSize: '1.2rem',
+          color: '#00897b',
+        }}
+        variant='subtitle2'
+      >
+        <DeleteIcon /> Delete mode: Click on items to erase them
+      </Typography>
+      <Typography
+        sx={{
+          mt: 2,
+          alignItems: 'center',
+          justifyContent: 'center',
+          display: isConnecting > 0 ? 'flex' : 'none',
+          fontSize: '1.2rem',
+          color: '#00897b',
+        }}
+        variant='subtitle2'
+      >
+        <ArrowRightAltIcon />
+        Connect mode: Click on shapes to connect them.
+        {isConnecting === 1 && ' Select shape 1'}
+        {isConnecting === 2 && ' Select shape 2'}
+      </Typography>
+
       <canvas
         style={{ position: 'absolute', left: 0, bottom: 0, zIndex: 5 }}
         width={window.innerWidth}
@@ -536,16 +578,34 @@ const CanvasComponent = () => {
           sx={{
             position: 'absolute',
             left: 32,
-            top: 450,
+            top: 430,
             zIndex: 5,
             width: 75,
             fontSize: setPalletFontSize(),
             color: setPalletArrowColor(),
           }}
           onClick={() => {
-            isConnecting === 0 && setIsConnecting(1);
+            !isDeleting && isConnecting === 0 && setIsConnecting(1);
             isConnecting > 0 && setIsConnecting(0);
             canvasRef.current.style.cursor = 'crosshair';
+          }}
+        />
+      </Tooltip>
+      <Tooltip title='remove item' placement='right-end'>
+        <DeleteIcon
+          sx={{
+            position: 'absolute',
+            left: 32,
+            top: 471,
+            zIndex: 5,
+            width: 75,
+            color: isDeleting ? '#2e7d32' : '#37474f',
+            fontSize: isDeleting ? '2.5rem' : '2rem',
+          }}
+          onClick={() => {
+            !isConnecting && setIsDeleting(!isDeleting);
+            console.log('is deleting', isDeleting);
+            canvasRef.current.style.cursor = 'pointer';
           }}
         />
       </Tooltip>
