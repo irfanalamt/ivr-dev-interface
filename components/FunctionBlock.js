@@ -184,6 +184,7 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
               size='small'
               value={nextItem}
               onChange={(e) => setNextItem(e.target.value)}
+              disabled
             >
               {menuActionList.map((el, i) => (
                 <MenuItem key={i} value={el.text}>

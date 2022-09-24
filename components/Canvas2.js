@@ -7,6 +7,7 @@ import Line from '../models/Line';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
 import InitVariables from './InitVariables2';
+
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -101,9 +102,9 @@ const CanvasComponent = () => {
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
 
-    lineGroup.current.getLines().forEach((el) => {
-      el.connectPoints(contextRef.current);
-    });
+    lineGroup.current
+      .getLines()
+      .forEach((el) => el.connectPoints(contextRef.current));
   }
 
   function handleMouseMove(e) {
@@ -466,27 +467,41 @@ const CanvasComponent = () => {
   function connectShapes() {
     console.log('🚀 ~ connectShapes ~ connectShape1', connectShape1.current);
     console.log('🚀 ~ connectShapes ~ connectShape2', connectShape2.current);
-    // only connect if shape2 not default text
-    if (
-      connectShape2.current.text !== 'playMenu' &&
-      connectShape2.current.text !== 'playMessage' &&
-      connectShape2.current.text !== 'function' &&
-      connectShape2.current.text !== 'setParams' &&
-      connectShape2.current.text !== 'getDigits' &&
-      connectShape2.current.text !== 'callAPI'
-    ) {
-      connectShape1.current.setNextItem(connectShape2.current.text);
-      let newLine = new Line(
-        ...connectShape1.current.getExitPoint(),
-        ...connectShape2.current.getEntryPoint(),
-        connectShape1.current.text,
-        connectShape2.current.text
-      );
-      lineGroup.current.addLine(newLine);
-    }
-
     connectShape1.current.setSelected(false);
     connectShape2.current.setSelected(false);
+    clearAndDraw();
+
+    // return if connecting shapes same
+    if (connectShape1.current === connectShape2.current) return;
+
+    // return if shape2 default text
+    if (
+      connectShape2.current.text === 'playMenu' ||
+      connectShape2.current.text === 'playMessage' ||
+      connectShape2.current.text === 'function' ||
+      connectShape2.current.text === 'setParams' ||
+      connectShape2.current.text === 'getDigits' ||
+      connectShape2.current.text === 'callAPI'
+    )
+      return;
+
+    // if connect shape1 already has connection, remove line
+    if (
+      lineGroup.current
+        .getLines()
+        .some((el) => el.startItem === connectShape1.current.text)
+    )
+      lineGroup.current.removeLine(connectShape1.current.text);
+
+    // set nextItem for shape1; create new line to connect shapes
+    connectShape1.current.setNextItem(connectShape2.current.text);
+    let newLine = new Line(
+      ...connectShape1.current.getExitPoint(),
+      ...connectShape2.current.getEntryPoint(),
+      connectShape1.current.text,
+      connectShape2.current.text
+    );
+    lineGroup.current.addLine(newLine);
     clearAndDraw();
   }
 
