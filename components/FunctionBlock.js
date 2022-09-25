@@ -1,32 +1,17 @@
-import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
-import CancelIcon from '@mui/icons-material/Cancel';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
-  Box,
   Button,
-  Divider,
-  FormControlLabel,
   List,
   ListItem,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
-  Switch,
-  Tab,
-  Tabs,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { checkValidity } from '../src/helpers';
 
 const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {

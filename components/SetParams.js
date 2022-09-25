@@ -18,14 +18,14 @@ import { useState } from 'react';
 import { checkValidity } from '../src/helpers';
 
 const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
-  const [shapeName, setShapeName] = useState(shape.text || '');
+  const [shapeName, setShapeName] = useState(shape.text ?? '');
   const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
   const [paramSelectedList, setParamSelectedList] = useState(
     shape.userValues?.paramSelectedList || []
   );
   const [paramSelected, setParamSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
-  const [nextItem, setNextItem] = useState(shape.nextItem || '');
+  const [nextItem, setNextItem] = useState(shape.nextItem ?? '');
 
   const optionalParamsList = [
     'language',

@@ -29,20 +29,20 @@ import {
 
 const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
   const [resultName, setResultName] = useState(
-    shape.userValues?.variableName || ''
+    shape.userValues?.variableName ?? ''
   );
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
   const [minDigits, setMinDigits] = useState(
-    shape.userValues?.params.minDigits || 1
+    shape.userValues?.params.minDigits ?? 1
   );
   const [maxDigits, setMaxDigits] = useState(
-    shape.userValues?.params.maxDigits || 1
+    shape.userValues?.params.maxDigits ?? 1
   );
   const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
   const [msgObjType, setMsgObjType] = useState('prompt');
   const [paramsObj, setParamsObj] = useState(
-    shape.userValues?.params.paramsList || []
+    shape.userValues?.params.paramsList ?? []
   );
   const [paramsObjType, setParamsObjType] = useState('');
 

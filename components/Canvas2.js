@@ -46,13 +46,13 @@ const CanvasComponent = () => {
     context1.strokeStyle = 'black';
     context1.lineWidth = 3;
     // Initialize palette shapes; add to palette group
-    const palletPentagon = new Shape(70, 165, 40, 30, 'pentagon', '#880e4f');
-    const palletRectangle = new Shape(70, 215, 40, 30, 'rectangle', '#bf360c');
-    const palletCircle = new Shape(70, 270, 40, 40, 'circle', '#0d47a1');
-    const palletHexagon = new Shape(70, 325, 50, 30, 'hexagon', '#004d40');
+    const palletPentagon = new Shape(70, 115, 40, 30, 'pentagon', '#880e4f');
+    const palletRectangle = new Shape(70, 165, 40, 30, 'rectangle', '#bf360c');
+    const palletCircle = new Shape(70, 220, 40, 40, 'circle', '#0d47a1');
+    const palletHexagon = new Shape(70, 275, 50, 30, 'hexagon', '#004d40');
     const palletParallelogram = new Shape(
       70,
-      370,
+      320,
       36,
       22,
       'parallelogram',
@@ -60,7 +60,7 @@ const CanvasComponent = () => {
     );
     const palletRoundedRectangle = new Shape(
       70,
-      415,
+      365,
       50,
       30,
       'roundedRectangle',
@@ -93,7 +93,7 @@ const CanvasComponent = () => {
     contextRef.current.strokeStyle = 'black';
     contextRef.current.lineWidth = 2;
     // draw bg rectangle
-    contextRef.current.strokeRect(30, 100, 80, 415);
+    contextRef.current.strokeRect(30, 50, 80, 480);
 
     // draw shapes and lines
     palletGroup.current
@@ -470,12 +470,6 @@ const CanvasComponent = () => {
     if (isConnecting === 2) return '#1565c0';
   }
 
-  function setPalletFontSize() {
-    if (isConnecting === 0) return '3rem';
-
-    return '3.5rem';
-  }
-
   function connectShapes() {
     console.log('🚀 ~ connectShapes ~ connectShape1', connectShape1.current);
     console.log('🚀 ~ connectShapes ~ connectShape2', connectShape2.current);
@@ -488,21 +482,23 @@ const CanvasComponent = () => {
 
     // return if shape2 default text
     if (
-      connectShape2.current.text === 'playMenu' ||
-      connectShape2.current.text === 'playMessage' ||
-      connectShape2.current.text === 'function' ||
-      connectShape2.current.text === 'setParams' ||
-      connectShape2.current.text === 'getDigits' ||
-      connectShape2.current.text === 'callAPI'
+      [
+        'playMenu',
+        'playMessage',
+        'function',
+        'setParams',
+        'getDigits',
+        'callAPI',
+      ].includes(connectShape2.current.text)
     )
       return;
 
-    // if connect shape1 already has connection, remove line
     if (
       lineGroup.current
         .getLines()
         .some((el) => el.startItem === connectShape1.current.text)
     )
+      // if connect shape1 already has connection, remove line
       lineGroup.current.removeLine(connectShape1.current.text);
 
     // set nextItem for shape1; create new line to connect shapes
@@ -578,10 +574,10 @@ const CanvasComponent = () => {
           sx={{
             position: 'absolute',
             left: 32,
-            top: 430,
+            top: 440,
             zIndex: 5,
             width: 75,
-            fontSize: setPalletFontSize(),
+            fontSize: isConnecting === 0 ? '3rem' : '3.5rem',
             color: setPalletArrowColor(),
           }}
           onClick={() => {
@@ -596,7 +592,7 @@ const CanvasComponent = () => {
           sx={{
             position: 'absolute',
             left: 32,
-            top: 471,
+            top: 481,
             zIndex: 5,
             width: 75,
             color: isDeleting ? '#2e7d32' : '#37474f',
@@ -617,7 +613,7 @@ const CanvasComponent = () => {
           sx={{
             position: 'absolute',
             left: 32,
-            top: 105,
+            top: 55,
             zIndex: 5,
             width: 75,
           }}

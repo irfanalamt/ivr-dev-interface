@@ -16,7 +16,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { addInputElements, checkValidity } from '../src/helpers';
 
 const PlayMessage = ({
@@ -30,13 +30,13 @@ const PlayMessage = ({
   const [msgObjType, setMsgObjType] = useState('prompt');
   const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
   const [interruptible, setInterruptible] = useState(
-    shape.userValues?.params.interruptible || true
+    shape.userValues?.params.interruptible ?? true
   );
   const [repeatOption, setRepeatOption] = useState(
-    shape.userValues?.params.repeatOption || 9
+    shape.userValues?.params.repeatOption ?? 9
   );
 
-  const [nextItem, setNextItem] = useState(shape.nextItem || '');
+  const [nextItem, setNextItem] = useState(shape.nextItem ?? '');
 
   const menuActionList = stageGroup.shapes.filter(
     (s) =>

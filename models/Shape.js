@@ -82,7 +82,39 @@ class Shape {
       case 'roundedRectangle':
         this.drawRoundedRectangle(ctx);
         break;
+
+      case 'smallCircle':
+        this.drawSmallCircle(ctx);
+        break;
     }
+  }
+
+  drawSmallCircle(ctx) {
+    ctx.beginPath();
+
+    if (this.stroke) {
+      ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+      // fill color if selected
+      this.selected && this.fillSelected(ctx);
+
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.strokeStyle = '#2196f3';
+
+      ctx.stroke();
+      return;
+    }
+
+    ctx.fillStyle = this.style;
+    ctx.strokeStyle = '#2196f3';
+    ctx.lineWidth = 2;
+    ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
   }
 
   drawRectangle(ctx) {
@@ -136,9 +168,8 @@ class Shape {
     if (this.stroke) {
       ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
       // fill color when selected
-      if (this.selected) {
-        this.fillSelected(ctx);
-      }
+      this.selected && this.fillSelected(ctx);
+
       ctx.font = '19px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
@@ -148,14 +179,15 @@ class Shape {
       ctx.strokeStyle = '#2196f3';
 
       ctx.stroke();
-    } else {
-      ctx.fillStyle = this.style;
-      ctx.strokeStyle = '#2196f3';
-      ctx.lineWidth = 2;
-      ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
+      return;
     }
+
+    ctx.fillStyle = this.style;
+    ctx.strokeStyle = '#2196f3';
+    ctx.lineWidth = 2;
+    ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
   }
 
   drawPentagon(ctx) {
@@ -173,9 +205,8 @@ class Shape {
 
     if (this.stroke) {
       // fill color when selected
-      if (this.selected) {
-        this.fillSelected(ctx);
-      }
+      this.selected && this.fillSelected(ctx);
+
       ctx.font = '19px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
@@ -184,13 +215,14 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y + 5);
       ctx.strokeStyle = '#e91e63';
       ctx.stroke();
-    } else {
-      ctx.fillStyle = this.style;
-      ctx.strokeStyle = '#e91e63';
-      ctx.lineWidth = 2;
-      ctx.fill();
-      ctx.stroke();
+      return;
     }
+
+    ctx.fillStyle = this.style;
+    ctx.strokeStyle = '#e91e63';
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
   }
 
   drawParallelogram(ctx) {
@@ -205,9 +237,8 @@ class Shape {
 
     if (this.stroke) {
       // fill color when selected
-      if (this.selected) {
-        this.fillSelected(ctx);
-      }
+      this.selected && this.fillSelected(ctx);
+
       ctx.font = '19px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
@@ -216,13 +247,13 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = '#9c27b0';
       ctx.stroke();
-    } else {
-      ctx.fillStyle = this.style;
-      ctx.strokeStyle = '#9c27b0';
-      ctx.lineWidth = 2;
-      ctx.fill();
-      ctx.stroke();
+      return;
     }
+    ctx.fillStyle = this.style;
+    ctx.strokeStyle = '#9c27b0';
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
   }
 
   drawHexagon(ctx) {
@@ -241,9 +272,8 @@ class Shape {
 
     if (this.stroke) {
       // fill color when selected
-      if (this.selected) {
-        this.fillSelected(ctx);
-      }
+      this.selected && this.fillSelected(ctx);
+
       ctx.font = '19px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
@@ -252,13 +282,14 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = '#009688';
       ctx.stroke();
-    } else {
-      ctx.fillStyle = this.style;
-      ctx.strokeStyle = '#009688';
-      ctx.lineWidth = 2;
-      ctx.fill();
-      ctx.stroke();
+      return;
     }
+
+    ctx.fillStyle = this.style;
+    ctx.strokeStyle = '#009688';
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
   }
 
   drawRoundedRectangle(ctx) {
@@ -284,10 +315,11 @@ class Shape {
     );
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+
     if (this.stroke) {
-      if (this.selected) {
-        this.fillSelected(ctx);
-      }
+      // fill color if selected
+      this.selected && this.fillSelected(ctx);
+
       ctx.font = '19px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
@@ -296,14 +328,13 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = '#c0ca33';
       ctx.stroke();
-      // fill color when selected
-    } else {
-      ctx.fillStyle = this.style;
-      ctx.strokeStyle = '#cddc39';
-      ctx.lineWidth = 2;
-      ctx.fill();
-      ctx.stroke();
+      return;
     }
+    ctx.fillStyle = this.style;
+    ctx.strokeStyle = '#cddc39';
+    ctx.lineWidth = 2;
+    ctx.fill();
+    ctx.stroke();
   }
 
   getEntryPoint() {
