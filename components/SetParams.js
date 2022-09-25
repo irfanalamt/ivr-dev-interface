@@ -105,15 +105,15 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
     setParamSelected('');
   }
   function handleRemoveParameter(name) {
-    let index = paramSelectedList.findIndex((el) => {
-      return el === name;
-    });
+    let index = paramSelectedList.findIndex((el) => el === name);
     if (index === -1) return;
+
     setParamSelectedList((s) => {
       const newArr = [...s];
       newArr.splice(index, 1);
       return newArr;
     });
+
     setMenuObj((s) => {
       const newObj = { ...s };
       delete newObj[name];

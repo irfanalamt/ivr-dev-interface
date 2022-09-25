@@ -88,6 +88,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
     });
   }
   function handleAddItem() {
+    if (itemSelected === '') return;
     setItemsObj((s) => {
       return [...s, { digit: itemSelected }];
     });
