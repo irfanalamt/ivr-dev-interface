@@ -477,7 +477,10 @@ const CanvasComponent = () => {
       console.log('isDragging', isDragging);
       // mouse clicked, released same spot in stage shape, check mouse in stage shape
       stageGroup.current.getShapes().forEach((element) => {
-        if (element.isMouseInShape(clientX, clientY)) {
+        if (
+          element.isMouseInShape(clientX, clientY) &&
+          element.type !== 'smallCircle'
+        ) {
           console.log(`YES in pallet shape mouseUp ${element.type}`);
           currentShape.current = element;
           currentShape.current.setSelected(true);
