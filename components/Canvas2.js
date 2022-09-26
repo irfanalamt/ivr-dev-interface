@@ -24,6 +24,7 @@ const CanvasComponent = () => {
   const stageGroup = useRef(null);
   const lineGroup = useRef(null);
   const userVariables = useRef([]);
+  const connectorCount = useRef(1);
 
   let startX, startY;
   let startX1, startY1;
@@ -67,6 +68,15 @@ const CanvasComponent = () => {
       '#827717'
     );
 
+    const palletSmallCircle = new Shape(
+      70,
+      413,
+      30,
+      30,
+      'smallCircle',
+      '#827717'
+    );
+
     palletGroup.current = new Shapes('palette', [
       palletRectangle,
       palletCircle,
@@ -74,6 +84,7 @@ const CanvasComponent = () => {
       palletParallelogram,
       palletRoundedRectangle,
       palletPentagon,
+      palletSmallCircle,
     ]);
 
     // Initialize stageGroup
@@ -152,9 +163,12 @@ const CanvasComponent = () => {
 
     if (isResizing) {
       //Change width, height - mousemove
+      let current_shape = currentShape.current;
+      // if shape is connector , return
+      if (current_shape.type === 'smallCircle') return;
       let dx = clientX - startX;
       let dy = clientY - startY;
-      let current_shape = currentShape.current;
+
       let newWidth = Math.abs(current_shape.width + dx);
       let newHeight = Math.abs(current_shape.height + dy);
       if (newWidth < 40 || newHeight < 40) return;
@@ -222,7 +236,10 @@ const CanvasComponent = () => {
     });
     // if mouse near left/right edge mid, change cursor; set isOnEdge
     stageGroup.current.getShapes().forEach((element) => {
-      if (element.isMouseNearVertex(clientX, clientY)) {
+      if (
+        element.isMouseNearVertex(clientX, clientY) &&
+        element.type !== 'smallCircle'
+      ) {
         console.log('Mouse near vertex');
         canvasRef.current.style.cursor = 'w-resize';
         isOnEdge = true;
@@ -428,6 +445,19 @@ const CanvasComponent = () => {
             '#e91e63',
             true
           );
+          break;
+
+        case 'smallCircle':
+          stageFigure = new Shape(
+            clientX,
+            clientY,
+            35,
+            35,
+            'smallCircle',
+            '#e91e63',
+            true
+          );
+          stageFigure.setText(`Connector${connectorCount.current++}`);
           break;
       }
 

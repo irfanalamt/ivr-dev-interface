@@ -8,19 +8,14 @@ class Shape {
     this.style = style;
     this.stroke = stroke;
     this.initPos = [x, y];
-    if (type === 'rectangle') {
-      this.text = 'function';
-    } else if (type === 'hexagon') {
-      this.text = 'playMenu';
-    } else if (type === 'circle') {
-      this.text = 'callAPI';
-    } else if (type === 'parallelogram') {
-      this.text = 'getDigits';
-    } else if (type === 'roundedRectangle') {
-      this.text = 'playMessage';
-    } else if (type === 'pentagon') {
-      this.text = 'setParams';
-    } else this.text = '';
+    if (type === 'rectangle') this.text = 'function';
+    else if (type === 'hexagon') this.text = 'playMenu';
+    else if (type === 'circle') this.text = 'callAPI';
+    else if (type === 'parallelogram') this.text = 'getDigits';
+    else if (type === 'roundedRectangle') this.text = 'playMessage';
+    else if (type === 'pentagon') this.text = 'setParams';
+    else if (type === 'smallCircle') this.text = 'connector';
+    else this.text = '';
     this.selected = false;
     this.userValues = null;
     this.nextItem = null;
@@ -96,25 +91,31 @@ class Shape {
       ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
       // fill color if selected
       this.selected && this.fillSelected(ctx);
+      ctx.fillStyle = '#009688';
+      ctx.fill();
 
-      ctx.font = '19px sans-serif';
+      ctx.lineWidth = 1;
+      ctx.font = '30px sans-serif';
       ctx.fillStyle = 'black';
-      ctx.lineWidth = 2;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(this.text, this.x, this.y);
-      ctx.strokeStyle = '#2196f3';
+      ctx.fillText('+', this.x, this.y + 2);
 
-      ctx.stroke();
       return;
     }
 
-    ctx.fillStyle = this.style;
-    ctx.strokeStyle = '#2196f3';
+    ctx.fillStyle = '#b2dfdb';
+    ctx.strokeStyle = '#00796b';
     ctx.lineWidth = 2;
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.font = '25px sans-serif';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('+', this.x, this.y + 1);
   }
 
   drawRectangle(ctx) {
