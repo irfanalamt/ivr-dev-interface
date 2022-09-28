@@ -89,8 +89,6 @@ const CanvasComponent = () => {
 
     // Initialize stageGroup
     stageGroup.current = new Shapes('stage', []);
-    // init lineGroup
-    lineGroup.current = new Lines([]);
 
     contextRef.current = context1;
 
@@ -115,9 +113,28 @@ const CanvasComponent = () => {
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
 
+    // Calculate all connecting lines return array of connections
+    let connectionsArray = stageGroup.current.getConnectionsArray();
+    console.log('🚀 ~ clearAndDraw ~ connectionsArray', connectionsArray);
+    // init lineGroup
+    lineGroup.current = new Lines([]);
+    connectionsArray.forEach((el) => {
+      let newLine = new Line(
+        el.x1,
+        el.y1,
+        el.x2,
+        el.y2,
+        el.startItem,
+        el.endItem
+      );
+      lineGroup.current.addLine(newLine);
+    });
+
     lineGroup.current
       .getLines()
       .forEach((el) => el.connectPoints(contextRef.current));
+
+    console.log('lineGroup', lineGroup.current);
   }
 
   function handleMouseMove(e) {
@@ -134,26 +151,6 @@ const CanvasComponent = () => {
 
       current_shape.x += dx;
       current_shape.y += dy;
-      // change connected lines position also if present
-      const posStart = lineGroup.current
-        .getLines()
-        .findIndex((el) => el.startItem === current_shape.text);
-      if (posStart !== -1) {
-        // dragged element is a line start item
-        lineGroup.current
-          .getLines()
-          [posStart].setStartPoint(...currentShape.current.getExitPoint());
-      }
-
-      const posEnd = lineGroup.current
-        .getLines()
-        .findIndex((el) => el.endItem === current_shape.text);
-      if (posEnd !== -1) {
-        // dragged element is a line End item
-        lineGroup.current
-          .getLines()
-          [posEnd].setEndPoint(...currentShape.current.getEntryPoint());
-      }
 
       clearAndDraw();
       startX = clientX;
@@ -174,26 +171,6 @@ const CanvasComponent = () => {
       if (newWidth < 40 || newHeight < 40) return;
       current_shape.width = newWidth;
       current_shape.height = newHeight;
-      // change connected lines position also if present
-      const posStart = lineGroup.current
-        .getLines()
-        .findIndex((el) => el.startItem === current_shape.text);
-      if (posStart !== -1) {
-        // resized element is a line start item
-        lineGroup.current
-          .getLines()
-          [posStart].setStartPoint(...currentShape.current.getExitPoint());
-      }
-
-      const posEnd = lineGroup.current
-        .getLines()
-        .findIndex((el) => el.endItem === current_shape.text);
-      if (posEnd !== -1) {
-        // resized element is a line End item
-        lineGroup.current
-          .getLines()
-          [posEnd].setEndPoint(...currentShape.current.getEntryPoint());
-      }
 
       clearAndDraw();
       startX = clientX;
@@ -318,49 +295,19 @@ const CanvasComponent = () => {
     // check mouse on line
     lineGroup.current.getLines().forEach((el, i) => {
       const linepoint = el.linepointNearestMouse(clientX, clientY);
-      const distanceArray = [];
-      const distanceSegmentsObj = {};
+      let dx = clientX - linepoint.x;
+      let dy = clientY - linepoint.y;
+      // root of dx^2 + dy^2
+      let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+      console.log('🚀 ~ lineGroup.current.getLines ~ distance', distance);
 
-      linepoint.forEach((elm) => {
-        let dx = clientX - elm.x;
-        let dy = clientY - elm.y;
-        // root of dx^2 + dy^2
-        let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
-        distanceArray.push(distance);
-        distanceSegmentsObj[distance] = { x: elm.x, y: elm.y };
-      });
-
-      const minDistance = distanceArray.reduce(
-        (prev, cur) => (prev < cur ? prev : cur),
-        +Infinity
-      );
-
-      if (minDistance < 5) {
-        console.log('mouse on line🐁');
-        if (isDeleting) {
-          lineGroup.current.removeLineIndex(i);
-          clearAndDraw();
-          return;
-        }
-        if (el.segments.length < 2) {
-          el.addSegment(
-            distanceSegmentsObj[minDistance].x,
-            distanceSegmentsObj[minDistance].y
-          );
-        }
-        isDraggingLine = true;
-        startX = clientX;
-        startY = clientY;
-        el.dragCount++;
-        currentLine.current = el;
-        el.setColor('#1e88e5');
+      if (distance < 5 && isDeleting) {
+        console.log('remove; mouse on line; 🐁');
+        console.log('remove el ', el);
+        stageGroup.current.removeShapeNextByName(el.startItem);
         clearAndDraw();
         return;
       }
-
-      el.setColor('#424242');
-      clearAndDraw();
-      return;
     });
   }
   function handleMouseUp(e) {
@@ -526,24 +473,10 @@ const CanvasComponent = () => {
     )
       return;
 
-    if (
-      lineGroup.current
-        .getLines()
-        .some((el) => el.startItem === connectShape1.current.text)
-    )
-      // if connect shape1 already has connection, remove line
-      lineGroup.current.removeLine(connectShape1.current.text);
-
     // set nextItem for shape1; create new line to connect shapes
     connectShape1.current.setNextItem(connectShape2.current.text);
-    let newLine = new Line(
-      ...connectShape1.current.getExitPoint(),
-      ...connectShape2.current.getEntryPoint(),
-      connectShape1.current.text,
-      connectShape2.current.text
-    );
-    lineGroup.current.addLine(newLine);
     clearAndDraw();
+    return;
   }
 
   return (
