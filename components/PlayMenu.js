@@ -42,7 +42,8 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
       s.text !== 'function' &&
       s.text !== 'setParams' &&
       s.text !== 'getDigits' &&
-      s.text !== 'callAPI'
+      s.text !== 'callAPI' &&
+      s.type !== 'smallCircle'
   );
 
   function handleMenuObjChange(value, name) {
@@ -60,6 +61,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
       paramSelectedList,
       items: itemsObj,
     });
+    console.log('🚀 ~ saveUserValues ~ itemsObj', itemsObj);
   }
 
   const optionalParamsList = [
