@@ -1,5 +1,5 @@
 class Line {
-  constructor(x1, y1, x2, y2, startItem, endItem) {
+  constructor(x1, y1, x2, y2, startItem, endItem, lineCap = null) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
@@ -7,6 +7,7 @@ class Line {
     this.startItem = startItem;
     this.endItem = endItem;
     this.color = '#424242';
+    this.lineCap = lineCap;
   }
 
   connectPoints(ctx) {
@@ -17,6 +18,7 @@ class Line {
     ctx.beginPath();
     ctx.moveTo(this.x1, this.y1);
     ctx.lineTo(this.x2, this.y2);
+
     ctx.lineTo(
       this.x2 - headLength * Math.cos(angle - Math.PI / 6),
       this.y2 - headLength * Math.sin(angle - Math.PI / 6)
@@ -31,6 +33,18 @@ class Line {
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.stroke();
+    if (this.lineCap) {
+      ctx.beginPath();
+      ctx.arc(this.x2 - 20, this.y2 - 20, 10, 0, Math.PI * 2);
+      ctx.font = '15px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.lineCap, this.x2 - 20, this.y2 - 18);
+
+      ctx.stroke();
+    }
   }
 
   linepointNearestMouse(x, y) {

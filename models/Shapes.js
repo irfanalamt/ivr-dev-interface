@@ -32,6 +32,7 @@ class Shapes {
   getConnectionsArray() {
     let tempArray = [];
     this.shapes.forEach((el) => {
+      // if shape has nextitem, find nextShape from shapes array, push linecordinates to tempArray
       if (el.nextItem) {
         let index = this.shapes.findIndex((elm) => elm.text === el.nextItem);
         if (index !== -1) {
@@ -44,9 +45,11 @@ class Shapes {
             y2: shape2.getEntryPoint()[1],
             startItem: shape1.text,
             endItem: shape2.text,
+            lineCap: null,
           });
         }
       }
+      // if type is playMenu, loop through items array and find action to connect to, find shape in shape array, push linecordinates to tempArray
       if (el.type === 'hexagon') {
         el.userValues?.items.forEach((elm) => {
           if (elm.action) {
@@ -61,6 +64,7 @@ class Shapes {
                 y2: shape2.getEntryPoint()[1],
                 startItem: shape1.text,
                 endItem: shape2.text,
+                lineCap: parseInt(elm.digit),
               });
             }
           }
