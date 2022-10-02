@@ -126,7 +126,8 @@ const CanvasComponent = () => {
         el.y2,
         el.startItem,
         el.endItem,
-        el.lineCap
+        el.lineCap,
+        el.lineColor
       );
       lineGroup.current.addLine(newLine);
     });

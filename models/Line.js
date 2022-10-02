@@ -1,13 +1,14 @@
 class Line {
-  constructor(x1, y1, x2, y2, startItem, endItem, lineCap = null) {
+  constructor(x1, y1, x2, y2, startItem, endItem, lineCap = null, lineColor) {
     this.x1 = x1;
     this.y1 = y1;
     this.x2 = x2;
     this.y2 = y2;
     this.startItem = startItem;
     this.endItem = endItem;
-    this.color = '#424242';
+    // this.color = '#424242';
     this.lineCap = lineCap;
+    this.lineColor = lineColor;
   }
 
   connectPoints(ctx) {
@@ -29,7 +30,7 @@ class Line {
       this.y2 - headLength * Math.sin(angle + Math.PI / 6)
     );
 
-    ctx.strokeStyle = this.color;
+    ctx.strokeStyle = this.lineColor;
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -38,7 +39,7 @@ class Line {
       ctx.arc(this.x2 - 20, this.y2 - 20, 10, 0, Math.PI * 2);
       ctx.font = '15px sans-serif';
       ctx.fillStyle = 'black';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(this.lineCap, this.x2 - 20, this.y2 - 18);

@@ -29,15 +29,29 @@ class Shapes {
     this.shapes.push(newShape);
   }
 
+  getNextValidItem(index) {
+    // loops through shapes connections and returns valid shapeText
+    while (1) {
+      let nextShapeText = this.shapes[index].nextItem;
+      let ind = this.shapes.findIndex((el) => el.text === nextShapeText);
+      if (ind !== -1 && this.shapes[ind].type !== 'smallCircle') {
+        return this.shapes[ind].text;
+      }
+      index++;
+      if (nextShapeText === null || nextShapeText === undefined) return null;
+    }
+  }
+
   getConnectionsArray() {
     let tempArray = [];
-    this.shapes.forEach((el) => {
+    this.shapes.forEach((el, i) => {
       // if shape has nextitem, find nextShape from shapes array, push linecordinates to tempArray
       if (el.nextItem) {
         let index = this.shapes.findIndex((elm) => elm.text === el.nextItem);
         if (index !== -1) {
           let shape1 = el;
           let shape2 = this.shapes[index];
+          let lineColor = this.getNextValidItem(i) === null ? 'red' : 'black';
           tempArray.push({
             x1: shape1.getExitPoint()[0],
             y1: shape1.getExitPoint()[1],
@@ -46,6 +60,7 @@ class Shapes {
             startItem: shape1.text,
             endItem: shape2.text,
             lineCap: null,
+            lineColor,
           });
         }
       }
@@ -57,6 +72,7 @@ class Shapes {
             if (index !== -1) {
               let shape1 = el;
               let shape2 = this.shapes[index];
+
               tempArray.push({
                 x1: shape1.getExitPoint()[0],
                 y1: shape1.getExitPoint()[1],
