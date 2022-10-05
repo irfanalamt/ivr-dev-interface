@@ -51,6 +51,7 @@ class Shapes {
         if (index !== -1) {
           let shape1 = el;
           let shape2 = this.shapes[index];
+          console.log('valid next shape:', this.getNextValidItem(i));
           let lineColor = this.getNextValidItem(i) === null ? 'red' : 'black';
           tempArray.push({
             x1: shape1.getExitPoint()[0],
@@ -72,7 +73,13 @@ class Shapes {
             if (index !== -1) {
               let shape1 = el;
               let shape2 = this.shapes[index];
-
+              // let lineColor =
+              //   this.getNextValidItem(index) === null ||
+              //   el.userValues.items.some(
+              //     (el) => el.action !== this.getNextValidItem(index)
+              //   )
+              //     ? 'red'
+              //     : 'black';
               tempArray.push({
                 x1: shape1.getExitPoint()[0],
                 y1: shape1.getExitPoint()[1],

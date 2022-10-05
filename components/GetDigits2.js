@@ -305,7 +305,7 @@ ${resultName} = await IVR.getDigits(msgList,params);
               />
             </Tooltip>
           </ListItem>
-          <pre>{JSON.stringify(msgObj, null, 2)}</pre>{' '}
+          {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
           <List>
             {msgObj?.map((el, i) => {
               return addInputElements(
@@ -378,7 +378,7 @@ ${resultName} = await IVR.getDigits(msgList,params);
               })}
             </Select>
           </ListItem>
-          <pre>{JSON.stringify(paramsObj, undefined, 2)}</pre>
+          {/* <pre>{JSON.stringify(paramsObj, undefined, 2)}</pre> */}
           <ListItem>
             <Typography
               sx={{
