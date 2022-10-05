@@ -8,7 +8,7 @@ class Shape {
     this.style = style;
     this.stroke = stroke;
     this.initPos = [x, y];
-    if (type === 'rectangle') this.text = 'function';
+    if (type === 'rectangle') this.text = 'runScript';
     else if (type === 'hexagon') this.text = 'playMenu';
     else if (type === 'circle') this.text = 'callAPI';
     else if (type === 'parallelogram') this.text = 'getDigits';

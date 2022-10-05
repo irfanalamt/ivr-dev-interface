@@ -119,7 +119,7 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
             }}
             variant='h6'
           >
-            Function
+            RunScript
           </Typography>
         </ListItem>
         <ListItem sx={{ my: 2 }}>

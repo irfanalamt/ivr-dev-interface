@@ -10,17 +10,12 @@ import {
   Box,
   Select,
   MenuItem,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
-  Snackbar,
-  Alert,
 } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import {
   addInputElements,
   checkValidity,
@@ -66,7 +61,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
 
     shape.setText(shapeName);
     shape.setUserValues({
-      params: paramsObj,
+      params: entireParamsObj,
       messageList: filteredMsgObj,
       variableName: resultName,
     });
