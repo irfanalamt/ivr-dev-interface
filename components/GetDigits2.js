@@ -70,13 +70,13 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
   }
 
   function generateJS(filteredMsgObj, entireParamsObj) {
-    let codeString = `function ${shapeName}(){
+    let codeString = `this.${shapeName}= async function(){
 
 let msgList = ${JSON.stringify(filteredMsgObj)};
 
 let params = ${JSON.stringify(entireParamsObj)};
 
-${resultName} = await IVR.getDigits(msgList,params);
+this.${resultName} = await IVR.getDigits(msgList,params);
     
 }`;
     shape.setFunctionString(codeString);

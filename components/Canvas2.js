@@ -170,7 +170,9 @@ const CanvasComponent = () => {
 
       let newWidth = Math.abs(current_shape.width + dx);
       let newHeight = Math.abs(current_shape.height + dy);
-      if (newWidth < 40 || newHeight < 40) return;
+      //  if resized shape too small or too big
+      if (newWidth < 40 || newWidth > 400 || newHeight < 40 || newHeight > 400)
+        return;
       current_shape.width = newWidth;
       current_shape.height = newHeight;
 
@@ -231,6 +233,7 @@ const CanvasComponent = () => {
       }
     });
   }
+
   function handleMouseDown(e) {
     e.preventDefault();
     let { clientX, clientY } = e;
@@ -524,9 +527,7 @@ const CanvasComponent = () => {
       ></canvas>
       <Drawer anchor='right' open={isOpenVars}>
         <InitVariables
-          handleCloseDrawer={() => {
-            setIsOpenVars(false);
-          }}
+          handleCloseDrawer={() => setIsOpenVars(false)}
           userVariables={userVariables.current}
         />
       </Drawer>
@@ -588,9 +589,7 @@ const CanvasComponent = () => {
           size='small'
           variant='outlined'
           color='info'
-          onClick={() => {
-            setIsOpenVars(true);
-          }}
+          onClick={() => setIsOpenVars(true)}
         >
           Variables
         </Button>

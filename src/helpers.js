@@ -1019,7 +1019,7 @@ export function addVariableElements(type, key, varObj, setVarObj) {
           size='small'
           variant='outlined'
           helperText='variable name'
-          value={varObj[key]?.name}
+          value={varObj[key]?.name || ''}
           onChange={(e) => {
             handleVarObjChange(e, key, 'name');
             handleVariableValidation('object', e);

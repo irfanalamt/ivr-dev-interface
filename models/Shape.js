@@ -8,14 +8,17 @@ class Shape {
     this.style = style;
     this.stroke = stroke;
     this.initPos = [x, y];
-    if (type === 'rectangle') this.text = 'runScript';
-    else if (type === 'hexagon') this.text = 'playMenu';
-    else if (type === 'circle') this.text = 'callAPI';
-    else if (type === 'parallelogram') this.text = 'getDigits';
-    else if (type === 'roundedRectangle') this.text = 'playMessage';
-    else if (type === 'pentagon') this.text = 'setParams';
-    else if (type === 'smallCircle') this.text = 'connector';
-    else this.text = '';
+    const mapShapes = {
+      rectangle: 'runScript',
+      hexagon: 'playMenu',
+      circle: 'callAPI',
+      parallelogram: 'getDigits',
+      roundedRectangle: 'playMessage',
+      pentagon: 'setParams',
+      smallCircle: 'connector',
+    };
+
+    this.text = mapShapes[type] ?? '';
     this.selected = false;
     this.userValues = null;
     this.nextItem = null;
