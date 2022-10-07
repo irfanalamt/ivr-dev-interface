@@ -47,6 +47,22 @@ const PlayMessage = ({
       params: { interruptible, repeatOption },
       messageList: filteredMsgObj,
     });
+
+    generateJS(filteredMsgObj);
+  }
+
+  function generateJS(filteredMsgObj) {
+    let codeString = `this.${shapeName}= async function(){
+      
+let msgList = ${JSON.stringify(filteredMsgObj)};
+
+let params = ${JSON.stringify({ interruptible, repeatOption })};
+
+ await IVR.getDigits(msgList,params);
+    
+}`;
+    shape.setFunctionString(codeString);
+    console.log('🚀 ~ generateJS ~ codeString', codeString);
   }
 
   function addInput() {
