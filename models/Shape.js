@@ -1,3 +1,5 @@
+import { ThumbDown } from '@mui/icons-material';
+
 class Shape {
   constructor(x, y, width, height, type, style = 'black', stroke = false) {
     this.x = x;
@@ -195,14 +197,26 @@ class Shape {
   }
 
   drawPentagon(ctx) {
+    // ctx.beginPath();
+    // ctx.translate(this.x, this.y);
+
+    // ctx.lineTo(this.width * 0.5, -10);
+    // ctx.lineTo(this.width * 0.5, this.height * 0.5);
+    // ctx.lineTo(-this.width * 0.5, this.height * 0.5);
+    // ctx.lineTo(-this.width * 0.5, -10);
+    // ctx.lineTo(0, -this.height * 0.5);
+
+    // ctx.closePath();
+    // ctx.setTransform(1, 0, 0, 1, 0, 0);
+
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
-    ctx.lineTo(this.width * 0.5, -10);
-    ctx.lineTo(this.width * 0.5, this.height * 0.5);
-    ctx.lineTo(-this.width * 0.5, this.height * 0.5);
-    ctx.lineTo(-this.width * 0.5, -10);
-    ctx.lineTo(0, -this.height * 0.5);
+    ctx.moveTo(this.width * 0.5, -this.height * 0.5);
+    ctx.lineTo(this.width * 0.5, 10);
+    ctx.lineTo(0, this.height * 0.5 + 2);
+    ctx.lineTo(-this.width * 0.5, 10);
+    ctx.lineTo(-this.width * 0.5, -this.height * 0.5);
 
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -216,7 +230,7 @@ class Shape {
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(this.text, this.x, this.y + 5);
+      ctx.fillText(this.text, this.x, this.y - 2);
       ctx.strokeStyle = '#e91e63';
       ctx.stroke();
       return;
