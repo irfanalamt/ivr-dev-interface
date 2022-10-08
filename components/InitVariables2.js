@@ -95,6 +95,7 @@ const InitVariables = ({ handleCloseDrawer, userVariables }) => {
               setVarType(e.target.value);
             }}
             sx={{ marginX: 2 }}
+            size='small'
           >
             <MenuItem value='prompt'>Prompt</MenuItem>
             <MenuItem value='number'>Number</MenuItem>

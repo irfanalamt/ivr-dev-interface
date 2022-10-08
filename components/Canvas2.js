@@ -1,4 +1,5 @@
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Button, Drawer, Tooltip, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
@@ -8,12 +9,14 @@ import Line from '../models/Line';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
 import InitVariables from './InitVariables2';
+import SaveDialog from './SaveDialog';
 
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -25,6 +28,7 @@ const CanvasComponent = () => {
   const lineGroup = useRef(null);
   const userVariables = useRef([]);
   const connectorCount = useRef(1);
+  const saveFileName = useRef('');
 
   let startX, startY;
   let startX1, startY1;
@@ -455,6 +459,19 @@ const CanvasComponent = () => {
     if (isConnecting === 2) return '#1565c0';
   }
 
+  function generateConfigFile() {
+    console.log('🕺🏻⚡', saveFileName.current, '.js');
+
+    let tempArr = stageGroup.current
+      .getShapes()
+      .filter((el) => el.functionString)
+      .map((el) => el.functionString);
+
+    let tempString = tempArr.join(' ');
+
+    console.log('tempString', tempString);
+  }
+
   function connectShapes() {
     console.log('🚀 ~ connectShapes ~ connectShape1', connectShape1.current);
     console.log('🚀 ~ connectShapes ~ connectShape2', connectShape2.current);
@@ -482,6 +499,11 @@ const CanvasComponent = () => {
     connectShape1.current.setNextItem(connectShape2.current.text);
     clearAndDraw();
     return;
+  }
+
+  function setFileName(name) {
+    saveFileName.current = name;
+    generateConfigFile();
   }
 
   return (
@@ -594,6 +616,28 @@ const CanvasComponent = () => {
           Variables
         </Button>
       </Tooltip>
+      <Tooltip title='generate config file' placement='right-end'>
+        <Button
+          sx={{
+            position: 'absolute',
+            bottom: 25,
+            left: 25,
+            zIndex: 5,
+            backgroundColor: '#8bc34a',
+          }}
+          variant='contained'
+          size='small'
+          onClick={() => setOpenDialog(true)}
+        >
+          Generate config
+          <SaveAltIcon sx={{ ml: 1, fontSize: '1.2rem' }} />
+        </Button>
+      </Tooltip>
+      <SaveDialog
+        open={openDialog}
+        setOpen={setOpenDialog}
+        fileName={setFileName}
+      />
       <Typography
         sx={{
           visibility: 'hidden',
