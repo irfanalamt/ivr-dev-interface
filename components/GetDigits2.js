@@ -76,9 +76,9 @@ let msgList = ${JSON.stringify(filteredMsgObj)};
 
 let params = ${JSON.stringify(entireParamsObj)};
 
-this.${resultName} = await IVR.getDigits(msgList,params);
+this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
     
-}`;
+};`;
     shape.setFunctionString(codeString);
     console.log('🚀 ~ generateJS ~ codeString', codeString);
   }

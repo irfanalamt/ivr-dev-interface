@@ -10,6 +10,7 @@ import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
 import InitVariables from './InitVariables2';
 import SaveDialog from './SaveDialog';
+import axios from 'axios';
 
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
@@ -470,6 +471,19 @@ const CanvasComponent = () => {
     let tempString = tempArr.join(' ');
 
     console.log('tempString', tempString);
+    saveConfigFile(tempString);
+  }
+
+  function saveConfigFile(tempString) {
+    axios
+      .post('/api/saveConfig', {
+        code: tempString,
+        fileName: saveFileName.current,
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log('Error: post saveConfig', err));
   }
 
   function connectShapes() {

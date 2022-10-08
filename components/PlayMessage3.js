@@ -60,7 +60,7 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
 
  await IVR.getDigits(msgList,params);
     
-}`;
+};`;
     shape.setFunctionString(codeString);
     console.log('🚀 ~ generateJS ~ codeString', codeString);
   }
