@@ -476,12 +476,28 @@ const CanvasComponent = () => {
 
   function saveConfigFile(tempString) {
     axios
-      .post('/api/saveConfig', {
-        code: tempString,
-        fileName: saveFileName.current,
-      })
+      .post(
+        '/api/saveConfig',
+        {
+          code: tempString,
+          fileName: saveFileName.current,
+        },
+        { responseType: 'blob' }
+      )
       .then((res) => {
-        console.log(res.data);
+        console.log('response data:', res.data);
+        const href = URL.createObjectURL(res.data);
+
+        // create "a" HTML element with href to file & click
+        const link = document.createElement('a');
+        link.href = href;
+        link.setAttribute('download', 'file.js'); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+
+        // clean up "a" element & remove ObjectURL
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
       })
       .catch((err) => console.log('Error: post saveConfig', err));
   }

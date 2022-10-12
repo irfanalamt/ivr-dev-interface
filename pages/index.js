@@ -1,81 +1,89 @@
 import { Box, Button, Container, Typography } from '@mui/material';
-
-import { useEffect, useState } from 'react';
-import NoteAddRoundedIcon from '@mui/icons-material/NoteAddRounded';
-import FileOpenRoundedIcon from '@mui/icons-material/FileOpenRounded';
-
+import ArchitectureIcon from '@mui/icons-material/Architecture';
+import { signIn } from 'next-auth/react';
 export default function Home() {
-  const [isExisting, setIsExisting] = useState(false);
-
-  useEffect(() => {
-    localStorage.setItem('isExisting', JSON.stringify(isExisting));
-    console.log('ue index');
-  }, [isExisting]);
-
   return (
-    <Container
-      sx={{
-        marginX: 'auto',
-        marginY: 2,
-        padding: 2,
-        textAlign: 'center',
-      }}
-    >
-      <Typography
+    <Container>
+      <Box
         sx={{
-          marginX: 'auto',
-          boxShadow: 2,
-          height: 50,
           display: 'flex',
-          justifyContent: 'center',
+          my: 1,
+          backgroundColor: '#f9fbe7',
           alignItems: 'center',
           height: 80,
-          borderRadius: 2,
-          backgroundColor: '#e0f2f1',
+          px: 2,
         }}
-        maxWidth='30vw'
-        variant='h5'
       >
-        IVR framework config builder
-      </Typography>
-      <Box sx={{ marginTop: 5, justifyContent: 'space-between' }}>
-        <Button
+        <Typography
           sx={{
-            marginX: 2,
-            width: 200,
-            height: 100,
-            position: 'relative',
-            top: 150,
-            right: 50,
+            mr: 'auto',
+            fontFamily: 'monospace',
+            display: 'flex',
+            alignItems: 'center',
           }}
-          href='/stageCanvas2'
-          variant='outlined'
-          color='success'
-          onClick={() => {
-            // setShowCanvas(true);
-            setIsExisting(false);
-          }}
+          variant='h4'
         >
-          Start new project <NoteAddRoundedIcon sx={{ fontSize: 40 }} />
+          IVR canvas <ArchitectureIcon sx={{ fontSize: '2.5rem' }} />
+        </Typography>
+        <Button onClick={signIn} sx={{ mx: 1, color: 'black' }}>
+          Login
         </Button>
         <Button
-          sx={{
-            marginX: 2,
-            width: 200,
-            height: 100,
-            position: 'relative',
-            top: 150,
-            left: 50,
-            color: '#03a9f4',
-          }}
-          variant='outlined'
-          color='info'
-          href='/stageCanvas2'
-          onClick={() => {
-            setIsExisting(true);
-          }}
+          sx={{ backgroundColor: '#2196f3' }}
+          href='/signUp'
+          variant='contained'
         >
-          Open existing project <FileOpenRoundedIcon sx={{ fontSize: 40 }} />
+          Signup
+        </Button>
+      </Box>
+      <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
+        <Typography
+          sx={{
+            fontSize: '3rem',
+            fontWeight: 200,
+            display: 'inline',
+          }}
+          variant='subtitle1'
+        >
+          {`Create custom `}
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: '3rem',
+            fontWeight: 200,
+            display: 'inline',
+            color: '#2196f3',
+          }}
+          variant='subtitle1'
+        >
+          {`
+          IVR experiences `}
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: '3rem',
+            fontWeight: 200,
+            display: 'inline',
+          }}
+          variant='subtitle1'
+        >
+          {`using visual, drag-and-drop approaches.`}
+        </Typography>
+      </Box>
+      <Box sx={{ textAlign: 'center', my: 4 }}>
+        <Button
+          sx={{
+            height: 70,
+            width: 200,
+            backgroundColor: '#1e88e5',
+            color: 'white',
+            fontSize: '1rem',
+          }}
+          href='/stageCanvas2'
+          variant='contained'
+          color='success'
+        >
+          Create an IVR
         </Button>
       </Box>
     </Container>

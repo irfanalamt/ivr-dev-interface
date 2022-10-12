@@ -12,7 +12,7 @@ const StageCanvas2 = () => {
     <Container sx={{ marginX: 'auto', textAlign: 'center', my: 2 }}>
       <Typography
         sx={{
-          backgroundColor: '#03a9f4',
+          backgroundColor: '#2196f3',
           width: 'max-content',
           mx: 'auto',
           px: 1,

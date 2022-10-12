@@ -8,5 +8,10 @@ export default function handler(req, res) {
     if (err) console.log(err);
     else console.log('File written successfully\n');
   });
-  res.status(200).json({ message: 'YOU are awesome. ✨' });
+
+  fs.readFile(`./configFiles/${fileName}.js`, 'utf8', (err, data) => {
+    if (err) console.log(err);
+    res.status(200).send(data);
+    console.log('File read🌟', data);
+  });
 }
