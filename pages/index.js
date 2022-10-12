@@ -1,6 +1,6 @@
 import { Box, Button, Container, Typography } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
-import { signIn } from 'next-auth/react';
+
 export default function Home() {
   return (
     <Container>
@@ -25,12 +25,12 @@ export default function Home() {
         >
           IVR canvas <ArchitectureIcon sx={{ fontSize: '2.5rem' }} />
         </Typography>
-        <Button onClick={signIn} sx={{ mx: 1, color: 'black' }}>
+        <Button href='/signin' sx={{ mx: 1, color: 'black' }}>
           Login
         </Button>
         <Button
           sx={{ backgroundColor: '#2196f3' }}
-          href='/signUp'
+          href='/signup'
           variant='contained'
         >
           Signup
