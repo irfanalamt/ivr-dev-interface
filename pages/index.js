@@ -1,5 +1,6 @@
 import { Box, Button, Container, Typography } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -25,16 +26,14 @@ export default function Home() {
         >
           IVR canvas <ArchitectureIcon sx={{ fontSize: '2.5rem' }} />
         </Typography>
-        <Button href='/signin' sx={{ mx: 1, color: 'black' }}>
-          Login
-        </Button>
-        <Button
-          sx={{ backgroundColor: '#2196f3' }}
-          href='/signup'
-          variant='contained'
-        >
-          Signup
-        </Button>
+        <Link href='/signin' passHref>
+          <Button sx={{ mx: 1, color: 'black' }}>Login</Button>
+        </Link>
+        <Link href='/signup' passHref>
+          <Button sx={{ backgroundColor: '#2196f3' }} variant='contained'>
+            Signup
+          </Button>
+        </Link>
       </Box>
       <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
         <Typography

@@ -71,7 +71,7 @@ const Signin = () => {
           />
         </Box>
         <Box sx={{ display: 'flex', mt: 1, justifyContent: 'space-between' }}>
-          <Button href='/signUp' size='small'>
+          <Button href='/signup' size='small'>
             {`Don't have an account?`}
           </Button>
           <Button
