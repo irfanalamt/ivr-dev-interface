@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 
-const signup = () => {
+const Signup = () => {
   return (
     <Container maxWidth='sm'>
       <Typography
@@ -73,4 +73,4 @@ const signup = () => {
   );
 };
 
-export default signup;
+export default Signup;
