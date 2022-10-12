@@ -1,4 +1,4 @@
-import { Box, Typography, Container } from '@mui/material';
+import { Box, Typography, Container, Avatar } from '@mui/material';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
@@ -12,21 +12,24 @@ const StageCanvas2 = () => {
     <Container sx={{ marginX: 'auto', textAlign: 'center', my: 2 }}>
       <Typography
         sx={{
-          backgroundColor: '#2196f3',
-          width: 'max-content',
           mx: 'auto',
-          px: 1,
-          py: 0.5,
-          boxShadow: 1,
-          borderRadius: 1,
-          display: 'inline',
-          alignItems: 'center',
+          fontFamily: 'monospace',
           display: 'flex',
+          justifyContent: 'center',
+          color: '#424242',
+          backgroundColor: '#f9fbe7',
+          width: 'max-content',
+          px: 2,
+          py: 1,
+          boxShadow: 1,
+          borderRadius: 2,
         }}
         variant='h4'
       >
+        <Avatar sx={{ backgroundColor: '#bbdefb', mx: 1 }}>
+          <ArchitectureIcon sx={{ fontSize: '2.5rem', color: 'black' }} />
+        </Avatar>
         IVR canvas
-        <ArchitectureIcon sx={{ fontSize: '2.5rem' }} />
       </Typography>
 
       <Box>
