@@ -1,4 +1,4 @@
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Avatar, Box, Button, Container, Typography } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import Link from 'next/link';
 
@@ -13,6 +13,7 @@ export default function Home() {
           alignItems: 'center',
           height: 80,
           px: 2,
+          boxShadow: 1,
         }}
       >
         <Typography
@@ -21,10 +22,14 @@ export default function Home() {
             fontFamily: 'monospace',
             display: 'flex',
             alignItems: 'center',
+            color: '#424242',
           }}
           variant='h4'
         >
-          IVR canvas <ArchitectureIcon sx={{ fontSize: '2.5rem' }} />
+          <Avatar sx={{ backgroundColor: '#bbdefb', mx: 1 }}>
+            <ArchitectureIcon sx={{ fontSize: '2.5rem', color: 'black' }} />
+          </Avatar>
+          IVR canvas
         </Typography>
 
         <Button href='/signin' sx={{ mx: 1, color: 'black' }}>

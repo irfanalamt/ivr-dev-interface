@@ -5,6 +5,7 @@ import {
   Typography,
   Box,
   Button,
+  Avatar,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 
@@ -13,15 +14,20 @@ const Signup = () => {
     <Container maxWidth='sm'>
       <Typography
         sx={{
+          mr: 'auto',
           fontFamily: 'monospace',
           display: 'flex',
           alignItems: 'center',
+          color: '#424242',
           mt: '20%',
           mb: 2,
         }}
         variant='h4'
       >
-        IVR canvas <ArchitectureIcon sx={{ fontSize: '2.5rem' }} />
+        <Avatar sx={{ backgroundColor: '#bbdefb', mx: 1 }}>
+          <ArchitectureIcon sx={{ fontSize: '2.5rem', color: 'black' }} />
+        </Avatar>
+        IVR canvas
       </Typography>
       <Paper sx={{ p: 2, backgroundColor: '#FDFCFA', maxWidth: 500 }}>
         <Typography sx={{ fontSize: '1.1rem' }} variant='subtitle2'>
