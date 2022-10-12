@@ -1,5 +1,5 @@
+import { MongoClient } from 'mongodb';
 import NextAuth from 'next-auth';
-import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
 export const authOptions = {
@@ -14,14 +14,33 @@ export const authOptions = {
       },
       async authorize(credentials, req) {
         const { email, password } = credentials;
-        if (email !== 'admin@gmail.com')
-          throw new Error('Invalid Credentials!');
+        // if (email !== 'admin@gmail.com')
+        //   throw new Error('Invalid Credentials!');
 
-        return { id: '1234', name: 'Irfan', email: 'admin@gmail.com' };
+        const client = await MongoClient.connect(process.env.DB_URL, {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        });
+        //Find user with the email
+        const result = await client.db().collection('users').findOne({
+          email,
+        });
+        if (!result) {
+          client.close();
+          throw new Error('No user found with the email');
+        }
+
+        if (password !== result.password) {
+          client.close();
+          throw new Error('Password doesnt match');
+        }
+        client.close();
+        return { email: result.email };
       },
     }),
     // ...add more providers here
   ],
+  database: process.env.DB_URL,
   pages: {
     signIn: '/signin',
   },

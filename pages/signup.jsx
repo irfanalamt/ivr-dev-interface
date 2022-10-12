@@ -1,15 +1,43 @@
+import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {
+  Avatar,
+  Box,
+  Button,
   Container,
   Paper,
   TextField,
   Typography,
-  Box,
-  Button,
-  Avatar,
 } from '@mui/material';
-import ArchitectureIcon from '@mui/icons-material/Architecture';
+import axios from 'axios';
+import { useRef } from 'react';
 
 const Signup = () => {
+  const nameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+
+  function handleSignup(e) {
+    e.preventDefault();
+    const name = nameRef.current.value;
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+
+    if (!email || !email.includes('@') || !password) {
+      alert('Invalid details');
+      return;
+    }
+
+    axios
+      .post('/api/auth/signup', { email, password })
+      .then((res) => console.log('result:', res.data))
+      .catch((err) => {
+        console.log('error:', err.response.data);
+        alert(err.response.data.message);
+      });
+
+    console.log({ name, email });
+  }
+
   return (
     <Container maxWidth='sm'>
       <Typography
@@ -44,6 +72,7 @@ const Signup = () => {
           <TextField
             sx={{ maxWidth: 300, my: 0.5 }}
             placeholder='First Name'
+            inputRef={nameRef}
             variant='outlined'
             size='small'
             type='text'
@@ -51,6 +80,7 @@ const Signup = () => {
           />
           <TextField
             sx={{ maxWidth: 300, my: 0.5 }}
+            inputRef={emailRef}
             placeholder='Email'
             variant='outlined'
             size='small'
@@ -59,6 +89,7 @@ const Signup = () => {
           />
           <TextField
             sx={{ maxWidth: 300, my: 0.5 }}
+            inputRef={passwordRef}
             placeholder='Password'
             variant='outlined'
             size='small'
@@ -70,7 +101,12 @@ const Signup = () => {
           <Button href='/signin' size='small'>
             Already have an account?
           </Button>
-          <Button sx={{ borderRadius: 5 }} variant='contained' color='success'>
+          <Button
+            onClick={handleSignup}
+            sx={{ borderRadius: 5 }}
+            variant='contained'
+            color='success'
+          >
             Create account
           </Button>
         </Box>

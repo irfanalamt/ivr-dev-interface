@@ -21,7 +21,12 @@ const Signin = () => {
       password,
       redirect: false,
     })
-      .then((res) => console.log('response', res))
+      .then((res) => {
+        console.log('response', res);
+        if (!res.ok) {
+          alert(res.error);
+        }
+      })
       .catch((err) => console.log('error', err));
   }
 
