@@ -26,14 +26,18 @@ export default function Home() {
         >
           IVR canvas <ArchitectureIcon sx={{ fontSize: '2.5rem' }} />
         </Typography>
-        <Link href='/signin' passHref>
-          <Button sx={{ mx: 1, color: 'black' }}>Login</Button>
-        </Link>
-        <Link href='/signup' passHref>
-          <Button sx={{ backgroundColor: '#2196f3' }} variant='contained'>
-            Signup
-          </Button>
-        </Link>
+
+        <Button href='/signin' sx={{ mx: 1, color: 'black' }}>
+          Login
+        </Button>
+
+        <Button
+          href='/signup'
+          sx={{ backgroundColor: '#2196f3' }}
+          variant='contained'
+        >
+          Signup
+        </Button>
       </Box>
       <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
         <Typography
