@@ -6,6 +6,8 @@ import {
   Box,
   Button,
   Avatar,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import { useRef, useState } from 'react';
@@ -14,6 +16,10 @@ import { signIn } from 'next-auth/react';
 const Signin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const errorMessage = useRef('');
+  const successMessage = useRef('');
 
   function handleSubmit() {
     signIn('credentials', {
@@ -24,10 +30,18 @@ const Signin = () => {
       .then((res) => {
         console.log('response', res);
         if (!res.ok) {
-          alert(res.error);
+          errorMessage.current = res.error;
+          setOpenError(true);
+        }
+        if (res.ok && res.error === null) {
+          successMessage.current = 'login success!';
+          setOpenSuccess(true);
         }
       })
-      .catch((err) => console.log('error', err));
+      .catch((err) => {
+        errorMessage.current = err;
+        setOpenError(true);
+      });
   }
 
   return (
@@ -96,6 +110,32 @@ const Signin = () => {
           </Button>
         </Box>
       </Paper>
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity='error'
+          sx={{ width: '100%' }}
+        >
+          {errorMessage.current}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenSuccess(false)}
+          severity='success'
+          sx={{ width: '100%' }}
+        >
+          {successMessage.current}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };

@@ -1,20 +1,26 @@
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {
+  Alert,
   Avatar,
   Box,
   Button,
   Container,
   Paper,
+  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
 import axios from 'axios';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 const Signup = () => {
+  const [openError, setOpenError] = useState(false);
+  const [openSuccess, setOpenSuccess] = useState(false);
   const nameRef = useRef();
   const emailRef = useRef();
   const passwordRef = useRef();
+  const errorMessage = useRef('');
+  const successMessage = useRef('');
 
   function handleSignup(e) {
     e.preventDefault();
@@ -23,16 +29,22 @@ const Signup = () => {
     const password = passwordRef.current.value;
 
     if (!email || !email.includes('@') || !password) {
-      alert('Invalid details');
+      errorMessage.current = 'Invalid entry';
+      setOpenError(true);
       return;
     }
 
     axios
       .post('/api/auth/signup', { email, password })
-      .then((res) => console.log('result:', res.data))
+      .then((res) => {
+        console.log('result:', res.data);
+        successMessage.current = res.data.message;
+        setOpenSuccess(true);
+      })
       .catch((err) => {
         console.log('error:', err.response.data);
-        alert(err.response.data.message);
+        errorMessage.current = err.response.data.message;
+        setOpenError(true);
       });
 
     console.log({ name, email });
@@ -111,6 +123,32 @@ const Signup = () => {
           </Button>
         </Box>
       </Paper>
+      <Snackbar
+        open={openError}
+        autoHideDuration={6000}
+        onClose={() => setOpenError(false)}
+      >
+        <Alert
+          onClose={() => setOpenError(false)}
+          severity='error'
+          sx={{ width: '100%' }}
+        >
+          {errorMessage.current}
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={openSuccess}
+        autoHideDuration={6000}
+        onClose={() => setOpenSuccess(false)}
+      >
+        <Alert
+          onClose={() => setOpenSuccess(false)}
+          severity='success'
+          sx={{ width: '100%' }}
+        >
+          {successMessage.current}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
