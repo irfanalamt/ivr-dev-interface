@@ -22,6 +22,13 @@ const Signin = () => {
   const successMessage = useRef('');
 
   function handleSubmit() {
+    // basic validation
+    if (!email || !email.includes('@') || !password) {
+      errorMessage.current = 'Invalid entry!';
+      setOpenError(true);
+      return;
+    }
+
     signIn('credentials', {
       email,
       password,
