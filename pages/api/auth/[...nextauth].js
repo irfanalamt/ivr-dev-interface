@@ -40,6 +40,7 @@ export const authOptions = {
     }),
     // ...add more providers here
   ],
+  session: { strategy: 'jwt' },
   secret: process.env.NEXT_SECRET,
   database: process.env.DB_URL,
   pages: {

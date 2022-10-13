@@ -2,6 +2,7 @@ import { MongoClient } from 'mongodb';
 async function handler(req, res) {
   if (req.method === 'POST') {
     const { email, password } = req.body;
+    console.log('🚀 ~ handler ~ { email, password }', { email, password });
 
     //basic validation
     // if (!email || !email.includes('@') || !password) {
@@ -9,14 +10,12 @@ async function handler(req, res) {
     //   return;
     // }
 
-    const client = await MongoClient.connect(process.env.DB_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
+    const client = new MongoClient(process.env.DB_URL);
+    await client.connect();
     const db = client.db();
+    const collection = db.collection('users');
 
-    const checkExisting = await db.collection('users').findOne({ email });
+    const checkExisting = await collection.findOne({ email });
     if (checkExisting) {
       res.status(422).json({ message: 'User already exists' });
       client.close();
