@@ -11,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import axios from 'axios';
+import Router from 'next/router';
 import { useRef, useState } from 'react';
 
 const Signup = () => {
@@ -44,8 +45,11 @@ const Signup = () => {
       .post('/api/auth/signup', { email, password })
       .then((res) => {
         console.log('result:', res.data);
-        successMessage.current = res.data.message;
+        successMessage.current = 'User created. Redirecting to LOGIN.';
         setOpenSuccess(true);
+        setTimeout(() => {
+          Router.replace('/signin');
+        }, 2500);
       })
       .catch((err) => {
         console.log('error:', err.response.data);

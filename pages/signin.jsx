@@ -12,6 +12,7 @@ import {
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import { useRef, useState } from 'react';
 import { signIn } from 'next-auth/react';
+import Router from 'next/router';
 
 const Signin = () => {
   const [email, setEmail] = useState('');
@@ -47,8 +48,12 @@ const Signin = () => {
           setOpenError(true);
         }
         if (res.ok && res.error === null) {
-          successMessage.current = 'login success!';
+          successMessage.current = 'login success!..redirecting to HOME';
           setOpenSuccess(true);
+          // onSuccess redirect to home after 2.5 sec
+          setTimeout(() => {
+            Router.replace('/');
+          }, 2500);
         }
       })
       .catch((err) => {

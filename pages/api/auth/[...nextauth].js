@@ -1,6 +1,7 @@
 import { MongoClient } from 'mongodb';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+const bcrypt = require('bcryptjs');
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -14,26 +15,31 @@ export const authOptions = {
       },
       async authorize(credentials, req) {
         const { email, password } = credentials;
-        // if (email !== 'admin@gmail.com')
-        //   throw new Error('Invalid Credentials!');
 
-        const client = await MongoClient.connect(process.env.DB_URL, {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-        });
+        // Connect to mongo
+        const client = new MongoClient(process.env.DB_URL);
+        await client.connect();
+        const db = client.db();
+        const collection = db.collection('users');
+
         //Find user with the email
-        const result = await client.db().collection('users').findOne({
+        const result = await collection.findOne({
           email,
         });
+
         if (!result) {
           client.close();
           throw new Error('No user found with the email');
         }
 
-        if (password !== result.password) {
+        // check password from body with hash in DB
+        const isPasswordValid = await bcrypt.compare(password, result.hash);
+
+        if (isPasswordValid !== true) {
           client.close();
           throw new Error('Password doesnt match');
         }
+
         client.close();
         return { email: result.email };
       },

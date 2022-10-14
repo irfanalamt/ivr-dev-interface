@@ -1,8 +1,19 @@
-import { Avatar, Box, Button, Container, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  Container,
+  Typography,
+} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import Link from 'next/link';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Home() {
+  const { status, data } = useSession();
   return (
     <Container>
       <Box
@@ -32,52 +43,78 @@ export default function Home() {
           IVR canvas
         </Typography>
 
-        <Button href='/signin' sx={{ mx: 1, color: 'black' }}>
-          Login
-        </Button>
+        {status === 'authenticated' ? (
+          <Button
+            onClick={() => signOut()}
+            variant='contained'
+            color='secondary'
+          >
+            Signout <ExitToAppIcon sx={{ mx: 0.5 }} />
+          </Button>
+        ) : (
+          <>
+            <Button href='/signin' sx={{ mx: 1, color: 'black' }}>
+              Login
+            </Button>
+            <Button
+              href='/signup'
+              sx={{ backgroundColor: '#2196f3' }}
+              variant='contained'
+            >
+              Signup
+            </Button>
+          </>
+        )}
+      </Box>
 
-        <Button
-          href='/signup'
-          sx={{ backgroundColor: '#2196f3' }}
-          variant='contained'
-        >
-          Signup
-        </Button>
-      </Box>
-      <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
-        <Typography
-          sx={{
-            fontSize: '3rem',
-            fontWeight: 200,
-            display: 'inline',
-          }}
-          variant='subtitle1'
-        >
-          {`Create custom `}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: '3rem',
-            fontWeight: 200,
-            display: 'inline',
-            color: '#2196f3',
-          }}
-          variant='subtitle1'
-        >
-          {`
+      {status === 'authenticated' ? (
+        <Box>
+          <Chip label='Logged in 🟢' />
+          <Typography
+            sx={{ display: 'flex', alignItems: 'center', mt: 1 }}
+            variant='h6'
+          >
+            <AccountCircleIcon sx={{ mx: 0.5, fontSize: '1.8rem' }} />
+            {data.user.email}
+          </Typography>
+        </Box>
+      ) : (
+        <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
+          <Typography
+            sx={{
+              fontSize: '3rem',
+              fontWeight: 200,
+              display: 'inline',
+            }}
+            variant='subtitle1'
+          >
+            {`Create custom `}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: '3rem',
+              fontWeight: 200,
+              display: 'inline',
+              color: '#2196f3',
+            }}
+            variant='subtitle1'
+          >
+            {`
           IVR experiences `}
-        </Typography>
-        <Typography
-          sx={{
-            fontSize: '3rem',
-            fontWeight: 200,
-            display: 'inline',
-          }}
-          variant='subtitle1'
-        >
-          {`using visual, drag-and-drop approaches.`}
-        </Typography>
-      </Box>
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: '3rem',
+              fontWeight: 200,
+              display: 'inline',
+            }}
+            variant='subtitle1'
+          >
+            {`using visual, drag-and-drop approaches.`}
+          </Typography>
+        </Box>
+      )}
+
       <Box sx={{ textAlign: 'center', my: 4 }}>
         <Button
           sx={{

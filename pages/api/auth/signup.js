@@ -1,15 +1,12 @@
 import { MongoClient } from 'mongodb';
+const bcrypt = require('bcryptjs');
+
 async function handler(req, res) {
   if (req.method === 'POST') {
     const { email, password } = req.body;
     console.log('🚀 ~ handler ~ { email, password }', { email, password });
 
-    //basic validation
-    // if (!email || !email.includes('@') || !password) {
-    //   res.status(422).json({ message: 'Invalid Data' });
-    //   return;
-    // }
-
+    //Connect to mongo
     const client = new MongoClient(process.env.DB_URL);
     await client.connect();
     const db = client.db();
@@ -21,11 +18,15 @@ async function handler(req, res) {
       client.close();
       return;
     }
+    //Auto-gen salt, hash;
+    const hash = bcrypt.hashSync(password, 8);
 
+    // store hashed password
     const status = await db.collection('users').insertOne({
       email,
-      password,
+      hash,
     });
+
     //Send success response
     res.status(201).json({ message: 'User created', ...status });
     //Close DB connection
