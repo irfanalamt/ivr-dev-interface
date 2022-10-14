@@ -23,8 +23,14 @@ const Signin = () => {
 
   function handleSubmit() {
     // basic validation
-    if (!email || !email.includes('@') || !password) {
-      errorMessage.current = 'Invalid entry!';
+    if (!email || !password) {
+      errorMessage.current = 'Required fields are empty!';
+      setOpenError(true);
+      return;
+    }
+
+    if (!email.includes('@')) {
+      errorMessage.current = 'Email address not in valid format!';
       setOpenError(true);
       return;
     }

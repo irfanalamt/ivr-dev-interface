@@ -28,8 +28,14 @@ const Signup = () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    if (!email || !email.includes('@') || !password) {
-      errorMessage.current = 'Invalid entry';
+    if (!email || !password) {
+      errorMessage.current = 'Required fields are empty!';
+      setOpenError(true);
+      return;
+    }
+
+    if (!email.includes('@')) {
+      errorMessage.current = 'Email address not in valid format!';
       setOpenError(true);
       return;
     }
