@@ -1,7 +1,7 @@
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Drawer, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Chip, Drawer, Tooltip, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
@@ -11,8 +11,13 @@ import DrawerComponent from './Drawer';
 import InitVariables from './InitVariables2';
 import SaveDialog from './SaveDialog';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import SaveIcon from '@mui/icons-material/Save';
 
 const CanvasComponent = () => {
+  const { status, data } = useSession();
+
   const [isOpenVars, setIsOpenVars] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(0);
@@ -491,7 +496,7 @@ const CanvasComponent = () => {
         // create "a" HTML element with href to file & click
         const link = document.createElement('a');
         link.href = href;
-        link.setAttribute('download', 'file.js'); //or any other extension
+        link.setAttribute('download', `${saveFileName.current}.js`); //or any other extension
         document.body.appendChild(link);
         link.click();
 
@@ -590,6 +595,26 @@ const CanvasComponent = () => {
         userVariables={userVariables.current}
         stageGroup={stageGroup.current}
       />
+      {status === 'authenticated' && (
+        <Box sx={{ position: 'absolute', top: 10, right: 15 }}>
+          <Chip label='Logged in 🟢' />
+          <Typography
+            sx={{ display: 'flex', alignItems: 'center', mt: 1 }}
+            variant='h6'
+          >
+            <AccountCircleIcon sx={{ mx: 0.5, fontSize: '1.8rem' }} />
+            {data.user.email}
+          </Typography>
+          <Button
+            sx={{ mt: 2, zIndex: 5 }}
+            variant='contained'
+            size='small'
+            color='success'
+          >
+            Save project <SaveIcon sx={{ ml: 0.5 }} />
+          </Button>
+        </Box>
+      )}
       <Tooltip title='connect shapes' placement='right-end'>
         <ArrowRightAltIcon
           sx={{

@@ -1,7 +1,6 @@
-import { Box, Typography, Container, Avatar } from '@mui/material';
-import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import { Avatar, Box, Container, Typography } from '@mui/material';
+import dynamic from 'next/dynamic';
 
 const DynamicCanvas = dynamic(() => import('../components/Canvas2'), {
   ssr: false,

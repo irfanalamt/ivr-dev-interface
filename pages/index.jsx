@@ -7,13 +7,13 @@ import {
   Typography,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
-import Link from 'next/link';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useSession, signOut } from 'next-auth/react';
 
 export default function Home() {
   const { status, data } = useSession();
+
   return (
     <Container>
       <Box
