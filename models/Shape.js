@@ -57,6 +57,21 @@ class Shape {
     return this.initPos;
   }
 
+  getSerialized() {
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      type: this.type,
+      style: this.style,
+      stroke: this.stroke,
+      text: this.text,
+      userValues: this.userValues,
+      functionString: this.functionString,
+    };
+  }
+
   drawShape(ctx) {
     switch (this.type) {
       case 'rectangle':

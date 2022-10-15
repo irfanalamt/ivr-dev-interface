@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SaveIcon from '@mui/icons-material/Save';
+import SaveProjectDialog from './saveProjectDialog';
 
 const CanvasComponent = () => {
   const { status, data } = useSession();
@@ -23,6 +24,7 @@ const CanvasComponent = () => {
   const [isConnecting, setIsConnecting] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [openProjectDialog, setOpenProjectDialog] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -35,6 +37,7 @@ const CanvasComponent = () => {
   const userVariables = useRef([]);
   const connectorCount = useRef(1);
   const saveFileName = useRef('');
+  const projectName = useRef('');
 
   let startX, startY;
   let startX1, startY1;
@@ -48,6 +51,7 @@ const CanvasComponent = () => {
 
   useEffect(() => {
     initializeCanvas();
+    console.log('session data:', data);
   }, []);
 
   function initializeCanvas() {
@@ -541,6 +545,22 @@ const CanvasComponent = () => {
     generateConfigFile();
   }
 
+  function setProjectName(name) {
+    projectName.current = name;
+    console.log(
+      '🚀 ~ setProjectName ~ projectName.current',
+      projectName.current
+    );
+
+    const serializedShapes = stageGroup.current.getSerializedShapes();
+
+    axios.post('/api/saveProject', {
+      email: data.user.email,
+      projectName: projectName.current,
+      shapes: serializedShapes,
+    });
+  }
+
   return (
     <Box>
       <Typography
@@ -610,6 +630,9 @@ const CanvasComponent = () => {
             variant='contained'
             size='small'
             color='success'
+            onClick={() => {
+              setOpenProjectDialog(true);
+            }}
           >
             Save project <SaveIcon sx={{ ml: 0.5 }} />
           </Button>
@@ -692,6 +715,11 @@ const CanvasComponent = () => {
         open={openDialog}
         setOpen={setOpenDialog}
         fileName={setFileName}
+      />
+      <SaveProjectDialog
+        open={openProjectDialog}
+        setOpen={setOpenProjectDialog}
+        projectName={setProjectName}
       />
       <Typography
         sx={{

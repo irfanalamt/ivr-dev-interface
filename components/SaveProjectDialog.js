@@ -5,20 +5,18 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
-const SaveDialog = ({ open, setOpen, fileName }) => {
-  const nameRef = useRef('');
-
+const SaveProjectDialog = ({ open, setOpen, projectName }) => {
   const handleClose = () => setOpen(false);
+  const nameRef = useRef('');
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Generate Configuration</DialogTitle>
+      <DialogTitle>Save project</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          To create the config.js file, please enter your file name without
-          extension.
+          To save project, please enter projectName
         </DialogContentText>
         <TextField
           sx={{ mt: 2 }}
@@ -35,7 +33,7 @@ const SaveDialog = ({ open, setOpen, fileName }) => {
         </Button>
         <Button
           onClick={() => {
-            fileName(nameRef.current.value);
+            projectName(nameRef.current.value);
             handleClose();
           }}
         >
@@ -46,4 +44,4 @@ const SaveDialog = ({ open, setOpen, fileName }) => {
   );
 };
 
-export default SaveDialog;
+export default SaveProjectDialog;

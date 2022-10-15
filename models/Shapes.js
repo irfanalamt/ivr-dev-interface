@@ -19,6 +19,16 @@ class Shapes {
     return newShapes;
   }
 
+  getSerializedShapes() {
+    const serializedShapesArray = this.shapes.map((el) => el.getSerialized());
+    console.log(
+      '🚀 ~ Shapes ~ getSerializedShapes ~ serializedShapesArray',
+      serializedShapesArray
+    );
+
+    return serializedShapesArray;
+  }
+
   displayAll() {
     return `name=${this.groupname} shapes=${this.shapes}`;
   }

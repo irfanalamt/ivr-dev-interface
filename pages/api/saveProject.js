@@ -6,6 +6,10 @@ async function handler(req, res) {
     return;
   }
 
+  const { email, projectName, shapes } = req.body;
+
+  console.log('log from server:', { email, projectName, shapes });
+
   const client = new MongoClient(process.env.DB_URL);
   await client.connect();
   const db = client.db();
