@@ -14,7 +14,7 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SaveIcon from '@mui/icons-material/Save';
-import SaveProjectDialog from './saveProjectDialog';
+import SaveProjectDialog from './SaveProjectDialog';
 
 const CanvasComponent = () => {
   const { status, data } = useSession();
