@@ -47,8 +47,9 @@ const ShowProjects = () => {
         </Typography>
         {projectList ? (
           <Box sx={{ display: 'flex', mt: '10%' }}>
-            {projectList.map((el) => (
+            {projectList.map((el, i) => (
               <Typography
+                key={i}
                 sx={{
                   mx: 2,
                   display: 'flex',
