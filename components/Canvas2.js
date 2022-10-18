@@ -1,6 +1,7 @@
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 import {
   Alert,
   Box,
@@ -657,17 +658,36 @@ const CanvasComponent = () => {
             <AccountCircleIcon sx={{ mx: 0.5, fontSize: '1.8rem' }} />
             {data.user.email}
           </Typography>
-          <Button
-            sx={{ mt: 2, zIndex: 5 }}
-            variant='contained'
-            size='small'
-            color='success'
-            onClick={() => {
-              setOpenProjectDialog(true);
-            }}
-          >
-            Save project <SaveIcon sx={{ ml: 0.5 }} />
-          </Button>
+          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Button
+              sx={{ mt: 2, zIndex: 5 }}
+              variant='contained'
+              size='small'
+              color='success'
+              onClick={() => {
+                const serializedShapes =
+                  stageGroup.current.getSerializedShapes();
+                localStorage.setItem('isExistingProject', true);
+                localStorage.setItem(
+                  'saved_project',
+                  JSON.stringify(serializedShapes)
+                );
+              }}
+            >
+              Save <SaveIcon sx={{ ml: 0.5 }} />
+            </Button>
+            <Button
+              sx={{ mt: 2, zIndex: 5 }}
+              variant='contained'
+              size='small'
+              color='success'
+              onClick={() => {
+                setOpenProjectDialog(true);
+              }}
+            >
+              Save as <SaveAsIcon sx={{ ml: 0.5 }} />
+            </Button>
+          </Box>
         </Box>
       )}
       <Tooltip title='connect shapes' placement='right-end'>

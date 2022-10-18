@@ -15,9 +15,11 @@ async function handler(req, res) {
   const db = client.db();
   const collection = db.collection('projects');
 
+  const todayDateString = new Date(Date.now()).toLocaleDateString();
+
   const status = await collection.updateOne(
     { email },
-    { $set: { email, [projectName]: shapes } },
+    { $set: { email, [projectName]: { shapes, todayDateString } } },
     { upsert: true }
   );
 

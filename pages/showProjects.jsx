@@ -65,7 +65,7 @@ const ShowProjects = () => {
                   localStorage.setItem('isExistingProject', true);
                   localStorage.setItem(
                     'saved_project',
-                    JSON.stringify(projectList[el])
+                    JSON.stringify(projectList[el].shapes)
                   );
 
                   Router.push('/stageCanvas2');
