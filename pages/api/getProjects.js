@@ -26,8 +26,8 @@ export default async function handler(req, res) {
     return;
   }
 
-  console.log('doc', Object.keys(doc));
+  console.log('doc', doc);
 
-  res.status(201).json({ message: 'FOUND', projects: [...Object.keys(doc)] });
+  res.status(201).json({ message: 'FOUND', projects: doc });
   client.close();
 }

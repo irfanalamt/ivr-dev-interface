@@ -27,6 +27,22 @@ class Shape {
     this.functionString = '';
   }
 
+  static createFromObject(shapeObj) {
+    const tempShape = new Shape(
+      shapeObj.x,
+      shapeObj.y,
+      shapeObj.width,
+      shapeObj.height,
+      shapeObj.type,
+      shapeObj.style,
+      shapeObj.stroke
+    );
+    tempShape.text = shapeObj.text;
+    tempShape.userValues = JSON.parse(shapeObj.userValues);
+
+    return tempShape;
+  }
+
   setSelected(bool) {
     this.selected = bool;
   }

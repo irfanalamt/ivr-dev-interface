@@ -5,6 +5,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import FolderIcon from '@mui/icons-material/Folder';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Router from 'next/router';
 
 const ShowProjects = () => {
   const { data: session, status } = useSession();
@@ -47,7 +48,7 @@ const ShowProjects = () => {
         </Typography>
         {projectList ? (
           <Box sx={{ display: 'flex', mt: '10%' }}>
-            {projectList.map((el, i) => (
+            {Object.keys(projectList).map((el, i) => (
               <Typography
                 key={i}
                 sx={{
@@ -60,6 +61,15 @@ const ShowProjects = () => {
                   boxShadow: 1,
                 }}
                 variant='subtitle2'
+                onClick={() => {
+                  localStorage.setItem('isExistingProject', true);
+                  localStorage.setItem(
+                    'saved_project',
+                    JSON.stringify(projectList[el])
+                  );
+
+                  Router.push('/stageCanvas2');
+                }}
               >
                 <FolderIcon sx={{ mr: 0.5 }} /> {el}
               </Typography>
@@ -80,8 +90,14 @@ const ShowProjects = () => {
 
   return (
     <>
-      <Button sx={{ m: 3 }} variant='outlined' href='/'>
-        Go Home
+      <Button sx={{ m: 3 }} variant='outlined' href='/' color='secondary'>
+        HOME
+      </Button>
+      <Button sx={{ m: 3 }} variant='outlined' href='/signin' color='success'>
+        LOGIN
+      </Button>
+      <Button sx={{ m: 3 }} variant='outlined' href='/signup'>
+        SIGNUP
       </Button>
       <Typography
         sx={{

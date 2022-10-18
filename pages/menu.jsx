@@ -52,7 +52,8 @@ const Menu = () => {
             boxShadow: 1,
           }}
           onClick={() => {
-            Router.replace('/stageCanvas2');
+            localStorage.setItem('isExistingProject', false);
+            Router.push('/stageCanvas2');
           }}
         >
           <Typography sx={{ fontSize: '1.4rem' }} variant='body2'>
@@ -72,7 +73,7 @@ const Menu = () => {
             boxShadow: 1,
           }}
           onClick={() => {
-            Router.replace('/showProjects');
+            Router.push('/showProjects');
           }}
         >
           <Typography sx={{ fontSize: '1.4rem' }} variant='body2'>

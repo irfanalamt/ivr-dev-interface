@@ -1,7 +1,16 @@
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Button, Chip, Drawer, Tooltip, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Drawer,
+  Snackbar,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
@@ -25,6 +34,7 @@ const CanvasComponent = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [openProjectDialog, setOpenProjectDialog] = useState(false);
+  const [openSaveToast, setOpenSaveToast] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -101,10 +111,26 @@ const CanvasComponent = () => {
       palletSmallCircle,
     ]);
 
-    // Initialize stageGroup
-    stageGroup.current = new Shapes('stage', []);
-
     contextRef.current = context1;
+
+    const isExistingProject = JSON.parse(
+      localStorage.getItem('isExistingProject')
+    );
+
+    if (isExistingProject) {
+      const current_project = JSON.parse(localStorage.getItem('saved_project'));
+      console.log('🚀 ~ initializeCanvas ~ current_project', current_project);
+
+      // load stageGroup
+      const stageShapesArray = current_project.map((el) =>
+        Shape.createFromObject(el)
+      );
+      stageGroup.current = new Shapes('stage', stageShapesArray);
+    } else {
+      // Initialize stageGroup
+      // new project
+      stageGroup.current = new Shapes('stage', []);
+    }
 
     clearAndDraw();
   }
@@ -562,6 +588,7 @@ const CanvasComponent = () => {
       })
       .then((res) => {
         console.log('post project promise🕺🏻:', res.data);
+        setOpenSaveToast(true);
       })
       .catch((err) => console.log(err));
   }
@@ -740,6 +767,19 @@ const CanvasComponent = () => {
       >
         Im a tooltip
       </Typography>
+      <Snackbar
+        open={openSaveToast}
+        autoHideDuration={6000}
+        onClose={() => setOpenSaveToast(false)}
+      >
+        <Alert
+          onClose={() => setOpenSaveToast(false)}
+          severity='success'
+          sx={{ width: '100%' }}
+        >
+          {`save success! ProjectName: ${projectName.current}`}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
