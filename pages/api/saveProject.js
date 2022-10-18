@@ -15,6 +15,15 @@ async function handler(req, res) {
   const db = client.db();
   const collection = db.collection('projects');
 
+  const status = await collection.updateOne(
+    { email },
+    { $set: { email, [projectName]: shapes } },
+    { upsert: true }
+  );
+
+  //Send success response
+  res.status(201).json({ message: 'Project saved', ...status });
+
   //Close DB connection
   client.close();
 }

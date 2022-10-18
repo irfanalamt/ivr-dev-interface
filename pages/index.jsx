@@ -9,6 +9,7 @@ import {
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { useSession, signOut } from 'next-auth/react';
 
 export default function Home() {
@@ -68,16 +69,22 @@ export default function Home() {
       </Box>
 
       {status === 'authenticated' ? (
-        <Box>
-          <Chip label='Logged in 🟢' />
-          <Typography
-            sx={{ display: 'flex', alignItems: 'center', mt: 1 }}
-            variant='h6'
-          >
-            <AccountCircleIcon sx={{ mx: 0.5, fontSize: '1.8rem' }} />
-            {data.user.email}
-          </Typography>
-        </Box>
+        <Typography
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mt: 4,
+            backgroundColor: '#aed581',
+            width: 'max-content',
+            px: 2,
+            py: 1,
+            borderRadius: 2,
+          }}
+          variant='body2'
+        >
+          <AccountCircleIcon sx={{ mr: 0.5 }} />
+          {data.user.email}
+        </Typography>
       ) : (
         <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
           <Typography
@@ -124,11 +131,11 @@ export default function Home() {
             color: 'white',
             fontSize: '1rem',
           }}
-          href='/stageCanvas2'
+          href='/menu'
           variant='contained'
           color='success'
         >
-          Create an IVR
+          Get started <PlayCircleFilledIcon sx={{ ml: 1 }} />
         </Button>
       </Box>
     </Container>

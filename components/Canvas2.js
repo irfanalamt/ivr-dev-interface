@@ -554,11 +554,16 @@ const CanvasComponent = () => {
 
     const serializedShapes = stageGroup.current.getSerializedShapes();
 
-    axios.post('/api/saveProject', {
-      email: data.user.email,
-      projectName: projectName.current,
-      shapes: serializedShapes,
-    });
+    axios
+      .post('/api/saveProject', {
+        email: data.user.email,
+        projectName: projectName.current,
+        shapes: serializedShapes,
+      })
+      .then((res) => {
+        console.log('post project promise🕺🏻:', res.data);
+      })
+      .catch((err) => console.log(err));
   }
 
   return (

@@ -26,7 +26,7 @@ async function handler(req, res) {
   const hash = bcrypt.hashSync(password, 8);
 
   // store hashed password
-  const status = await db.collection('users').insertOne({
+  const status = await collection.insertOne({
     email,
     hash,
   });

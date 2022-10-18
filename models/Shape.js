@@ -67,7 +67,7 @@ class Shape {
       style: this.style,
       stroke: this.stroke,
       text: this.text,
-      userValues: this.userValues,
+      userValues: JSON.stringify(this.userValues),
       functionString: this.functionString,
     };
   }
