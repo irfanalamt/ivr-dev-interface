@@ -1,17 +1,29 @@
-import { Box, Button, Container, Typography } from '@mui/material';
-import { useSession } from 'next-auth/react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ArchitectureIcon from '@mui/icons-material/Architecture';
+import DownloadingIcon from '@mui/icons-material/Downloading';
 import ErrorIcon from '@mui/icons-material/Error';
 import FolderIcon from '@mui/icons-material/Folder';
-import { useEffect, useState } from 'react';
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Paper,
+  Typography,
+} from '@mui/material';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import Router from 'next/router';
+import { useEffect, useState } from 'react';
 
 const ShowProjects = () => {
   const { data: session, status } = useSession();
   const [projectList, setProjectList] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (status === 'authenticated') {
+      setLoading(true);
       axios
         .get('/api/getProjects', {
           params: {
@@ -20,70 +32,97 @@ const ShowProjects = () => {
         })
         .then((res) => {
           console.log('get projects:', res.data);
+          setLoading(false);
           if (res.data.message) {
             setProjectList(res.data.projects);
           }
         });
     }
   }, []);
-  // session.user.email
+
   if (status === 'authenticated') {
     return (
       <Container>
-        <Typography
+        <Box
           sx={{
             display: 'flex',
+            my: 1,
+            backgroundColor: '#f9fbe7',
             alignItems: 'center',
-            mt: 4,
-            backgroundColor: '#aed581',
-            width: 'max-content',
+            height: 80,
             px: 2,
-            py: 1,
-            borderRadius: 2,
+            boxShadow: 1,
           }}
-          variant='body2'
         >
-          <AccountCircleIcon sx={{ mr: 0.5 }} />
-          {session.user.email}
-        </Typography>
-        {projectList ? (
-          <Box sx={{ display: 'flex', mt: '10%' }}>
-            {Object.keys(projectList).map((el, i) => (
-              <Typography
-                key={i}
-                sx={{
-                  mx: 2,
-                  display: 'flex',
-                  alignItems: 'center',
-                  backgroundColor: '#42a5f5',
-                  px: 2,
-                  py: 1,
-                  boxShadow: 1,
-                }}
-                variant='subtitle2'
-                onClick={() => {
-                  localStorage.setItem('isExistingProject', true);
-                  localStorage.setItem(
-                    'saved_project',
-                    JSON.stringify(projectList[el].shapes)
-                  );
-
-                  Router.push('/stageCanvas2');
-                }}
-              >
-                <FolderIcon sx={{ mr: 0.5 }} /> {el}
-              </Typography>
-            ))}
-          </Box>
-        ) : (
+          <Avatar sx={{ backgroundColor: '#bbdefb', mx: 1 }}>
+            <ArchitectureIcon sx={{ fontSize: '2.5rem', color: 'black' }} />
+          </Avatar>
           <Typography
-            sx={{ my: 4, display: 'flex', alignItems: 'center' }}
-            variant='h5'
+            sx={{ mx: 2, fontSize: '1.1rem', fontWeight: 'bold' }}
+            variant='body2'
           >
-            No saved projects in database.
-            <ErrorIcon sx={{ mx: 0.5, color: '#ef5350' }} />
+            PROJECT DASHBOARD
+          </Typography>
+          <Typography
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              backgroundColor: '#aed581',
+              width: 'max-content',
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              ml: 'auto',
+            }}
+            variant='body2'
+          >
+            <AccountCircleIcon sx={{ mr: 0.5 }} />
+            {session.user.email}
+          </Typography>
+        </Box>
+        {loading && (
+          <Typography
+            sx={{ display: 'flex', alignItems: 'center', fontSize: 17 }}
+            variant='subtitle2'
+          >
+            <DownloadingIcon sx={{ fontSize: '1.1rem', mr: 0.5 }} /> Loading..
           </Typography>
         )}
+        <Paper sx={{ mt: '8%', py: 5, px: 2, backgroundColor: '#FDFDF9' }}>
+          {projectList ? (
+            <Box sx={{ display: 'flex' }}>
+              {Object.keys(projectList).map((el, i) => (
+                <Button
+                  key={i}
+                  sx={{ mx: 2 }}
+                  variant='contained'
+                  size='large'
+                  onClick={() => {
+                    localStorage.setItem('isExistingProject', true);
+                    localStorage.setItem(
+                      'saved_project',
+                      JSON.stringify(projectList[el].shapes)
+                    );
+
+                    Router.push('/stageCanvas2');
+                  }}
+                >
+                  <FolderIcon sx={{ mr: 0.5 }} /> {el}
+                </Button>
+              ))}
+            </Box>
+          ) : (
+            !loading && (
+              <Typography
+                sx={{ my: 4, display: 'flex', alignItems: 'center' }}
+                variant='h5'
+              >
+                No saved projects in database.
+                <ErrorIcon sx={{ mx: 0.5, color: '#ef5350' }} />
+              </Typography>
+            )
+          )}
+        </Paper>
       </Container>
     );
   }
