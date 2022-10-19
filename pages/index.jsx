@@ -45,13 +45,31 @@ export default function Home() {
         </Typography>
 
         {status === 'authenticated' ? (
-          <Button
-            onClick={() => signOut()}
-            variant='contained'
-            color='secondary'
-          >
-            Signout <ExitToAppIcon sx={{ mx: 0.5 }} />
-          </Button>
+          <>
+            <Typography
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                backgroundColor: '#aed581',
+                width: 'max-content',
+                px: 2,
+                py: 1,
+                borderRadius: 2,
+                mx: 1,
+              }}
+              variant='body2'
+            >
+              <AccountCircleIcon sx={{ mr: 0.5 }} />
+              {data.user.email}
+            </Typography>
+            <Button
+              onClick={() => signOut()}
+              variant='contained'
+              color='secondary'
+            >
+              Signout <ExitToAppIcon sx={{ mx: 0.5 }} />
+            </Button>
+          </>
         ) : (
           <>
             <Button href='/signin' sx={{ mx: 1, color: 'black' }}>
@@ -68,8 +86,7 @@ export default function Home() {
         )}
       </Box>
 
-      {status === 'authenticated' ? (
-        <Typography
+      {/* <Typography
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -84,43 +101,42 @@ export default function Home() {
         >
           <AccountCircleIcon sx={{ mr: 0.5 }} />
           {data.user.email}
+        </Typography> */}
+
+      <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
+        <Typography
+          sx={{
+            fontSize: '3rem',
+            fontWeight: 200,
+            display: 'inline',
+          }}
+          variant='subtitle1'
+        >
+          {`Create custom `}
         </Typography>
-      ) : (
-        <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
-          <Typography
-            sx={{
-              fontSize: '3rem',
-              fontWeight: 200,
-              display: 'inline',
-            }}
-            variant='subtitle1'
-          >
-            {`Create custom `}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: '3rem',
-              fontWeight: 200,
-              display: 'inline',
-              color: '#2196f3',
-            }}
-            variant='subtitle1'
-          >
-            {`
+        <Typography
+          sx={{
+            fontSize: '3rem',
+            fontWeight: 200,
+            display: 'inline',
+            color: '#2196f3',
+          }}
+          variant='subtitle1'
+        >
+          {`
           IVR experiences `}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: '3rem',
-              fontWeight: 200,
-              display: 'inline',
-            }}
-            variant='subtitle1'
-          >
-            {`using visual, drag-and-drop approaches.`}
-          </Typography>
-        </Box>
-      )}
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: '3rem',
+            fontWeight: 200,
+            display: 'inline',
+          }}
+          variant='subtitle1'
+        >
+          {`using visual, drag-and-drop approaches.`}
+        </Typography>
+      </Box>
 
       <Box sx={{ textAlign: 'center', my: 4 }}>
         <Button

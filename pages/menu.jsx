@@ -1,4 +1,12 @@
-import { Avatar, Box, Chip, Container, Typography } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Chip,
+  Container,
+  Paper,
+  Typography,
+} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
@@ -12,7 +20,11 @@ const Menu = () => {
     <Container>
       {status === 'authenticated' ? (
         <Chip
-          sx={{ mt: 2, backgroundColor: '#aed581', fontSize: '0.9rem' }}
+          sx={{
+            mt: 2,
+            backgroundColor: '#aed581',
+            fontSize: '0.9rem',
+          }}
           label='Logged in'
         />
       ) : (
@@ -21,67 +33,58 @@ const Menu = () => {
           label='Not Logged in'
         />
       )}
-      <Typography
+      <Paper
         sx={{
+          width: '60vw',
           mx: 'auto',
-          fontFamily: 'monospace',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: '#424242',
           mt: '10%',
-          mb: 2,
+          p: 5,
+          textAlign: 'center',
+          backgroundColor: '#fdfdf7',
         }}
-        variant='h4'
       >
-        <Avatar sx={{ backgroundColor: '#bbdefb', mx: 1 }}>
-          <ArchitectureIcon sx={{ fontSize: '2.5rem', color: 'black' }} />
-        </Avatar>
-        IVR canvas
-      </Typography>
-      <Box sx={{ mt: '8%', display: 'flex', justifyContent: 'center' }}>
-        <Box
+        <Typography
           sx={{
-            backgroundColor: '#009688',
-            px: 3,
-            py: 2,
-            mx: 5,
-            width: 'max-content',
-            textAlign: 'center',
-            borderRadius: 2,
-            boxShadow: 1,
+            mx: 'auto',
+            fontFamily: 'monospace',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#424242',
+            mb: 4,
           }}
+          variant='h4'
+        >
+          <Avatar sx={{ backgroundColor: '#bbdefb', mx: 1 }}>
+            <ArchitectureIcon sx={{ fontSize: '2.5rem', color: 'black' }} />
+          </Avatar>
+          IVR canvas
+        </Typography>
+
+        <Button
+          sx={{ minHeight: 80, mx: 3, my: 1 }}
+          variant='outlined'
+          size='large'
+          color='success'
           onClick={() => {
             localStorage.setItem('isExistingProject', false);
             Router.push('/stageCanvas2');
           }}
         >
-          <Typography sx={{ fontSize: '1.4rem' }} variant='body2'>
-            Create new project
-          </Typography>
-          <NoteAddIcon sx={{ fontSize: '2.4rem', mt: 2 }} />
-        </Box>
-        <Box
-          sx={{
-            backgroundColor: '#3f51b5',
-            px: 3,
-            py: 2,
-            mx: 5,
-            width: 'max-content',
-            textAlign: 'center',
-            borderRadius: 2,
-            boxShadow: 1,
-          }}
+          Create new project <NoteAddIcon sx={{ fontSize: '2rem', ml: 1 }} />
+        </Button>
+        <Button
+          sx={{ minHeight: 80, mx: 3, my: 1 }}
+          variant='outlined'
+          size='large'
+          color='secondary'
           onClick={() => {
             Router.push('/showProjects');
           }}
         >
-          <Typography sx={{ fontSize: '1.4rem' }} variant='body2'>
-            Open saved project
-          </Typography>
-          <FileOpenIcon sx={{ fontSize: '2.4rem', mt: 2 }} />
-        </Box>
-      </Box>
+          Open saved project <FileOpenIcon sx={{ fontSize: '2rem', ml: 1 }} />
+        </Button>
+      </Paper>
     </Container>
   );
 };
