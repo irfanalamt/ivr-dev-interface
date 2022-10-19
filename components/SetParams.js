@@ -5,6 +5,7 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
   Button,
+  Chip,
   List,
   ListItem,
   MenuItem,
@@ -879,69 +880,73 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
     }
   }
   return (
-    <>
-      <List sx={{ minWidth: 350 }}>
-        <ListItem>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='contained'
-              color='error'
-              sx={{ height: 30 }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-              size='small'
-              variant='contained'
-              color='success'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 20 }} />
-            </Button>
-          </Tooltip>
-        </ListItem>
-        <ListItem>
-          <Typography
-            sx={{
-              marginX: 'auto',
-              marginY: 1,
-              boxShadow: 1,
-              paddingX: 3,
-              paddingY: 1,
-              backgroundColor: '#e91e63',
-              borderRadius: 1,
-            }}
-            variant='h6'
-          >
-            Set Params
-          </Typography>
-        </ListItem>
-        <ListItem sx={{ mt: 1 }}>
-          <Typography sx={{ mx: 1, width: '35%' }} variant='h6'>
-            Name:
-          </Typography>
-          <TextField
-            sx={{ width: '50%', mr: 'auto' }}
-            value={shapeName}
-            onChange={(e) => {
-              setShapeName(e.target.value);
-              handleValidation(e, 'menuId', 'object');
-            }}
-            helperText={errorObj.menuId}
-            error={errorObj.menuId}
+    <List sx={{ minWidth: 350 }}>
+      <ListItem>
+        <Tooltip title='CLOSE'>
+          <Button
             size='small'
-          />
-        </ListItem>
+            variant='outlined'
+            color='error'
+            sx={{ height: 30 }}
+            onClick={() => {
+              shape.setSelected(false);
+              handleCloseDrawer();
+            }}
+          >
+            <CloseRoundedIcon sx={{ fontSize: 21 }} />
+          </Button>
+        </Tooltip>
+        <Tooltip title='SAVE'>
+          <Button
+            sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
+            size='small'
+            variant='outlined'
+            color='success'
+            onClick={saveUserValues}
+          >
+            <SaveRoundedIcon sx={{ fontSize: 20 }} />
+          </Button>
+        </Tooltip>
+      </ListItem>
+      <ListItem>
+        {/* <Typography
+          sx={{
+            marginX: 'auto',
+            marginY: 1,
+            boxShadow: 1,
+            paddingX: 3,
+            paddingY: 1,
+            backgroundColor: '#e91e63',
+            borderRadius: 1,
+          }}
+          variant='h6'
+        >
+          Set Params
+        </Typography> */}
+        <Chip
+          sx={{ backgroundColor: '#e91e63', mx: 'auto', px: 2, py: 3 }}
+          label={<Typography variant='h6'>Set Params</Typography>}
+        />
+      </ListItem>
+      <ListItem sx={{ mt: 1 }}>
+        <Typography sx={{ mx: 1, width: '35%' }} variant='h6'>
+          Name:
+        </Typography>
+        <TextField
+          sx={{ width: '50%', mr: 'auto' }}
+          value={shapeName}
+          onChange={(e) => {
+            setShapeName(e.target.value);
+            handleValidation(e, 'menuId', 'object');
+          }}
+          helperText={errorObj.menuId}
+          error={errorObj.menuId}
+          size='small'
+        />
+      </ListItem>
 
-        <ListItem sx={{ my: 2 }}>
+      <ListItem sx={{ my: 2 }}>
+        <Tooltip title='parameter type:'>
           <Select
             sx={{ minWidth: '35%' }}
             value={paramSelected}
@@ -964,26 +969,23 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
                   </MenuItem>
                 ))}
           </Select>
-          <Tooltip title='Add parameter' placement='top-start'>
-            <AddCircleOutlineRoundedIcon
-              sx={{
-                mx: 1,
-                ml: 3,
-                borderRadius: 1,
-                boxShadow: 1,
-                width: 28,
-                height: 28,
-              }}
-              color='success'
-              onClick={handleAddParameter}
-            />
-          </Tooltip>
-        </ListItem>
-        {/* <pre>{JSON.stringify(paramSelectedList, null, 2)}</pre>
+        </Tooltip>
+        <Tooltip title='Add parameter'>
+          <Button
+            sx={{ ml: 4 }}
+            variant='contained'
+            color='success'
+            size='small'
+            onClick={handleAddParameter}
+          >
+            <AddCircleOutlineRoundedIcon />
+          </Button>
+        </Tooltip>
+      </ListItem>
+      {/* <pre>{JSON.stringify(paramSelectedList, null, 2)}</pre>
         <pre>{JSON.stringify(menuObj, null, 2)}</pre> */}
-        {paramSelectedList.map((el, i) => addParamsElements(el, i))}
-      </List>
-    </>
+      {paramSelectedList.map((el, i) => addParamsElements(el, i))}
+    </List>
   );
 };
 
