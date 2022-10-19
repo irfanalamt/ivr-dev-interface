@@ -1,10 +1,12 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
   Chip,
   Container,
   Paper,
+  Snackbar,
   Typography,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
@@ -12,9 +14,11 @@ import FileOpenIcon from '@mui/icons-material/FileOpen';
 import NoteAddIcon from '@mui/icons-material/NoteAdd';
 import { useSession } from 'next-auth/react';
 import Router from 'next/router';
+import { useState } from 'react';
 
 const Menu = () => {
   const { status, data } = useSession();
+  const [openToast, setOpenToast] = useState(false);
 
   return (
     <Container>
@@ -79,12 +83,30 @@ const Menu = () => {
           size='large'
           color='secondary'
           onClick={() => {
-            Router.push('/showProjects');
+            if (status === 'authenticated') {
+              Router.push('/showProjects');
+            } else {
+              setOpenToast(true);
+            }
           }}
         >
           Open saved project <FileOpenIcon sx={{ fontSize: '2rem', ml: 1 }} />
         </Button>
       </Paper>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={openToast}
+        autoHideDuration={6000}
+        onClose={() => setOpenToast(false)}
+      >
+        <Alert
+          onClose={() => setOpenToast(false)}
+          severity='error'
+          sx={{ width: '100%', fontSize: '0.9rem' }}
+        >
+          Please login to access saved projects.
+        </Alert>
+      </Snackbar>
     </Container>
   );
 };
