@@ -2,8 +2,12 @@ import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
+import ArchitectureIcon from '@mui/icons-material/Architecture';
+
 import {
   Alert,
+  Avatar,
   Box,
   Button,
   Chip,
@@ -72,32 +76,32 @@ const CanvasComponent = () => {
     context1.strokeStyle = 'black';
     context1.lineWidth = 3;
     // Initialize palette shapes; add to palette group
-    const palletPentagon = new Shape(70, 115, 40, 30, 'pentagon', '#880e4f');
-    const palletRectangle = new Shape(70, 165, 40, 30, 'rectangle', '#bf360c');
-    const palletCircle = new Shape(70, 220, 40, 40, 'circle', '#0d47a1');
-    const palletHexagon = new Shape(70, 275, 50, 30, 'hexagon', '#004d40');
+    const palletPentagon = new Shape(55, 155, 30, 25, 'pentagon', '#880e4f');
+    const palletRectangle = new Shape(55, 205, 30, 25, 'rectangle', '#bf360c');
+    const palletCircle = new Shape(55, 255, 30, 30, 'circle', '#0d47a1');
+    const palletHexagon = new Shape(55, 305, 40, 25, 'hexagon', '#004d40');
     const palletParallelogram = new Shape(
-      70,
-      320,
-      36,
-      22,
+      55,
+      350,
+      26,
+      17,
       'parallelogram',
       '#4a148c'
     );
     const palletRoundedRectangle = new Shape(
-      70,
-      365,
-      50,
-      30,
+      55,
+      395,
+      40,
+      25,
       'roundedRectangle',
       '#827717'
     );
 
     const palletSmallCircle = new Shape(
-      70,
-      413,
-      30,
-      30,
+      55,
+      443,
+      20,
+      20,
       'smallCircle',
       '#827717'
     );
@@ -143,7 +147,7 @@ const CanvasComponent = () => {
     contextRef.current.strokeStyle = 'black';
     contextRef.current.lineWidth = 2;
     // draw bg rectangle
-    contextRef.current.strokeRect(30, 50, 80, 480);
+    contextRef.current.strokeRect(20, 80, 70, 470);
 
     // draw shapes and lines
     palletGroup.current
@@ -596,6 +600,77 @@ const CanvasComponent = () => {
 
   return (
     <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          my: 1,
+          backgroundColor: '#f9fbe7',
+          alignItems: 'center',
+          height: 50,
+          px: 2,
+          boxShadow: 1,
+        }}
+      >
+        <Avatar sx={{ backgroundColor: '#bbdefb' }}>
+          <ArchitectureIcon sx={{ fontSize: '2rem', color: 'black' }} />
+        </Avatar>
+
+        <Typography
+          sx={{ display: 'flex', alignItems: 'center', mx: 2 }}
+          variant='subtitle2'
+        >
+          <AccountCircleIcon sx={{ mr: 0.25, fontSize: '1.2rem' }} />
+          {status === 'authenticated' ? data.user.email : 'Guest User'}
+        </Typography>
+        <Box sx={{ ml: 'auto' }}>
+          <Tooltip title='SAVE'>
+            <Button
+              sx={{ zIndex: 6, mr: 1, backgroundColor: '#2196f3' }}
+              variant='contained'
+              size='small'
+              color='info'
+              onClick={() => {
+                const serializedShapes =
+                  stageGroup.current.getSerializedShapes();
+                localStorage.setItem('isExistingProject', true);
+                localStorage.setItem(
+                  'saved_project',
+                  JSON.stringify(serializedShapes)
+                );
+              }}
+              disabled={status !== 'authenticated'}
+            >
+              <SaveIcon sx={{ fontSize: '1.2rem' }} />
+            </Button>
+          </Tooltip>
+          <Tooltip title='SAVE AS'>
+            <Button
+              sx={{ zIndex: 6, mr: 1, backgroundColor: '#3f51b5' }}
+              variant='contained'
+              size='small'
+              color='info'
+              onClick={() => {
+                setOpenProjectDialog(true);
+              }}
+              disabled={status !== 'authenticated'}
+            >
+              <SaveAsIcon sx={{ fontSize: '1.2rem' }} />
+            </Button>
+          </Tooltip>
+
+          <Tooltip title='GENERATE CONFIG'>
+            <Button
+              sx={{ zIndex: 6, backgroundColor: '#4caf50' }}
+              size='small'
+              color='success'
+              variant='contained'
+              onClick={() => setOpenDialog(true)}
+            >
+              <SaveAltIcon sx={{ fontSize: '1.2rem' }} />
+            </Button>
+          </Tooltip>
+        </Box>
+      </Box>
       <Typography
         sx={{
           mt: 2,
@@ -648,54 +723,13 @@ const CanvasComponent = () => {
         userVariables={userVariables.current}
         stageGroup={stageGroup.current}
       />
-      {status === 'authenticated' && (
-        <Box sx={{ position: 'absolute', top: 10, right: 15 }}>
-          <Chip label='Logged in 🟢' />
-          <Typography
-            sx={{ display: 'flex', alignItems: 'center', mt: 1 }}
-            variant='h6'
-          >
-            <AccountCircleIcon sx={{ mx: 0.5, fontSize: '1.8rem' }} />
-            {data.user.email}
-          </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Button
-              sx={{ mt: 2, zIndex: 5 }}
-              variant='contained'
-              size='small'
-              color='success'
-              onClick={() => {
-                const serializedShapes =
-                  stageGroup.current.getSerializedShapes();
-                localStorage.setItem('isExistingProject', true);
-                localStorage.setItem(
-                  'saved_project',
-                  JSON.stringify(serializedShapes)
-                );
-              }}
-            >
-              Save <SaveIcon sx={{ ml: 0.5 }} />
-            </Button>
-            <Button
-              sx={{ mt: 2, zIndex: 5 }}
-              variant='contained'
-              size='small'
-              color='success'
-              onClick={() => {
-                setOpenProjectDialog(true);
-              }}
-            >
-              Save as <SaveAsIcon sx={{ ml: 0.5 }} />
-            </Button>
-          </Box>
-        </Box>
-      )}
+
       <Tooltip title='connect shapes' placement='right-end'>
         <ArrowRightAltIcon
           sx={{
             position: 'absolute',
-            left: 32,
-            top: 440,
+            left: 18,
+            top: 455,
             zIndex: 5,
             width: 75,
             fontSize: isConnecting === 0 ? '3rem' : '3.5rem',
@@ -712,8 +746,8 @@ const CanvasComponent = () => {
         <DeleteIcon
           sx={{
             position: 'absolute',
-            left: 32,
-            top: 481,
+            left: 18,
+            top: 501,
             zIndex: 5,
             width: 75,
             color: isDeleting ? '#2e7d32' : '#37474f',
@@ -730,39 +764,20 @@ const CanvasComponent = () => {
         />
       </Tooltip>
       <Tooltip title='InitVariables' placement='right-end'>
-        <Button
+        <SettingsApplicationsIcon
           sx={{
             position: 'absolute',
-            left: 32,
-            top: 55,
+            left: 18,
+            top: 95,
             zIndex: 5,
             width: 75,
+            fontSize: '2rem',
+            color: '#37474f',
           }}
-          size='small'
-          variant='outlined'
-          color='info'
           onClick={() => setIsOpenVars(true)}
-        >
-          Variables
-        </Button>
+        />
       </Tooltip>
-      <Tooltip title='generate config file' placement='right-end'>
-        <Button
-          sx={{
-            position: 'absolute',
-            bottom: 25,
-            left: 25,
-            zIndex: 5,
-            backgroundColor: '#8bc34a',
-          }}
-          variant='contained'
-          size='small'
-          onClick={() => setOpenDialog(true)}
-        >
-          Generate config
-          <SaveAltIcon sx={{ ml: 1, fontSize: '1.2rem' }} />
-        </Button>
-      </Tooltip>
+
       <SaveDialog
         open={openDialog}
         setOpen={setOpenDialog}
