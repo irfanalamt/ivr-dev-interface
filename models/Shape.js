@@ -141,11 +141,9 @@ class Shape {
     }
 
     ctx.fillStyle = '#b2dfdb';
-    ctx.strokeStyle = '#00796b';
     ctx.lineWidth = 2;
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
     ctx.fill();
-    ctx.stroke();
     ctx.lineWidth = 1;
     ctx.font = '25px sans-serif';
     ctx.fillStyle = 'black';
@@ -180,17 +178,10 @@ class Shape {
       );
     } else {
       ctx.fillStyle = this.style;
-      ctx.strokeStyle = '#ff5722';
+
       ctx.lineWidth = 2;
 
       ctx.fillRect(
-        this.x - this.width / 2,
-        this.y - this.height / 2,
-        this.width,
-        this.height
-      );
-
-      ctx.strokeRect(
         this.x - this.width / 2,
         this.y - this.height / 2,
         this.width,
@@ -220,26 +211,12 @@ class Shape {
     }
 
     ctx.fillStyle = this.style;
-    ctx.strokeStyle = '#2196f3';
     ctx.lineWidth = 2;
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
     ctx.fill();
-    ctx.stroke();
   }
 
   drawPentagon(ctx) {
-    // ctx.beginPath();
-    // ctx.translate(this.x, this.y);
-
-    // ctx.lineTo(this.width * 0.5, -10);
-    // ctx.lineTo(this.width * 0.5, this.height * 0.5);
-    // ctx.lineTo(-this.width * 0.5, this.height * 0.5);
-    // ctx.lineTo(-this.width * 0.5, -10);
-    // ctx.lineTo(0, -this.height * 0.5);
-
-    // ctx.closePath();
-    // ctx.setTransform(1, 0, 0, 1, 0, 0);
-
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -268,10 +245,8 @@ class Shape {
     }
 
     ctx.fillStyle = this.style;
-    ctx.strokeStyle = '#e91e63';
     ctx.lineWidth = 2;
     ctx.fill();
-    ctx.stroke();
   }
 
   drawParallelogram(ctx) {
@@ -299,10 +274,8 @@ class Shape {
       return;
     }
     ctx.fillStyle = this.style;
-    ctx.strokeStyle = '#9c27b0';
     ctx.lineWidth = 2;
     ctx.fill();
-    ctx.stroke();
   }
 
   drawHexagon(ctx) {
@@ -335,10 +308,8 @@ class Shape {
     }
 
     ctx.fillStyle = this.style;
-    ctx.strokeStyle = '#009688';
     ctx.lineWidth = 2;
     ctx.fill();
-    ctx.stroke();
   }
 
   drawRoundedRectangle(ctx) {
@@ -380,10 +351,8 @@ class Shape {
       return;
     }
     ctx.fillStyle = this.style;
-    ctx.strokeStyle = '#cddc39';
     ctx.lineWidth = 2;
     ctx.fill();
-    ctx.stroke();
   }
 
   getEntryPoint() {

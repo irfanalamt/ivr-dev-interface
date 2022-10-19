@@ -100,8 +100,8 @@ const CanvasComponent = () => {
     const palletSmallCircle = new Shape(
       55,
       443,
-      20,
-      20,
+      22,
+      22,
       'smallCircle',
       '#827717'
     );
