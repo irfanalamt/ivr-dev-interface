@@ -2,6 +2,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Button,
+  Chip,
   List,
   ListItem,
   TextField,
@@ -77,102 +78,87 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
   }
 
   return (
-    <>
-      <List>
-        <ListItem>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='contained'
-              color='error'
-              sx={{ height: 30 }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-              size='small'
-              variant='contained'
-              color='success'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 20 }} />
-            </Button>
-          </Tooltip>
-        </ListItem>
-        <ListItem>
-          <Typography
-            sx={{
-              marginX: 'auto',
-              marginY: 1,
-              boxShadow: 1,
-              paddingX: 3,
-              paddingY: 1,
-              backgroundColor: '#ff5722',
-              borderRadius: 1,
-            }}
-            variant='h6'
-          >
-            RunScript
-          </Typography>
-        </ListItem>
-        <ListItem sx={{ my: 2 }}>
-          <Typography
-            variant='button'
-            sx={{ marginX: 1, fontSize: 16, width: '35%' }}
-          >
-            Name:
-          </Typography>
-          <TextField
-            value={shapeName || ''}
-            onChange={(e) => {
-              setShapeName(e.target.value);
-              handleValidation(e, 'menuId', 'object');
-            }}
-            sx={{
-              mx: 0.5,
-            }}
-            helperText={errorObj.menuId}
-            error={errorObj.menuId}
-            size='small'
-          />
-        </ListItem>
-
-        <ListItem>
-          <TextField
-            sx={{
-              mx: 'auto',
-              mt: 2,
-              backgroundColor: isFunctionError && '#ffebee',
-            }}
-            label={isFunctionError ? 'code invalid' : 'Function code'}
-            value={functionString}
-            onChange={(e) => {
-              setFunctionString(e.target.value);
-            }}
-            placeholder='Enter JS code'
-            minRows={9}
-            multiline
-          />
-        </ListItem>
-        <ListItem>
+    <List>
+      <ListItem>
+        <Tooltip title='CLOSE'>
           <Button
-            sx={{ mx: 'auto' }}
+            size='small'
+            variant='outlined'
+            color='error'
+            sx={{ height: 30 }}
+            onClick={() => {
+              shape.setSelected(false);
+              handleCloseDrawer();
+            }}
+          >
+            <CloseRoundedIcon sx={{ fontSize: 21 }} />
+          </Button>
+        </Tooltip>
+        <Tooltip title='SAVE'>
+          <Button
+            sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
+            size='small'
             variant='outlined'
             color='success'
-            onClick={handleFunctionValidation}
+            onClick={saveUserValues}
           >
-            Validate
+            <SaveRoundedIcon sx={{ fontSize: 20 }} />
           </Button>
-        </ListItem>
-      </List>
-    </>
+        </Tooltip>
+      </ListItem>
+      <ListItem>
+        <Chip
+          sx={{ backgroundColor: '#ff5722', mx: 'auto', px: 2, py: 3 }}
+          label={<Typography variant='h6'>RunScript</Typography>}
+        />
+      </ListItem>
+      <ListItem sx={{ my: 2 }}>
+        <Typography variant='button' sx={{ fontSize: 16, width: '35%' }}>
+          Name:
+        </Typography>
+        <TextField
+          value={shapeName || ''}
+          onChange={(e) => {
+            setShapeName(e.target.value);
+            handleValidation(e, 'menuId', 'object');
+          }}
+          sx={{
+            mx: 0.5,
+          }}
+          helperText={errorObj.menuId}
+          error={errorObj.menuId}
+          size='small'
+        />
+      </ListItem>
+
+      <ListItem>
+        <TextField
+          sx={{
+            mx: 'auto',
+            mt: 2,
+            backgroundColor: isFunctionError && '#ffebee',
+          }}
+          label={isFunctionError ? 'code invalid' : 'Function code'}
+          value={functionString}
+          onChange={(e) => {
+            setFunctionString(e.target.value);
+          }}
+          placeholder='Enter JS code'
+          minRows={9}
+          multiline
+        />
+      </ListItem>
+      <ListItem>
+        <Button
+          sx={{ mx: 'auto' }}
+          variant='contained'
+          color='success'
+          onClick={handleFunctionValidation}
+        >
+          Validate
+        </Button>
+      </ListItem>
+    </List>
   );
 };
 

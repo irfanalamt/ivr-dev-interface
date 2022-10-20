@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Chip,
+  IconButton,
   List,
   ListItem,
   MenuItem,
@@ -929,7 +930,7 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
         />
       </ListItem>
       <ListItem sx={{ mt: 1 }}>
-        <Typography sx={{ mx: 1, width: '35%' }} variant='h6'>
+        <Typography sx={{ width: '35%' }} variant='h6'>
           Name:
         </Typography>
         <TextField
@@ -971,7 +972,7 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
           </Select>
         </Tooltip>
         <Tooltip title='Add parameter'>
-          <Button
+          {/* <Button
             sx={{ ml: 4 }}
             variant='contained'
             color='success'
@@ -979,7 +980,10 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
             onClick={handleAddParameter}
           >
             <AddCircleOutlineRoundedIcon />
-          </Button>
+          </Button> */}
+          <IconButton sx={{ mx: 1 }} size='large' color='success'>
+            <AddCircleOutlineRoundedIcon />
+          </IconButton>
         </Tooltip>
       </ListItem>
       {/* <pre>{JSON.stringify(paramSelectedList, null, 2)}</pre>

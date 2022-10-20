@@ -10,6 +10,8 @@ import {
   Box,
   Select,
   MenuItem,
+  Chip,
+  IconButton,
 } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
@@ -143,7 +145,7 @@ this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
           <Tooltip title='CLOSE'>
             <Button
               size='small'
-              variant='contained'
+              variant='outlined'
               color='error'
               sx={{ height: 30 }}
               onClick={() => {
@@ -158,7 +160,7 @@ this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
             <Button
               sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
               size='small'
-              variant='contained'
+              variant='outlined'
               color='success'
               onClick={saveUserValues}
             >
@@ -167,26 +169,13 @@ this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
           </Tooltip>
         </ListItem>
         <ListItem>
-          <Typography
-            sx={{
-              marginX: 'auto',
-              marginY: 1,
-              boxShadow: 1,
-              paddingX: 3,
-              paddingY: 1,
-              backgroundColor: '#b39ddb',
-              borderRadius: 1,
-            }}
-            variant='h6'
-          >
-            Get Digits
-          </Typography>
+          <Chip
+            sx={{ backgroundColor: '#b39ddb', mx: 'auto', px: 2, py: 3 }}
+            label={<Typography variant='h6'>Get Digits</Typography>}
+          />
         </ListItem>
         <ListItem sx={{ marginTop: 1 }}>
-          <Typography
-            variant='button'
-            sx={{ marginX: 'auto', fontSize: 16, width: '40%' }}
-          >
+          <Typography variant='button' sx={{ fontSize: 16, width: '40%' }}>
             Name:
           </Typography>
           <TextField
@@ -207,7 +196,7 @@ this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
           ></Typography>
         </ListItem>
         <ListItem>
-          <Typography variant='button' sx={{ marginX: 1, width: '40%' }}>
+          <Typography variant='button' sx={{ width: '40%' }}>
             Result Variable:
           </Typography>
 
@@ -250,54 +239,43 @@ this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
         </ListItem>
         <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
           <ListItem>
-            <Typography variant='subtitle1'>Select object type:</Typography>
-            <Select
-              value={msgObjType}
-              onChange={(e) => {
-                setMsgObjType(e.target.value);
-              }}
-              sx={{ marginX: 2 }}
-            >
-              <MenuItem value='prompt'>Prompt</MenuItem>
-              <MenuItem value='number'>Number</MenuItem>
-              <MenuItem value='ordinal'>Ordinal</MenuItem>
-              <MenuItem value='amount'>Amount</MenuItem>
-              <MenuItem value='digit'>Digit</MenuItem>
-              <MenuItem value='date'>Date</MenuItem>
-              <MenuItem value='day'>Day</MenuItem>
-              <MenuItem value='month'>Month</MenuItem>
-              <MenuItem value='time'>Time</MenuItem>
-            </Select>
-            <Tooltip title='Add'>
-              <AddBoxRoundedIcon
-                sx={{
-                  color: '#69f0ae',
-                  marginX: 0.5,
-                  border: '1.2px solid black',
-                  width: 30,
-                  height: 30,
-                  padding: 0.2,
-                  borderRadius: 1,
+            <Tooltip title='object type:'>
+              <Select
+                sx={{ width: '40%' }}
+                value={msgObjType}
+                onChange={(e) => {
+                  setMsgObjType(e.target.value);
                 }}
+                size='small'
+              >
+                <MenuItem value='prompt'>Prompt</MenuItem>
+                <MenuItem value='number'>Number</MenuItem>
+                <MenuItem value='ordinal'>Ordinal</MenuItem>
+                <MenuItem value='amount'>Amount</MenuItem>
+                <MenuItem value='digit'>Digit</MenuItem>
+                <MenuItem value='date'>Date</MenuItem>
+                <MenuItem value='day'>Day</MenuItem>
+                <MenuItem value='month'>Month</MenuItem>
+                <MenuItem value='time'>Time</MenuItem>
+              </Select>
+            </Tooltip>
+            <Tooltip title='Add'>
+              <IconButton
                 onClick={() => {
                   setMsgObjType('prompt');
                   addInput();
                 }}
-              />
+                sx={{ ml: 2 }}
+                color='success'
+                size='large'
+              >
+                <AddBoxRoundedIcon />
+              </IconButton>
             </Tooltip>
             <Tooltip title='Remove'>
-              <RemoveCircleRoundedIcon
-                sx={{
-                  color: '#ff5252',
-                  marginX: 0.5,
-                  border: '1.2px solid black',
-                  width: 30,
-                  height: 30,
-                  padding: 0.2,
-                  borderRadius: 1,
-                }}
-                onClick={removeInput}
-              />
+              <IconButton color='error' size='large' onClick={removeInput}>
+                <RemoveCircleRoundedIcon />
+              </IconButton>
             </Tooltip>
           </ListItem>
           {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
@@ -389,7 +367,7 @@ this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
           <ListItem>
             <Select
               size='small'
-              sx={{ marginX: 2, minWidth: '40%' }}
+              sx={{ minWidth: '40%' }}
               value={paramsObjType}
               onChange={(e) => {
                 setParamsObjType(e.target.value);
@@ -415,34 +393,23 @@ this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
               }
             </Select>
             <Tooltip title='Add'>
-              <AddBoxRoundedIcon
-                sx={{
-                  color: '#69f0ae',
-                  marginLeft: 'auto',
-                  marginRight: 0.5,
-                  border: '1.2px solid black',
-                  width: 25,
-                  height: 25,
-                  padding: 0.2,
-                  borderRadius: 1,
-                }}
+              <IconButton
                 onClick={addParamsInput}
-              />
+                sx={{ ml: 2 }}
+                color='success'
+                size='large'
+              >
+                <AddBoxRoundedIcon />
+              </IconButton>
             </Tooltip>
             <Tooltip title='Remove'>
-              <RemoveCircleRoundedIcon
-                sx={{
-                  color: '#ff5252',
-                  marginLeft: 0.5,
-                  marginRight: 2,
-                  border: '1.2px solid black',
-                  width: 25,
-                  height: 25,
-                  padding: 0.2,
-                  borderRadius: 1,
-                }}
+              <IconButton
+                color='error'
+                size='large'
                 onClick={removeParamsInput}
-              />
+              >
+                <RemoveCircleRoundedIcon />
+              </IconButton>
             </Tooltip>
           </ListItem>
           <List>

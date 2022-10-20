@@ -7,7 +7,9 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
   Button,
+  Chip,
   Divider,
+  IconButton,
   List,
   ListItem,
   MenuItem,
@@ -19,7 +21,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { checkValidity } from '../src/helpers';
 
 const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
@@ -569,7 +571,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
           <Tooltip title='CLOSE'>
             <Button
               size='small'
-              variant='contained'
+              variant='outlined'
               color='error'
               sx={{ height: 30 }}
               onClick={() => {
@@ -584,7 +586,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             <Button
               sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
               size='small'
-              variant='contained'
+              variant='outlined'
               color='success'
               onClick={saveUserValues}
             >
@@ -593,26 +595,13 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
           </Tooltip>
         </ListItem>
         <ListItem>
-          <Typography
-            sx={{
-              marginX: 'auto',
-              marginY: 1,
-              boxShadow: 1,
-              paddingX: 3,
-              paddingY: 1,
-              backgroundColor: '#009688',
-              borderRadius: 1,
-            }}
-            variant='h6'
-          >
-            Play Menu
-          </Typography>
+          <Chip
+            sx={{ backgroundColor: '#009688', mx: 'auto', px: 2, py: 3 }}
+            label={<Typography variant='h6'>Play Menu</Typography>}
+          />
         </ListItem>
         <ListItem sx={{ my: 2 }}>
-          <Typography
-            variant='button'
-            sx={{ marginX: 1, fontSize: 16, width: '35%' }}
-          >
+          <Typography variant='button' sx={{ fontSize: 16, width: '35%' }}>
             Name:
           </Typography>
           <TextField
@@ -648,7 +637,6 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             <Typography
               variant='subtitle2'
               sx={{
-                marginX: 1,
                 fontSize: 16,
                 width: '35%',
                 fontWeight: 405,
@@ -670,7 +658,6 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             <Typography
               variant='subtitle2'
               sx={{
-                marginX: 1,
                 fontSize: 16,
                 width: '35%',
                 borderRadius: 0.5,
@@ -690,7 +677,6 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             <Typography
               variant='subtitle2'
               sx={{
-                marginX: 1,
                 fontSize: 16,
                 width: '35%',
                 borderRadius: 0.5,
@@ -744,31 +730,23 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
                   ))}
             </Select>
             <Tooltip title='Add parameter'>
-              <AddCircleOutlineRoundedIcon
-                sx={{
-                  mx: 1,
-                  ml: 2,
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 28,
-                  height: 28,
-                }}
+              <IconButton
+                sx={{ ml: 2 }}
                 color='success'
+                size='large'
                 onClick={handleAddParameter}
-              />
+              >
+                <AddCircleOutlineRoundedIcon />
+              </IconButton>
             </Tooltip>
             <Tooltip title='Remove parameter'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  mx: 0.5,
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 28,
-                  height: 28,
-                }}
+              <IconButton
                 color='error'
+                size='large'
                 onClick={handleRemoveParameter}
-              />
+              >
+                <RemoveCircleOutlineRoundedIcon />
+              </IconButton>
             </Tooltip>
           </ListItem>
           <List>

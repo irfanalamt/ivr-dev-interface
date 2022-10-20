@@ -5,6 +5,8 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
   Button,
+  Chip,
+  IconButton,
   List,
   ListItem,
   MenuItem,
@@ -106,12 +108,12 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
 
   return (
     <>
-      <List>
+      <List sx={{ minWidth: 350 }}>
         <ListItem>
           <Tooltip title='CLOSE'>
             <Button
               size='small'
-              variant='contained'
+              variant='outlined'
               color='error'
               sx={{ height: 30 }}
               onClick={() => {
@@ -126,7 +128,7 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
             <Button
               sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
               size='small'
-              variant='contained'
+              variant='outlined'
               color='success'
               onClick={saveUserValues}
             >
@@ -135,7 +137,7 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
           </Tooltip>
         </ListItem>
         <ListItem>
-          <Typography
+          {/* <Typography
             sx={{
               marginX: 'auto',
               marginY: 1,
@@ -148,10 +150,14 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
             variant='h6'
           >
             Play Message
-          </Typography>
+          </Typography> */}
+          <Chip
+            sx={{ backgroundColor: '#f0f4c3', mx: 'auto', px: 2, py: 3 }}
+            label={<Typography variant='h6'>Play Message</Typography>}
+          />
         </ListItem>
         <ListItem sx={{ marginTop: 1 }}>
-          <Typography variant='button' sx={{ marginX: 1, fontSize: 15 }}>
+          <Typography variant='button' sx={{ fontSize: 15, width: '35%' }}>
             Name:
           </Typography>
           <TextField
@@ -192,54 +198,43 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
       </List>
       <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
         <ListItem>
-          <Typography variant='subtitle1'>Select object type:</Typography>
-          <Select
-            value={msgObjType}
-            onChange={(e) => {
-              setMsgObjType(e.target.value);
-            }}
-            sx={{ marginX: 2 }}
-          >
-            <MenuItem value='prompt'>Prompt</MenuItem>
-            <MenuItem value='number'>Number</MenuItem>
-            <MenuItem value='ordinal'>Ordinal</MenuItem>
-            <MenuItem value='amount'>Amount</MenuItem>
-            <MenuItem value='digit'>Digit</MenuItem>
-            <MenuItem value='date'>Date</MenuItem>
-            <MenuItem value='day'>Day</MenuItem>
-            <MenuItem value='month'>Month</MenuItem>
-            <MenuItem value='time'>Time</MenuItem>
-          </Select>
-          <Tooltip title='Add'>
-            <AddBoxRoundedIcon
-              sx={{
-                color: '#69f0ae',
-                marginX: 0.5,
-                border: '1.2px solid black',
-                width: 30,
-                height: 30,
-                padding: 0.2,
-                borderRadius: 1,
+          <Tooltip title='object type:'>
+            <Select
+              value={msgObjType}
+              onChange={(e) => {
+                setMsgObjType(e.target.value);
               }}
+              sx={{ width: '35%' }}
+              size='small'
+            >
+              <MenuItem value='prompt'>Prompt</MenuItem>
+              <MenuItem value='number'>Number</MenuItem>
+              <MenuItem value='ordinal'>Ordinal</MenuItem>
+              <MenuItem value='amount'>Amount</MenuItem>
+              <MenuItem value='digit'>Digit</MenuItem>
+              <MenuItem value='date'>Date</MenuItem>
+              <MenuItem value='day'>Day</MenuItem>
+              <MenuItem value='month'>Month</MenuItem>
+              <MenuItem value='time'>Time</MenuItem>
+            </Select>
+          </Tooltip>
+          <Tooltip title='Add'>
+            <IconButton
+              size='large'
+              color='success'
               onClick={() => {
                 addInput();
                 setMsgObjType('prompt');
               }}
-            />
+              sx={{ ml: 2 }}
+            >
+              <AddBoxRoundedIcon />
+            </IconButton>
           </Tooltip>
-          <Tooltip title='Remove'>
-            <RemoveCircleRoundedIcon
-              sx={{
-                color: '#ff5252',
-                marginX: 0.5,
-                border: '1.2px solid black',
-                width: 30,
-                height: 30,
-                padding: 0.2,
-                borderRadius: 1,
-              }}
-              onClick={removeInput}
-            />
+          <Tooltip size='large' color='error' title='Remove'>
+            <IconButton onClick={removeInput}>
+              <RemoveCircleRoundedIcon />
+            </IconButton>
           </Tooltip>
         </ListItem>
         {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}

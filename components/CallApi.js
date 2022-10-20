@@ -1,6 +1,8 @@
 import {
   Button,
+  Chip,
   Divider,
+  IconButton,
   List,
   ListItem,
   MenuItem,
@@ -109,7 +111,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
           <Tooltip title='CLOSE'>
             <Button
               size='small'
-              variant='contained'
+              variant='outlined'
               color='error'
               sx={{ height: 30 }}
               onClick={() => {
@@ -124,7 +126,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
             <Button
               sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
               size='small'
-              variant='contained'
+              variant='outlined'
               color='success'
               onClick={saveUserValues}
             >
@@ -133,26 +135,13 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
           </Tooltip>
         </ListItem>
         <ListItem>
-          <Typography
-            sx={{
-              marginX: 'auto',
-              marginY: 1,
-              boxShadow: 1,
-              paddingX: 3,
-              paddingY: 1,
-              backgroundColor: '#2196f3',
-              borderRadius: 1,
-            }}
-            variant='h6'
-          >
-            Call API
-          </Typography>
+          <Chip
+            sx={{ backgroundColor: '#2196f3', mx: 'auto', px: 2, py: 3 }}
+            label={<Typography variant='h6'>Call API</Typography>}
+          />
         </ListItem>
         <ListItem sx={{ mb: 3 }}>
-          <Typography
-            variant='button'
-            sx={{ marginX: 1, fontSize: 16, width: '35%' }}
-          >
+          <Typography variant='button' sx={{ fontSize: 16, width: '35%' }}>
             Name:
           </Typography>
           <TextField
@@ -184,28 +173,20 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
         </ListItem>
         <Divider sx={{ my: 1 }} />
         <ListItem>
-          <Typography sx={{ fontSize: '1rem', mr: 1 }} variant='h6'>
+          <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
             Input Variables:
           </Typography>
-
-          <Button
-            sx={{ p: 0, mx: 0.5, height: 30, width: 30 }}
-            onClick={addInput}
-            variant='outlined'
-            size='small'
+          <IconButton
+            sx={{ mr: 1 }}
+            size='large'
             color='success'
+            onClick={addInput}
           >
             <AddRoundedIcon />
-          </Button>
-          <Button
-            sx={{ p: 0, mx: 0.5, height: 30, width: 30 }}
-            onClick={removeInput}
-            variant='outlined'
-            size='small'
-            color='error'
-          >
+          </IconButton>
+          <IconButton size='large' color='error' onClick={removeInput}>
             <RemoveRoundedIcon />
-          </Button>
+          </IconButton>
         </ListItem>
         <ListItem>
           {inputArr?.map((item, i) => {
@@ -232,28 +213,21 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
         </ListItem>
         <Divider sx={{ my: 1 }} />
         <ListItem>
-          <Typography sx={{ fontSize: '1rem', mr: 1 }} variant='h6'>
+          <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
             Output Variables:
           </Typography>
 
-          <Button
-            sx={{ p: 0, mx: 0.5, height: 30, width: 30 }}
-            onClick={addOutput}
-            variant='outlined'
-            size='small'
+          <IconButton
+            sx={{ mr: 1 }}
+            size='large'
             color='success'
+            onClick={addOutput}
           >
             <AddRoundedIcon />
-          </Button>
-          <Button
-            sx={{ p: 0, mx: 0.5, height: 30, width: 30 }}
-            onClick={removeOutput}
-            variant='outlined'
-            size='small'
-            color='error'
-          >
+          </IconButton>
+          <IconButton size='large' color='error' onClick={removeOutput}>
             <RemoveRoundedIcon />
-          </Button>
+          </IconButton>
         </ListItem>
         <ListItem>
           {outputArr?.map((item, i) => {
@@ -285,6 +259,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
             onClick={handleApiCall}
             sx={{ mx: 'auto' }}
             variant='contained'
+            size='small'
           >
             <SendRoundedIcon />
           </Button>
