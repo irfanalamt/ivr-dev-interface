@@ -5,6 +5,7 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Button,
   Chip,
+  IconButton,
   List,
   ListItem,
   MenuItem,
@@ -92,33 +93,26 @@ const InitVariables = ({ handleCloseDrawer, userVariables = [] }) => {
           </Select>
         </Tooltip>
         <Tooltip title='Add'>
-          <Button
-            sx={{ backgroundColor: '#69f0ae', ml: 4 }}
-            variant='contained'
-            size='small'
+          <IconButton
+            sx={{ ml: 2 }}
             color='success'
+            size='large'
             onClick={addVar}
           >
             <AddBoxRoundedIcon />
-          </Button>
+          </IconButton>
         </Tooltip>
         <Tooltip title='Remove'>
-          <Button
-            sx={{ backgroundColor: '#ff5252', ml: 2 }}
-            variant='contained'
-            size='small'
-            color='error'
-            onClick={removeVar}
-          >
+          <IconButton color='error' size='large' onClick={removeVar}>
             <RemoveCircleRoundedIcon />
-          </Button>
+          </IconButton>
         </Tooltip>
       </ListItem>
       {/* <pre>{JSON.stringify(varObj, undefined, 2)}</pre> */}
       <List>
-        {varObj?.map((el, i) => {
-          return addVariableElements(el.type, i, varObj, setVarObj);
-        })}
+        {varObj?.map((el, i) =>
+          addVariableElements(el.type, i, varObj, setVarObj)
+        )}
       </List>
       <ListItem>
         <Typography
