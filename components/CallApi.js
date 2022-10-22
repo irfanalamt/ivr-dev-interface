@@ -141,7 +141,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
             label={<Typography variant='h6'>Call API</Typography>}
           />
         </ListItem>
-        <ListItem sx={{ mb: 3 }}>
+        <ListItem sx={{ mb: 2 }}>
           <Typography variant='button' sx={{ fontSize: 16, width: '35%' }}>
             Name:
           </Typography>

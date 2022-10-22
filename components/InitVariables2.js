@@ -35,6 +35,7 @@ const InitVariables = ({ handleCloseDrawer, userVariables = [] }) => {
       return newArr;
     });
   }
+
   function saveValues() {
     // remove variables with no name; save
     const filteredVarObj = varObj.filter((n) => n.name);
@@ -43,6 +44,7 @@ const InitVariables = ({ handleCloseDrawer, userVariables = [] }) => {
         userVariables.push(el);
       }
     });
+    console.log('userVariables:', userVariables);
   }
 
   return (

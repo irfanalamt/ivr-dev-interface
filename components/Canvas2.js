@@ -503,15 +503,27 @@ const CanvasComponent = () => {
   function generateConfigFile() {
     console.log('🕺🏻⚡', saveFileName.current, '.js');
 
-    let tempArr = stageGroup.current
+    let tempString1 = stageGroup.current
       .getShapes()
       .filter((el) => el.functionString)
-      .map((el) => el.functionString);
+      .map((el) => el.functionString)
+      .join(' ');
 
-    let tempString = tempArr.join(' ');
+    let tempString2 = generateInitVariablesJS();
 
-    console.log('tempString', tempString);
-    saveConfigFile(tempString);
+    console.log('tempString1', tempString1);
+    console.log('tempString2', tempString2);
+
+    saveConfigFile(tempString1 + tempString2);
+  }
+
+  function generateInitVariablesJS() {
+    let codeString = userVariables.current
+      .map((el) => `this.${el.name}${el.value ? `=${el.value};` : ';'}`)
+      .join('');
+
+    console.log('🚀 ~ generateJS ~ codeString', codeString);
+    return codeString;
   }
 
   function saveConfigFile(tempString) {
