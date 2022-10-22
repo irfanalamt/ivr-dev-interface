@@ -13,6 +13,7 @@ import {
   List,
   ListItem,
   MenuItem,
+  Paper,
   Select,
   Switch,
   Tab,
@@ -755,60 +756,70 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
         </Box>
         <Box id='tabPanel2' sx={{ display: tabValue == 1 ? 'block' : 'none' }}>
           <ListItem sx={{ mt: 2 }}>
-            <Typography
-              sx={{ width: '35%', fontSize: 17, fontWeight: 405 }}
-              variant='subtitle1'
-            >
-              Select Item
-            </Typography>
-            <Select
-              value={itemSelected}
-              onChange={(e) => {
-                setItemSelected(e.target.value);
+            <Paper
+              sx={{
+                width: '100%',
+                p: 2,
+                backgroundColor: '#f9fbe7',
+                display: 'flex',
+                alignItems: 'center',
               }}
-              sx={{ mx: 1 }}
-              size='small'
             >
-              {itemsObj.length > 0
-                ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*']
-                    .filter((el) => !itemsObj.some((e) => e.digit == el))
-                    .map((el, i) => (
+              <Typography
+                sx={{ width: '35%', fontSize: 17, fontWeight: 405 }}
+                variant='subtitle1'
+              >
+                Select Item
+              </Typography>
+              <Select
+                value={itemSelected}
+                onChange={(e) => {
+                  setItemSelected(e.target.value);
+                }}
+                sx={{ mx: 1 }}
+                size='small'
+              >
+                {itemsObj.length > 0
+                  ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*']
+                      .filter((el) => !itemsObj.some((e) => e.digit == el))
+                      .map((el, i) => (
+                        <MenuItem key={i} value={el}>
+                          {el}
+                        </MenuItem>
+                      ))
+                  : [
+                      '0',
+                      '1',
+                      '2',
+                      '3',
+                      '4',
+                      '5',
+                      '6',
+                      '7',
+                      '8',
+                      '9',
+                      '#',
+                      '*',
+                    ].map((el, i) => (
                       <MenuItem key={i} value={el}>
                         {el}
                       </MenuItem>
-                    ))
-                : [
-                    '0',
-                    '1',
-                    '2',
-                    '3',
-                    '4',
-                    '5',
-                    '6',
-                    '7',
-                    '8',
-                    '9',
-                    '#',
-                    '*',
-                  ].map((el, i) => (
-                    <MenuItem key={i} value={el}>
-                      {el}
-                    </MenuItem>
-                  ))}
-            </Select>
-            <Tooltip title='Add Item' placement='right-start'>
-              <AddCircleIcon
-                sx={{
-                  mx: 2,
-                  color: '#4caf50',
-                  boxShadow: 1,
-                  width: 'max-content',
-                  borderRadius: 1,
-                  fontSize: '1.5rem',
-                }}
-                onClick={handleAddItem}
-              />
-            </Tooltip>
+                    ))}
+              </Select>
+              <Tooltip title='Add Item' placement='right-start'>
+                <AddCircleIcon
+                  sx={{
+                    mx: 2,
+                    color: '#4caf50',
+                    boxShadow: 1,
+                    width: 'max-content',
+                    borderRadius: 1,
+                    fontSize: '1.5rem',
+                  }}
+                  onClick={handleAddItem}
+                />
+              </Tooltip>
+            </Paper>
           </ListItem>
           {/* <pre>{JSON.stringify(itemsObj, null, 2)}</pre> */}
           {itemsObj?.map((el, i) => addItemElements(el.digit, i))}

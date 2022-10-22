@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   MenuItem,
+  Paper,
   Select,
   TextField,
   Tooltip,
@@ -171,88 +172,108 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
             }}
           />
         </ListItem>
-        <Divider sx={{ my: 1 }} />
-        <ListItem>
-          <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
-            Input Variables:
-          </Typography>
-          <IconButton
-            sx={{ mr: 1 }}
-            size='large'
-            color='success'
-            onClick={addInput}
-          >
-            <AddRoundedIcon />
-          </IconButton>
-          <IconButton size='large' color='error' onClick={removeInput}>
-            <RemoveRoundedIcon />
-          </IconButton>
-        </ListItem>
-        <ListItem>
-          {inputArr?.map((item, i) => {
-            return (
-              <Select
-                sx={{ mr: 0.5 }}
-                onChange={(e) => {
-                  handleInputArrChange(e, i);
-                }}
-                value={item.value}
-                key={i}
-                size='small'
-              >
-                {userVariables?.map((el, i) => {
-                  return (
-                    <MenuItem key={i} value={el.name}>
-                      {el.name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            );
-          })}
-        </ListItem>
-        <Divider sx={{ my: 1 }} />
-        <ListItem>
-          <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
-            Output Variables:
-          </Typography>
 
-          <IconButton
-            sx={{ mr: 1 }}
-            size='large'
-            color='success'
-            onClick={addOutput}
-          >
-            <AddRoundedIcon />
-          </IconButton>
-          <IconButton size='large' color='error' onClick={removeOutput}>
-            <RemoveRoundedIcon />
-          </IconButton>
-        </ListItem>
-        <ListItem>
-          {outputArr?.map((item, i) => {
-            return (
-              <Select
-                sx={{ mr: 0.5 }}
-                onChange={(e) => {
-                  handleOutputArrChange(e, i);
-                }}
-                value={item.value}
-                key={i}
-                size='small'
-              >
-                {userVariables?.map((el, i) => {
-                  return (
-                    <MenuItem key={i} value={el.name}>
-                      {el.name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            );
-          })}
-        </ListItem>
-        <Divider sx={{ my: 1 }} />
+        <Paper
+          sx={{
+            width: '95%',
+            px: 2,
+            py: 1,
+            mx: 'auto',
+            my: 2,
+            backgroundColor: '#f9fbe7',
+          }}
+        >
+          <ListItem>
+            <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
+              Input Variables:
+            </Typography>
+            <IconButton
+              sx={{ mr: 1 }}
+              size='large'
+              color='success'
+              onClick={addInput}
+            >
+              <AddRoundedIcon />
+            </IconButton>
+            <IconButton size='large' color='error' onClick={removeInput}>
+              <RemoveRoundedIcon />
+            </IconButton>
+          </ListItem>
+          <ListItem>
+            {inputArr?.map((item, i) => {
+              return (
+                <Select
+                  sx={{ mr: 0.5 }}
+                  onChange={(e) => {
+                    handleInputArrChange(e, i);
+                  }}
+                  value={item.value}
+                  key={i}
+                  size='small'
+                >
+                  {userVariables?.map((el, i) => {
+                    return (
+                      <MenuItem key={i} value={el.name}>
+                        {el.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              );
+            })}
+          </ListItem>
+        </Paper>
+        <Paper
+          sx={{
+            width: '95%',
+            px: 2,
+            py: 1,
+            mx: 'auto',
+            my: 2,
+            backgroundColor: '#f9fbe7',
+          }}
+        >
+          <ListItem>
+            <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
+              Output Variables:
+            </Typography>
+
+            <IconButton
+              sx={{ mr: 1 }}
+              size='large'
+              color='success'
+              onClick={addOutput}
+            >
+              <AddRoundedIcon />
+            </IconButton>
+            <IconButton size='large' color='error' onClick={removeOutput}>
+              <RemoveRoundedIcon />
+            </IconButton>
+          </ListItem>
+          <ListItem>
+            {outputArr?.map((item, i) => {
+              return (
+                <Select
+                  sx={{ mr: 0.5 }}
+                  onChange={(e) => {
+                    handleOutputArrChange(e, i);
+                  }}
+                  value={item.value}
+                  key={i}
+                  size='small'
+                >
+                  {userVariables?.map((el, i) => {
+                    return (
+                      <MenuItem key={i} value={el.name}>
+                        {el.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              );
+            })}
+          </ListItem>
+        </Paper>
 
         <ListItem>
           <Button

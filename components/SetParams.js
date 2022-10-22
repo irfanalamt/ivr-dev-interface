@@ -911,20 +911,6 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
         </Tooltip>
       </ListItem>
       <ListItem>
-        {/* <Typography
-          sx={{
-            marginX: 'auto',
-            marginY: 1,
-            boxShadow: 1,
-            paddingX: 3,
-            paddingY: 1,
-            backgroundColor: '#e91e63',
-            borderRadius: 1,
-          }}
-          variant='h6'
-        >
-          Set Params
-        </Typography> */}
         <Chip
           sx={{ backgroundColor: '#e91e63', mx: 'auto', px: 2, py: 3 }}
           label={<Typography variant='h6'>Set Params</Typography>}
@@ -974,16 +960,12 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
             </Select>
           </Tooltip>
           <Tooltip title='Add parameter'>
-            {/* <Button
-            sx={{ ml: 4 }}
-            variant='contained'
-            color='success'
-            size='small'
-            onClick={handleAddParameter}
-          >
-            <AddCircleOutlineRoundedIcon />
-          </Button> */}
-            <IconButton sx={{ mx: 1 }} size='large' color='success'>
+            <IconButton
+              sx={{ mx: 1 }}
+              size='large'
+              color='success'
+              onClick={handleAddParameter}
+            >
               <AddCircleOutlineRoundedIcon />
             </IconButton>
           </Tooltip>
