@@ -10,6 +10,7 @@ import {
   List,
   ListItem,
   MenuItem,
+  Paper,
   Select,
   Switch,
   Tab,
@@ -198,44 +199,48 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
       </List>
       <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
         <ListItem>
-          <Tooltip title='object type:'>
-            <Select
-              value={msgObjType}
-              onChange={(e) => {
-                setMsgObjType(e.target.value);
-              }}
-              sx={{ width: '35%' }}
-              size='small'
-            >
-              <MenuItem value='prompt'>Prompt</MenuItem>
-              <MenuItem value='number'>Number</MenuItem>
-              <MenuItem value='ordinal'>Ordinal</MenuItem>
-              <MenuItem value='amount'>Amount</MenuItem>
-              <MenuItem value='digit'>Digit</MenuItem>
-              <MenuItem value='date'>Date</MenuItem>
-              <MenuItem value='day'>Day</MenuItem>
-              <MenuItem value='month'>Month</MenuItem>
-              <MenuItem value='time'>Time</MenuItem>
-            </Select>
-          </Tooltip>
-          <Tooltip title='Add'>
-            <IconButton
-              size='large'
-              color='success'
-              onClick={() => {
-                addInput();
-                setMsgObjType('prompt');
-              }}
-              sx={{ ml: 2 }}
-            >
-              <AddBoxRoundedIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip size='large' color='error' title='Remove'>
-            <IconButton onClick={removeInput}>
-              <RemoveCircleRoundedIcon />
-            </IconButton>
-          </Tooltip>
+          <Paper
+            sx={{ width: '100%', px: 2, py: 1, backgroundColor: '#f9fbe7' }}
+          >
+            <Tooltip title='object type:'>
+              <Select
+                value={msgObjType}
+                onChange={(e) => {
+                  setMsgObjType(e.target.value);
+                }}
+                sx={{ width: '35%' }}
+                size='small'
+              >
+                <MenuItem value='prompt'>Prompt</MenuItem>
+                <MenuItem value='number'>Number</MenuItem>
+                <MenuItem value='ordinal'>Ordinal</MenuItem>
+                <MenuItem value='amount'>Amount</MenuItem>
+                <MenuItem value='digit'>Digit</MenuItem>
+                <MenuItem value='date'>Date</MenuItem>
+                <MenuItem value='day'>Day</MenuItem>
+                <MenuItem value='month'>Month</MenuItem>
+                <MenuItem value='time'>Time</MenuItem>
+              </Select>
+            </Tooltip>
+            <Tooltip title='Add'>
+              <IconButton
+                size='large'
+                color='success'
+                onClick={() => {
+                  addInput();
+                  setMsgObjType('prompt');
+                }}
+                sx={{ ml: 2 }}
+              >
+                <AddBoxRoundedIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip size='large' color='error' title='Remove'>
+              <IconButton onClick={removeInput}>
+                <RemoveCircleRoundedIcon />
+              </IconButton>
+            </Tooltip>
+          </Paper>
         </ListItem>
         {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
         <List>

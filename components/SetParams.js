@@ -10,6 +10,7 @@ import {
   List,
   ListItem,
   MenuItem,
+  Paper,
   Select,
   Switch,
   TextField,
@@ -947,32 +948,33 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
       </ListItem>
 
       <ListItem sx={{ my: 2 }}>
-        <Tooltip title='parameter type:'>
-          <Select
-            sx={{ minWidth: '35%' }}
-            value={paramSelected}
-            onChange={(e) => {
-              setParamSelected(e.target.value);
-            }}
-            size='small'
-          >
-            {paramSelectedList.length > 0
-              ? optionalParamsList
-                  .filter((el) => !paramSelectedList.includes(el))
-                  .map((el, i) => (
+        <Paper sx={{ width: '100%', px: 2, py: 1, backgroundColor: '#f9fbe7' }}>
+          <Tooltip title='parameter type:'>
+            <Select
+              sx={{ minWidth: '35%' }}
+              value={paramSelected}
+              onChange={(e) => {
+                setParamSelected(e.target.value);
+              }}
+              size='small'
+            >
+              {paramSelectedList.length > 0
+                ? optionalParamsList
+                    .filter((el) => !paramSelectedList.includes(el))
+                    .map((el, i) => (
+                      <MenuItem key={i} value={el}>
+                        {el}
+                      </MenuItem>
+                    ))
+                : optionalParamsList.map((el, i) => (
                     <MenuItem key={i} value={el}>
                       {el}
                     </MenuItem>
-                  ))
-              : optionalParamsList.map((el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                ))}
-          </Select>
-        </Tooltip>
-        <Tooltip title='Add parameter'>
-          {/* <Button
+                  ))}
+            </Select>
+          </Tooltip>
+          <Tooltip title='Add parameter'>
+            {/* <Button
             sx={{ ml: 4 }}
             variant='contained'
             color='success'
@@ -981,10 +983,11 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
           >
             <AddCircleOutlineRoundedIcon />
           </Button> */}
-          <IconButton sx={{ mx: 1 }} size='large' color='success'>
-            <AddCircleOutlineRoundedIcon />
-          </IconButton>
-        </Tooltip>
+            <IconButton sx={{ mx: 1 }} size='large' color='success'>
+              <AddCircleOutlineRoundedIcon />
+            </IconButton>
+          </Tooltip>
+        </Paper>
       </ListItem>
       {/* <pre>{JSON.stringify(paramSelectedList, null, 2)}</pre>
         <pre>{JSON.stringify(menuObj, null, 2)}</pre> */}
