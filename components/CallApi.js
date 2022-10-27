@@ -31,7 +31,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
       value: '',
     },
   ]);
-  const [endpoint, setEndpoint] = useState('');
+  const [endpoint, setEndpoint] = useState(shape.userValues?.endpoint || '');
 
   function handleInputArrChange(e, index) {
     console.log('🚀 ~ handleInputArrChange ~ e', e);
@@ -56,6 +56,29 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
 
   function saveUserValues() {
     shape.setText(shapeName || 'callAPI');
+    shape.setUserValues({ endpoint: endpoint });
+    console.log('🌟', { inputArr, outputArr });
+    generateJS();
+  }
+
+  function generateJS() {
+    let inputVarsString =
+      '{' + inputArr.map((el, i) => `${el.value}:this.${el.value}`) + '}';
+
+    let outputVarsString = outputArr
+      .filter((el) => el.value)
+      .map((el) => `this.${el.value}=outputVars.${el.value};`)
+      .join('');
+
+    let codeString = `this.${shapeName}=async function(){
+  let endpoint = '${endpoint}';
+  let inputVars= ${inputVarsString};
+  let outputVars = await IVR.callAPI(endpoint,inputVars);
+  ${outputVarsString}
+}`;
+
+    shape.setFunctionString(codeString);
+    console.log('🚀 ~ codeString ~ codeString', codeString);
   }
 
   function addInput() {
