@@ -503,18 +503,24 @@ const CanvasComponent = () => {
   function generateConfigFile() {
     console.log('🕺🏻⚡', saveFileName.current, '.js');
 
-    let tempString1 = stageGroup.current
+    const tempString1 = `function ${saveFileName.current}(){
+      IVR.menus =  require('/ivrs/${saveFileName.current}/menus.json');
+      IVR.params = {
+        lang: 'en-SA',terminator:'#', maxRetries: 3, maxRepeats: 3,maxCallTime: 240, invalidTransferPoint: 'TP8001', timeoutTransferPoint: 'TP8001', goodbyeMessage: 'std-goodbye', firstTimeout: 10, interTimeout: 5,menuTimeout: 5,		terminateMessage: 'std-terminate', invalidPrompt: 'std-invalid',	timeOutPrompt: 'std-timeout', repeatInfoPrompt: 'std-repeat-info', confirmPrompt: 'std-confirm', cancelPrompt: 'std-cancel',	currency: 'SAR', confirmOption: 1,	cancelOption: 2, invalidAction: 'Disconnect',timeoutAction: 'Disconnect',	logDb: true						
+      };
+    } `;
+
+    const tempString2 = generateInitVariablesJS();
+    const tempString3 = stageGroup.current
       .getShapes()
-      .filter((el) => el.functionString)
+      .filter((el) => el.functionString && el.type !== 'pentagon')
       .map((el) => el.functionString)
       .join(' ');
 
-    let tempString2 = generateInitVariablesJS();
+    const finalString = tempString1 + tempString2 + tempString3;
 
-    console.log('tempString1', tempString1);
-    console.log('tempString2', tempString2);
-
-    saveConfigFile(tempString1 + tempString2);
+    console.log('🕺🏻Config FILE:', finalString);
+    saveConfigFile(finalString);
   }
 
   function generateInitVariablesJS() {

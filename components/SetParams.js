@@ -55,7 +55,13 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
       params: menuObj,
       paramSelectedList,
     });
+    generateJS();
   }
+
+  function generateJS() {
+    console.log('💃🏻ParamsObj', JSON.stringify(menuObj));
+  }
+
   function handleValidation(e, name, type) {
     let errorMessage = checkValidity(type, e);
     if (errorMessage !== -1) {
