@@ -13,7 +13,7 @@ class Shape {
     const mapShapes = {
       rectangle: 'runScript',
       hexagon: 'playMenu',
-      circle: 'callAPI',
+      invertedHexagon: 'callAPI',
       parallelogram: 'getDigits',
       roundedRectangle: 'playMessage',
       pentagon: 'setParams',
@@ -94,6 +94,10 @@ class Shape {
         this.drawRectangle(ctx);
         break;
 
+      case 'invertedHexagon':
+        this.drawInvertedHexagon(ctx);
+        break;
+
       case 'circle':
         this.drawCircle(ctx);
         break;
@@ -118,6 +122,40 @@ class Shape {
         this.drawSmallCircle(ctx);
         break;
     }
+  }
+
+  drawInvertedHexagon(ctx) {
+    ctx.beginPath();
+    ctx.translate(this.x, this.y);
+
+    ctx.moveTo(this.width * 0.5, -this.height * 0.5);
+    ctx.lineTo(this.width * 0.5, this.height * 0.5);
+    ctx.lineTo(0, this.height * 0.5 + this.height * 0.3);
+    ctx.lineTo(-this.width * 0.5, this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5, -this.height * 0.5);
+    ctx.lineTo(0, -this.height * 0.5 - this.height * 0.3);
+
+    ctx.closePath();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    if (this.stroke) {
+      // fill color when selected
+      this.selected && this.fillSelected(ctx);
+
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.strokeStyle = '#2196f3';
+      ctx.stroke();
+      return;
+    }
+
+    ctx.fillStyle = this.style;
+    ctx.lineWidth = 2;
+    ctx.fill();
   }
 
   drawSmallCircle(ctx) {
@@ -190,31 +228,31 @@ class Shape {
     }
   }
 
-  drawCircle(ctx) {
-    ctx.beginPath();
+  // drawCircle(ctx) {
+  //   ctx.beginPath();
 
-    if (this.stroke) {
-      ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-      // fill color when selected
-      this.selected && this.fillSelected(ctx);
+  //   if (this.stroke) {
+  //     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+  //     // fill color when selected
+  //     this.selected && this.fillSelected(ctx);
 
-      ctx.font = '19px sans-serif';
-      ctx.fillStyle = 'black';
-      ctx.lineWidth = 2;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(this.text, this.x, this.y);
-      ctx.strokeStyle = '#2196f3';
+  //     ctx.font = '19px sans-serif';
+  //     ctx.fillStyle = 'black';
+  //     ctx.lineWidth = 2;
+  //     ctx.textAlign = 'center';
+  //     ctx.textBaseline = 'middle';
+  //     ctx.fillText(this.text, this.x, this.y);
+  //     ctx.strokeStyle = '#2196f3';
 
-      ctx.stroke();
-      return;
-    }
+  //     ctx.stroke();
+  //     return;
+  //   }
 
-    ctx.fillStyle = this.style;
-    ctx.lineWidth = 2;
-    ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-    ctx.fill();
-  }
+  //   ctx.fillStyle = this.style;
+  //   ctx.lineWidth = 2;
+  //   ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+  //   ctx.fill();
+  // }
 
   drawPentagon(ctx) {
     ctx.beginPath();

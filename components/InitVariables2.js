@@ -81,22 +81,21 @@ const InitVariables = ({ handleCloseDrawer, userVariables = [] }) => {
       </ListItem>
       <ListItem sx={{ mt: 1 }}>
         <Paper sx={{ width: '100%', px: 2, py: 1, backgroundColor: '#f9fbe7' }}>
-          <Tooltip title='Select variable type'>
-            <Select
-              value={varType}
-              onChange={(e) => {
-                setVarType(e.target.value);
-              }}
-              size='small'
-            >
-              <MenuItem value='prompt'>Prompt</MenuItem>
-              <MenuItem value='number'>Number</MenuItem>
-              <MenuItem value='date'>Date</MenuItem>
-              <MenuItem value='day'>Day</MenuItem>
-              <MenuItem value='month'>Month</MenuItem>
-              <MenuItem value='time'>Time</MenuItem>
-            </Select>
-          </Tooltip>
+          <Select
+            value={varType}
+            onChange={(e) => {
+              setVarType(e.target.value);
+            }}
+            size='small'
+          >
+            <MenuItem value='prompt'>Prompt</MenuItem>
+            <MenuItem value='number'>Number</MenuItem>
+            <MenuItem value='date'>Date</MenuItem>
+            <MenuItem value='day'>Day</MenuItem>
+            <MenuItem value='month'>Month</MenuItem>
+            <MenuItem value='time'>Time</MenuItem>
+          </Select>
+
           <Tooltip title='Add'>
             <IconButton
               sx={{ ml: 2 }}

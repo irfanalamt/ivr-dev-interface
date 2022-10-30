@@ -941,30 +941,29 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
 
       <ListItem sx={{ my: 2 }}>
         <Paper sx={{ width: '100%', px: 2, py: 1, backgroundColor: '#f9fbe7' }}>
-          <Tooltip title='parameter type:'>
-            <Select
-              sx={{ minWidth: '35%' }}
-              value={paramSelected}
-              onChange={(e) => {
-                setParamSelected(e.target.value);
-              }}
-              size='small'
-            >
-              {paramSelectedList.length > 0
-                ? optionalParamsList
-                    .filter((el) => !paramSelectedList.includes(el))
-                    .map((el, i) => (
-                      <MenuItem key={i} value={el}>
-                        {el}
-                      </MenuItem>
-                    ))
-                : optionalParamsList.map((el, i) => (
+          <Select
+            sx={{ minWidth: '35%' }}
+            value={paramSelected}
+            onChange={(e) => {
+              setParamSelected(e.target.value);
+            }}
+            size='small'
+          >
+            {paramSelectedList.length > 0
+              ? optionalParamsList
+                  .filter((el) => !paramSelectedList.includes(el))
+                  .map((el, i) => (
                     <MenuItem key={i} value={el}>
                       {el}
                     </MenuItem>
-                  ))}
-            </Select>
-          </Tooltip>
+                  ))
+              : optionalParamsList.map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                ))}
+          </Select>
+
           <Tooltip title='Add parameter'>
             <IconButton
               sx={{ mx: 1 }}

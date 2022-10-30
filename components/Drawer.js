@@ -31,7 +31,7 @@ const DrawerComponent = ({
           stageGroup={stageGroup}
         />
       );
-    } else if (shape?.type == 'circle') {
+    } else if (shape?.type == 'invertedHexagon') {
       return (
         <CallApi
           shape={shape}

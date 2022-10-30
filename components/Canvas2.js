@@ -78,7 +78,14 @@ const CanvasComponent = () => {
     // Initialize palette shapes; add to palette group
     const palletPentagon = new Shape(55, 155, 30, 25, 'pentagon', '#880e4f');
     const palletRectangle = new Shape(55, 205, 30, 25, 'rectangle', '#bf360c');
-    const palletCircle = new Shape(55, 255, 30, 30, 'circle', '#0d47a1');
+    const palletInvertedHexagon = new Shape(
+      55,
+      255,
+      35,
+      20,
+      'invertedHexagon',
+      '#0d47a1'
+    );
     const palletHexagon = new Shape(55, 305, 40, 25, 'hexagon', '#004d40');
     const palletParallelogram = new Shape(
       55,
@@ -108,7 +115,7 @@ const CanvasComponent = () => {
 
     palletGroup.current = new Shapes('palette', [
       palletRectangle,
-      palletCircle,
+      palletInvertedHexagon,
       palletHexagon,
       palletParallelogram,
       palletRoundedRectangle,
@@ -384,13 +391,13 @@ const CanvasComponent = () => {
           );
           break;
 
-        case 'circle':
+        case 'invertedHexagon':
           stageFigure = new Shape(
             clientX,
             clientY,
             120,
-            120,
-            'circle',
+            50,
+            'invertedHexagon',
             null,
             true
           );

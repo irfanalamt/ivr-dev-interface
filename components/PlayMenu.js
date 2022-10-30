@@ -64,7 +64,8 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
       paramSelectedList,
       items: itemsObj,
     });
-    console.log('🚀 ~ saveUserValues ~ itemsObj', itemsObj);
+    console.log('🚀 ~ saveUserValues ~ itemsObj', JSON.stringify(itemsObj));
+    console.log('🚀 ~ saveUserValues ~  menuObj', JSON.stringify(menuObj));
   }
 
   const optionalParamsList = [
