@@ -367,6 +367,7 @@ const CanvasComponent = () => {
       }
     });
   }
+
   function handleMouseUp(e) {
     e.preventDefault();
     let { clientX, clientY } = e;

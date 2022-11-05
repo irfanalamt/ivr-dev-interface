@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import Shape from '../models/Shape';
+import Shape from '../models/ShapeNew';
 import Shapes from '../models/Shapes';
 import Line from '../models/Line';
 import Lines from '../models/Lines';
@@ -33,6 +33,7 @@ import CanvasAppbar from './CanvasAppbar';
 
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -41,6 +42,12 @@ const CanvasComponent = () => {
   const palletGroup = useRef(null);
   const stageGroup = useRef(null);
   const userVariables = useRef([]);
+  const currentShape = useRef(null);
+
+  let isDragging = false,
+    isPalletShape = false;
+  let startX, startY;
+  let startX1, startY1;
 
   useEffect(() => {
     initializeCanvas();
@@ -82,9 +89,18 @@ const CanvasComponent = () => {
       '#827717'
     );
 
-    const palletSmallCircle = new Shape(
+    const palletRoundedRectangle2 = new Shape(
       40,
       383,
+      40,
+      25,
+      'roundedRectangle2',
+      '#33691e'
+    );
+
+    const palletSmallCircle = new Shape(
+      40,
+      433,
       22,
       22,
       'smallCircle',
@@ -97,6 +113,7 @@ const CanvasComponent = () => {
       palletHexagon,
       palletParallelogram,
       palletRoundedRectangle,
+      palletRoundedRectangle2,
       palletPentagon,
       palletSmallCircle,
     ]);
@@ -124,6 +141,225 @@ const CanvasComponent = () => {
 
     clearAndDraw();
   }
+  function handleMouseMove(e) {
+    e.preventDefault();
+    const { clientX, clientY } = e;
+    const boundingRect = canvasRef.current.getBoundingClientRect();
+    const realX = clientX - boundingRect.left;
+    const realY = clientY - boundingRect.top;
+
+    if (isDragging) {
+      // drag shape - mousemove
+      let dx = realX - startX;
+      let dy = realY - startY;
+      let current_shape = currentShape.current;
+
+      current_shape.x += dx;
+      current_shape.y += dy;
+
+      clearAndDraw();
+      startX = realX;
+      startY = realY;
+      return;
+    }
+  }
+
+  function handleMouseDown(e) {
+    e.preventDefault();
+    const { clientX, clientY } = e;
+    const boundingRect = canvasRef.current.getBoundingClientRect();
+    const realX = clientX - boundingRect.left;
+    const realY = clientY - boundingRect.top;
+    console.log('🚀 ~ handleMouseDown ~ realX,realY', realX, realY);
+
+    //Check mouse in stage shape
+    stageGroup.current.getShapes().forEach((element, i) => {
+      if (element.isMouseInShape(realX, realY)) {
+        console.log(
+          '🚀 ~ stageGroup.current.getShapes ~ isMouseInShape',
+
+          element.type
+        );
+        currentShape.current = element;
+        isDragging = true;
+        isPalletShape = false;
+        startX = realX;
+        startY = realY;
+        startX1 = realX;
+        startY1 = realY;
+
+        return;
+      }
+    });
+
+    // check mouse in palette shape
+    palletGroup.current.getShapes().forEach((element) => {
+      if (element.isMouseInShape(realX, realY)) {
+        console.log(`YES in pallet shape ${element.type}`);
+
+        currentShape.current = element;
+        isDragging = true;
+        isPalletShape = true;
+        startX = realX;
+        startY = realY;
+
+        return;
+      }
+    });
+  }
+
+  function handleMouseUp(e) {
+    e.preventDefault();
+    const { clientX, clientY } = e;
+    const boundingRect = canvasRef.current.getBoundingClientRect();
+    const realX = clientX - boundingRect.left;
+    const realY = clientY - boundingRect.top;
+
+    isDragging = false;
+
+    if (isPalletShape) {
+      isPalletShape = false;
+      console.log('🚀 ~ handleMouseUp ~ isPalletShape', isPalletShape);
+
+      // create new stage shape on dragdrop
+      let palletFigureDragged = currentShape.current;
+      let stageFigure;
+      switch (palletFigureDragged.type) {
+        case 'rectangle':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            100,
+            30,
+            'rectangle',
+            null,
+            true
+          );
+          break;
+
+        case 'invertedHexagon':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            100,
+            20,
+            'invertedHexagon',
+            null,
+            true
+          );
+          break;
+
+        case 'hexagon':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            100,
+            30,
+            'hexagon',
+            '#009688',
+            true
+          );
+          break;
+
+        case 'parallelogram':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            100,
+            30,
+            'parallelogram',
+            '#9c27b0',
+            true
+          );
+          break;
+
+        case 'roundedRectangle':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            125,
+            30,
+            'roundedRectangle',
+            '#c0ca33',
+            true
+          );
+          break;
+
+        case 'roundedRectangle2':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            125,
+            30,
+            'roundedRectangle2',
+            '#7cb342',
+            true
+          );
+          break;
+
+        case 'pentagon':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            100,
+            30,
+            'pentagon',
+            '#e91e63',
+            true
+          );
+          break;
+
+        case 'smallCircle':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            25,
+            25,
+            'smallCircle',
+            '#e91e63',
+            true
+          );
+
+          break;
+      }
+
+      // reset pallet figure to pallet
+      palletFigureDragged.x = palletFigureDragged.getInitPos()[0];
+      palletFigureDragged.y = palletFigureDragged.getInitPos()[1];
+
+      if (realX > 120) {
+        //set unique id; add figure to stage
+        stageFigure.setId(stageGroup.current.getShapes().length);
+        stageGroup.current.addShape(stageFigure);
+        console.log('🚀 ~ handleMouseUp ~ stageFigureAdded', stageFigure);
+      }
+
+      clearAndDraw();
+      return;
+    }
+
+    if (realX == startX1 && realY == startY1) {
+      console.log('yaay mouseup same pos');
+      // mouse clicked, released same spot in stage shape, check mouse in stage shape
+      stageGroup.current.getShapes().forEach((element) => {
+        if (
+          element.isMouseInShape(realX, realY) &&
+          element.type !== 'smallCircle'
+        ) {
+          console.log(`YES in pallet shape mouseUp ${element.type}`);
+          currentShape.current = element;
+          currentShape.current.setSelected(true);
+          clearAndDraw();
+          setIsOpen(true);
+          return;
+        }
+      });
+    }
+  }
+  function handleCloseDrawer() {
+    setIsOpen(false);
+    clearAndDraw();
+  }
 
   function clearAndDraw() {
     // clear canvas
@@ -132,7 +368,7 @@ const CanvasComponent = () => {
     contextRef.current.strokeStyle = 'black';
     contextRef.current.lineWidth = 2;
     // draw bg rectangle
-    contextRef.current.strokeRect(5, 60, 70, 380);
+    contextRef.current.strokeRect(5, 60, 70, 410);
 
     // draw shapes and lines
     palletGroup.current
@@ -206,13 +442,13 @@ const CanvasComponent = () => {
         Connect mode
       </Typography>
       <canvas
-        style={{ backgroundColor: '#f3f9fe' }}
+        style={{ backgroundColor: '#F7FBFE' }}
         width={window.innerWidth * 0.9}
         height={window.innerHeight * 0.9 - 50}
         ref={canvasRef}
-        // onMouseMove={handleMouseMove}
-        // onMouseDown={handleMouseDown}
-        // onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
       ></canvas>
 
       <Box
@@ -257,6 +493,13 @@ const CanvasComponent = () => {
             userVariables={userVariables.current}
           />
         </Drawer>
+        <DrawerComponent
+          isOpen={isOpen}
+          handleCloseDrawer={handleCloseDrawer}
+          shape={currentShape.current}
+          userVariables={userVariables.current}
+          stageGroup={stageGroup.current}
+        />
       </Box>
     </>
   );

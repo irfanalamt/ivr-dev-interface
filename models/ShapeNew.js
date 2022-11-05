@@ -14,6 +14,7 @@ class Shape {
       invertedHexagon: 'callAPI',
       parallelogram: 'getDigits',
       roundedRectangle: 'playMessage',
+      roundedRectangle2: 'playConfirm',
       pentagon: 'setParams',
       smallCircle: 'connector',
     };
@@ -23,67 +24,40 @@ class Shape {
     this.userValues = null;
     this.nextItem = null;
     this.functionString = '';
+    this.id = null;
   }
 
-  static createFromObject(shapeObj) {
-    const tempShape = new Shape(
-      shapeObj.x,
-      shapeObj.y,
-      shapeObj.width,
-      shapeObj.height,
-      shapeObj.type,
-      shapeObj.style,
-      shapeObj.stroke
-    );
-    tempShape.text = shapeObj.text;
-    tempShape.userValues = JSON.parse(shapeObj.userValues);
-
-    return tempShape;
-  }
-
-  setSelected(bool) {
-    this.selected = bool;
-  }
-  setUserValues(userValues) {
-    this.userValues = { ...userValues };
-  }
-
-  fillSelected(ctx) {
-    ctx.fillStyle = '#eceff1';
-    ctx.fill();
-  }
-
-  setNextItem(item) {
-    this.nextItem = item;
-  }
-
-  setFunctionString(text) {
-    this.functionString = text;
-  }
-
-  setText(inputText) {
-    this.text = inputText;
-  }
-  calcArea() {
-    return this.width * this.height;
-  }
   getInitPos() {
+    // return initial position to reset palette shape after dragdrop
     return this.initPos;
   }
 
-  getSerialized() {
-    return {
-      x: this.x,
-      y: this.y,
-      width: this.width,
-      height: this.height,
-      type: this.type,
-      style: this.style,
-      stroke: this.stroke,
-      text: this.text,
-      userValues: JSON.stringify(this.userValues),
-      functionString: this.functionString,
-    };
+  setId(id) {
+    // unique id set based on shapes array length
+    this.id = id;
+  }
+  setText(inputText) {
+    this.text = inputText;
+  }
+  setSelected(bool) {
+    this.selected = bool;
+  }
+  fillSelected(ctx) {
+    ctx.fillStyle = '#d4d7d8';
+    ctx.fill();
+  }
+
+  isMouseInShape(x, y) {
+    // returns true if mouse is in shape; else false
+
+    let shapeLeft, shapeRight, shapeTop, shapeBottom;
+
+    shapeLeft = this.x - this.width / 2;
+    shapeRight = this.x + this.width / 2;
+    shapeTop = this.y - this.height / 2;
+    shapeBottom = this.y + this.height / 2;
+
+    return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
   }
 
   drawShape(ctx) {
@@ -114,6 +88,10 @@ class Shape {
 
       case 'roundedRectangle':
         this.drawRoundedRectangle(ctx);
+        break;
+
+      case 'roundedRectangle2':
+        this.drawRoundedRectangle2(ctx);
         break;
 
       case 'smallCircle':
@@ -226,32 +204,6 @@ class Shape {
     }
   }
 
-  // drawCircle(ctx) {
-  //   ctx.beginPath();
-
-  //   if (this.stroke) {
-  //     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-  //     // fill color when selected
-  //     this.selected && this.fillSelected(ctx);
-
-  //     ctx.font = '19px sans-serif';
-  //     ctx.fillStyle = 'black';
-  //     ctx.lineWidth = 2;
-  //     ctx.textAlign = 'center';
-  //     ctx.textBaseline = 'middle';
-  //     ctx.fillText(this.text, this.x, this.y);
-  //     ctx.strokeStyle = '#2196f3';
-
-  //     ctx.stroke();
-  //     return;
-  //   }
-
-  //   ctx.fillStyle = this.style;
-  //   ctx.lineWidth = 2;
-  //   ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-  //   ctx.fill();
-  // }
-
   drawPentagon(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
@@ -353,7 +305,7 @@ class Shape {
     ctx.translate(this.x, this.y);
     ctx.moveTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
     ctx.lineTo(-(this.width * 0.5 - this.height * 0.5), this.height * 0.5);
-    // ctx.lineTo(-this.width * 0.5, -this.height * 0.5);
+
     ctx.arc(
       -(this.width * 0.5 - this.height * 0.5),
       0,
@@ -390,43 +342,49 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.fill();
   }
+  // #7cb342
+  drawRoundedRectangle2(ctx) {
+    ctx.beginPath();
+    ctx.translate(this.x, this.y);
 
-  getEntryPoint() {
-    return [this.x, this.y - this.height / 2];
-  }
-
-  getExitPoint() {
-    return [this.x, this.y + this.height / 2];
-  }
-
-  isMouseNearVertex(x, y) {
-    let leftVertex, rightVertex;
-
-    leftVertex = [this.x - this.width / 2, this.y];
-    rightVertex = [this.x + this.width / 2, this.y];
-    console.log('.is near vertex.');
-
-    return (
-      this.isNearPoint(x, y, ...leftVertex) ||
-      this.isNearPoint(x, y, ...rightVertex)
+    ctx.moveTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
+    ctx.lineTo(-(this.width * 0.5 - this.height * 0.5), this.height * 0.5);
+    // ctx.lineTo(-this.width * 0.5, -this.height * 0.5);
+    ctx.arc(
+      -(this.width * 0.5 - this.height * 0.5),
+      0,
+      Math.abs(this.height * 0.5),
+      0.5 * Math.PI,
+      1.5 * Math.PI
     );
-  }
+    ctx.lineTo(this.width * 0.5 - this.height * 0.5, -this.height * 0.5);
+    ctx.arc(
+      this.width * 0.5 - this.height * 0.5,
+      0,
+      Math.abs(this.height * 0.5),
+      1.5 * Math.PI,
+      0.5 * Math.PI
+    );
+    ctx.closePath();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-  isNearPoint(x1, y1, x2, y2) {
-    const dist = Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+    if (this.stroke) {
+      // fill color if selected
+      this.selected && this.fillSelected(ctx);
 
-    return parseInt(dist) < 10;
-  }
-
-  isMouseInShape(x, y) {
-    let shapeLeft, shapeRight, shapeTop, shapeBottom;
-
-    shapeLeft = this.x - this.width / 2;
-    shapeRight = this.x + this.width / 2;
-    shapeTop = this.y - this.height / 2;
-    shapeBottom = this.y + this.height / 2;
-
-    return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.strokeStyle = '#7cb342';
+      ctx.stroke();
+      return;
+    }
+    ctx.fillStyle = this.style;
+    ctx.lineWidth = 2;
+    ctx.fill();
   }
 }
 
