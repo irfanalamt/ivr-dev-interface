@@ -42,6 +42,9 @@ class Shape {
   setSelected(bool) {
     this.selected = bool;
   }
+  setUserValues(userValues) {
+    this.userValues = { ...userValues };
+  }
   fillSelected(ctx) {
     ctx.fillStyle = '#d4d7d8';
     ctx.fill();

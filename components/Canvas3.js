@@ -34,6 +34,8 @@ import CanvasAppbar from './CanvasAppbar';
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -43,6 +45,7 @@ const CanvasComponent = () => {
   const stageGroup = useRef(null);
   const userVariables = useRef([]);
   const currentShape = useRef(null);
+  const tooltipRef = useRef(null);
 
   let isDragging = false,
     isPalletShape = false;
@@ -162,6 +165,18 @@ const CanvasComponent = () => {
       startY = realY;
       return;
     }
+
+    // reset tooltip; place tooltip on mouse pallet shape
+    tooltipRef.current.style.visibility = 'hidden';
+    palletGroup.current.getShapes().forEach((element) => {
+      if (element.isMouseInShape(realX, realY)) {
+        console.log(`💃🏻YES in pallet shape ${element.type}`);
+        tooltipRef.current.style.top = clientY - 10 + 'px';
+        tooltipRef.current.style.left = clientX + 40 + 'px';
+        tooltipRef.current.textContent = element.text;
+        tooltipRef.current.style.visibility = 'visible';
+      }
+    });
   }
 
   function handleMouseDown(e) {
@@ -175,11 +190,11 @@ const CanvasComponent = () => {
     //Check mouse in stage shape
     stageGroup.current.getShapes().forEach((element, i) => {
       if (element.isMouseInShape(realX, realY)) {
-        console.log(
-          '🚀 ~ stageGroup.current.getShapes ~ isMouseInShape',
-
-          element.type
-        );
+        if (isDeleting) {
+          stageGroup.current.removeShape(i);
+          clearAndDraw();
+          return;
+        }
         currentShape.current = element;
         isDragging = true;
         isPalletShape = false;
@@ -196,7 +211,7 @@ const CanvasComponent = () => {
     palletGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(realX, realY)) {
         console.log(`YES in pallet shape ${element.type}`);
-
+        setIsDeleting(false);
         currentShape.current = element;
         isDragging = true;
         isPalletShape = true;
@@ -411,10 +426,10 @@ const CanvasComponent = () => {
       <Typography
         sx={{
           mt: 2,
-          position: 'absolute',
-          left: 70,
+          position: 'fixed',
+          width: 'max-content',
           alignItems: 'center',
-          display: 'none',
+          display: isDeleting ? 'flex' : 'none',
           fontSize: '1.2rem',
           boxShadow: 1,
           backgroundColor: '#f48fb1',
@@ -468,7 +483,7 @@ const CanvasComponent = () => {
           <Tooltip title='connect shapes' placement='left-start'>
             <ArrowRightAltIcon
               sx={{
-                fontSize: '2rem',
+                fontSize: '1.9rem',
                 boxShadow: 1,
                 borderRadius: 2,
                 backgroundColor: '#e0f2f1',
@@ -478,16 +493,20 @@ const CanvasComponent = () => {
           <Tooltip title='remove item' placement='right-start'>
             <DeleteIcon
               sx={{
-                fontSize: '2rem',
+                fontSize: isDeleting ? '2rem' : '1.9rem',
                 ml: 2,
                 boxShadow: 1,
                 borderRadius: 2,
-                backgroundColor: '#fce4ec',
+                backgroundColor: isDeleting ? '#e91e63' : '#fce4ec',
+              }}
+              onClick={() => {
+                setIsDeleting(!isDeleting);
+                console.log('is deleting', isDeleting);
               }}
             />
           </Tooltip>
         </Box>
-        <Drawer anchor='right' open={isOpenVars}>
+        <Drawer anchor='left' open={isOpenVars}>
           <InitVariables
             handleCloseDrawer={() => setIsOpenVars(false)}
             userVariables={userVariables.current}
@@ -501,6 +520,19 @@ const CanvasComponent = () => {
           stageGroup={stageGroup.current}
         />
       </Box>
+      <Typography
+        sx={{
+          visibility: 'hidden',
+          position: 'absolute',
+          backgroundColor: '#e1f5fe',
+          px: 1,
+          boxShadow: 1,
+        }}
+        ref={tooltipRef}
+        variant='subtitle2'
+      >
+        Im a tooltip
+      </Typography>
     </>
   );
 };

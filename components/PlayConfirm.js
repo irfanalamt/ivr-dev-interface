@@ -22,7 +22,7 @@ import {
 import { useRef, useState } from 'react';
 import { addInputElements, checkValidity } from '../src/helpers';
 
-const PlayMessage = ({
+const PlayConfirm = ({
   shape,
   handleCloseDrawer,
   userVariables,
@@ -32,42 +32,28 @@ const PlayMessage = ({
   const [tabValue, setTabValue] = useState(0);
   const [msgObjType, setMsgObjType] = useState('prompt');
   const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
-  const [interruptible, setInterruptible] = useState(
-    shape.userValues?.params.interruptible ?? true
+  const [confirmOption, setConfirmOption] = useState(
+    shape.userValues?.params.confirmOption ?? 1
   );
-  const [repeatOption, setRepeatOption] = useState(
-    shape.userValues?.params.repeatOption ?? 9
+  const [cancelOption, setCancelOption] = useState(
+    shape.userValues?.params.cancelOption ?? 9
   );
-
-  const [nextItem, setNextItem] = useState(shape.nextItem ?? '');
+  const [confirmPrompt, setConfirmPrompt] = useState(
+    shape.userValues?.params.confirmPrompt ?? ''
+  );
+  const [cancelPrompt, setCancelPrompt] = useState(
+    shape.userValues?.params.cancelPrompt ?? ''
+  );
 
   const nameErrorRef = useRef(null);
 
   function saveUserValues() {
-    // remove null values; SAVE
     const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
-    shape.setNextItem(nextItem);
     shape.setUserValues({
-      params: { interruptible, repeatOption },
+      params: { confirmOption, cancelOption, confirmPrompt, cancelPrompt },
       messageList: filteredMsgObj,
     });
-
-    generateJS(filteredMsgObj);
-  }
-
-  function generateJS(filteredMsgObj) {
-    let codeString = `this.${shapeName}= async function(){
-      
-let msgList = ${JSON.stringify(filteredMsgObj)};
-
-let params = ${JSON.stringify({ interruptible, repeatOption })};
-
- await IVR.getDigits(msgList,params);
-    
-};`;
-    shape.setFunctionString(codeString);
-    console.log('🚀 ~ generateJS ~ codeString', codeString);
   }
 
   function addInput() {
@@ -141,8 +127,8 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
         </ListItem>
         <ListItem>
           <Chip
-            sx={{ backgroundColor: '#f0f4c3', mx: 'auto', px: 2, py: 3 }}
-            label={<Typography variant='h6'>Play Message</Typography>}
+            sx={{ backgroundColor: '#dcedc8', mx: 'auto', px: 2, py: 3 }}
+            label={<Typography variant='h6'>Play Confirm</Typography>}
           />
         </ListItem>
         <ListItem sx={{ marginTop: 1 }}>
@@ -257,28 +243,16 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
         </ListItem>
       </Box>
       <Box id='tabPanel2' sx={{ display: tabValue === 1 ? 'block' : 'none' }}>
-        <ListItem>
+        <ListItem sx={{ marginTop: 2 }}>
           <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
-            interruptible:
-          </Typography>
-          <Switch
-            checked={interruptible}
-            onChange={(e) => {
-              setInterruptible(e.target.checked);
-            }}
-          ></Switch>
-        </ListItem>
-        <ListItem sx={{ marginTop: 3 }}>
-          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
-            repeatOption:
+            confirmOption:
           </Typography>
           <Select
             size='small'
             sx={{ marginX: 1 }}
-            id='repeatOption-select'
-            value={repeatOption}
+            value={confirmOption}
             onChange={(e) => {
-              setRepeatOption(e.target.value);
+              setConfirmOption(e.target.value);
             }}
           >
             <MenuItem value={0}>0</MenuItem>
@@ -293,9 +267,57 @@ let params = ${JSON.stringify({ interruptible, repeatOption })};
             <MenuItem value={9}>9</MenuItem>
           </Select>
         </ListItem>
+        <ListItem sx={{ marginTop: 1 }}>
+          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+            cancelOption:
+          </Typography>
+          <Select
+            size='small'
+            sx={{ marginX: 1 }}
+            value={cancelOption}
+            onChange={(e) => {
+              setCancelOption(e.target.value);
+            }}
+          >
+            <MenuItem value={0}>0</MenuItem>
+            <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={2}>2</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+            <MenuItem value={4}>4</MenuItem>
+            <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={6}>6</MenuItem>
+            <MenuItem value={7}>7</MenuItem>
+            <MenuItem value={8}>8</MenuItem>
+            <MenuItem value={9}>9</MenuItem>
+          </Select>
+        </ListItem>
+        <ListItem sx={{ marginTop: 1 }}>
+          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+            confirmPrompt:
+          </Typography>
+          <TextField
+            size='small'
+            value={confirmPrompt}
+            onChange={(e) => {
+              setConfirmPrompt(e.target.value);
+            }}
+          />
+        </ListItem>
+        <ListItem sx={{ marginTop: 1 }}>
+          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+            cancelPrompt:
+          </Typography>
+          <TextField
+            size='small'
+            value={cancelPrompt}
+            onChange={(e) => {
+              setCancelPrompt(e.target.value);
+            }}
+          />
+        </ListItem>
       </Box>
     </>
   );
 };
 
-export default PlayMessage;
+export default PlayConfirm;

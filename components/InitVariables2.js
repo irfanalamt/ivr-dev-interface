@@ -50,26 +50,26 @@ const InitVariables = ({ handleCloseDrawer, userVariables = [] }) => {
   return (
     <List sx={{ minWidth: 350 }}>
       <ListItem>
-        <Tooltip title='CLOSE'>
-          <Button
-            size='small'
-            variant='outlined'
-            color='error'
-            sx={{ height: 30 }}
-            onClick={handleCloseDrawer}
-          >
-            <CloseRoundedIcon sx={{ fontSize: 21 }} />
-          </Button>
-        </Tooltip>
         <Tooltip title='SAVE'>
           <Button
-            sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
+            sx={{ height: 30, ml: 'auto' }}
             size='small'
             variant='outlined'
             color='success'
             onClick={saveValues}
           >
             <SaveRoundedIcon sx={{ fontSize: 20 }} />
+          </Button>
+        </Tooltip>
+        <Tooltip title='CLOSE'>
+          <Button
+            size='small'
+            variant='outlined'
+            color='error'
+            sx={{ height: 30, marginLeft: 1 }}
+            onClick={handleCloseDrawer}
+          >
+            <CloseRoundedIcon sx={{ fontSize: 21 }} />
           </Button>
         </Tooltip>
       </ListItem>

@@ -9,6 +9,7 @@ import FunctionBlock from './FunctionBlock';
 import GetDigits from './GetDigits2';
 import PlayMenu from './PlayMenu';
 import SetParams from './SetParams';
+import PlayConfirm from './PlayConfirm';
 
 const DrawerComponent = ({
   isOpen,
@@ -25,6 +26,15 @@ const DrawerComponent = ({
     if (shape?.type == 'roundedRectangle') {
       return (
         <PlayMessage
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          userVariables={userVariables}
+          stageGroup={stageGroup}
+        />
+      );
+    } else if (shape?.type == 'roundedRectangle2') {
+      return (
+        <PlayConfirm
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
           userVariables={userVariables}
