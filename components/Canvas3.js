@@ -493,40 +493,12 @@ const CanvasComponent = () => {
 
   return (
     <>
-      <CanvasAppbar status={status} />
-      <Typography
-        sx={{
-          mt: 2,
-          position: 'fixed',
-          width: 'max-content',
-          alignItems: 'center',
-          display: isDeleting ? 'flex' : 'none',
-          fontSize: '1.2rem',
-          boxShadow: 1,
-          backgroundColor: '#f48fb1',
-          px: 2,
-        }}
-        variant='subtitle2'
-      >
-        <DeleteIcon /> Delete mode
-      </Typography>
-      <Typography
-        sx={{
-          mt: 2,
-          position: 'fixed',
-          width: 'max-content',
-          alignItems: 'center',
-          display: isConnecting ? 'flex' : 'none',
-          fontSize: '1.2rem',
-          boxShadow: 1,
-          backgroundColor: '#80cbc4',
-          px: 2,
-        }}
-        variant='subtitle2'
-      >
-        <ArrowRightAltIcon />
-        Connect mode
-      </Typography>
+      <CanvasAppbar
+        status={status}
+        isDeleting={isDeleting}
+        isConnecting={isConnecting}
+      />
+
       <canvas
         style={{ backgroundColor: '#F7FBFE' }}
         width={window.innerWidth * 0.9}
@@ -573,10 +545,10 @@ const CanvasComponent = () => {
           <Tooltip title='connect shapes' placement='left-start'>
             <ArrowRightAltIcon
               sx={{
-                fontSize: '1.9rem',
+                fontSize: isConnecting > 0 ? '2rem' : '1.9rem',
                 boxShadow: 1,
                 borderRadius: 2,
-                backgroundColor: '#e0f2f1',
+                backgroundColor: isConnecting > 0 ? '#00897b' : '#e0f2f1',
               }}
               onClick={() => {
                 if (!isDeleting && isConnecting === 0) {
@@ -586,6 +558,7 @@ const CanvasComponent = () => {
                   setTimeout(() => setShowInfoMessage(false), 3000);
                 }
                 isConnecting > 0 && setIsConnecting(0);
+                setIsDeleting(false);
                 canvasRef.current.style.cursor = 'crosshair';
               }}
             />
@@ -601,6 +574,7 @@ const CanvasComponent = () => {
               }}
               onClick={() => {
                 setIsDeleting(!isDeleting);
+                setIsConnecting(0);
                 console.log('is deleting', isDeleting);
               }}
             />

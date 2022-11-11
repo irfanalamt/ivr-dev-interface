@@ -4,8 +4,10 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import SaveIcon from '@mui/icons-material/Save';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-const CanvasAppbar = ({ status }) => {
+const CanvasAppbar = ({ status, isConnecting, isDeleting }) => {
   return (
     <Box
       sx={{
@@ -28,6 +30,37 @@ const CanvasAppbar = ({ status }) => {
       >
         <AccountCircleIcon sx={{ mr: 0.25, fontSize: '1.2rem' }} />
         {status === 'authenticated' ? data.user.email : 'Guest User'}
+      </Typography>
+      <Typography
+        sx={{
+          ml: 2,
+          width: 'max-content',
+          alignItems: 'center',
+          display: isDeleting ? 'flex' : 'none',
+          fontSize: '1.2rem',
+          boxShadow: 1,
+          backgroundColor: '#f48fb1',
+          px: 2,
+        }}
+        variant='subtitle2'
+      >
+        <DeleteIcon /> Delete mode
+      </Typography>
+      <Typography
+        sx={{
+          ml: 2,
+          width: 'max-content',
+          alignItems: 'center',
+          display: isConnecting ? 'flex' : 'none',
+          fontSize: '1.2rem',
+          boxShadow: 1,
+          backgroundColor: '#80cbc4',
+          px: 2,
+        }}
+        variant='subtitle2'
+      >
+        <ArrowRightAltIcon />
+        Connect mode
       </Typography>
       <Box sx={{ ml: 'auto' }}>
         <Tooltip title='SAVE'>
