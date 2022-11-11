@@ -7,7 +7,13 @@ import SaveIcon from '@mui/icons-material/Save';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const CanvasAppbar = ({ status, isConnecting, isDeleting }) => {
+const CanvasAppbar = ({
+  status,
+  data,
+  isConnecting,
+  isDeleting,
+  stageGroup,
+}) => {
   return (
     <Box
       sx={{
@@ -69,14 +75,14 @@ const CanvasAppbar = ({ status, isConnecting, isDeleting }) => {
             variant='contained'
             size='small'
             color='info'
-            // onClick={() => {
-            //   const serializedShapes = stageGroup.current.getSerializedShapes();
-            //   localStorage.setItem('isExistingProject', true);
-            //   localStorage.setItem(
-            //     'saved_project',
-            //     JSON.stringify(serializedShapes)
-            //   );
-            // }}
+            onClick={() => {
+              const serializedShapes = stageGroup.current.getSerializedShapes();
+              localStorage.setItem('isExistingProject', true);
+              localStorage.setItem(
+                'saved_project',
+                JSON.stringify(serializedShapes)
+              );
+            }}
             disabled={status !== 'authenticated'}
           >
             <SaveIcon sx={{ fontSize: '1.2rem' }} />

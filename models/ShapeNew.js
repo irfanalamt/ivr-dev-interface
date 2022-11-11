@@ -80,6 +80,36 @@ class Shape {
 
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
   }
+  getSerialized() {
+    return {
+      x: this.x,
+      y: this.y,
+      width: this.width,
+      height: this.height,
+      type: this.type,
+      style: this.style,
+      stroke: this.stroke,
+      text: this.text,
+      userValues: JSON.stringify(this.userValues),
+      functionString: this.functionString,
+    };
+  }
+
+  static createFromObject(shapeObj) {
+    const tempShape = new Shape(
+      shapeObj.x,
+      shapeObj.y,
+      shapeObj.width,
+      shapeObj.height,
+      shapeObj.type,
+      shapeObj.style,
+      shapeObj.stroke
+    );
+    tempShape.text = shapeObj.text;
+    tempShape.userValues = JSON.parse(shapeObj.userValues);
+
+    return tempShape;
+  }
 
   setWidthFromText() {
     switch (this.type) {

@@ -494,9 +494,11 @@ const CanvasComponent = () => {
   return (
     <>
       <CanvasAppbar
+        data={data}
         status={status}
         isDeleting={isDeleting}
         isConnecting={isConnecting}
+        stageGroup={stageGroup}
       />
 
       <canvas
@@ -594,6 +596,7 @@ const CanvasComponent = () => {
           stageGroup={stageGroup.current}
         />
       </Box>
+
       <Typography
         sx={{
           visibility: 'hidden',
