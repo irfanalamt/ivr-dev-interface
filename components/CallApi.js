@@ -58,7 +58,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
     shape.setText(shapeName || 'callAPI');
     shape.setUserValues({ endpoint: endpoint });
     console.log('🌟', { inputArr, outputArr });
-    generateJS();
+    // generateJS();
   }
 
   function generateJS() {

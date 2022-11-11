@@ -28,7 +28,6 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
   );
   const [paramSelected, setParamSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
-  const [nextItem, setNextItem] = useState(shape.nextItem ?? '');
 
   const optionalParamsList = [
     'language',
@@ -50,7 +49,7 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
 
   function saveUserValues() {
     shape.setText(shapeName);
-    shape.setNextItem(nextItem);
+
     shape.setUserValues({
       params: menuObj,
       paramSelectedList,

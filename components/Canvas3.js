@@ -4,6 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import InfoIcon from '@mui/icons-material/Info';
 
 import {
   Alert,
@@ -36,6 +37,7 @@ const CanvasComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isConnecting, setIsConnecting] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showInfoMessage, setShowInfoMessage] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -46,6 +48,10 @@ const CanvasComponent = () => {
   const userVariables = useRef([]);
   const currentShape = useRef(null);
   const tooltipRef = useRef(null);
+  const infoMessage = useRef(null);
+
+  const connectShape1 = useRef(null),
+    connectShape2 = useRef(null);
 
   let isDragging = false,
     isPalletShape = false;
@@ -151,6 +157,9 @@ const CanvasComponent = () => {
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
 
+    // reset cursor if not connecting
+    if (isConnecting === 0) canvasRef.current.style.cursor = 'default';
+
     if (isDragging) {
       // drag shape - mousemove
       let dx = realX - startX;
@@ -193,6 +202,22 @@ const CanvasComponent = () => {
         if (isDeleting) {
           stageGroup.current.removeShape(i);
           clearAndDraw();
+          return;
+        }
+        console.log(`YES in stage shape ${element.type}`);
+        if (isConnecting === 1) {
+          connectShape1.current = element;
+          connectShape1.current.setSelected(true);
+          clearAndDraw();
+          setIsConnecting(2);
+          return;
+        }
+        if (isConnecting === 2) {
+          connectShape2.current = element;
+          connectShape2.current.setSelected(true);
+          clearAndDraw();
+          setIsConnecting(0);
+          connectShapes();
           return;
         }
         currentShape.current = element;
@@ -420,6 +445,26 @@ const CanvasComponent = () => {
     // console.log('lineGroup', lineGroup.current);
   }
 
+  function connectShapes() {
+    console.log('🚀 ~ connectShapes ~ connectShape1', connectShape1.current);
+    console.log('🚀 ~ connectShapes ~ connectShape2', connectShape2.current);
+    connectShape1.current.setSelected(false);
+    connectShape2.current.setSelected(false);
+    clearAndDraw();
+
+    // return if connecting shapes same
+    if (connectShape1.current === connectShape2.current) {
+      console.log('haaa');
+      infoMessage.current = 'connecting shapes are the same.';
+      setShowInfoMessage(true);
+      setTimeout(() => {
+        setShowInfoMessage(false);
+      }, 3000);
+
+      return;
+    }
+  }
+
   return (
     <>
       <CanvasAppbar status={status} />
@@ -442,10 +487,10 @@ const CanvasComponent = () => {
       <Typography
         sx={{
           mt: 2,
-          position: 'absolute',
-          left: 70,
+          position: 'fixed',
+          width: 'max-content',
           alignItems: 'center',
-          display: 'none',
+          display: isConnecting ? 'flex' : 'none',
           fontSize: '1.2rem',
           boxShadow: 1,
           backgroundColor: '#80cbc4',
@@ -479,7 +524,26 @@ const CanvasComponent = () => {
             />
           </Tooltip>
         </Box>
-        <Box sx={{ mx: 'auto' }}>
+
+        <Typography
+          sx={{
+            ml: 2,
+            display: showInfoMessage ? 'flex' : 'none',
+            alignItems: 'center',
+            boxShadow: 1,
+            px: 2,
+            mb: 0.5,
+            backgroundColor: '#b3e5fc',
+            fontSize: '1rem',
+            borderRadius: 2,
+          }}
+          variant='subtitle2'
+        >
+          <InfoIcon sx={{ mr: 0.5, color: '#ef5350' }} />
+          {infoMessage.current}
+        </Typography>
+
+        <Box sx={{ position: 'fixed', left: '45vw' }}>
           <Tooltip title='connect shapes' placement='left-start'>
             <ArrowRightAltIcon
               sx={{
@@ -487,6 +551,16 @@ const CanvasComponent = () => {
                 boxShadow: 1,
                 borderRadius: 2,
                 backgroundColor: '#e0f2f1',
+              }}
+              onClick={() => {
+                if (!isDeleting && isConnecting === 0) {
+                  setIsConnecting(1);
+                  infoMessage.current = 'Click on shapes to connect';
+                  setShowInfoMessage(true);
+                  setTimeout(() => setShowInfoMessage(false), 3000);
+                }
+                isConnecting > 0 && setIsConnecting(0);
+                canvasRef.current.style.cursor = 'crosshair';
               }}
             />
           </Tooltip>

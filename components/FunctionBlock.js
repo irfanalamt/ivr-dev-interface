@@ -15,14 +15,14 @@ import { checkValidity } from '../src/helpers';
 
 const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
   const [shapeName, setShapeName] = useState(shape.text);
-  const [nextItem, setNextItem] = useState(shape.nextItem || '');
+
   const [functionString, setFunctionString] = useState('');
   const [isFunctionError, setIsFunctionError] = useState(false);
   const [errorObj, setErrorObj] = useState({});
 
   function saveUserValues() {
     shape.setText(shapeName);
-    shape.setNextItem(nextItem);
+
     console.log('shape after save', shape);
     console.log('shapeGroup ', stageGroup);
   }

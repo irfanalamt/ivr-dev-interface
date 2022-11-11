@@ -39,15 +39,13 @@ const PlayMessage = ({
     shape.userValues?.params.repeatOption ?? 9
   );
 
-  const [nextItem, setNextItem] = useState(shape.nextItem ?? '');
-
   const nameErrorRef = useRef(null);
 
   function saveUserValues() {
     // remove null values; SAVE
     const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
-    shape.setNextItem(nextItem);
+
     shape.setUserValues({
       params: { interruptible, repeatOption },
       messageList: filteredMsgObj,
