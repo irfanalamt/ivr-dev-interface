@@ -290,7 +290,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            100,
+            85,
             30,
             'rectangle',
             null,
@@ -302,7 +302,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            100,
+            70,
             20,
             'invertedHexagon',
             null,
@@ -326,7 +326,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            100,
+            90,
             30,
             'parallelogram',
             '#9c27b0',
@@ -350,7 +350,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            125,
+            115,
             30,
             'roundedRectangle2',
             '#7cb342',

@@ -384,7 +384,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             clientX,
             clientY,
-            120,
+            100,
             50,
             'rectangle',
             null,

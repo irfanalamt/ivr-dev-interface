@@ -45,6 +45,9 @@ class Shape {
   }
   setText(inputText) {
     this.text = inputText;
+
+    // auto set width from textSize
+    this.setWidthFromText();
   }
   setNextItem(item) {
     this.nextItem = item;
@@ -76,6 +79,38 @@ class Shape {
     shapeBottom = this.y + this.height / 2;
 
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
+  }
+
+  setWidthFromText() {
+    switch (this.type) {
+      case 'rectangle':
+        this.width = this.text.length * 11.5;
+        break;
+
+      case 'invertedHexagon':
+        this.width = this.text.length * 10.5 + 10;
+        break;
+
+      case 'pentagon':
+        this.width = this.text.length * 11.5;
+        break;
+
+      case 'hexagon':
+        this.width = this.text.length * 12;
+        break;
+
+      case 'parallelogram':
+        this.width = this.text.length * 11 + 10;
+        break;
+
+      case 'roundedRectangle':
+        this.width = this.text.length * 10.3 + 10;
+        break;
+
+      case 'roundedRectangle2':
+        this.width = this.text.length * 10.3 + 10;
+        break;
+    }
   }
 
   drawShape(ctx) {
