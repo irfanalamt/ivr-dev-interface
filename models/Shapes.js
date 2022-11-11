@@ -43,7 +43,7 @@ class Shapes {
     // loops through shapes connections and returns valid shapeText
     while (1) {
       let nextShapeText = this.shapes[index].nextItem;
-      let ind = this.shapes.findIndex((el) => el.text === nextShapeText);
+      let ind = this.shapes.findIndex((el) => el.id === nextShapeText);
       if (ind !== -1 && this.shapes[ind].type !== 'smallCircle') {
         return this.shapes[ind].text;
       }
@@ -57,21 +57,21 @@ class Shapes {
     this.shapes.forEach((el, i) => {
       // if shape has nextitem, find nextShape from shapes array, push linecordinates to tempArray
       if (el.nextItem) {
-        let index = this.shapes.findIndex((elm) => elm.text === el.nextItem);
+        let index = this.shapes.findIndex((elm) => elm.id === el.nextItem);
         if (index !== -1) {
           let shape1 = el;
           let shape2 = this.shapes[index];
           console.log('valid next shape:', this.getNextValidItem(i));
-          let lineColor = this.getNextValidItem(i) === null ? 'red' : 'black';
+          // let lineColor = this.getNextValidItem(i) === null ? 'red' : 'black';
           tempArray.push({
             x1: shape1.getExitPoint()[0],
             y1: shape1.getExitPoint()[1],
             x2: shape2.getEntryPoint()[0],
             y2: shape2.getEntryPoint()[1],
-            startItem: shape1.text,
-            endItem: shape2.text,
+            startItem: shape1.id,
+            endItem: shape2.id,
             lineCap: null,
-            lineColor,
+            lineColor: 'black',
           });
         }
       }
@@ -95,8 +95,8 @@ class Shapes {
                 y1: shape1.getExitPoint()[1],
                 x2: shape2.getEntryPoint()[0],
                 y2: shape2.getEntryPoint()[1],
-                startItem: shape1.text,
-                endItem: shape2.text,
+                startItem: shape1.id,
+                endItem: shape2.id,
                 lineCap: parseInt(elm.digit),
               });
             }
@@ -109,12 +109,11 @@ class Shapes {
   removeShape(index) {
     this.shapes.splice(index, 1);
   }
-  removeShapeNextByName(name) {
-    // to reset nextItem by name
-    let index = this.shapes.findIndex((el) => el.text === name);
-    if (index !== -1) {
-      this.shapes[index].nextItem = null;
-    }
+
+  removeShapeNextById(id) {
+    // to reset nextItem by ID
+    let index = this.shapes.findIndex((el) => el.id === id);
+    if (index !== -1) this.shapes[index].nextItem = null;
   }
 }
 

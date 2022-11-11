@@ -44,14 +44,16 @@ const CanvasComponent = () => {
   const { status, data } = useSession();
 
   const palletGroup = useRef(null);
+  const lineGroup = useRef(null);
   const stageGroup = useRef(null);
   const userVariables = useRef([]);
   const currentShape = useRef(null);
   const tooltipRef = useRef(null);
   const infoMessage = useRef(null);
-
   const connectShape1 = useRef(null),
     connectShape2 = useRef(null);
+
+  const shapeCount = useRef(0);
 
   let isDragging = false,
     isPalletShape = false;
@@ -236,6 +238,7 @@ const CanvasComponent = () => {
     palletGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(realX, realY)) {
         console.log(`YES in pallet shape ${element.type}`);
+        setIsConnecting(0);
         setIsDeleting(false);
         currentShape.current = element;
         isDragging = true;
@@ -243,6 +246,24 @@ const CanvasComponent = () => {
         startX = realX;
         startY = realY;
 
+        return;
+      }
+    });
+
+    // check mouse on line
+    lineGroup.current.getLines().forEach((el, i) => {
+      const linepoint = el.linepointNearestMouse(realX, realY);
+      let dx = realX - linepoint.x;
+      let dy = realY - linepoint.y;
+      // root of dx^2 + dy^2
+      let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+      console.log('🚀 ~ lineGroup.current.getLines ~ distance', distance);
+
+      if (distance < 5 && isDeleting) {
+        console.log('remove; mouse on line; 🐁');
+        console.log('remove el ', el);
+        stageGroup.current.removeShapeNextById(el.startItem);
+        clearAndDraw();
         return;
       }
     });
@@ -369,7 +390,7 @@ const CanvasComponent = () => {
 
       if (realX > 120) {
         //set unique id; add figure to stage
-        stageFigure.setId(stageGroup.current.getShapes().length);
+        stageFigure.setId(shapeCount.current++);
         stageGroup.current.addShape(stageFigure);
         console.log('🚀 ~ handleMouseUp ~ stageFigureAdded', stageFigure);
       }
@@ -419,30 +440,30 @@ const CanvasComponent = () => {
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
 
-    // // Calculate all connecting lines return array of connections
-    // let connectionsArray = stageGroup.current.getConnectionsArray();
-    // console.log('🚀 ~ clearAndDraw ~ connectionsArray', connectionsArray);
-    // // init lineGroup
-    // lineGroup.current = new Lines([]);
-    // connectionsArray.forEach((el) => {
-    //   let newLine = new Line(
-    //     el.x1,
-    //     el.y1,
-    //     el.x2,
-    //     el.y2,
-    //     el.startItem,
-    //     el.endItem,
-    //     el.lineCap,
-    //     el.lineColor
-    //   );
-    //   lineGroup.current.addLine(newLine);
-    // });
+    // Calculate all connecting lines return array of connections
+    let connectionsArray = stageGroup.current.getConnectionsArray();
+    console.log('🚀 ~ clearAndDraw ~ connectionsArray', connectionsArray);
+    // init lineGroup
+    lineGroup.current = new Lines([]);
+    connectionsArray.forEach((el) => {
+      let newLine = new Line(
+        el.x1,
+        el.y1,
+        el.x2,
+        el.y2,
+        el.startItem,
+        el.endItem,
+        el.lineCap,
+        el.lineColor
+      );
+      lineGroup.current.addLine(newLine);
+    });
 
-    // lineGroup.current
-    //   .getLines()
-    //   .forEach((el) => el.connectPoints(contextRef.current));
+    lineGroup.current
+      .getLines()
+      .forEach((el) => el.connectPoints(contextRef.current));
 
-    // console.log('lineGroup', lineGroup.current);
+    console.log('lineGroup', lineGroup.current);
   }
 
   function connectShapes() {
@@ -463,6 +484,11 @@ const CanvasComponent = () => {
 
       return;
     }
+
+    // set nextItem for shape1; create new line to connect shapes
+    connectShape1.current.setNextItem(connectShape2.current.id);
+    clearAndDraw();
+    return;
   }
 
   return (

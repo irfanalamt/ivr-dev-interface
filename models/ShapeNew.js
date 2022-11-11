@@ -31,6 +31,13 @@ class Shape {
     // return initial position to reset palette shape after dragdrop
     return this.initPos;
   }
+  getEntryPoint() {
+    return [this.x, this.y - this.height / 2];
+  }
+
+  getExitPoint() {
+    return [this.x, this.y + this.height / 2];
+  }
 
   setId(id) {
     // unique id set based on shapes array length
@@ -39,6 +46,14 @@ class Shape {
   setText(inputText) {
     this.text = inputText;
   }
+  setNextItem(item) {
+    this.nextItem = item;
+  }
+
+  setFunctionString(text) {
+    this.functionString = text;
+  }
+
   setSelected(bool) {
     this.selected = bool;
   }
