@@ -407,7 +407,9 @@ const CanvasComponent = () => {
           element.isMouseInShape(realX, realY) &&
           element.type !== 'smallCircle'
         ) {
-          console.log(`YES in pallet shape mouseUp ${element.type}`);
+          console.log(
+            `YES in pallet shape mouseUp ${JSON.stringify(element, null, 2)}`
+          );
           currentShape.current = element;
           currentShape.current.setSelected(true);
           clearAndDraw();

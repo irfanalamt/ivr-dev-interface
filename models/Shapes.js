@@ -56,7 +56,7 @@ class Shapes {
     let tempArray = [];
     this.shapes.forEach((el, i) => {
       // if shape has nextitem, find nextShape from shapes array, push linecordinates to tempArray
-      if (el.nextItem) {
+      if (el.nextItem !== null) {
         let index = this.shapes.findIndex((elm) => elm.id === el.nextItem);
         if (index !== -1) {
           let shape1 = el;
