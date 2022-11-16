@@ -21,7 +21,9 @@ import { useState } from 'react';
 import { checkValidity } from '../src/helpers';
 
 const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
-  const [shapeName, setShapeName] = useState(shape.text ?? '');
+  const [shapeName, setShapeName] = useState(
+    shape.text || `setParams${shape.id}`
+  );
   const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
   const [paramSelectedList, setParamSelectedList] = useState(
     shape.userValues?.paramSelectedList || []
@@ -48,7 +50,7 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
   ];
 
   function saveUserValues() {
-    shape.setText(shapeName);
+    shape.setText(shapeName || `setParams${shape.id}`);
 
     shape.setUserValues({
       params: menuObj,
@@ -58,15 +60,18 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
   }
 
   function generateJS() {
-    console.log('💃🏻ParamsObj', JSON.stringify(menuObj));
+    if (Object.keys(menuObj).length === 0) {
+      shape.setFunctionString('');
+      return;
+    }
 
-    let codeString = `this.${shapeName}=function(){
+    let codeString = `this.${shapeName || `setParams${shape.id}`}=function(){
       let newParams = ${JSON.stringify(menuObj)};
       Ivr.params = {...Ivr.params,...newParams};
     }`;
 
     shape.setFunctionString(codeString);
-    console.log('🚀 ~ generateJS ~ codeString', codeString);
+    console.log('🕺🏻setParams code:', codeString);
   }
 
   function handleValidation(e, name, type) {
