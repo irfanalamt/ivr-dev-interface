@@ -59,6 +59,14 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
 
   function generateJS() {
     console.log('💃🏻ParamsObj', JSON.stringify(menuObj));
+
+    let codeString = `this.${shapeName}=function(){
+      let newParams = ${JSON.stringify(menuObj)};
+      Ivr.params = {...Ivr.params,...newParams};
+    }`;
+
+    shape.setFunctionString(codeString);
+    console.log('🚀 ~ generateJS ~ codeString', codeString);
   }
 
   function handleValidation(e, name, type) {
