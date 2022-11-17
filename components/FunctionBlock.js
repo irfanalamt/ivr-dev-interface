@@ -21,10 +21,26 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
   const [errorObj, setErrorObj] = useState({});
 
   function saveUserValues() {
-    shape.setText(shapeName);
+    shape.setText(shapeName || `runScript${shape.id}`);
 
-    console.log('shape after save', shape);
-    console.log('shapeGroup ', stageGroup);
+    let isValid = isValidJs();
+    if (isValid) {
+      generateJS();
+    }
+  }
+
+  function generateJS() {
+    if (functionString.length < 2) {
+      shape.setFunctionString('');
+      return;
+    }
+
+    let codeString = `this.${
+      shapeName || `runScript${shape.id}`
+    }=async function(){${functionString}}`;
+
+    shape.setFunctionString(codeString);
+    console.log('🕺🏻runScript code:', codeString);
   }
 
   function handleFunctionValidation() {
