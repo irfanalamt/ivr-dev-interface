@@ -38,15 +38,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
   const [errorObj, setErrorObj] = useState({});
 
   const menuActionList = stageGroup.shapes.filter(
-    (s) =>
-      s.text !== shapeName &&
-      s.text !== 'playMenu' &&
-      s.text !== 'playMessage' &&
-      s.text !== 'function' &&
-      s.text !== 'setParams' &&
-      s.text !== 'getDigits' &&
-      s.text !== 'callAPI' &&
-      s.type !== 'smallCircle'
+    (s) => s.text !== shapeName && s.type !== 'smallCircle'
   );
 
   function handleMenuObjChange(value, name) {

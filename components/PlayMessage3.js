@@ -55,17 +55,17 @@ const PlayMessage = ({
   }
 
   function generateJS(filteredMsgObj) {
-    let codeString = `this.${shapeName}= async function(){
-      
-let msgList = ${JSON.stringify(filteredMsgObj)};
+    let codeString = `this.${
+      shapeName || `playMessage${shape.id}`
+    }= async function(){let msgList = ${JSON.stringify(
+      filteredMsgObj
+    )};let params = ${JSON.stringify({
+      interruptible,
+      repeatOption,
+    })};await Ivr.playMessage(msgList,params);}`;
 
-let params = ${JSON.stringify({ interruptible, repeatOption })};
-
- await IVR.getDigits(msgList,params);
-    
-};`;
     shape.setFunctionString(codeString);
-    console.log('🚀 ~ generateJS ~ codeString', codeString);
+    console.log('🕺🏻playMessage code:', codeString);
   }
 
   function addInput() {

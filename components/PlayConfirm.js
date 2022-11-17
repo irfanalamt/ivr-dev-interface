@@ -54,6 +54,24 @@ const PlayConfirm = ({
       params: { confirmOption, cancelOption, confirmPrompt, cancelPrompt },
       messageList: filteredMsgObj,
     });
+
+    generateJS(filteredMsgObj);
+  }
+
+  function generateJS(filteredMsgObj) {
+    let codeString = `this.${
+      shapeName || `playConfirm${shape.id}`
+    }= async function(){let msgList = ${JSON.stringify(
+      filteredMsgObj
+    )};let params = ${JSON.stringify({
+      confirmOption,
+      cancelOption,
+      confirmPrompt,
+      cancelPrompt,
+    })};await Ivr.playConfirm(msgList,params);}`;
+
+    shape.setFunctionString(codeString);
+    console.log('🕺🏻playMessage code:', codeString);
   }
 
   function addInput() {

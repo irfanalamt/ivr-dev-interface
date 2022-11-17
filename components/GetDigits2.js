@@ -73,17 +73,16 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
   }
 
   function generateJS(filteredMsgObj, entireParamsObj) {
-    let codeString = `this.${shapeName}= async function(){
-
-let msgList = ${JSON.stringify(filteredMsgObj)};
-
-let params = ${JSON.stringify(entireParamsObj)};
-
-this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
-    
-};`;
+    let codeString = `this.${
+      shapeName || `getDigits${shape.id}`
+    }= async function(){let msgList = ${JSON.stringify(
+      filteredMsgObj
+    )};let params = ${JSON.stringify(entireParamsObj)};this.${
+      resultName || 'default'
+    } = await IVR.getDigits(msgList,params); 
+}`;
     shape.setFunctionString(codeString);
-    console.log('🚀 ~ generateJS ~ codeString', codeString);
+    console.log('🕺🏻getDigits code:', codeString);
   }
 
   function handleNameValidation(e) {
