@@ -42,6 +42,8 @@ class Shape {
   setId(id) {
     // unique id set based on shapes array length
     this.id = id;
+    // add id to name text end
+    this.text += id;
   }
   setText(inputText) {
     this.text = inputText;

@@ -223,7 +223,18 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
                       [playMessage]
                     </Typography>
                   )}
-                  {el.type === 'circle' && (
+                  {el.type === 'roundedRectangle2' && (
+                    <Typography
+                      sx={{
+                        color: '#8bc34a',
+                        pr: 1,
+                      }}
+                      variant='subtitle2'
+                    >
+                      [playConfirm]
+                    </Typography>
+                  )}
+                  {el.type === 'invertedHexagon' && (
                     <Typography
                       sx={{
                         color: '#2196f3',

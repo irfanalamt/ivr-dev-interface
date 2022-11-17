@@ -207,6 +207,7 @@ const CanvasComponent = () => {
           return;
         }
         console.log(`YES in stage shape ${element.type}`);
+        console.log('🌟CURRENT stageGroup:', stageGroup.current.getShapes());
         if (isConnecting === 1) {
           connectShape1.current = element;
           connectShape1.current.setSelected(true);
@@ -290,7 +291,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            85,
+            105,
             30,
             'rectangle',
             null,
@@ -302,7 +303,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            70,
+            90,
             20,
             'invertedHexagon',
             null,
@@ -314,7 +315,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            100,
+            125,
             30,
             'hexagon',
             '#009688',
@@ -326,7 +327,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            90,
+            110,
             30,
             'parallelogram',
             '#9c27b0',
@@ -338,7 +339,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            125,
+            145,
             30,
             'roundedRectangle',
             '#c0ca33',
@@ -350,7 +351,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            115,
+            135,
             30,
             'roundedRectangle2',
             '#7cb342',
@@ -362,7 +363,7 @@ const CanvasComponent = () => {
           stageFigure = new Shape(
             realX,
             realY,
-            100,
+            120,
             30,
             'pentagon',
             '#e91e63',
@@ -390,6 +391,9 @@ const CanvasComponent = () => {
 
       if (realX > 120) {
         //set unique id; add figure to stage
+
+        // reset shapeCount if stageGroup empty
+        if (stageGroup.current.getShapes().length === 0) shapeCount.current = 0;
         stageFigure.setId(shapeCount.current++);
         stageGroup.current.addShape(stageFigure);
         console.log('🚀 ~ handleMouseUp ~ stageFigureAdded', stageFigure);
