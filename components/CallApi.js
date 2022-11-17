@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Chip,
   Divider,
@@ -8,6 +9,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   TextField,
   Tooltip,
   Typography,
@@ -21,17 +23,23 @@ import { useState } from 'react';
 
 const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
   const [shapeName, setShapeName] = useState(shape.text);
-  const [inputArr, setInputArr] = useState([
-    {
-      value: '',
-    },
-  ]);
-  const [outputArr, setOutputArr] = useState([
-    {
-      value: '',
-    },
-  ]);
+  const [inputArr, setInputArr] = useState(
+    shape.userValues?.inputArr || [
+      {
+        value: '',
+      },
+    ]
+  );
+  const [outputArr, setOutputArr] = useState(
+    shape.userValues?.outputArr || [
+      {
+        value: '',
+      },
+    ]
+  );
   const [endpoint, setEndpoint] = useState(shape.userValues?.endpoint || '');
+
+  const [openToast, setOpenToast] = useState(false);
 
   function handleInputArrChange(e, index) {
     console.log('🚀 ~ handleInputArrChange ~ e', e);
@@ -56,29 +64,36 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
 
   function saveUserValues() {
     shape.setText(shapeName || 'callAPI');
-    shape.setUserValues({ endpoint: endpoint });
+    shape.setUserValues({ endpoint, inputArr, outputArr });
     console.log('🌟', { inputArr, outputArr });
-    // generateJS();
+    generateJS();
   }
 
   function generateJS() {
+    if (!endpoint || !inputArr[0].value || !outputArr[0].value) {
+      console.log('set endpoint,input & output!❌');
+      shape.setFunctionString('');
+      setOpenToast(true);
+      return;
+    }
+
+    // genarate function only if all 3 parameters are filled
+
     let inputVarsString =
-      '{' + inputArr.map((el, i) => `${el.value}:this.${el.value}`) + '}';
+      '{' + inputArr.map((el) => `${el.value}:this.${el.value}`) + '}';
 
     let outputVarsString = outputArr
       .filter((el) => el.value)
       .map((el) => `this.${el.value}=outputVars.${el.value};`)
       .join('');
 
-    let codeString = `this.${shapeName}=async function(){
-  let endpoint = '${endpoint}';
-  let inputVars= ${inputVarsString};
-  let outputVars = await IVR.callAPI(endpoint,inputVars);
-  ${outputVarsString}
+    let codeString = `this.${
+      shapeName || `callAPI${shape.id}`
+    }=async function(){let endpoint = '${endpoint}';let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI(endpoint,inputVars);${outputVarsString}
 }`;
 
     shape.setFunctionString(codeString);
-    console.log('🚀 ~ codeString ~ codeString', codeString);
+    console.log('🕺🏻callAPI code:', codeString);
   }
 
   function addInput() {
@@ -117,12 +132,9 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
   }
 
   function handleApiCall() {
-    const inputVarList = inputArr.map((el, i) => {
-      return el.value;
-    });
-    const outputVarList = outputArr.map((el, i) => {
-      return el.value;
-    });
+    const inputVarList = inputArr.map((el) => el.value);
+    const outputVarList = outputArr.map((el) => el.value);
+
     console.log('inputVarList', inputVarList);
     console.log('outputVarList', outputVarList);
     console.log('endpoint', endpoint);
@@ -309,6 +321,19 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
           </Button>
         </ListItem>
       </List>
+      <Snackbar
+        open={openToast}
+        autoHideDuration={6000}
+        onClose={() => setOpenToast(false)}
+      >
+        <Alert
+          onClose={() => setOpenToast(false)}
+          severity='warning'
+          sx={{ width: '100%' }}
+        >
+          Please set endpoint, input and output.
+        </Alert>
+      </Snackbar>
     </>
   );
 };
