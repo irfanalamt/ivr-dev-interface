@@ -39,16 +39,16 @@ class Shapes {
     this.shapes.push(newShape);
   }
 
-  getNextValidItem(index) {
-    // loops through shapes connections and returns valid shapeText
-    while (1) {
-      let nextShapeText = this.shapes[index].nextItem;
-      let ind = this.shapes.findIndex((el) => el.id === nextShapeText);
+  getValidNextItem(i) {
+    while (true) {
+      let nextShapeId = this.shapes[i].nextItem;
+      if (nextShapeId === null || nextShapeId === undefined) return null;
+
+      let ind = this.shapes.findIndex((el) => el.id === nextShapeId);
       if (ind !== -1 && this.shapes[ind].type !== 'smallCircle') {
-        return this.shapes[ind].text;
+        return this.shapes[ind].id;
       }
-      index++;
-      if (nextShapeText === null || nextShapeText === undefined) return null;
+      i = ind;
     }
   }
 
@@ -115,6 +115,7 @@ class Shapes {
         if (index !== -1) {
           let shape1 = el;
           let shape2 = this.shapes[index];
+          let lineColor = this.getValidNextItem(i) === null ? 'red' : 'black';
           tempArray.push({
             x1: shape1.getExitPoint()[0],
             y1: shape1.getExitPoint()[1],
@@ -123,11 +124,12 @@ class Shapes {
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
-            lineColor: 'black',
+            lineColor: lineColor,
           });
         }
       }
     });
+
     return tempArray;
   }
 

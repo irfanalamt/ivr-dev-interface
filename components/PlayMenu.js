@@ -165,7 +165,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
               }}
             >
               {menuActionList.map((el, i) => (
-                <MenuItem key={i} value={el.text}>
+                <MenuItem key={i} value={el.id}>
                   <Typography
                     sx={{ display: 'inline', minWidth: '40%', mr: 1 }}
                   >
