@@ -481,13 +481,20 @@ const CanvasComponent = () => {
 
     // return if connecting shapes same
     if (connectShape1.current === connectShape2.current) {
-      console.log('haaa');
       infoMessage.current = 'connecting shapes are the same.';
       setShowInfoMessage(true);
-      setTimeout(() => {
-        setShowInfoMessage(false);
-      }, 3000);
+      setTimeout(() => setShowInfoMessage(false), 3000);
+      return;
+    }
 
+    // return if 1st shape is a menu; 2nd shape is not a connector
+    if (
+      connectShape1.current.type === 'hexagon' &&
+      connectShape2.current.type !== 'smallCircle'
+    ) {
+      infoMessage.current = 'Use playMenu items to connect.';
+      setShowInfoMessage(true);
+      setTimeout(() => setShowInfoMessage(false), 4000);
       return;
     }
 

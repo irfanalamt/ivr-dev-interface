@@ -132,7 +132,7 @@ class Shape {
         break;
 
       case 'parallelogram':
-        this.width = this.text.length * 11 + 10;
+        this.width = this.text.length * 11 + 30;
         break;
 
       case 'roundedRectangle':
