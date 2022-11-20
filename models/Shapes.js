@@ -132,7 +132,9 @@ class Shapes {
       if (el.type === 'hexagon') {
         el.userValues?.items.forEach((elm) => {
           if (elm.action) {
-            let index = this.shapes.findIndex((s) => s.id === elm.action);
+            let index = this.shapes.findIndex(
+              (s) => s.id === parseInt(elm.action)
+            );
             if (index !== -1) {
               let shape1 = el;
               let shape2 = this.shapes[index];

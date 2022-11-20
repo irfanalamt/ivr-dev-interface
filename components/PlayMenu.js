@@ -103,7 +103,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
   function handleItemsObjChange(value, key, name) {
     setItemsObj((s) => {
       const newArr = [...s];
-      newArr[key][name] = value;
+      newArr[key][name] = String(value);
       return newArr;
     });
   }
