@@ -128,6 +128,28 @@ class Shapes {
           });
         }
       }
+
+      if (el.type === 'hexagon') {
+        el.userValues?.items.forEach((elm) => {
+          if (elm.action) {
+            let index = this.shapes.findIndex((s) => s.id === elm.action);
+            if (index !== -1) {
+              let shape1 = el;
+              let shape2 = this.shapes[index];
+              tempArray.push({
+                x1: shape1.getExitPoint()[0],
+                y1: shape1.getExitPoint()[1],
+                x2: shape2.getEntryPoint()[0],
+                y2: shape2.getEntryPoint()[1],
+                startItem: shape1.id,
+                endItem: shape2.id,
+                lineCap: null,
+                lineColor: 'blue',
+              });
+            }
+          }
+        });
+      }
     });
 
     return tempArray;
