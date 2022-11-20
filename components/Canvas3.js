@@ -498,6 +498,46 @@ const CanvasComponent = () => {
       return;
     }
 
+    // playMessage to connector connection; add to connectors array
+    if (
+      connectShape1.current.type === 'hexagon' &&
+      connectShape2.current.type === 'smallCircle'
+    ) {
+      connectShape1.current.setConnectors(connectShape2.current.id);
+      console.log('Connector array:⚡', connectShape1.current);
+    }
+
+    // shape1 connector
+    if (
+      connectShape1.current.type === 'smallCircle' &&
+      connectShape2.current.type !== 'smallCircle'
+    ) {
+      let isPlayMenuConnectorId = stageGroup.current.isPlayMenuConnector(
+        connectShape1.current.id
+      );
+      console.log(
+        '🟢✅🐁 ~ connectShapes ~ isPlayMenuConnectorId',
+        isPlayMenuConnectorId
+      );
+
+      if (isPlayMenuConnectorId || isPlayMenuConnectorId === 0) {
+        console.log('IsPlayMenuConnector✨💃🏻');
+        let isPlayMenuAction = stageGroup.current.isPlayMenuAction(
+          isPlayMenuConnectorId,
+          connectShape2.current.id
+        );
+        if (isPlayMenuAction) {
+          connectShape1.current.setNextItem(connectShape2.current.id);
+          clearAndDraw();
+          return;
+        }
+        infoMessage.current = 'Invalid connection. Check playMenu items.';
+        setShowInfoMessage(true);
+        setTimeout(() => setShowInfoMessage(false), 4000);
+        return;
+      }
+    }
+
     // set nextItem for shape1; create new line to connect shapes
     connectShape1.current.setNextItem(connectShape2.current.id);
     clearAndDraw();

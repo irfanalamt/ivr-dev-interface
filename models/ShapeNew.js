@@ -25,6 +25,7 @@ class Shape {
     this.nextItem = null;
     this.functionString = '';
     this.id = null;
+    this.connectors = this.type === 'hexagon' ? [] : null;
   }
 
   getInitPos() {
@@ -37,6 +38,13 @@ class Shape {
 
   getExitPoint() {
     return [this.x, this.y + this.height / 2];
+  }
+
+  setConnectors(id) {
+    // only push if not present in array
+    if (this.connectors.includes(id)) return;
+
+    this.connectors.push(id);
   }
 
   setId(id) {
@@ -82,6 +90,7 @@ class Shape {
 
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
   }
+
   getSerialized() {
     return {
       x: this.x,

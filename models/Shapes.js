@@ -1,3 +1,4 @@
+import { shape } from '@mui/system';
 import Shape from './Shape';
 
 class Shapes {
@@ -37,6 +38,31 @@ class Shapes {
   }
   addShape(newShape) {
     this.shapes.push(newShape);
+  }
+
+  isPlayMenuAction(menuID, id) {
+    // return true if shape is a valid playMenu action
+    // else false
+
+    let menuInd = this.shapes.findIndex((el) => el.id === menuID);
+    let menuShape = this.shapes[menuInd];
+
+    if (menuShape.userValues?.items.some((el) => parseInt(el.action) === id)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  isPlayMenuConnector(id) {
+    // return id of shape if connector is connected to any playMenu
+    // else false
+
+    for (const el of this.shapes) {
+      if (el.type === 'hexagon' && el.connectors.includes(id)) return el.id;
+    }
+
+    return false;
   }
 
   getValidNextItem(i) {
@@ -110,6 +136,52 @@ class Shapes {
   getConnectionsArray() {
     let tempArray = [];
     this.shapes.forEach((el, i) => {
+      if (el.type === 'hexagon') {
+        // el.userValues?.items.forEach((elm) => {
+        //   if (elm.action) {
+        //     let index = this.shapes.findIndex(
+        //       (s) => s.id === parseInt(elm.action)
+        //     );
+        //     if (index !== -1) {
+        //       let shape1 = el;
+        //       let shape2 = this.shapes[index];
+        //       tempArray.push({
+        //         x1: shape1.getExitPoint()[0],
+        //         y1: shape1.getExitPoint()[1],
+        //         x2: shape2.getEntryPoint()[0],
+        //         y2: shape2.getEntryPoint()[1],
+        //         startItem: shape1.id,
+        //         endItem: shape2.id,
+        //         lineCap: null,
+        //         lineColor: 'blue',
+        //       });
+        //     }
+        //   }
+        // });
+        if (el.connectors.length > 0) {
+          let shape1 = el;
+          let shape2;
+          el.connectors.forEach((id) => {
+            let ind = this.shapes.findIndex((s) => s.id === id);
+            if (ind !== -1) {
+              shape2 = this.shapes[ind];
+              tempArray.push({
+                x1: shape1.getExitPoint()[0],
+                y1: shape1.getExitPoint()[1],
+                x2: shape2.getEntryPoint()[0],
+                y2: shape2.getEntryPoint()[1],
+                startItem: shape1.id,
+                endItem: shape2.id,
+                lineCap: null,
+                lineColor: 'blue',
+              });
+            }
+          });
+        }
+
+        return tempArray;
+      }
+
       if (el.nextItem !== null) {
         let index = this.shapes.findIndex((elm) => elm.id === el.nextItem);
         if (index !== -1) {
@@ -127,30 +199,6 @@ class Shapes {
             lineColor: lineColor,
           });
         }
-      }
-
-      if (el.type === 'hexagon') {
-        el.userValues?.items.forEach((elm) => {
-          if (elm.action) {
-            let index = this.shapes.findIndex(
-              (s) => s.id === parseInt(elm.action)
-            );
-            if (index !== -1) {
-              let shape1 = el;
-              let shape2 = this.shapes[index];
-              tempArray.push({
-                x1: shape1.getExitPoint()[0],
-                y1: shape1.getExitPoint()[1],
-                x2: shape2.getEntryPoint()[0],
-                y2: shape2.getEntryPoint()[1],
-                startItem: shape1.id,
-                endItem: shape2.id,
-                lineCap: null,
-                lineColor: 'blue',
-              });
-            }
-          }
-        });
       }
     });
 
