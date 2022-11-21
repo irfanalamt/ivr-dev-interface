@@ -65,6 +65,26 @@ const CanvasComponent = () => {
     console.log('session data:', data);
   }, []);
 
+  // useEffect(() => {
+  //   const handleScroll = (event) => {
+  //     console.log({
+  //       scrolllY: window.scrollY,
+  //       innerHeight: window.innerHeight,
+  //       offsetHeight: document.body.offsetHeight,
+  //     });
+  //     if (window.scrollY + window.innerHeight >= document.body.offsetHeight) {
+  //       setCanvasHeight(canvasHeight + 200);
+  //       clearAndDraw();
+  //     }
+  //   };
+
+  //   window.addEventListener('scroll', handleScroll);
+
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, []);
+
   function initializeCanvas() {
     const context1 = canvasRef.current.getContext('2d');
 
@@ -553,20 +573,20 @@ const CanvasComponent = () => {
         isConnecting={isConnecting}
         stageGroup={stageGroup}
       />
-
       <canvas
-        style={{ backgroundColor: '#F7FBFE' }}
+        style={{ backgroundColor: '#F7FBFE', overflow: 'auto' }}
         width={window.innerWidth * 0.9}
-        height={window.innerHeight * 0.9 - 50}
+        height={window.innerHeight * 2}
         ref={canvasRef}
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       ></canvas>
-
       <Box
         sx={{
           display: 'flex',
+          position: 'fixed',
+          bottom: 0,
         }}
       >
         <Box>
@@ -596,7 +616,7 @@ const CanvasComponent = () => {
           {infoMessage.current}
         </Typography>
 
-        <Box sx={{ position: 'fixed', left: '45vw' }}>
+        <Box sx={{ ml: '40vw', position: 'fixed' }}>
           <Tooltip title='connect shapes' placement='left-start'>
             <ArrowRightAltIcon
               sx={{
