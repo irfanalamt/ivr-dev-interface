@@ -1,4 +1,3 @@
-import { shape } from '@mui/system';
 import Shape from './Shape';
 
 class Shapes {
@@ -134,30 +133,49 @@ class Shapes {
   // }
 
   getConnectionsArray() {
+    // to get cordinates to draw connections
+
     let tempArray = [];
     this.shapes.forEach((el, i) => {
       if (el.type === 'hexagon') {
-        // el.userValues?.items.forEach((elm) => {
-        //   if (elm.action) {
-        //     let index = this.shapes.findIndex(
-        //       (s) => s.id === parseInt(elm.action)
-        //     );
-        //     if (index !== -1) {
-        //       let shape1 = el;
-        //       let shape2 = this.shapes[index];
-        //       tempArray.push({
-        //         x1: shape1.getExitPoint()[0],
-        //         y1: shape1.getExitPoint()[1],
-        //         x2: shape2.getEntryPoint()[0],
-        //         y2: shape2.getEntryPoint()[1],
-        //         startItem: shape1.id,
-        //         endItem: shape2.id,
-        //         lineCap: null,
-        //         lineColor: 'blue',
-        //       });
-        //     }
-        //   }
-        // });
+        el.userValues?.items.forEach((elm) => {
+          let shape1 = el;
+          if (elm.action) {
+            let index = this.shapes.findIndex(
+              (s) => s.id === parseInt(elm.action)
+            );
+
+            if (index !== -1) {
+              let shape2 = this.shapes[index];
+              let connectorValidItemIndexArray = [];
+
+              // check if any connectors validNextItem index matches shape2 index;
+              el.connectors.forEach((s) => {
+                // get index of each connector of playMenu
+                let i = this.shapes.findIndex((t) => t.id === s);
+                if (i !== -1) {
+                  let indexOfValidItem = this.getValidNextItem(i);
+                  if (indexOfValidItem !== null)
+                    connectorValidItemIndexArray.push(indexOfValidItem);
+                }
+              });
+              // draw if 2nd shape index doesnt match any connectors validNextItem index
+              if (!connectorValidItemIndexArray.includes(index)) {
+                tempArray.push({
+                  x1: shape1.getExitPoint()[0],
+                  y1: shape1.getExitPoint()[1],
+                  x2: shape2.getEntryPoint()[0],
+                  y2: shape2.getEntryPoint()[1],
+                  startItem: shape1.id,
+                  endItem: shape2.id,
+                  lineCap: null,
+                  lineColor: 'green',
+                });
+              }
+            }
+          }
+        });
+
         if (el.connectors.length > 0) {
           let shape1 = el;
           let shape2;
@@ -182,6 +200,7 @@ class Shapes {
         return tempArray;
       }
 
+      // draw lines to connected playMenu connectors
       if (el.nextItem !== null) {
         let index = this.shapes.findIndex((elm) => elm.id === el.nextItem);
         if (index !== -1) {
