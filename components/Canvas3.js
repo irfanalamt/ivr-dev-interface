@@ -224,7 +224,8 @@ const CanvasComponent = () => {
     palletGroup.current.getShapes().forEach((element) => {
       if (element.isMouseInShape(realX, realY)) {
         console.log(`💃🏻YES in pallet shape ${element.type}`);
-        tooltipRef.current.style.top = clientY - 10 + 'px';
+        tooltipRef.current.style.top =
+          clientY - 10 + scrollOffsetY.current + 'px';
         tooltipRef.current.style.left = clientX + 40 + 'px';
         tooltipRef.current.textContent = element.text;
         tooltipRef.current.style.visibility = 'visible';
