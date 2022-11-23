@@ -118,7 +118,7 @@ const CanvasComponent = () => {
     // Initialize palette shapes; add to palette group
     const palletPentagon = new Shape(
       40,
-      100 + scrollOffsetY.current,
+      110 + scrollOffsetY.current,
       30,
       25,
       'pentagon',
@@ -126,7 +126,7 @@ const CanvasComponent = () => {
     );
     const palletRectangle = new Shape(
       40,
-      145 + scrollOffsetY.current,
+      155 + scrollOffsetY.current,
       30,
       25,
       'rectangle',
@@ -134,7 +134,7 @@ const CanvasComponent = () => {
     );
     const palletInvertedHexagon = new Shape(
       40,
-      195 + scrollOffsetY.current,
+      205 + scrollOffsetY.current,
       35,
       20,
       'invertedHexagon',
@@ -142,7 +142,7 @@ const CanvasComponent = () => {
     );
     const palletHexagon = new Shape(
       40,
-      245 + scrollOffsetY.current,
+      255 + scrollOffsetY.current,
       40,
       25,
       'hexagon',
@@ -150,7 +150,7 @@ const CanvasComponent = () => {
     );
     const palletParallelogram = new Shape(
       40,
-      290 + scrollOffsetY.current,
+      300 + scrollOffsetY.current,
       26,
       17,
       'parallelogram',
@@ -158,7 +158,7 @@ const CanvasComponent = () => {
     );
     const palletRoundedRectangle = new Shape(
       40,
-      335 + scrollOffsetY.current,
+      345 + scrollOffsetY.current,
       40,
       25,
       'roundedRectangle',
@@ -167,7 +167,7 @@ const CanvasComponent = () => {
 
     const palletRoundedRectangle2 = new Shape(
       40,
-      383 + scrollOffsetY.current,
+      393 + scrollOffsetY.current,
       40,
       25,
       'roundedRectangle2',
@@ -176,7 +176,7 @@ const CanvasComponent = () => {
 
     const palletSmallCircle = new Shape(
       40,
-      433 + scrollOffsetY.current,
+      443 + scrollOffsetY.current,
       22,
       22,
       'smallCircle',
@@ -481,16 +481,17 @@ const CanvasComponent = () => {
     );
     contextRef.current.lineCap = 'round';
     contextRef.current.strokeStyle = 'black';
-    contextRef.current.lineWidth = 2;
+    contextRef.current.lineWidth = 1;
+    contextRef.current.fillStyle = '#fdfdf7';
+
     // draw bg rectangle
-    contextRef.current.strokeRect(5, 60 + scrollOffsetY.current, 70, 410);
+    contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 410);
+    contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 410);
 
     // draw shapes and lines
     palletGroup.current
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
-
-    console.log('current pallet group', palletGroup.current.getShapes());
 
     stageGroup.current
       .getShapes()
