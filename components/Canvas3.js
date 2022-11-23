@@ -53,7 +53,8 @@ const CanvasComponent = () => {
   const connectShape1 = useRef(null),
     connectShape2 = useRef(null);
 
-  const shapeCount = useRef(0);
+  const shapeCount = useRef(1);
+  const scrollOffsetY = useRef(0);
 
   let isDragging = false,
     isPalletShape = false;
@@ -65,25 +66,20 @@ const CanvasComponent = () => {
     console.log('session data:', data);
   }, []);
 
-  // useEffect(() => {
-  //   const handleScroll = (event) => {
-  //     console.log({
-  //       scrolllY: window.scrollY,
-  //       innerHeight: window.innerHeight,
-  //       offsetHeight: document.body.offsetHeight,
-  //     });
-  //     if (window.scrollY + window.innerHeight >= document.body.offsetHeight) {
-  //       setCanvasHeight(canvasHeight + 200);
-  //       clearAndDraw();
-  //     }
-  //   };
+  useEffect(() => {
+    const handleScroll = (event) => {
+      // draw palette dynamically on window scrollY
+      scrollOffsetY.current = window.scrollY;
+      initializePallette();
+      clearAndDraw();
+    };
 
-  //   window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
-  //   return () => {
-  //     window.removeEventListener('scroll', handleScroll);
-  //   };
-  // }, []);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   function initializeCanvas() {
     const context1 = canvasRef.current.getContext('2d');
@@ -91,63 +87,8 @@ const CanvasComponent = () => {
     context1.lineCap = 'round';
     context1.strokeStyle = 'black';
     context1.lineWidth = 3;
-    // Initialize palette shapes; add to palette group
-    const palletPentagon = new Shape(40, 100, 30, 25, 'pentagon', '#880e4f');
-    const palletRectangle = new Shape(40, 145, 30, 25, 'rectangle', '#bf360c');
-    const palletInvertedHexagon = new Shape(
-      40,
-      195,
-      35,
-      20,
-      'invertedHexagon',
-      '#0d47a1'
-    );
-    const palletHexagon = new Shape(40, 245, 40, 25, 'hexagon', '#004d40');
-    const palletParallelogram = new Shape(
-      40,
-      290,
-      26,
-      17,
-      'parallelogram',
-      '#4a148c'
-    );
-    const palletRoundedRectangle = new Shape(
-      40,
-      335,
-      40,
-      25,
-      'roundedRectangle',
-      '#827717'
-    );
 
-    const palletRoundedRectangle2 = new Shape(
-      40,
-      383,
-      40,
-      25,
-      'roundedRectangle2',
-      '#33691e'
-    );
-
-    const palletSmallCircle = new Shape(
-      40,
-      433,
-      22,
-      22,
-      'smallCircle',
-      '#827717'
-    );
-
-    palletGroup.current = new Shapes('palette', [
-      palletRectangle,
-      palletInvertedHexagon,
-      palletHexagon,
-      palletParallelogram,
-      palletRoundedRectangle,
-      palletRoundedRectangle2,
-      palletPentagon,
-      palletSmallCircle,
-    ]);
+    initializePallette();
 
     contextRef.current = context1;
 
@@ -171,6 +112,87 @@ const CanvasComponent = () => {
     }
 
     clearAndDraw();
+  }
+
+  function initializePallette() {
+    // Initialize palette shapes; add to palette group
+    const palletPentagon = new Shape(
+      40,
+      100 + scrollOffsetY.current,
+      30,
+      25,
+      'pentagon',
+      '#880e4f'
+    );
+    const palletRectangle = new Shape(
+      40,
+      145 + scrollOffsetY.current,
+      30,
+      25,
+      'rectangle',
+      '#bf360c'
+    );
+    const palletInvertedHexagon = new Shape(
+      40,
+      195 + scrollOffsetY.current,
+      35,
+      20,
+      'invertedHexagon',
+      '#0d47a1'
+    );
+    const palletHexagon = new Shape(
+      40,
+      245 + scrollOffsetY.current,
+      40,
+      25,
+      'hexagon',
+      '#004d40'
+    );
+    const palletParallelogram = new Shape(
+      40,
+      290 + scrollOffsetY.current,
+      26,
+      17,
+      'parallelogram',
+      '#4a148c'
+    );
+    const palletRoundedRectangle = new Shape(
+      40,
+      335 + scrollOffsetY.current,
+      40,
+      25,
+      'roundedRectangle',
+      '#827717'
+    );
+
+    const palletRoundedRectangle2 = new Shape(
+      40,
+      383 + scrollOffsetY.current,
+      40,
+      25,
+      'roundedRectangle2',
+      '#33691e'
+    );
+
+    const palletSmallCircle = new Shape(
+      40,
+      433 + scrollOffsetY.current,
+      22,
+      22,
+      'smallCircle',
+      '#827717'
+    );
+
+    palletGroup.current = new Shapes('palette', [
+      palletRectangle,
+      palletInvertedHexagon,
+      palletHexagon,
+      palletParallelogram,
+      palletRoundedRectangle,
+      palletRoundedRectangle2,
+      palletPentagon,
+      palletSmallCircle,
+    ]);
   }
   function handleMouseMove(e) {
     e.preventDefault();
@@ -413,7 +435,7 @@ const CanvasComponent = () => {
         //set unique id; add figure to stage
 
         // reset shapeCount if stageGroup empty
-        if (stageGroup.current.getShapes().length === 0) shapeCount.current = 0;
+        if (stageGroup.current.getShapes().length === 0) shapeCount.current = 1;
         stageFigure.setId(shapeCount.current++);
         stageGroup.current.addShape(stageFigure);
         console.log('🚀 ~ handleMouseUp ~ stageFigureAdded', stageFigure);
@@ -450,17 +472,24 @@ const CanvasComponent = () => {
 
   function clearAndDraw() {
     // clear canvas
-    contextRef.current.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    contextRef.current.clearRect(
+      0,
+      0,
+      window.innerWidth,
+      window.innerHeight * 2
+    );
     contextRef.current.lineCap = 'round';
     contextRef.current.strokeStyle = 'black';
     contextRef.current.lineWidth = 2;
     // draw bg rectangle
-    contextRef.current.strokeRect(5, 60, 70, 410);
+    contextRef.current.strokeRect(5, 60 + scrollOffsetY.current, 70, 410);
 
     // draw shapes and lines
     palletGroup.current
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
+
+    console.log('current pallet group', palletGroup.current.getShapes());
 
     stageGroup.current
       .getShapes()
@@ -540,7 +569,7 @@ const CanvasComponent = () => {
         isPlayMenuConnectorId
       );
 
-      if (isPlayMenuConnectorId || isPlayMenuConnectorId === 0) {
+      if (isPlayMenuConnectorId) {
         console.log('IsPlayMenuConnector✨💃🏻');
         let isPlayMenuAction = stageGroup.current.isPlayMenuAction(
           isPlayMenuConnectorId,
