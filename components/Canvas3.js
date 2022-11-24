@@ -484,9 +484,12 @@ const CanvasComponent = () => {
     contextRef.current.lineWidth = 1;
     contextRef.current.fillStyle = '#fdfdf7';
 
-    // draw bg rectangle
+    // draw bg palette rectangle
     contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 410);
     contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 410);
+    contextRef.current.fillStyle = 'black';
+    contextRef.current.font = '20px Arial';
+    contextRef.current.fillText('P1', window.innerWidth * 0.9 - 35, 80);
 
     // draw shapes and lines
     palletGroup.current
