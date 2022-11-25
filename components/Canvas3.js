@@ -482,8 +482,8 @@ const CanvasComponent = () => {
     );
     contextRef.current.lineCap = 'round';
     contextRef.current.strokeStyle = '#062350';
-    contextRef.current.lineWidth = 1.5;
-    contextRef.current.fillStyle = '#fdfdf7';
+    contextRef.current.lineWidth = 2.5;
+    contextRef.current.fillStyle = 'white';
 
     // draw bg palette rectangle
     contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 410);
@@ -628,7 +628,7 @@ const CanvasComponent = () => {
           alignItems: 'center',
           position: 'fixed',
           bottom: 0,
-          backgroundColor: '#fff3e0',
+          backgroundColor: '#fafafa',
           width: '90vw',
         }}
       >
@@ -702,7 +702,7 @@ const CanvasComponent = () => {
         <Pagination
           sx={{ position: 'fixed', right: '5vw', mr: 1 }}
           count={4}
-          color='secondary'
+          color='primary'
           shape='rounded'
           onChange={handlePageChange}
         />
