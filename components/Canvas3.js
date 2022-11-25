@@ -13,6 +13,7 @@ import {
   Button,
   Chip,
   Drawer,
+  Pagination,
   Snackbar,
   Tooltip,
   Typography,
@@ -480,14 +481,14 @@ const CanvasComponent = () => {
       window.innerHeight * 2
     );
     contextRef.current.lineCap = 'round';
-    contextRef.current.strokeStyle = 'black';
-    contextRef.current.lineWidth = 1;
+    contextRef.current.strokeStyle = '#062350';
+    contextRef.current.lineWidth = 1.5;
     contextRef.current.fillStyle = '#fdfdf7';
 
     // draw bg palette rectangle
     contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 410);
     contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 410);
-    contextRef.current.fillStyle = 'black';
+    contextRef.current.fillStyle = '#616161';
     contextRef.current.font = '20px Arial';
     contextRef.current.fillText('P1', window.innerWidth * 0.9 - 35, 80);
 
@@ -598,6 +599,10 @@ const CanvasComponent = () => {
     return;
   }
 
+  function handlePageChange(e, pageNum) {
+    console.log('pageNum: ' + pageNum);
+  }
+
   return (
     <>
       <CanvasAppbar
@@ -616,14 +621,18 @@ const CanvasComponent = () => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
       ></canvas>
+
       <Box
         sx={{
           display: 'flex',
+          alignItems: 'center',
           position: 'fixed',
           bottom: 0,
+          backgroundColor: '#fff3e0',
+          width: '90vw',
         }}
       >
-        <Box>
+        <Box sx={{ mt: 1, ml: 1 }}>
           <Tooltip title='InitVariables' placement='right-start'>
             <SettingsApplicationsIcon
               sx={{ fontSize: '2rem' }}
@@ -635,6 +644,7 @@ const CanvasComponent = () => {
         <Typography
           sx={{
             ml: 2,
+            mt: 1,
             display: showInfoMessage ? 'flex' : 'none',
             alignItems: 'center',
             boxShadow: 1,
@@ -650,7 +660,7 @@ const CanvasComponent = () => {
           {infoMessage.current}
         </Typography>
 
-        <Box sx={{ ml: '40vw', position: 'fixed' }}>
+        <Box sx={{ ml: '40vw', position: 'fixed', mt: 1 }}>
           <Tooltip title='connect shapes' placement='left-start'>
             <ArrowRightAltIcon
               sx={{
@@ -689,20 +699,28 @@ const CanvasComponent = () => {
             />
           </Tooltip>
         </Box>
-        <Drawer anchor='left' open={isOpenVars}>
-          <InitVariables
-            handleCloseDrawer={() => setIsOpenVars(false)}
-            userVariables={userVariables.current}
-          />
-        </Drawer>
-        <DrawerComponent
-          isOpen={isOpen}
-          handleCloseDrawer={handleCloseDrawer}
-          shape={currentShape.current}
-          userVariables={userVariables.current}
-          stageGroup={stageGroup.current}
+        <Pagination
+          sx={{ position: 'fixed', right: '5vw', mr: 1 }}
+          count={4}
+          color='secondary'
+          shape='rounded'
+          onChange={handlePageChange}
         />
       </Box>
+
+      <Drawer anchor='left' open={isOpenVars}>
+        <InitVariables
+          handleCloseDrawer={() => setIsOpenVars(false)}
+          userVariables={userVariables.current}
+        />
+      </Drawer>
+      <DrawerComponent
+        isOpen={isOpen}
+        handleCloseDrawer={handleCloseDrawer}
+        shape={currentShape.current}
+        userVariables={userVariables.current}
+        stageGroup={stageGroup.current}
+      />
 
       <Typography
         sx={{
