@@ -46,7 +46,7 @@ const CanvasComponent = () => {
 
   const palletGroup = useRef(null);
   const lineGroup = useRef(null);
-  const stageGroup = useRef(null);
+  const stageGroup = useRef([]);
   const userVariables = useRef([]);
   const currentShape = useRef(null);
   const tooltipRef = useRef(null);
@@ -56,6 +56,7 @@ const CanvasComponent = () => {
 
   const shapeCount = useRef(1);
   const scrollOffsetY = useRef(0);
+  const pageNumber = useRef(1);
 
   let isDragging = false,
     isPalletShape = false;
@@ -83,6 +84,7 @@ const CanvasComponent = () => {
   }, []);
 
   function initializeCanvas() {
+    console.log('🚀 ~ initializeCanvas ~ initializeCanvas');
     const context1 = canvasRef.current.getContext('2d');
 
     context1.lineCap = 'round';
@@ -93,25 +95,31 @@ const CanvasComponent = () => {
 
     contextRef.current = context1;
 
-    const isExistingProject = JSON.parse(
-      localStorage.getItem('isExistingProject')
-    );
+    // const isExistingProject = JSON.parse(
+    //   localStorage.getItem('isExistingProject')
+    // );
 
-    if (isExistingProject) {
-      const current_project = JSON.parse(localStorage.getItem('saved_project'));
-      console.log('🚀 ~ initializeCanvas ~ current_project', current_project);
+    // if (isExistingProject) {
+    //   const current_project = JSON.parse(localStorage.getItem('saved_project'));
+    //   console.log('🚀 ~ initializeCanvas ~ current_project', current_project);
 
-      // load stageGroup
-      const stageShapesArray = current_project.map((el) =>
-        Shape.createFromObject(el)
-      );
-      stageGroup.current = new Shapes('stage', stageShapesArray);
-    } else {
-      // Initialize stageGroup
-      // new project
-      stageGroup.current = new Shapes('stage', []);
+    //   // load stageGroup
+    //   const stageShapesArray = current_project.map((el) =>
+    //     Shape.createFromObject(el)
+    //   );
+    //   stageGroup.current = new Shapes('stage', stageShapesArray);
+    // } else {
+    //   // Initialize stageGroup
+    //   // new project
+    //   stageGroup.current = new Shapes('stage', []);
+    // }
+    stageGroup.current = [];
+
+    for (let i = 1; i <= 4; i++) {
+      stageGroup.current.push(new Shapes(`p${i}`, []));
     }
 
+    console.log('InitCanvas:🌟', stageGroup.current);
     clearAndDraw();
   }
 
@@ -243,41 +251,46 @@ const CanvasComponent = () => {
     console.log('🚀 ~ handleMouseDown ~ realX,realY', realX, realY);
 
     //Check mouse in stage shape
-    stageGroup.current.getShapes().forEach((element, i) => {
-      if (element.isMouseInShape(realX, realY)) {
-        if (isDeleting) {
-          stageGroup.current.removeShape(i);
-          clearAndDraw();
-          return;
-        }
-        console.log(`YES in stage shape ${element.type}`);
-        console.log('🌟CURRENT stageGroup:', stageGroup.current.getShapes());
-        if (isConnecting === 1) {
-          connectShape1.current = element;
-          connectShape1.current.setSelected(true);
-          clearAndDraw();
-          setIsConnecting(2);
-          return;
-        }
-        if (isConnecting === 2) {
-          connectShape2.current = element;
-          connectShape2.current.setSelected(true);
-          clearAndDraw();
-          setIsConnecting(0);
-          connectShapes();
-          return;
-        }
-        currentShape.current = element;
-        isDragging = true;
-        isPalletShape = false;
-        startX = realX;
-        startY = realY;
-        startX1 = realX;
-        startY1 = realY;
+    stageGroup.current[pageNumber.current - 1]
+      .getShapes()
+      .forEach((element, i) => {
+        if (element.isMouseInShape(realX, realY)) {
+          if (isDeleting) {
+            stageGroup.current[pageNumber.current - 1].removeShape(i);
+            clearAndDraw();
+            return;
+          }
+          console.log(`YES in stage shape ${element.type}`);
+          console.log(
+            '🌟CURRENT stageGroup:',
+            stageGroup.current[pageNumber.current - 1].getShapes()
+          );
+          if (isConnecting === 1) {
+            connectShape1.current = element;
+            connectShape1.current.setSelected(true);
+            clearAndDraw();
+            setIsConnecting(2);
+            return;
+          }
+          if (isConnecting === 2) {
+            connectShape2.current = element;
+            connectShape2.current.setSelected(true);
+            clearAndDraw();
+            setIsConnecting(0);
+            connectShapes();
+            return;
+          }
+          currentShape.current = element;
+          isDragging = true;
+          isPalletShape = false;
+          startX = realX;
+          startY = realY;
+          startX1 = realX;
+          startY1 = realY;
 
-        return;
-      }
-    });
+          return;
+        }
+      });
 
     // check mouse in palette shape
     palletGroup.current.getShapes().forEach((element) => {
@@ -307,7 +320,9 @@ const CanvasComponent = () => {
       if (distance < 5 && isDeleting) {
         console.log('remove; mouse on line; 🐁');
         console.log('remove el ', el);
-        stageGroup.current.removeShapeNextById(el.startItem);
+        stageGroup.current[pageNumber.current - 1].removeShapeNextById(
+          el.startItem
+        );
         clearAndDraw();
         return;
       }
@@ -437,9 +452,10 @@ const CanvasComponent = () => {
         //set unique id; add figure to stage
 
         // reset shapeCount if stageGroup empty
-        if (stageGroup.current.getShapes().length === 0) shapeCount.current = 1;
+        if (stageGroup.current[pageNumber.current - 1].getShapes().length === 0)
+          shapeCount.current = 1;
         stageFigure.setId(shapeCount.current++);
-        stageGroup.current.addShape(stageFigure);
+        stageGroup.current[pageNumber.current - 1].addShape(stageFigure);
         console.log('🚀 ~ handleMouseUp ~ stageFigureAdded', stageFigure);
       }
 
@@ -450,21 +466,23 @@ const CanvasComponent = () => {
     if (realX == startX1 && realY == startY1) {
       console.log('yaay mouseup same pos');
       // mouse clicked, released same spot in stage shape, check mouse in stage shape
-      stageGroup.current.getShapes().forEach((element) => {
-        if (
-          element.isMouseInShape(realX, realY) &&
-          element.type !== 'smallCircle'
-        ) {
-          console.log(
-            `YES in pallet shape mouseUp ${JSON.stringify(element, null, 2)}`
-          );
-          currentShape.current = element;
-          currentShape.current.setSelected(true);
-          clearAndDraw();
-          setIsOpen(true);
-          return;
-        }
-      });
+      stageGroup.current[pageNumber.current - 1]
+        .getShapes()
+        .forEach((element) => {
+          if (
+            element.isMouseInShape(realX, realY) &&
+            element.type !== 'smallCircle'
+          ) {
+            console.log(
+              `YES in pallet shape mouseUp ${JSON.stringify(element, null, 2)}`
+            );
+            currentShape.current = element;
+            currentShape.current.setSelected(true);
+            clearAndDraw();
+            setIsOpen(true);
+            return;
+          }
+        });
     }
   }
   function handleCloseDrawer() {
@@ -490,19 +508,26 @@ const CanvasComponent = () => {
     contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 410);
     contextRef.current.fillStyle = '#616161';
     contextRef.current.font = '20px Arial';
-    contextRef.current.fillText('P1', window.innerWidth * 0.9 - 35, 80);
+
+    // display page number canvas top right
+    contextRef.current.fillText(
+      `P${pageNumber.current}`,
+      window.innerWidth * 0.9 - 35,
+      80
+    );
 
     // draw shapes and lines
     palletGroup.current
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
 
-    stageGroup.current
+    stageGroup.current[pageNumber.current - 1]
       .getShapes()
       .forEach((el) => el.drawShape(contextRef.current));
 
     // Calculate all connecting lines return array of connections
-    let connectionsArray = stageGroup.current.getConnectionsArray();
+    let connectionsArray =
+      stageGroup.current[pageNumber.current - 1].getConnectionsArray();
     console.log('🚀 ~ clearAndDraw ~ connectionsArray', connectionsArray);
     // init lineGroup
     lineGroup.current = new Lines([]);
@@ -567,9 +592,9 @@ const CanvasComponent = () => {
       connectShape1.current.type === 'smallCircle' &&
       connectShape2.current.type !== 'smallCircle'
     ) {
-      let isPlayMenuConnectorId = stageGroup.current.isPlayMenuConnector(
-        connectShape1.current.id
-      );
+      let isPlayMenuConnectorId = stageGroup.current[
+        pageNumber.current - 1
+      ].isPlayMenuConnector(connectShape1.current.id);
       console.log(
         '🟢✅🐁 ~ connectShapes ~ isPlayMenuConnectorId',
         isPlayMenuConnectorId
@@ -577,10 +602,9 @@ const CanvasComponent = () => {
 
       if (isPlayMenuConnectorId) {
         console.log('IsPlayMenuConnector✨💃🏻');
-        let isPlayMenuAction = stageGroup.current.isPlayMenuAction(
-          isPlayMenuConnectorId,
-          connectShape2.current.id
-        );
+        let isPlayMenuAction = stageGroup.current[
+          pageNumber.current - 1
+        ].isPlayMenuAction(isPlayMenuConnectorId, connectShape2.current.id);
         if (isPlayMenuAction) {
           connectShape1.current.setNextItem(connectShape2.current.id);
           clearAndDraw();
@@ -600,7 +624,9 @@ const CanvasComponent = () => {
   }
 
   function handlePageChange(e, pageNum) {
-    console.log('pageNum: ' + pageNum);
+    console.log('pageNum:📄 ' + pageNum);
+    pageNumber.current = pageNum;
+    clearAndDraw();
   }
 
   return (
@@ -705,6 +731,8 @@ const CanvasComponent = () => {
           color='primary'
           shape='rounded'
           onChange={handlePageChange}
+          hideNextButton={true}
+          hidePrevButton={true}
         />
       </Box>
 
@@ -719,7 +747,7 @@ const CanvasComponent = () => {
         handleCloseDrawer={handleCloseDrawer}
         shape={currentShape.current}
         userVariables={userVariables.current}
-        stageGroup={stageGroup.current}
+        stageGroup={stageGroup.current[pageNumber.current - 1]}
       />
 
       <Typography
