@@ -13,6 +13,7 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import SaveIcon from '@mui/icons-material/Save';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ClearAllIcon from '@mui/icons-material/ClearAll';
 
 const CanvasAppbar = ({
   status,
@@ -20,6 +21,7 @@ const CanvasAppbar = ({
   isConnecting,
   isDeleting,
   stageGroup,
+  showResetDialog,
 }) => {
   return (
     <Box sx={{ position: 'fixed', top: 0 }}>
@@ -79,21 +81,32 @@ const CanvasAppbar = ({
           Connect mode
         </Typography>
         <Box sx={{ ml: 'auto' }}>
+          <Tooltip title='RESET CANVAS'>
+            <Button
+              sx={{ zIndex: 6, mr: 1, backgroundColor: '#00bcd4' }}
+              variant='contained'
+              size='small'
+              color='info'
+              onClick={showResetDialog}
+            >
+              <ClearAllIcon sx={{ fontSize: '1.2rem' }} />
+            </Button>
+          </Tooltip>
           <Tooltip title='SAVE'>
             <Button
               sx={{ zIndex: 6, mr: 1, backgroundColor: '#2196f3' }}
               variant='contained'
               size='small'
               color='info'
-              onClick={() => {
-                const serializedShapes =
-                  stageGroup.current.getSerializedShapes();
-                localStorage.setItem('isExistingProject', true);
-                localStorage.setItem(
-                  'saved_project',
-                  JSON.stringify(serializedShapes)
-                );
-              }}
+              // onClick={() => {
+              //   const serializedShapes =
+              //     stageGroup.current.getSerializedShapes();
+              //   localStorage.setItem('isExistingProject', true);
+              //   localStorage.setItem(
+              //     'saved_project',
+              //     JSON.stringify(serializedShapes)
+              //   );
+              // }}
               disabled={status !== 'authenticated'}
             >
               <SaveIcon sx={{ fontSize: '1.2rem' }} />

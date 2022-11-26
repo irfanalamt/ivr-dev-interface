@@ -32,6 +32,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SaveIcon from '@mui/icons-material/Save';
 import SaveProjectDialog from './SaveProjectDialog';
 import CanvasAppbar from './CanvasAppbar';
+import ResetCanvasDialog from './RestCanvasDialog';
 
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
@@ -39,6 +40,8 @@ const CanvasComponent = () => {
   const [isConnecting, setIsConnecting] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showInfoMessage, setShowInfoMessage] = useState(false);
+
+  const [showCanvasResetDialog, setShowCanvasResetDialog] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -113,10 +116,15 @@ const CanvasComponent = () => {
     //   // new project
     //   stageGroup.current = new Shapes('stage', []);
     // }
-    stageGroup.current = [];
 
-    for (let i = 1; i <= 4; i++) {
-      stageGroup.current.push(new Shapes(`p${i}`, []));
+    if (sessionStorage.getItem('saved-stage')) {
+      retrieveFromSession();
+    } else {
+      stageGroup.current = [];
+
+      for (let i = 1; i <= 4; i++) {
+        stageGroup.current.push(new Shapes(`p${i}`, []));
+      }
     }
 
     console.log('InitCanvas:🌟', stageGroup.current);
@@ -203,6 +211,28 @@ const CanvasComponent = () => {
       palletSmallCircle,
     ]);
   }
+
+  function saveToSession() {
+    sessionStorage.setItem('saved-stage', JSON.stringify(stageGroup.current));
+    console.log('Session saved!');
+  }
+
+  function retrieveFromSession() {
+    console.log('Session retrieved!');
+
+    let savedStage = JSON.parse(sessionStorage.getItem('saved-stage'));
+
+    savedStage.forEach((page) => {
+      Object.setPrototypeOf(page, Shapes.prototype);
+      page.shapes.forEach((shape) =>
+        Object.setPrototypeOf(shape, Shape.prototype)
+      );
+    });
+
+    stageGroup.current = savedStage;
+    clearAndDraw();
+  }
+
   function handleMouseMove(e) {
     e.preventDefault();
     const { clientX, clientY } = e;
@@ -261,6 +291,7 @@ const CanvasComponent = () => {
             return;
           }
           console.log(`YES in stage shape ${element.type}`);
+          console.log('InitCanvas:🌟', stageGroup.current);
           console.log(
             '🌟CURRENT stageGroup:',
             stageGroup.current[pageNumber.current - 1].getShapes()
@@ -488,6 +519,7 @@ const CanvasComponent = () => {
   function handleCloseDrawer() {
     setIsOpen(false);
     clearAndDraw();
+    saveToSession();
   }
 
   function clearAndDraw() {
@@ -637,6 +669,7 @@ const CanvasComponent = () => {
         isDeleting={isDeleting}
         isConnecting={isConnecting}
         stageGroup={stageGroup}
+        showResetDialog={() => setShowCanvasResetDialog(true)}
       />
       <canvas
         style={{ backgroundColor: '#F7FBFE', overflow: 'auto' }}
@@ -725,6 +758,7 @@ const CanvasComponent = () => {
             />
           </Tooltip>
         </Box>
+
         <Pagination
           sx={{ position: 'fixed', right: '5vw', mr: 1 }}
           count={4}
@@ -763,6 +797,10 @@ const CanvasComponent = () => {
       >
         Im a tooltip
       </Typography>
+      <ResetCanvasDialog
+        open={showCanvasResetDialog}
+        handleClose={() => setShowCanvasResetDialog(false)}
+      />
     </>
   );
 };
