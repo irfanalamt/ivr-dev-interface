@@ -13,7 +13,7 @@ import SaveAsIcon from '@mui/icons-material/SaveAs';
 import SaveIcon from '@mui/icons-material/Save';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
-import ClearAllIcon from '@mui/icons-material/ClearAll';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 const CanvasAppbar = ({
   status,
@@ -89,7 +89,7 @@ const CanvasAppbar = ({
               color='info'
               onClick={showResetDialog}
             >
-              <ClearAllIcon sx={{ fontSize: '1.2rem' }} />
+              <RestartAltIcon sx={{ fontSize: '1.2rem' }} />
             </Button>
           </Tooltip>
           <Tooltip title='SAVE'>
