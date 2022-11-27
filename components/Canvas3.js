@@ -621,6 +621,16 @@ const CanvasComponent = () => {
       setTimeout(() => setShowInfoMessage(false), 3000);
       return;
     }
+    // return if 1st shape is an exit jumper
+    if (
+      connectShape1.current.type === 'triangle' &&
+      connectShape1.current.userValues?.type === 'exit'
+    ) {
+      infoMessage.current = 'cannot connect exit jumper.';
+      setShowInfoMessage(true);
+      setTimeout(() => setShowInfoMessage(false), 3000);
+      return;
+    }
 
     // return if 1st shape is a menu; 2nd shape is not a connector
     if (
