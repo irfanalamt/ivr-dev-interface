@@ -10,6 +10,7 @@ import GetDigits from './GetDigits2';
 import PlayMenu from './PlayMenu';
 import SetParams from './SetParams';
 import PlayConfirm from './PlayConfirm';
+import GoToBlock from './GoToBlock';
 
 const DrawerComponent = ({
   isOpen,
@@ -17,6 +18,7 @@ const DrawerComponent = ({
   shape = null,
   userVariables,
   stageGroup,
+  entireStageGroup,
 }) => {
   useEffect(() => {
     console.log('ue drawer');
@@ -81,6 +83,14 @@ const DrawerComponent = ({
           handleCloseDrawer={handleCloseDrawer}
           stageGroup={stageGroup}
         ></FunctionBlock>
+      );
+    } else if (shape?.type == 'triangle') {
+      return (
+        <GoToBlock
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          entireStageGroup={entireStageGroup}
+        />
       );
     } else {
       return (

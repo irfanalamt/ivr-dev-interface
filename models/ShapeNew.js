@@ -17,6 +17,7 @@ class Shape {
       roundedRectangle2: 'playConfirm',
       pentagon: 'setParams',
       smallCircle: 'connector',
+      triangle: 'jumper',
     };
 
     this.text = mapShapes[type] ?? '';
@@ -47,7 +48,13 @@ class Shape {
     this.connectors.push(id);
   }
 
-  setId(id) {
+  setId(id, page = 1) {
+    if (page > 1) {
+      this.id = parseInt(`${page}` + id);
+      this.text += `${page}` + `${id}`;
+      return;
+    }
+
     // unique id set based on shapes array length
     this.id = id;
     // add id to name text end
@@ -190,6 +197,10 @@ class Shape {
 
       case 'smallCircle':
         this.drawSmallCircle(ctx);
+        break;
+
+      case 'triangle':
+        this.drawTriangle(ctx);
         break;
     }
   }
@@ -479,6 +490,36 @@ class Shape {
     ctx.fillStyle = this.style;
     ctx.lineWidth = 2;
     ctx.fill();
+  }
+  drawTriangle(ctx) {
+    ctx.beginPath();
+
+    if (this.stroke) {
+      ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+      // fill color if selected
+      this.selected && this.fillSelected(ctx);
+      ctx.fillStyle = '#f57f17';
+      ctx.fill();
+
+      ctx.lineWidth = 1;
+      ctx.font = '20px sans-serif';
+      ctx.fillStyle = 'black';
+
+      ctx.fillText('▼', this.x, this.y + 2);
+
+      return;
+    }
+
+    ctx.fillStyle = this.style;
+    ctx.lineWidth = 2;
+    ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('▼', this.x, this.y + 2);
   }
 }
 

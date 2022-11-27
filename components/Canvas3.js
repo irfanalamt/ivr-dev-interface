@@ -200,6 +200,15 @@ const CanvasComponent = () => {
       '#827717'
     );
 
+    const palletTriangle = new Shape(
+      40,
+      490 + scrollOffsetY.current,
+      30,
+      30,
+      'triangle',
+      '#ffe0b2'
+    );
+
     palletGroup.current = new Shapes('palette', [
       palletRectangle,
       palletInvertedHexagon,
@@ -209,6 +218,7 @@ const CanvasComponent = () => {
       palletRoundedRectangle2,
       palletPentagon,
       palletSmallCircle,
+      palletTriangle,
     ]);
   }
 
@@ -473,6 +483,19 @@ const CanvasComponent = () => {
           );
 
           break;
+
+        case 'triangle':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            30,
+            30,
+            'triangle',
+            '#e65100',
+            true
+          );
+
+          break;
       }
 
       // reset pallet figure to pallet
@@ -485,7 +508,7 @@ const CanvasComponent = () => {
         // reset shapeCount if stageGroup empty
         if (stageGroup.current[pageNumber.current - 1].getShapes().length === 0)
           shapeCount.current = 1;
-        stageFigure.setId(shapeCount.current++);
+        stageFigure.setId(shapeCount.current++, pageNumber.current);
         stageGroup.current[pageNumber.current - 1].addShape(stageFigure);
         console.log('🚀 ~ handleMouseUp ~ stageFigureAdded', stageFigure);
       }
@@ -536,8 +559,8 @@ const CanvasComponent = () => {
     contextRef.current.fillStyle = 'white';
 
     // draw bg palette rectangle
-    contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 410);
-    contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 410);
+    contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 460);
+    contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 460);
     contextRef.current.fillStyle = '#616161';
     contextRef.current.font = '20px Arial';
 
@@ -782,6 +805,7 @@ const CanvasComponent = () => {
         shape={currentShape.current}
         userVariables={userVariables.current}
         stageGroup={stageGroup.current[pageNumber.current - 1]}
+        entireStageGroup={stageGroup.current}
       />
 
       <Typography
