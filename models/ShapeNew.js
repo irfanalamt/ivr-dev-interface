@@ -47,7 +47,9 @@ class Shape {
 
     this.connectors.push(id);
   }
-
+  setFillStyle(hex) {
+    this.style = hex;
+  }
   setId(id, page = 1) {
     if (page > 1) {
       this.id = parseInt(`${page}` + id);
@@ -498,7 +500,7 @@ class Shape {
       ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
       // fill color if selected
       this.selected && this.fillSelected(ctx);
-      ctx.fillStyle = '#f57f17';
+      ctx.fillStyle = this.style;
       ctx.fill();
 
       ctx.lineWidth = 1;

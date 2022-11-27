@@ -45,13 +45,15 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
 
   function saveUserValues() {
     if (gotoType === 'entry') {
-      shape.setText(`${exitShapeName}-entry`);
+      shape.setFillStyle('#388e3c');
       shape.setUserValues({
         type: gotoType,
         exitPoint: exitShapeName,
       });
       return;
     }
+    // reset color
+    shape.setFillStyle('#f57f17');
 
     // save name only if no nameError
     if (nameErrorRef.current.innerText === '') shape.setText(shapeName);
@@ -162,7 +164,7 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
             onChange={(e) => setExitShapeName(e.target.value)}
           >
             {calculateAllExitPoints().map((el, i) => (
-              <MenuItem key={i} value={el}>
+              <MenuItem key={i} value={el || ''}>
                 {el}
               </MenuItem>
             ))}

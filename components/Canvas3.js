@@ -491,7 +491,7 @@ const CanvasComponent = () => {
             30,
             30,
             'triangle',
-            '#e65100',
+            '#f57f17',
             true
           );
 
