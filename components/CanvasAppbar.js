@@ -22,6 +22,7 @@ const CanvasAppbar = ({
   isDeleting,
   stageGroup,
   showResetDialog,
+  generateFile,
 }) => {
   return (
     <Box sx={{ position: 'fixed', top: 0 }}>
@@ -133,7 +134,7 @@ const CanvasAppbar = ({
               size='small'
               color='success'
               variant='contained'
-              // onClick={() => setOpenDialog(true)}
+              onClick={generateFile}
             >
               <SaveAltIcon sx={{ fontSize: '1.2rem' }} />
             </Button>

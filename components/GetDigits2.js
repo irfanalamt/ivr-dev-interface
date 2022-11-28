@@ -80,7 +80,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
     )};let params = ${JSON.stringify(entireParamsObj)};this.${
       resultName || 'default'
     } = await IVR.getDigits(msgList,params); 
-}`;
+};`;
     shape.setFunctionString(codeString);
     console.log('🕺🏻getDigits code:', codeString);
   }

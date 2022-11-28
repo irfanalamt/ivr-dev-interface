@@ -1,23 +1,9 @@
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-import ArchitectureIcon from '@mui/icons-material/Architecture';
 import InfoIcon from '@mui/icons-material/Info';
 
-import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  Chip,
-  Drawer,
-  Pagination,
-  Snackbar,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Drawer, Pagination, Tooltip, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/ShapeNew';
 import Shapes from '../models/Shapes';
@@ -25,14 +11,9 @@ import Line from '../models/Line';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
 import InitVariables from './InitVariables2';
-import SaveDialog from './SaveDialog';
-import axios from 'axios';
 import { useSession } from 'next-auth/react';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SaveIcon from '@mui/icons-material/Save';
-import SaveProjectDialog from './SaveProjectDialog';
 import CanvasAppbar from './CanvasAppbar';
-import ResetCanvasDialog from './RestCanvasDialog';
+import ResetCanvasDialog from './ResetCanvasDialog';
 
 const CanvasComponent = () => {
   const [isOpenVars, setIsOpenVars] = useState(false);
@@ -694,6 +675,54 @@ const CanvasComponent = () => {
     clearAndDraw();
   }
 
+  function generateConfigFile() {
+    const str = generateJS();
+    const blob = new Blob([str]);
+    const href = URL.createObjectURL(blob);
+
+    // create "a" HTML element with href to file & click
+    const link = document.createElement('a');
+    link.href = href;
+    link.setAttribute('download', `config.js`); //or any other extension
+    document.body.appendChild(link);
+    link.click();
+
+    // clean up "a" element & remove ObjectURL
+    document.body.removeChild(link);
+    URL.revokeObjectURL(href);
+  }
+
+  function generateJS() {
+    // return a JS config code as string
+
+    const tempString1 = `function customIVR(){
+      IVR.menus =  require('/ivrs/customIVR/menus.json');
+      IVR.params = {
+        lang: 'en-SA',terminator:'#', maxRetries: 3, maxRepeats: 3,maxCallTime: 240, invalidTransferPoint: 'TP8001', timeoutTransferPoint: 'TP8001', goodbyeMessage: 'std-goodbye', firstTimeout: 10, interTimeout: 5,menuTimeout: 5,		terminateMessage: 'std-terminate', invalidPrompt: 'std-invalid',	timeOutPrompt: 'std-timeout', repeatInfoPrompt: 'std-repeat-info', confirmPrompt: 'std-confirm', cancelPrompt: 'std-cancel',	currency: 'SAR', confirmOption: 1,	cancelOption: 2, invalidAction: 'Disconnect',timeoutAction: 'Disconnect',	logDb: true						
+      };
+     `;
+
+    const tempString2 = generateInitVariablesJS();
+    const tempString3 = stageGroup.current[pageNumber.current - 1]
+      .getShapes()
+      .filter((el) => el.functionString && el.type !== 'pentagon')
+      .map((el) => el.functionString)
+      .join(' ');
+
+    const tempString4 = '} module.exports = customIVR;';
+
+    return tempString1 + tempString2 + tempString3 + tempString4;
+  }
+
+  function generateInitVariablesJS() {
+    let codeString = userVariables.current
+      .map((el) => `this.${el.name}${el.value ? `=${el.value};` : ';'}`)
+      .join('');
+
+    console.log('🚀 ~ generateJS ~ codeString', codeString);
+    return codeString;
+  }
+
   return (
     <>
       <CanvasAppbar
@@ -701,8 +730,9 @@ const CanvasComponent = () => {
         status={status}
         isDeleting={isDeleting}
         isConnecting={isConnecting}
-        stageGroup={stageGroup}
+        stageGroup={stageGroup.current}
         showResetDialog={() => setShowCanvasResetDialog(true)}
+        generateFile={generateConfigFile}
       />
       <canvas
         style={{ backgroundColor: '#F7FBFE', overflow: 'auto' }}

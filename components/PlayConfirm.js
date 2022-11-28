@@ -68,10 +68,10 @@ const PlayConfirm = ({
       cancelOption,
       confirmPrompt,
       cancelPrompt,
-    })};await Ivr.playConfirm(msgList,params);}`;
+    })};await Ivr.playConfirm(msgList,params);};`;
 
     shape.setFunctionString(codeString);
-    console.log('🕺🏻playMessage code:', codeString);
+    console.log('🕺🏻playConfirm code:', codeString);
   }
 
   function addInput() {

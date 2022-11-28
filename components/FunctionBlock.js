@@ -37,7 +37,7 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
 
     let codeString = `this.${
       shapeName || `runScript${shape.id}`
-    }=async function(){${functionString}}`;
+    }=async function(){${functionString}};`;
 
     shape.setFunctionString(codeString);
     console.log('🕺🏻runScript code:', codeString);
