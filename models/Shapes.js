@@ -38,6 +38,42 @@ class Shapes {
   addShape(newShape) {
     this.shapes.push(newShape);
   }
+  getIndexOfFirstShape() {
+    // first shape is always setParams
+    // find it a return id
+    const index = this.shapes.findIndex((shape) => shape.type === 'pentagon');
+
+    if (index === -1) return null;
+
+    return index;
+  }
+
+  getShapesTillMenu() {
+    // return array of shape names till a menu
+    let tempArray = [];
+
+    let i1 = this.getIndexOfFirstShape();
+    // if no 1st shape (setParams) return null
+    if (i1 === null) return null;
+
+    tempArray.push(this.shapes[i1].text);
+
+    while (1) {
+      let nextShapeId = this.shapes[i1].nextItem;
+      if (nextShapeId === null || nextShapeId === undefined) break;
+
+      // get index of nextShape
+      let nextShapeInd = this.shapes.findIndex((el) => el.id === nextShapeId);
+      if (nextShapeInd === -1) break;
+      // if not connector; add to array
+      if (this.shapes[nextShapeInd].type !== 'smallCircle')
+        tempArray.push(this.shapes[nextShapeInd].text);
+
+      i1 = nextShapeInd;
+    }
+
+    return tempArray;
+  }
 
   isPlayMenuAction(menuID, id) {
     // return true if shape is a valid playMenu action

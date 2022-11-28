@@ -709,18 +709,36 @@ const CanvasComponent = () => {
       .map((el) => el.functionString)
       .join(' ');
 
-    const tempString4 = '} module.exports = customIVR;';
+    const tempString4 = generateMenuJS();
 
-    return tempString1 + tempString2 + tempString3 + tempString4;
+    const tempStringEnd = '} module.exports = customIVR;';
+
+    return (
+      tempString1 + tempString2 + tempString3 + tempString4 + tempStringEnd
+    );
   }
 
   function generateInitVariablesJS() {
+    // global variables declared in InitVariables to config JS
     let codeString = userVariables.current
       .map((el) => `this.${el.name}${el.value ? `=${el.value};` : ';'}`)
       .join('');
 
     console.log('🚀 ~ generateJS ~ codeString', codeString);
     return codeString;
+  }
+
+  function generateMenuJS() {
+    const arrayShapesTillMenu =
+      stageGroup.current[pageNumber.current - 1].getShapesTillMenu();
+
+    if (arrayShapesTillMenu === null) return '//no setParams block found \n';
+
+    const mainMenuString = `this.ivrMain=async function(){${arrayShapesTillMenu
+      .map((el) => `await this.${el}();`)
+      .join('')}}`;
+
+    return mainMenuString;
   }
 
   return (
