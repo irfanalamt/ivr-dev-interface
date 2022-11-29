@@ -276,6 +276,9 @@ const CanvasComponent = () => {
       .getShapes()
       .forEach((element, i) => {
         if (element.isMouseInShape(realX, realY)) {
+          // rest infoMsg on stage shape click
+          setShowInfoMessage(false);
+
           if (isDeleting) {
             stageGroup.current[pageNumber.current - 1].removeShape(i);
             clearAndDraw();
@@ -475,6 +478,7 @@ const CanvasComponent = () => {
             '#f57f17',
             true
           );
+          stageFigure.setUserValues({ type: 'exit' });
 
           break;
       }
@@ -609,7 +613,17 @@ const CanvasComponent = () => {
     ) {
       infoMessage.current = 'cannot connect exit jumper.';
       setShowInfoMessage(true);
-      setTimeout(() => setShowInfoMessage(false), 3000);
+
+      return;
+    }
+
+    // return if 2nd shape is an entry jumper
+    if (
+      connectShape2.current.type === 'triangle' &&
+      connectShape2.current.userValues?.type === 'entry'
+    ) {
+      infoMessage.current = 'cannot connect to entry jumper.';
+      setShowInfoMessage(true);
       return;
     }
 
@@ -814,7 +828,6 @@ const CanvasComponent = () => {
                   setIsConnecting(1);
                   infoMessage.current = 'Click on shapes to connect';
                   setShowInfoMessage(true);
-                  setTimeout(() => setShowInfoMessage(false), 3000);
                 }
                 isConnecting > 0 && setIsConnecting(0);
                 setIsDeleting(false);
