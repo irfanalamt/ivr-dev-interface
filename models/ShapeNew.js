@@ -18,6 +18,7 @@ class Shape {
       pentagon: 'setParams',
       smallCircle: 'connector',
       triangle: 'jumper',
+      rhombus: 'switch',
     };
 
     this.text = mapShapes[type] ?? '';
@@ -203,6 +204,10 @@ class Shape {
 
       case 'triangle':
         this.drawTriangle(ctx);
+        break;
+
+      case 'rhombus':
+        this.drawRhombus(ctx);
         break;
     }
   }
@@ -522,6 +527,38 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText('▼', this.x, this.y + 2);
+  }
+
+  drawRhombus(ctx) {
+    ctx.beginPath();
+    ctx.translate(this.x, this.y);
+
+    ctx.moveTo(this.width * 0.5, 0);
+    ctx.lineTo(0, this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5, 0);
+    ctx.lineTo(0, -this.height * 0.5);
+
+    ctx.closePath();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    if (this.stroke) {
+      // fill color if selected
+      this.selected && this.fillSelected(ctx);
+
+      ctx.font = '19px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.lineWidth = 2;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(this.text, this.x, this.y);
+      ctx.strokeStyle = this.style;
+      ctx.stroke();
+      return;
+    }
+
+    ctx.fillStyle = this.style;
+    ctx.lineWidth = 2;
+    ctx.fill();
   }
 }
 

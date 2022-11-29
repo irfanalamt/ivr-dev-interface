@@ -116,7 +116,7 @@ const CanvasComponent = () => {
     // Initialize palette shapes; add to palette group
     const palletPentagon = new Shape(
       40,
-      110 + scrollOffsetY.current,
+      100 + scrollOffsetY.current,
       30,
       25,
       'pentagon',
@@ -124,7 +124,7 @@ const CanvasComponent = () => {
     );
     const palletRectangle = new Shape(
       40,
-      155 + scrollOffsetY.current,
+      145 + scrollOffsetY.current,
       30,
       25,
       'rectangle',
@@ -132,7 +132,7 @@ const CanvasComponent = () => {
     );
     const palletInvertedHexagon = new Shape(
       40,
-      205 + scrollOffsetY.current,
+      195 + scrollOffsetY.current,
       35,
       20,
       'invertedHexagon',
@@ -140,7 +140,7 @@ const CanvasComponent = () => {
     );
     const palletHexagon = new Shape(
       40,
-      255 + scrollOffsetY.current,
+      245 + scrollOffsetY.current,
       40,
       25,
       'hexagon',
@@ -148,7 +148,7 @@ const CanvasComponent = () => {
     );
     const palletParallelogram = new Shape(
       40,
-      300 + scrollOffsetY.current,
+      290 + scrollOffsetY.current,
       26,
       17,
       'parallelogram',
@@ -156,7 +156,7 @@ const CanvasComponent = () => {
     );
     const palletRoundedRectangle = new Shape(
       40,
-      345 + scrollOffsetY.current,
+      335 + scrollOffsetY.current,
       40,
       25,
       'roundedRectangle',
@@ -165,16 +165,25 @@ const CanvasComponent = () => {
 
     const palletRoundedRectangle2 = new Shape(
       40,
-      393 + scrollOffsetY.current,
+      383 + scrollOffsetY.current,
       40,
       25,
       'roundedRectangle2',
       '#33691e'
     );
 
+    const palletRhombus = new Shape(
+      40,
+      433 + scrollOffsetY.current,
+      40,
+      25,
+      'rhombus',
+      '#3e2723'
+    );
+
     const palletSmallCircle = new Shape(
       40,
-      443 + scrollOffsetY.current,
+      480 + scrollOffsetY.current,
       22,
       22,
       'smallCircle',
@@ -183,7 +192,7 @@ const CanvasComponent = () => {
 
     const palletTriangle = new Shape(
       40,
-      490 + scrollOffsetY.current,
+      525 + scrollOffsetY.current,
       30,
       30,
       'triangle',
@@ -200,6 +209,7 @@ const CanvasComponent = () => {
       palletPentagon,
       palletSmallCircle,
       palletTriangle,
+      palletRhombus,
     ]);
   }
 
@@ -465,7 +475,6 @@ const CanvasComponent = () => {
             '#e91e63',
             true
           );
-
           break;
 
         case 'triangle':
@@ -479,7 +488,18 @@ const CanvasComponent = () => {
             true
           );
           stageFigure.setUserValues({ type: 'exit' });
+          break;
 
+        case 'rhombus':
+          stageFigure = new Shape(
+            realX,
+            realY,
+            130,
+            45,
+            'rhombus',
+            '#795548',
+            true
+          );
           break;
       }
 
@@ -544,8 +564,8 @@ const CanvasComponent = () => {
     contextRef.current.fillStyle = 'white';
 
     // draw bg palette rectangle
-    contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 460);
-    contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 460);
+    contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 480);
+    contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 480);
     contextRef.current.fillStyle = '#616161';
     contextRef.current.font = '20px Arial';
 

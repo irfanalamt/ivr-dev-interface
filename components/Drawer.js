@@ -11,6 +11,7 @@ import PlayMenu from './PlayMenu';
 import SetParams from './SetParams';
 import PlayConfirm from './PlayConfirm';
 import GoToBlock from './GoToBlock';
+import SwitchBlock from './SwitchBlock';
 
 const DrawerComponent = ({
   isOpen,
@@ -91,6 +92,10 @@ const DrawerComponent = ({
           handleCloseDrawer={handleCloseDrawer}
           entireStageGroup={entireStageGroup}
         />
+      );
+    } else if (shape?.type == 'rhombus') {
+      return (
+        <SwitchBlock shape={shape} handleCloseDrawer={handleCloseDrawer} />
       );
     } else {
       return (
