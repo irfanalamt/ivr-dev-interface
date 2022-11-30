@@ -9,24 +9,24 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emotion/react": "^11.9.3",
+    "@emotion/react": "^11.10.5",
     "@emotion/server": "^11.10.0",
-    "@emotion/styled": "^11.9.3",
-    "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.2",
-    "axios": "^1.1.2",
+    "@emotion/styled": "^11.10.5",
+    "@mui/icons-material": "^5.10.16",
+    "@mui/material": "^5.10.16",
+    "axios": "^1.2.0",
     "bcryptjs": "^2.4.3",
-    "canvas": "^2.9.3",
+    "canvas": "^2.10.2",
     "esprima": "^4.0.1",
-    "mongodb": "^4.10.0",
-    "next": "^12.3.1",
-    "next-auth": "^4.13.0",
+    "mongodb": "^4.12.1",
+    "next": "^13.0.5",
+    "next-auth": "^4.17.0",
     "next-connect": "^0.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "eslint": "8.20.0",
-    "eslint-config-next": "12.2.3"
+    "eslint": "8.28.0",
+    "eslint-config-next": "13.0.5"
   }
 }
