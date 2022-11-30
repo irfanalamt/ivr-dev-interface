@@ -45,6 +45,7 @@ const SwitchBlock = ({
 
     console.log('valid exits', validExitPointsArray);
 
+    stageGroup.cleanupExitShapes(shape.id);
     stageGroup.addExitShapes(validExitPointsArray, shape.id);
 
     // save only valid user values

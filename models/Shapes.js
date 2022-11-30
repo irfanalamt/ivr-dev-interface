@@ -38,15 +38,25 @@ class Shapes {
   addShape(newShape) {
     this.shapes.push(newShape);
   }
+  cleanupExitShapes(id) {
+    // cleanup all exit shapes from shape with id
+    const idsToRemove = [];
+    this.shapes.forEach((shape, i) => {
+      if (shape.type === 'tinyCircle') {
+        if (shape.userValues.prevShapeId === id) {
+          idsToRemove.push(shape.id);
+        }
+      }
+    });
+
+    idsToRemove.forEach((id) => this.removeShapeById(id));
+  }
 
   addExitShapes(exitPoints, id) {
     const index = this.shapes.findIndex((shape) => shape.id === id);
     const shapeBottom = this.shapes[index].getExitPoint();
-    console.log('🚀 ~ Shapes ~ addExitShapes ~ shapeBottom', shapeBottom);
 
     if (index !== -1) {
-      const newShape = new Shape(...shapeBottom, 30, 30, 'tinyCircle', 'black');
-
       exitPoints.forEach((point, i) => {
         const newShape = new Shape(
           shapeBottom[0],
@@ -62,6 +72,7 @@ class Shapes {
           position: i + 1,
           name: point,
         });
+        newShape.setId(parseInt(`99` + `${id}` + `${i + 1}`));
         this.addShape(newShape);
       });
     }
@@ -313,6 +324,12 @@ class Shapes {
     return tempArray;
   }
 
+  removeShapeById(id) {
+    const index = this.shapes.findIndex((shape) => shape.id === id);
+    if (index !== -1) {
+      this.shapes.splice(index, 1);
+    }
+  }
   removeShape(index) {
     // if any shapes has next item that matches the removing shape id;
     // reset nextItem
