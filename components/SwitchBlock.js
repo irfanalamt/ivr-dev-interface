@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Chip,
   List,
@@ -14,36 +15,88 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { useState } from 'react';
 import ResetCanvasDialog from './ResetCanvasDialog';
 
-const SwitchBlock = ({ shape, handleCloseDrawer }) => {
+const SwitchBlock = ({ shape, handleCloseDrawer, userVariables }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [userValues, setUserValues] = useState(
-    shape.userValues?.switchArray ?? [{ condition: '', exitPoint: '' }]
+    shape.userValues?.switchArray ?? [
+      { condition: '', exitPoint: '', conditionError: '', exitError: '' },
+    ]
   );
 
   function saveUserValues() {
     shape.setText(shapeName);
 
-    // filter our rows with both fields blank before save
+    // filter our rows with both fields blank or has an error in either fields
     const filteredUserValues = userValues.filter(
-      (row) => !(row.condition === '' && row.exitPoint === '')
+      (row) =>
+        !(
+          (row.condition === '' && row.exitPoint === '') ||
+          row.conditionError ||
+          row.exitError
+        )
     );
 
+    // save only valid user values
     shape.setUserValues({ switchArray: filteredUserValues });
   }
 
   function handleChangeUserValues(e, index) {
-    const propertyName = e.target.name;
-    const value = e.target.value;
+    const { name, value } = e.target;
 
     setUserValues((prev) => {
       const newArr = [...prev];
-      newArr[index][propertyName] = value;
+      newArr[index][name] = value;
       return newArr;
     });
   }
 
   function handleAddCondition() {
     setUserValues((prev) => [...prev, { condition: '', exitPoint: '' }]);
+  }
+
+  function validateInput(e, index) {
+    const { name, value } = e.target;
+
+    if (name === 'condition') {
+      if (value === 'test') {
+        // error condition
+        setUserValues((prev) => {
+          const newArr = [...prev];
+          newArr[index].conditionError = 'invalid condition';
+          return newArr;
+        });
+        return;
+      }
+
+      // no error ; reset error property
+      setUserValues((prev) => {
+        const newArr = [...prev];
+        newArr[index].conditionError = '';
+        return newArr;
+      });
+    }
+
+    if (name === 'exitPoint') {
+      const regExp = /^[a-z0-9]+$/i;
+      const isAlNum = regExp.test(value);
+      if (!isAlNum) {
+        // error condition
+        setUserValues((prev) => {
+          const newArr = [...prev];
+          newArr[index].exitError = 'invalid exitPoint character';
+          return newArr;
+        });
+        return;
+      }
+      // no error ; reset error property
+      setUserValues((prev) => {
+        const newArr = [...prev];
+        newArr[index].exitError = '';
+        return newArr;
+      });
+    }
+
+    console.log('name,value🕺🏻', name, value, index);
   }
 
   function handleRemoveCondition() {
@@ -116,27 +169,75 @@ const SwitchBlock = ({ shape, handleCloseDrawer }) => {
         </ListItem>
         <List>
           {userValues.map((row, i) => (
-            <ListItem key={i}>
-              <TextField
-                sx={{ mx: 0.5, width: '75%' }}
-                size='small'
-                value={row.condition}
-                name='condition'
-                onChange={(e) => handleChangeUserValues(e, i)}
-              ></TextField>
-              <TextField
-                sx={{ mx: 0.5 }}
-                size='small'
-                value={row.exitPoint}
-                name='exitPoint'
-                onChange={(e) => handleChangeUserValues(e, i)}
-              ></TextField>
-            </ListItem>
+            <Box key={i}>
+              <ListItem>
+                <TextField
+                  sx={{
+                    mx: 0.5,
+                    width: '75%',
+                    backgroundColor: row.conditionError && '#ffcdd2',
+                  }}
+                  size='small'
+                  value={row.condition}
+                  name='condition'
+                  onChange={(e) => {
+                    handleChangeUserValues(e, i);
+                    validateInput(e, i);
+                  }}
+                ></TextField>
+                <TextField
+                  sx={{ mx: 0.5, backgroundColor: row.exitError && '#ffcdd2' }}
+                  size='small'
+                  value={row.exitPoint}
+                  name='exitPoint'
+                  onChange={(e) => {
+                    handleChangeUserValues(e, i);
+                    validateInput(e, i);
+                  }}
+                  error={row.exitError}
+                ></TextField>
+              </ListItem>
+              <ListItem
+                sx={{
+                  display:
+                    row.exitError || row.conditionError ? 'flex' : 'none',
+                }}
+              >
+                <Typography
+                  sx={{
+                    mt: -1,
+                    mr: 'auto',
+                    ml: 2,
+                    px: 1,
+                    boxShadow: 1,
+                    width: 'max-content',
+                    backgroundColor: '#e3f2fd',
+                    display: row.conditionError ? 'inline-block' : 'none',
+                  }}
+                >
+                  {row.conditionError}
+                </Typography>
+                <Typography
+                  sx={{
+                    mt: -1,
+                    ml: 'auto',
+                    mr: 2,
+                    px: 1,
+                    boxShadow: 1,
+                    backgroundColor: '#e3f2fd',
+                    width: 'max-content',
+                    display: row.exitError ? 'inline-block' : 'none',
+                  }}
+                >
+                  {row.exitError}
+                </Typography>
+              </ListItem>
+            </Box>
           ))}
         </List>
 
         <ListItem>
-          <Tooltip title='Add condition' placement='bottom'>
+          <Tooltip title='Add exitPoint' placement='bottom'>
             <Button
               sx={{ mx: 1, backgroundColor: '#8bc34a', color: '#424242' }}
               size='small'
@@ -145,7 +246,7 @@ const SwitchBlock = ({ shape, handleCloseDrawer }) => {
               <AddCircleIcon />
             </Button>
           </Tooltip>
-          <Tooltip title='Remove condition' placement='bottom'>
+          <Tooltip title='Remove exitPoint' placement='bottom'>
             <Button
               sx={{ mx: 1, backgroundColor: '#e91e63', color: '#424242' }}
               size='small'

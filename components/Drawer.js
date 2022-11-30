@@ -95,7 +95,11 @@ const DrawerComponent = ({
       );
     } else if (shape?.type == 'rhombus') {
       return (
-        <SwitchBlock shape={shape} handleCloseDrawer={handleCloseDrawer} />
+        <SwitchBlock
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          userVariables={userVariables}
+        />
       );
     } else {
       return (
