@@ -15,7 +15,12 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { useState } from 'react';
 import ResetCanvasDialog from './ResetCanvasDialog';
 
-const SwitchBlock = ({ shape, handleCloseDrawer, userVariables }) => {
+const SwitchBlock = ({
+  shape,
+  handleCloseDrawer,
+  userVariables,
+  stageGroup,
+}) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [userValues, setUserValues] = useState(
     shape.userValues?.switchArray ?? [
@@ -35,6 +40,12 @@ const SwitchBlock = ({ shape, handleCloseDrawer, userVariables }) => {
           row.exitError
         )
     );
+
+    const validExitPointsArray = filteredUserValues.map((row) => row.exitPoint);
+
+    console.log('valid exits', validExitPointsArray);
+
+    stageGroup.addExitShapes(validExitPointsArray, shape.id);
 
     // save only valid user values
     shape.setUserValues({ switchArray: filteredUserValues });
@@ -59,7 +70,7 @@ const SwitchBlock = ({ shape, handleCloseDrawer, userVariables }) => {
 
     if (name === 'condition') {
       if (value === 'test') {
-        // error condition
+        // test error condition
         setUserValues((prev) => {
           const newArr = [...prev];
           newArr[index].conditionError = 'invalid condition';

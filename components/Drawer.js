@@ -99,6 +99,7 @@ const DrawerComponent = ({
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
           userVariables={userVariables}
+          stageGroup={stageGroup}
         />
       );
     } else {

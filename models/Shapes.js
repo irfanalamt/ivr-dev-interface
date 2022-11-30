@@ -1,4 +1,4 @@
-import Shape from './Shape';
+import Shape from './ShapeNew';
 
 class Shapes {
   constructor(groupname, shapes) {
@@ -38,9 +38,21 @@ class Shapes {
   addShape(newShape) {
     this.shapes.push(newShape);
   }
+
+  addExitShapes(exitPoints, id) {
+    const index = this.shapes.findIndex((shape) => shape.id === id);
+    const shapeBottom = this.shapes[index].getExitPoint();
+    console.log('🚀 ~ Shapes ~ addExitShapes ~ shapeBottom', shapeBottom);
+
+    if (index !== -1) {
+      const newShape = new Shape(...shapeBottom, 30, 30, 'tinyCircle', 'black');
+      this.addShape(newShape);
+    }
+  }
+
   getIndexOfFirstShape() {
     // first shape is always setParams
-    // find it a return id
+    // find it and return index
     const index = this.shapes.findIndex((shape) => shape.type === 'pentagon');
 
     if (index === -1) return null;

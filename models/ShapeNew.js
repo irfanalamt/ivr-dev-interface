@@ -19,6 +19,7 @@ class Shape {
       smallCircle: 'connector',
       triangle: 'jumper',
       rhombus: 'switch',
+      tinyCircle: 'exitPoint',
     };
 
     this.text = mapShapes[type] ?? '';
@@ -208,6 +209,10 @@ class Shape {
 
       case 'rhombus':
         this.drawRhombus(ctx);
+        break;
+
+      case 'tinyCircle':
+        this.drawTinyCircle(ctx);
         break;
     }
   }
@@ -559,6 +564,14 @@ class Shape {
     ctx.fillStyle = this.style;
     ctx.lineWidth = 2;
     ctx.fill();
+  }
+
+  drawTinyCircle(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+    ctx.fillStyle = this.style;
+    ctx.fill();
+    ctx.fillText(this.text, this.x, this.y);
   }
 }
 
