@@ -12,6 +12,7 @@ import SetParams from './SetParams';
 import PlayConfirm from './PlayConfirm';
 import GoToBlock from './GoToBlock';
 import SwitchBlock from './SwitchBlock';
+import SwitchExitPoint from './SwitchExitPoint';
 
 const DrawerComponent = ({
   isOpen,
@@ -101,6 +102,10 @@ const DrawerComponent = ({
           userVariables={userVariables}
           stageGroup={stageGroup}
         />
+      );
+    } else if (shape?.type == 'tinyCircle') {
+      return (
+        <SwitchExitPoint shape={shape} handleCloseDrawer={handleCloseDrawer} />
       );
     } else {
       return (

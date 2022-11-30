@@ -576,6 +576,9 @@ const CanvasComponent = () => {
       80
     );
 
+    // update position of exit points relative to connected shape (for switch)
+    stageGroup.current[pageNumber.current - 1].updateExitPointsPosition();
+
     // draw shapes and lines
     palletGroup.current
       .getShapes()

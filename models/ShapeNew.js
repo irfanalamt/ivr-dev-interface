@@ -43,6 +43,14 @@ class Shape {
     return [this.x, this.y + this.height / 2];
   }
 
+  getBottomPointForExit(number, position) {
+    const xPoint = (this.width / (number + 1)) * position;
+    return [
+      this.x - this.width * 0.5 + xPoint,
+      this.y + this.height * 0.5 + 10,
+    ];
+  }
+
   setConnectors(id) {
     // only push if not present in array
     if (this.connectors.includes(id)) return;
@@ -72,6 +80,11 @@ class Shape {
   }
   setNextItem(item) {
     this.nextItem = item;
+  }
+
+  setXY(x, y) {
+    this.x = x;
+    this.y = y;
   }
 
   setFunctionString(text) {
@@ -571,7 +584,6 @@ class Shape {
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
     ctx.fillStyle = this.style;
     ctx.fill();
-    ctx.fillText(this.text, this.x, this.y);
   }
 }
 

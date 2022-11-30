@@ -46,8 +46,49 @@ class Shapes {
 
     if (index !== -1) {
       const newShape = new Shape(...shapeBottom, 30, 30, 'tinyCircle', 'black');
-      this.addShape(newShape);
+
+      exitPoints.forEach((point, i) => {
+        const newShape = new Shape(
+          shapeBottom[0],
+          shapeBottom[1],
+          15,
+          15,
+          'tinyCircle',
+          '#aeea00'
+        );
+
+        newShape.setUserValues({
+          prevShapeId: id,
+          position: i + 1,
+          name: point,
+        });
+        this.addShape(newShape);
+      });
     }
+  }
+
+  updateExitPointsPosition() {
+    this.shapes.forEach((el) => {
+      if (el.type === 'tinyCircle') {
+        if (el.userValues?.prevShapeId) {
+          const prevShapeIndex = this.shapes.findIndex(
+            (shape) => shape.id === el.userValues.prevShapeId
+          );
+          if (prevShapeIndex !== -1) {
+            // update position of element wrt shape
+            const prevShape = this.shapes[prevShapeIndex];
+            const numberOfExitPoints = prevShape.userValues?.switchArray.length;
+            const positionOfExitPoint = el.userValues?.position;
+            // write function to get bottomPointForExit
+            const newXY = prevShape.getBottomPointForExit(
+              numberOfExitPoints,
+              positionOfExitPoint
+            );
+            el.setXY(...newXY);
+          }
+        }
+      }
+    });
   }
 
   getIndexOfFirstShape() {
