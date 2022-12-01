@@ -35,21 +35,25 @@ const SwitchBlock = ({
     shape.setText(shapeName);
 
     // filter our rows with both fields blank or has an error in either fields
-    const filteredUserValues = userValues.filter(
-      (row) =>
-        !(
-          (row.condition === '' && row.exitPoint === '') ||
-          row.conditionError ||
-          row.exitError
-        )
-    );
+    const filteredUserValues = userValues
+      .filter(
+        (row) =>
+          !(
+            (row.condition === '' && row.exitPoint === '') ||
+            row.conditionError ||
+            row.exitError
+          )
+      )
+      .map((row) => {
+        return { condition: row.condition, exitPoint: row.exitPoint };
+      });
 
     const validExitPointsArray = filteredUserValues.map((row) => row.exitPoint);
 
     console.log('valid exits', validExitPointsArray);
 
-    stageGroup.cleanupExitShapes(shape.id);
-    stageGroup.addExitShapes(validExitPointsArray, shape.id);
+    // stageGroup.cleanupExitShapes(shape.id);
+    // stageGroup.addExitShapes(validExitPointsArray, shape.id);
 
     // save only valid user values
     shape.setUserValues({ switchArray: filteredUserValues, defaultExitPoint });
@@ -216,7 +220,7 @@ const SwitchBlock = ({
                     handleChangeUserValues(e, i);
                     validateInput(e, i);
                   }}
-                  error={row.exitError}
+                  error={!!row.exitError}
                 ></TextField>
               </ListItem>
               <ListItem

@@ -500,6 +500,10 @@ const CanvasComponent = () => {
             '#795548',
             true
           );
+          stageFigure.setUserValues({
+            switchArray: [],
+            defaultExitPoint: 'default',
+          });
           break;
       }
 
@@ -577,7 +581,7 @@ const CanvasComponent = () => {
     );
 
     // update position of exit points relative to connected shape (for switch)
-    stageGroup.current[pageNumber.current - 1].updateExitPointsPosition();
+    // stageGroup.current[pageNumber.current - 1].updateExitPointsPosition();
 
     // draw shapes and lines
     palletGroup.current

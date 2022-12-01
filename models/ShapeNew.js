@@ -1,3 +1,5 @@
+import ResetCanvasDialog from '../components/ResetCanvasDialog';
+
 class Shape {
   constructor(x, y, width, height, type, style = 'black', stroke = false) {
     this.x = x;
@@ -45,10 +47,7 @@ class Shape {
 
   getBottomPointForExit(number, position) {
     const xPoint = (this.width / (number + 1)) * position;
-    return [
-      this.x - this.width * 0.5 + xPoint,
-      this.y + this.height * 0.5 + 10,
-    ];
+    return [this.x - this.width * 0.5 + xPoint, this.y + this.height * 0.5];
   }
 
   setConnectors(id) {
@@ -566,6 +565,8 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      // exit points for switch when in stage
+
       // fill color if selected
       this.selected && this.fillSelected(ctx);
 
@@ -577,6 +578,7 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y + 7);
       ctx.strokeStyle = this.style;
       ctx.stroke();
+      this.drawExitPoints(ctx);
       return;
     }
 
@@ -585,11 +587,31 @@ class Shape {
     ctx.fill();
   }
 
-  drawTinyCircle(ctx) {
+  drawExitPoints(ctx) {
+    const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
+
+    if (numberOfExitPoints === 1) {
+      this.drawTinyCircle(ctx, ...this.getExitPoint());
+      return;
+    }
+
+    // more than 1; spread them evenly bottom
+    // including default exit point
+
+    for (let i = 1; i <= numberOfExitPoints; i++) {
+      const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
+      this.drawTinyCircle(ctx, ...bottomPoint);
+    }
+
+    console.log(numberOfExitPoints, 'vd');
+  }
+
+  drawTinyCircle(ctx, x, y) {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-    ctx.fillStyle = this.style;
+    ctx.arc(x, y, 7, 0, Math.PI * 2);
+    ctx.fillStyle = '#43a047';
     ctx.fill();
+    ctx.closePath();
   }
 }
 
