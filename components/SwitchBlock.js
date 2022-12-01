@@ -170,12 +170,15 @@ const SwitchBlock = ({
         </ListItem>
         <ListItem>
           <Typography
-            sx={{ fontSize: '1.2rem', width: '60%', mx: 0.5 }}
+            sx={{ fontSize: '1.2rem', width: '75%', mx: 0.5 }}
             variant='subtitle2'
           >
             Condition
           </Typography>
-          <Typography sx={{ fontSize: '1.2rem' }} variant='subtitle2'>
+          <Typography
+            sx={{ fontSize: '1.2rem', width: '25%' }}
+            variant='subtitle2'
+          >
             ExitPoint
           </Typography>
         </ListItem>
@@ -198,7 +201,11 @@ const SwitchBlock = ({
                   }}
                 ></TextField>
                 <TextField
-                  sx={{ mx: 0.5, backgroundColor: row.exitError && '#ffcdd2' }}
+                  sx={{
+                    mx: 0.5,
+                    backgroundColor: row.exitError && '#ffcdd2',
+                    width: '25%',
+                  }}
                   size='small'
                   value={row.exitPoint}
                   name='exitPoint'
@@ -247,6 +254,20 @@ const SwitchBlock = ({
             </Box>
           ))}
         </List>
+        <ListItem>
+          <TextField
+            sx={{ width: '75%', mx: 0.5, backgroundColor: '#eceff1' }}
+            size='small'
+            value='Default'
+            disabled
+          />
+
+          <TextField
+            defaultValue='default'
+            sx={{ width: '25%', mx: 0.5 }}
+            size='small'
+          />
+        </ListItem>
 
         <ListItem>
           <Tooltip title='Add exitPoint' placement='bottom'>
