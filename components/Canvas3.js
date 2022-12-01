@@ -172,12 +172,12 @@ const CanvasComponent = () => {
       '#33691e'
     );
 
-    const palletRhombus = new Shape(
+    const palletPentagonSwitch = new Shape(
       40,
       433 + scrollOffsetY.current,
       40,
       25,
-      'rhombus',
+      'pentagonSwitch',
       '#3e2723'
     );
 
@@ -209,7 +209,7 @@ const CanvasComponent = () => {
       palletPentagon,
       palletSmallCircle,
       palletTriangle,
-      palletRhombus,
+      palletPentagonSwitch,
     ]);
   }
 
@@ -490,13 +490,13 @@ const CanvasComponent = () => {
           stageFigure.setUserValues({ type: 'exit' });
           break;
 
-        case 'rhombus':
+        case 'pentagonSwitch':
           stageFigure = new Shape(
             realX,
             realY,
             130,
             45,
-            'rhombus',
+            'pentagonSwitch',
             '#795548',
             true
           );

@@ -94,7 +94,7 @@ const DrawerComponent = ({
           entireStageGroup={entireStageGroup}
         />
       );
-    } else if (shape?.type == 'rhombus') {
+    } else if (shape?.type == 'pentagonSwitch') {
       return (
         <SwitchBlock
           shape={shape}

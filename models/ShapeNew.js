@@ -18,7 +18,7 @@ class Shape {
       pentagon: 'setParams',
       smallCircle: 'connector',
       triangle: 'jumper',
-      rhombus: 'switch',
+      pentagonSwitch: 'switch',
       tinyCircle: 'exitPoint',
     };
 
@@ -220,8 +220,8 @@ class Shape {
         this.drawTriangle(ctx);
         break;
 
-      case 'rhombus':
-        this.drawRhombus(ctx);
+      case 'pentagonSwitch':
+        this.drawPentagonSwitch(ctx);
         break;
 
       case 'tinyCircle':
@@ -547,13 +547,19 @@ class Shape {
     ctx.fillText('▼', this.x, this.y + 2);
   }
 
-  drawRhombus(ctx) {
+  drawPentagonSwitch(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
-    ctx.moveTo(this.width * 0.5, 0);
-    ctx.lineTo(0, this.height * 0.5);
-    ctx.lineTo(-this.width * 0.5, 0);
+    // ctx.moveTo(this.width * 0.5, 0);
+    // ctx.lineTo(0, this.height * 0.5);
+    // ctx.lineTo(-this.width * 0.5, 0);
+    // ctx.lineTo(0, -this.height * 0.5);
+
+    ctx.moveTo(this.width * 0.5, this.height * 0.2);
+    ctx.lineTo(this.width * 0.5, this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5, this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5, this.height * 0.2);
     ctx.lineTo(0, -this.height * 0.5);
 
     ctx.closePath();
@@ -568,7 +574,7 @@ class Shape {
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(this.text, this.x, this.y);
+      ctx.fillText(this.text, this.x, this.y + 7);
       ctx.strokeStyle = this.style;
       ctx.stroke();
       return;

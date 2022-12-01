@@ -27,6 +27,9 @@ const SwitchBlock = ({
       { condition: '', exitPoint: '', conditionError: '', exitError: '' },
     ]
   );
+  const [defaultExitPoint, setDefaultExitPoint] = useState(
+    shape.userValues?.defaultExitPoint ?? 'default'
+  );
 
   function saveUserValues() {
     shape.setText(shapeName);
@@ -49,7 +52,7 @@ const SwitchBlock = ({
     stageGroup.addExitShapes(validExitPointsArray, shape.id);
 
     // save only valid user values
-    shape.setUserValues({ switchArray: filteredUserValues });
+    shape.setUserValues({ switchArray: filteredUserValues, defaultExitPoint });
   }
 
   function handleChangeUserValues(e, index) {
@@ -263,9 +266,10 @@ const SwitchBlock = ({
           />
 
           <TextField
-            defaultValue='default'
             sx={{ width: '25%', mx: 0.5 }}
             size='small'
+            value={defaultExitPoint}
+            onChange={(e) => setDefaultExitPoint(e.target.value)}
           />
         </ListItem>
 
