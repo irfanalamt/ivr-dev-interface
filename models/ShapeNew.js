@@ -101,6 +101,43 @@ class Shape {
     ctx.fill();
   }
 
+  isNearExitPoint(x, y) {
+    const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
+
+    if (numberOfExitPoints === 1) {
+      const bottomPoint = this.getExitPoint();
+
+      if (
+        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
+        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
+      ) {
+        return this.userValues.defaultExitPoint;
+      }
+
+      return false;
+    }
+
+    for (let i = 1; i <= numberOfExitPoints; i++) {
+      const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
+
+      if (
+        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
+        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
+      ) {
+        if (i == numberOfExitPoints) {
+          // last exit point is the default exit point
+          return this.userValues.defaultExitPoint;
+        }
+        return this.userValues.switchArray[i - 1].exitPoint;
+      }
+    }
+    return false;
+  }
+
+  isBetween(x, min, max) {
+    return x >= min && x <= max;
+  }
+
   isMouseInShape(x, y) {
     // returns true if mouse is in shape; else false
 

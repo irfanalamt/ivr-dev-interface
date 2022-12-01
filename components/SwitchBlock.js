@@ -23,9 +23,9 @@ const SwitchBlock = ({
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [userValues, setUserValues] = useState(
-    shape.userValues?.switchArray ?? [
-      { condition: '', exitPoint: '', conditionError: '', exitError: '' },
-    ]
+    shape.userValues?.switchArray.length > 0
+      ? shape.userValues?.switchArray
+      : [{ condition: '', exitPoint: '', conditionError: '', exitError: '' }]
   );
   const [defaultExitPoint, setDefaultExitPoint] = useState(
     shape.userValues?.defaultExitPoint ?? 'default'

@@ -34,6 +34,7 @@ const CanvasComponent = () => {
   const userVariables = useRef([]);
   const currentShape = useRef(null);
   const tooltipRef = useRef(null);
+  const stageTooltipRef = useRef(null);
   const infoMessage = useRef(null);
   const connectShape1 = useRef(null),
     connectShape2 = useRef(null);
@@ -265,10 +266,30 @@ const CanvasComponent = () => {
       if (element.isMouseInShape(realX, realY)) {
         console.log(`💃🏻YES in pallet shape ${element.type}`);
         tooltipRef.current.style.top =
-          clientY - 10 + scrollOffsetY.current + 'px';
-        tooltipRef.current.style.left = clientX + 40 + 'px';
+          realY - 10 + scrollOffsetY.current + 'px';
+        tooltipRef.current.style.left = realX + 50 + 'px';
         tooltipRef.current.textContent = element.text;
         tooltipRef.current.style.visibility = 'visible';
+      }
+    });
+
+    stageTooltipRef.current.style.visibility = 'hidden';
+    stageGroup.current[pageNumber.current - 1].getShapes().forEach((el) => {
+      if (el.isMouseInShape(realX, realY)) {
+        // mouse on current stageShape
+        console.log(`💃🏻YES in stage shape ${el.type}${el.text}`);
+
+        if (el.type === 'pentagonSwitch') {
+          // if not false returned; else exitpoint returned
+          const isNearExitPoint = el.isNearExitPoint(realX, realY);
+          console.log('yaay🌟▶️', isNearExitPoint);
+          if (isNearExitPoint) {
+            stageTooltipRef.current.style.top = realY + 10 + 'px';
+            stageTooltipRef.current.style.left = realX + 30 + 'px';
+            stageTooltipRef.current.textContent = isNearExitPoint;
+            stageTooltipRef.current.style.visibility = 'visible';
+          }
+        }
       }
     });
   }
@@ -918,6 +939,20 @@ const CanvasComponent = () => {
         variant='subtitle2'
       >
         Im a tooltip
+      </Typography>
+      <Typography
+        sx={{
+          visibility: 'hidden',
+          position: 'absolute',
+          backgroundColor: '#fce4ec',
+          px: 1,
+          boxShadow: 1,
+          borderRadius: 1,
+        }}
+        ref={stageTooltipRef}
+        variant='subtitle2'
+      >
+        Im a stageTooltip
       </Typography>
       <ResetCanvasDialog
         open={showCanvasResetDialog}
