@@ -159,6 +159,11 @@ class Shape {
         this.width = this.text.length * 11.5;
         break;
 
+      case 'pentagonSwitch':
+        this.width =
+          this.text.length * 12 < 130 ? 130 : this.text.length * 12 + 50;
+        break;
+
       case 'hexagon':
         this.width = this.text.length * 12;
         break;
