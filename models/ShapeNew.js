@@ -111,7 +111,7 @@ class Shape {
         this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
         this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
       ) {
-        return this.userValues.defaultExitPoint;
+        return this.userValues.default.exitPoint;
       }
 
       return false;
@@ -126,7 +126,7 @@ class Shape {
       ) {
         if (i == numberOfExitPoints) {
           // last exit point is the default exit point
-          return this.userValues.defaultExitPoint;
+          return this.userValues.default.exitPoint;
         }
         return this.userValues.switchArray[i - 1].exitPoint;
       }
@@ -597,10 +597,10 @@ class Shape {
     // ctx.lineTo(-this.width * 0.5, 0);
     // ctx.lineTo(0, -this.height * 0.5);
 
-    ctx.moveTo(this.width * 0.5, this.height * 0.2);
+    ctx.moveTo(this.width * 0.5, this.height * 0.1);
     ctx.lineTo(this.width * 0.5, this.height * 0.5);
     ctx.lineTo(-this.width * 0.5, this.height * 0.5);
-    ctx.lineTo(-this.width * 0.5, this.height * 0.2);
+    ctx.lineTo(-this.width * 0.5, this.height * 0.1);
     ctx.lineTo(0, -this.height * 0.5);
 
     ctx.closePath();
@@ -644,13 +644,11 @@ class Shape {
       const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
       this.drawTinyCircle(ctx, ...bottomPoint);
     }
-
-    console.log(numberOfExitPoints, 'vd');
   }
 
   drawTinyCircle(ctx, x, y) {
     ctx.beginPath();
-    ctx.arc(x, y, 7, 0, Math.PI * 2);
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
     ctx.fillStyle = '#43a047';
     ctx.fill();
     ctx.closePath();

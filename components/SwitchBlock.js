@@ -28,7 +28,7 @@ const SwitchBlock = ({
       : [{ condition: '', exitPoint: '', conditionError: '', exitError: '' }]
   );
   const [defaultExitPoint, setDefaultExitPoint] = useState(
-    shape.userValues?.defaultExitPoint ?? 'default'
+    shape.userValues?.default.exitPoint ?? 'default'
   );
 
   function saveUserValues() {
@@ -56,7 +56,10 @@ const SwitchBlock = ({
     // stageGroup.addExitShapes(validExitPointsArray, shape.id);
 
     // save only valid user values
-    shape.setUserValues({ switchArray: filteredUserValues, defaultExitPoint });
+    shape.setUserValues({
+      switchArray: filteredUserValues,
+      default: { exitPoint: defaultExitPoint },
+    });
   }
 
   function handleChangeUserValues(e, index) {

@@ -39,6 +39,8 @@ const CanvasComponent = () => {
   const connectShape1 = useRef(null),
     connectShape2 = useRef(null);
 
+  const isSwitchExitPoint = useRef(null);
+
   const shapeCount = useRef(1);
   const scrollOffsetY = useRef(0);
   const pageNumber = useRef(1);
@@ -307,7 +309,7 @@ const CanvasComponent = () => {
       .getShapes()
       .forEach((element, i) => {
         if (element.isMouseInShape(realX, realY)) {
-          // rest infoMsg on stage shape click
+          // reset infoMsg on stage shape click
           setShowInfoMessage(false);
 
           if (isDeleting) {
@@ -316,7 +318,7 @@ const CanvasComponent = () => {
             return;
           }
           console.log(`YES in stage shape ${element.type}`);
-          console.log('InitCanvas:🌟', stageGroup.current);
+
           console.log(
             '🌟CURRENT stageGroup:',
             stageGroup.current[pageNumber.current - 1].getShapes()
@@ -326,6 +328,12 @@ const CanvasComponent = () => {
             connectShape1.current.setSelected(true);
             clearAndDraw();
             setIsConnecting(2);
+            //if shape1 is switch, if on exit point set ref to exit point name
+            if (connectShape1.current.type === 'pentagonSwitch') {
+              const isNearExitPoint = element.isNearExitPoint(realX, realY);
+
+              isSwitchExitPoint.current = isNearExitPoint;
+            }
             return;
           }
           if (isConnecting === 2) {
@@ -523,7 +531,7 @@ const CanvasComponent = () => {
           );
           stageFigure.setUserValues({
             switchArray: [],
-            defaultExitPoint: 'default',
+            default: { exitPoint: 'default' },
           });
           break;
       }
@@ -535,9 +543,10 @@ const CanvasComponent = () => {
       if (realX > 120) {
         //set unique id; add figure to stage
 
-        // reset shapeCount if stageGroup empty
-        if (stageGroup.current[pageNumber.current - 1].getShapes().length === 0)
-          shapeCount.current = 1;
+        // // reset shapeCount if stageGroup empty
+        // if (stageGroup.current[pageNumber.current - 1].getShapes().length === 0)
+        //   shapeCount.current = 1;
+
         stageFigure.setId(shapeCount.current++, pageNumber.current);
         stageGroup.current[pageNumber.current - 1].addShape(stageFigure);
         console.log('🚀 ~ handleMouseUp ~ stageFigureAdded', stageFigure);
@@ -671,6 +680,34 @@ const CanvasComponent = () => {
       connectShape2.current.userValues?.type === 'entry'
     ) {
       infoMessage.current = 'cannot connect to entry jumper.';
+      setShowInfoMessage(true);
+      return;
+    }
+
+    if (connectShape1.current.type === 'pentagonSwitch') {
+      // if it is an exit point
+      if (isSwitchExitPoint.current) {
+        console.log('connect exit point../🟢', isSwitchExitPoint.current);
+
+        let position = connectShape1.current.userValues.switchArray.findIndex(
+          (row) => row.exitPoint == isSwitchExitPoint.current
+        );
+        if (position !== -1) {
+          // update switchArray to add id of second shape
+
+          connectShape1.current.userValues.switchArray[position].nextId =
+            connectShape2.current.id;
+          clearAndDraw();
+          return;
+        }
+
+        // update defaultExitNextId to add id of 2nd shape
+        connectShape1.current.userValues.default.nextId =
+          connectShape2.current.id;
+        clearAndDraw();
+        return;
+      }
+      infoMessage.current = 'Choose a switch exitPoint to connect.';
       setShowInfoMessage(true);
       return;
     }

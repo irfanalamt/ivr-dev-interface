@@ -237,6 +237,79 @@ class Shapes {
 
     let tempArray = [];
     this.shapes.forEach((el, i) => {
+      if (el.type === 'pentagonSwitch') {
+        // draw connecting lines for switch
+        let shape1 = el;
+        if (el.userValues.switchArray.length === 0) {
+          // only default condition
+          let index = this.shapes.findIndex(
+            (shape) => shape.id === el.userValues.default.nextId
+          );
+          if (index !== -1) {
+            let shape2 = this.shapes[index];
+            tempArray.push({
+              x1: shape1.getExitPoint()[0],
+              y1: shape1.getExitPoint()[1],
+              x2: shape2.getEntryPoint()[0],
+              y2: shape2.getEntryPoint()[1],
+              startItem: shape1.id,
+              endItem: shape2.id,
+              lineCap: null,
+              lineColor: '#4a148c',
+            });
+          }
+        } else {
+          // switchArray has atleast one element
+
+          el.userValues.switchArray.forEach((row, i) => {
+            let index = this.shapes.findIndex(
+              (shape) => shape.id === row.nextId
+            );
+
+            if (index !== -1) {
+              let shape2 = this.shapes[index];
+              let exitCordinate = shape1.getBottomPointForExit(
+                el.userValues.switchArray.length + 1,
+                i + 1
+              );
+              tempArray.push({
+                x1: exitCordinate[0],
+                y1: exitCordinate[1],
+                x2: shape2.getEntryPoint()[0],
+                y2: shape2.getEntryPoint()[1],
+                startItem: shape1.id,
+                endItem: shape2.id,
+                lineCap: null,
+                lineColor: '#4a148c',
+              });
+            }
+          });
+
+          // default condition right end of switch
+          let index = this.shapes.findIndex(
+            (shape) => shape.id === el.userValues.default.nextId
+          );
+
+          if (index !== -1) {
+            let shape2 = this.shapes[index];
+            let exitCordinate = shape1.getBottomPointForExit(
+              el.userValues.switchArray.length + 1,
+              el.userValues.switchArray.length + 1
+            );
+            tempArray.push({
+              x1: exitCordinate[0],
+              y1: exitCordinate[1],
+              x2: shape2.getEntryPoint()[0],
+              y2: shape2.getEntryPoint()[1],
+              startItem: shape1.id,
+              endItem: shape2.id,
+              lineCap: null,
+              lineColor: '#4a148c',
+            });
+          }
+        }
+      }
+
       if (el.type === 'hexagon') {
         el.userValues?.items.forEach((elm) => {
           let shape1 = el;
