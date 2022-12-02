@@ -45,20 +45,17 @@ const SwitchBlock = ({
           )
       )
       .map((row) => {
-        return { condition: row.condition, exitPoint: row.exitPoint };
+        return {
+          condition: row.condition,
+          exitPoint: row.exitPoint,
+          nextId: row.nextId,
+        };
       });
-
-    const validExitPointsArray = filteredUserValues.map((row) => row.exitPoint);
-
-    console.log('valid exits', validExitPointsArray);
-
-    // stageGroup.cleanupExitShapes(shape.id);
-    // stageGroup.addExitShapes(validExitPointsArray, shape.id);
 
     // save only valid user values
     shape.setUserValues({
       switchArray: filteredUserValues,
-      default: { exitPoint: defaultExitPoint },
+      default: { ...shape.userValues?.default, exitPoint: defaultExitPoint },
     });
   }
 
