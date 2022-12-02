@@ -102,6 +102,12 @@ class Shapes {
   //   });
   // }
 
+  getIndexById(id) {
+    const index = this.shapes.findIndex((shape) => shape.id === id);
+
+    return index;
+  }
+
   getIndexOfFirstShape() {
     // first shape is always setParams
     // find it and return index
@@ -242,9 +248,9 @@ class Shapes {
         let shape1 = el;
         if (el.userValues.switchArray.length === 0) {
           // only default condition
-          let index = this.shapes.findIndex(
-            (shape) => shape.id === el.userValues.default.nextId
-          );
+
+          let index = this.getIndexById(el.userValues.default.nextId);
+
           if (index !== -1) {
             let shape2 = this.shapes[index];
             tempArray.push({
@@ -262,10 +268,7 @@ class Shapes {
           // switchArray has atleast one element
 
           el.userValues.switchArray.forEach((row, i) => {
-            let index = this.shapes.findIndex(
-              (shape) => shape.id === row.nextId
-            );
-
+            let index = this.getIndexById(row.nextId);
             if (index !== -1) {
               let shape2 = this.shapes[index];
               let exitCordinate = shape1.getBottomPointForExit(
@@ -286,9 +289,8 @@ class Shapes {
           });
 
           // default condition right end of switch
-          let index = this.shapes.findIndex(
-            (shape) => shape.id === el.userValues.default.nextId
-          );
+
+          let index = this.getIndexById(el.userValues.default.nextId);
 
           if (index !== -1) {
             let shape2 = this.shapes[index];
