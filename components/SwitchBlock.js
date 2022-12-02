@@ -101,6 +101,18 @@ const SwitchBlock = ({
     if (name === 'exitPoint') {
       const regExp = /^[a-z0-9]+$/i;
       const isAlNum = regExp.test(value);
+      const currentExitPoints = userValues.map((el) => el.exitPoint);
+      currentExitPoints.splice(index, 1);
+      if (currentExitPoints.includes(value)) {
+        console.log('duplicate found!🕺🏻', currentExitPoints, value);
+        // error duplicate exitPoint
+        setUserValues((prev) => {
+          const newArr = [...prev];
+          newArr[index].exitError = 'exitPoint must be unique';
+          return newArr;
+        });
+        return;
+      }
       if (!isAlNum) {
         // error condition
         setUserValues((prev) => {
@@ -189,7 +201,7 @@ const SwitchBlock = ({
             sx={{ fontSize: '1.2rem', width: '25%' }}
             variant='subtitle2'
           >
-            ExitPoint
+            Action
           </Typography>
         </ListItem>
         <List>
@@ -209,6 +221,7 @@ const SwitchBlock = ({
                     handleChangeUserValues(e, i);
                     validateInput(e, i);
                   }}
+                  multiline
                 ></TextField>
                 <TextField
                   sx={{
