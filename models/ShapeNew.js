@@ -101,7 +101,7 @@ class Shape {
     ctx.fill();
   }
 
-  isNearExitPoint(x, y) {
+  isNearExitPointSwitch(x, y) {
     const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
 
     if (numberOfExitPoints === 1) {
@@ -129,6 +129,39 @@ class Shape {
           return this.userValues.default.exitPoint;
         }
         return this.userValues.switchArray[i - 1].exitPoint;
+      }
+    }
+    return false;
+  }
+
+  isNearExitPointMenu(x, y) {
+    const numberOfExitPoints = this.userValues.items.length;
+
+    if (numberOfExitPoints === 0) return false;
+
+    if (numberOfExitPoints === 1) {
+      const bottomPoint = this.getExitPoint();
+
+      if (
+        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
+        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
+      ) {
+        return this.userValues.items[0].action;
+      }
+
+      return false;
+    }
+
+    // items >1
+
+    for (let i = 1; i <= numberOfExitPoints; i++) {
+      const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
+
+      if (
+        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
+        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
+      ) {
+        return this.userValues.items[i - 1].action;
       }
     }
     return false;

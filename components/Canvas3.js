@@ -41,6 +41,7 @@ const CanvasComponent = () => {
     connectShape2 = useRef(null);
 
   const isSwitchExitPoint = useRef(null);
+  const isMenuExitPoint = useRef(null);
 
   const shapeCount = useRef(1);
   const scrollOffsetY = useRef(0);
@@ -289,8 +290,7 @@ const CanvasComponent = () => {
 
         if (el.type === 'pentagonSwitch') {
           // if not false returned; else exitpoint returned
-          const isNearExitPoint = el.isNearExitPoint(realX, realY);
-          console.log('yaay🌟▶️', isNearExitPoint);
+          const isNearExitPoint = el.isNearExitPointSwitch(realX, realY);
           if (isNearExitPoint) {
             stageTooltipRef.current.style.top = realY + 10 + 'px';
             stageTooltipRef.current.style.left = realX + 30 + 'px';
@@ -298,6 +298,16 @@ const CanvasComponent = () => {
             stageTooltipRef.current.style.visibility = 'visible';
           }
         }
+        if (el.type === 'hexagon') {
+          const isNearExitPoint = el.isNearExitPointMenu(realX, realY);
+          if (isNearExitPoint) {
+            stageTooltipRef.current.style.top = realY + 10 + 'px';
+            stageTooltipRef.current.style.left = realX + 30 + 'px';
+            stageTooltipRef.current.textContent = isNearExitPoint;
+            stageTooltipRef.current.style.visibility = 'visible';
+          }
+        }
+
         return;
       }
     });
@@ -358,9 +368,18 @@ const CanvasComponent = () => {
             setIsConnecting(2);
             //if shape1 is switch, if on exit point set ref to exit point name
             if (connectShape1.current.type === 'pentagonSwitch') {
-              const isNearExitPoint = element.isNearExitPoint(realX, realY);
+              const isNearExitPoint = element.isNearExitPointSwitch(
+                realX,
+                realY
+              );
 
               isSwitchExitPoint.current = isNearExitPoint;
+            }
+
+            if (connectShape1.current.type === 'hexagon') {
+              const isNearExitPoint = element.isNearExitPointMenu(realX, realY);
+
+              isMenuExitPoint.current = isNearExitPoint;
             }
             return;
           }
@@ -746,19 +765,42 @@ const CanvasComponent = () => {
         clearAndDraw();
         return;
       }
-      infoMessage.current = 'Choose a switch exitPoint to connect.';
+      infoMessage.current = 'Choose a switch action to connect.';
       setShowInfoMessage(true);
       return;
     }
 
-    // return if 1st shape is a menu; 2nd shape is not a connector
-    if (
-      connectShape1.current.type === 'hexagon' &&
-      connectShape2.current.type !== 'smallCircle'
-    ) {
-      infoMessage.current = 'Use playMenu items to connect.';
+    // // return if 1st shape is a menu; 2nd shape is not a connector
+    // if (
+    //   connectShape1.current.type === 'hexagon' &&
+    //   connectShape2.current.type !== 'smallCircle'
+    // ) {
+    //   infoMessage.current = 'Use playMenu items to connect.';
+    //   setShowInfoMessage(true);
+    //   setTimeout(() => setShowInfoMessage(false), 4000);
+    //   return;
+    // }
+
+    // if shape1 playMenu
+    if (connectShape1.current.type === 'hexagon') {
+      if (isMenuExitPoint.current) {
+        console.log('yes menu exit', isMenuExitPoint);
+        const index = connectShape1.current.userValues.items.findIndex(
+          (row) => row.action === isMenuExitPoint.current
+        );
+        if (index !== -1) {
+          connectShape1.current.userValues.items[index].nextId =
+            connectShape2.current.id;
+          clearAndDraw();
+        }
+        return;
+      }
+
+      infoMessage.current =
+        connectShape1.current.userValues.items.length === 0
+          ? 'Add a menu action to connect.'
+          : 'Choose a menu action to connect.';
       setShowInfoMessage(true);
-      setTimeout(() => setShowInfoMessage(false), 4000);
       return;
     }
 
