@@ -436,9 +436,26 @@ class Shapes {
     const index1 = this.getIndexById(shape1Id);
     if (index1 !== -1) {
       const shape1 = this.shapes[index1];
+      console.log('▶️ ~ Shapes ~ removeConnectingLine ~ shape1', shape1);
       if (shape1.type !== 'pentagonSwitch' && shape1.type !== 'hexagon') {
+        // single exit condition
         // reset nextItem property
         shape1.nextItem = null;
+        return;
+      }
+
+      if (shape1.type === 'pentagonSwitch') {
+        if (
+          lineData.totalExitPoints === 1 ||
+          lineData.position === lineData.totalExitPoints
+        ) {
+          // default condition
+          delete shape1.userValues.default.nextId;
+          return;
+        }
+
+        // switchArray > 0
+        delete shape1.userValues.switchArray[lineData.position - 1].nextId;
       }
     }
   }

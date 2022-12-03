@@ -35,6 +35,7 @@ const CanvasComponent = () => {
   const currentShape = useRef(null);
   const tooltipRef = useRef(null);
   const stageTooltipRef = useRef(null);
+  const lineTooltipRef = useRef(null);
   const infoMessage = useRef(null);
   const connectShape1 = useRef(null),
     connectShape2 = useRef(null);
@@ -276,6 +277,7 @@ const CanvasComponent = () => {
         tooltipRef.current.style.left = realX + 80 + 'px';
         tooltipRef.current.textContent = element.text;
         tooltipRef.current.style.visibility = 'visible';
+        return;
       }
     });
 
@@ -296,6 +298,28 @@ const CanvasComponent = () => {
             stageTooltipRef.current.style.visibility = 'visible';
           }
         }
+        return;
+      }
+    });
+
+    // place and display line tooltip
+
+    lineTooltipRef.current.style.visibility = 'hidden';
+
+    // check mouse on line
+    lineGroup.current.getLines().forEach((el, i) => {
+      const linepoint = el.linepointNearestMouse(realX, realY);
+      let dx = realX - linepoint.x;
+      let dy = realY - linepoint.y;
+      // root of dx^2 + dy^2
+      let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+      if (distance < 5) {
+        // mouse on line el
+
+        lineTooltipRef.current.style.top = realY + 10 + 'px';
+        lineTooltipRef.current.style.left = realX + 30 + 'px';
+        lineTooltipRef.current.textContent = el.lineData.exitPoint;
+        lineTooltipRef.current.style.visibility = 'visible';
       }
     });
   }
@@ -391,9 +415,6 @@ const CanvasComponent = () => {
       if (distance < 5 && isDeleting) {
         console.log('remove; mouse on line; 🐁');
         console.log('remove el ', el);
-        // stageGroup.current[pageNumber.current - 1].removeShapeNextById(
-        //   el.startItem
-        // );
 
         stageGroup.current[pageNumber.current - 1].removeConnectingLine(
           el.startItem,
@@ -1005,6 +1026,20 @@ const CanvasComponent = () => {
         variant='subtitle2'
       >
         Im a stageTooltip
+      </Typography>
+      <Typography
+        sx={{
+          visibility: 'hidden',
+          position: 'absolute',
+          backgroundColor: '#e0f7fa',
+          px: 1,
+          boxShadow: 1,
+          borderRadius: 1,
+        }}
+        ref={lineTooltipRef}
+        variant='subtitle2'
+      >
+        Im a lineTooltip
       </Typography>
       <ResetCanvasDialog
         open={showCanvasResetDialog}
