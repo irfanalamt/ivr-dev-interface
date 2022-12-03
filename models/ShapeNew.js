@@ -202,7 +202,8 @@ class Shape {
         break;
 
       case 'hexagon':
-        this.width = this.text.length * 12;
+        this.width =
+          this.text.length * 12 < 125 ? 125 : this.text.length * 12 + 50;
         break;
 
       case 'parallelogram':
@@ -463,6 +464,7 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = '#009688';
       ctx.stroke();
+      this.drawExitPointsMenu(ctx);
       return;
     }
 
@@ -620,7 +622,7 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y + 7);
       ctx.strokeStyle = this.style;
       ctx.stroke();
-      this.drawExitPoints(ctx);
+      this.drawExitPointsSwitch(ctx);
       return;
     }
 
@@ -629,11 +631,11 @@ class Shape {
     ctx.fill();
   }
 
-  drawExitPoints(ctx) {
+  drawExitPointsSwitch(ctx) {
     const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
 
     if (numberOfExitPoints === 1) {
-      this.drawTinyCircle(ctx, ...this.getExitPoint());
+      this.drawTinyCircle(ctx, ...this.getExitPoint(), '#43a047');
       return;
     }
 
@@ -642,14 +644,29 @@ class Shape {
 
     for (let i = 1; i <= numberOfExitPoints; i++) {
       const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
-      this.drawTinyCircle(ctx, ...bottomPoint);
+      this.drawTinyCircle(ctx, ...bottomPoint, '#43a047');
     }
   }
 
-  drawTinyCircle(ctx, x, y) {
+  drawExitPointsMenu(ctx) {
+    const numberOfExitPoints = this.userValues.items.length;
+    if (numberOfExitPoints === 0) return;
+
+    if (numberOfExitPoints === 1) {
+      this.drawTinyCircle(ctx, ...this.getExitPoint(), '#fb8c00');
+      return;
+    }
+
+    for (let i = 1; i <= numberOfExitPoints; i++) {
+      const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
+      this.drawTinyCircle(ctx, ...bottomPoint, '#fb8c00');
+    }
+  }
+
+  drawTinyCircle(ctx, x, y, color = 'black') {
     ctx.beginPath();
     ctx.arc(x, y, 4, 0, Math.PI * 2);
-    ctx.fillStyle = '#43a047';
+    ctx.fillStyle = color;
     ctx.fill();
     ctx.closePath();
   }

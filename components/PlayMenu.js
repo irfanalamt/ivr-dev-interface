@@ -37,10 +37,6 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
   const [itemSelected, setItemSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
 
-  const menuActionList = stageGroup.shapes.filter(
-    (s) => s.text !== shapeName && s.type !== 'smallCircle'
-  );
-
   function handleMenuObjChange(value, name) {
     setMenuObj((s) => {
       const newArr = { ...s };
@@ -51,13 +47,12 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
 
   function saveUserValues() {
     shape.setText(shapeName || 'playMenu');
+    const filteredItems = itemsObj.filter((item) => item.action);
     shape.setUserValues({
       params: menuObj,
       paramSelectedList,
-      items: itemsObj,
+      items: filteredItems,
     });
-    console.log('🚀 ~ saveUserValues ~ itemsObj', JSON.stringify(itemsObj));
-    console.log('🚀 ~ saveUserValues ~  menuObj', JSON.stringify(menuObj));
   }
 
   const optionalParamsList = [
@@ -156,107 +151,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
           >
             action:
           </Typography>
-          {menuActionList.length > 0 ? (
-            <Select
-              size='small'
-              value={itemsObj[key].action || ''}
-              onChange={(e) => {
-                handleItemsObjChange(e.target.value, key, 'action');
-              }}
-            >
-              {menuActionList.map((el, i) => (
-                <MenuItem key={i} value={el.id}>
-                  <Typography
-                    sx={{ display: 'inline', minWidth: '40%', mr: 1 }}
-                  >
-                    {el.text}
-                  </Typography>
-                  {el.type === 'pentagon' && (
-                    <Typography
-                      sx={{ color: '#e91e63', pr: 1 }}
-                      variant='subtitle2'
-                    >
-                      [setParams]
-                    </Typography>
-                  )}
-                  {el.type === 'rectangle' && (
-                    <Typography
-                      sx={{
-                        color: '#ff5722',
-                        pr: 1,
-                      }}
-                      variant='subtitle2'
-                    >
-                      [function]
-                    </Typography>
-                  )}
-                  {el.type === 'hexagon' && (
-                    <Typography
-                      sx={{
-                        color: '#009688',
-                        pr: 1,
-                      }}
-                      variant='subtitle2'
-                    >
-                      [playMenu]
-                    </Typography>
-                  )}
-                  {el.type === 'parallelogram' && (
-                    <Typography
-                      sx={{
-                        color: '#9c27b0',
-                        pr: 1,
-                      }}
-                      variant='subtitle2'
-                    >
-                      [getDigits]
-                    </Typography>
-                  )}
-                  {el.type === 'roundedRectangle' && (
-                    <Typography
-                      sx={{
-                        color: '#c0ca33',
-                        pr: 1,
-                      }}
-                      variant='subtitle2'
-                    >
-                      [playMessage]
-                    </Typography>
-                  )}
-                  {el.type === 'roundedRectangle2' && (
-                    <Typography
-                      sx={{
-                        color: '#8bc34a',
-                        pr: 1,
-                      }}
-                      variant='subtitle2'
-                    >
-                      [playConfirm]
-                    </Typography>
-                  )}
-                  {el.type === 'invertedHexagon' && (
-                    <Typography
-                      sx={{
-                        color: '#2196f3',
-                        pr: 1,
-                      }}
-                      variant='subtitle2'
-                    >
-                      [callAPI]
-                    </Typography>
-                  )}
-                </MenuItem>
-              ))}
-            </Select>
-          ) : (
-            <Typography
-              sx={{ mx: 0.5, color: '#f44336', fontSize: 16 }}
-              variant='h6'
-            >
-              No action added
-            </Typography>
-          )}
-          {/* <TextField
+          <TextField
             value={itemsObj[key].action || ''}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'action');
@@ -265,7 +160,9 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             helperText={errorObj[`action${key}`]}
             sx={{ mx: 1 }}
             size='small'
-          /> */}
+            placeholder='required'
+            autoFocus
+          />
         </ListItem>
         <ListItem>
           <Typography

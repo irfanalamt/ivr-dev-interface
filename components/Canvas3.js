@@ -479,6 +479,9 @@ const CanvasComponent = () => {
             '#009688',
             true
           );
+          stageFigure.setUserValues({
+            items: [],
+          });
           break;
 
         case 'parallelogram':
