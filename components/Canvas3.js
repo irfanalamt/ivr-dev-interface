@@ -218,13 +218,17 @@ const CanvasComponent = () => {
 
   function saveToSession() {
     sessionStorage.setItem('saved-stage', JSON.stringify(stageGroup.current));
-    console.log('Session saved!');
+    sessionStorage.setItem('current-shape-count', `${shapeCount.current}`);
+    console.log('Session saved!', shapeCount.current);
   }
 
   function retrieveFromSession() {
     console.log('Session retrieved!');
 
     let savedStage = JSON.parse(sessionStorage.getItem('saved-stage'));
+    let count = parseInt(sessionStorage.getItem('current-shape-count'));
+
+    shapeCount.current = count;
 
     savedStage.forEach((page) => {
       Object.setPrototypeOf(page, Shapes.prototype);
