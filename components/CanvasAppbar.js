@@ -94,38 +94,42 @@ const CanvasAppbar = ({
             </Button>
           </Tooltip>
           <Tooltip title='SAVE'>
-            <Button
-              sx={{ zIndex: 6, mr: 1, backgroundColor: '#2196f3' }}
-              variant='contained'
-              size='small'
-              color='info'
-              // onClick={() => {
-              //   const serializedShapes =
-              //     stageGroup.current.getSerializedShapes();
-              //   localStorage.setItem('isExistingProject', true);
-              //   localStorage.setItem(
-              //     'saved_project',
-              //     JSON.stringify(serializedShapes)
-              //   );
-              // }}
-              disabled={status !== 'authenticated'}
-            >
-              <SaveIcon sx={{ fontSize: '1.2rem' }} />
-            </Button>
+            <span>
+              <Button
+                sx={{ zIndex: 6, mr: 1, backgroundColor: '#2196f3' }}
+                variant='contained'
+                size='small'
+                color='info'
+                // onClick={() => {
+                //   const serializedShapes =
+                //     stageGroup.current.getSerializedShapes();
+                //   localStorage.setItem('isExistingProject', true);
+                //   localStorage.setItem(
+                //     'saved_project',
+                //     JSON.stringify(serializedShapes)
+                //   );
+                // }}
+                disabled={status !== 'authenticated'}
+              >
+                <SaveIcon sx={{ fontSize: '1.2rem' }} />
+              </Button>
+            </span>
           </Tooltip>
           <Tooltip title='SAVE AS'>
-            <Button
-              sx={{ zIndex: 6, mr: 1, backgroundColor: '#3f51b5' }}
-              variant='contained'
-              size='small'
-              color='info'
-              // onClick={() => {
-              //   setOpenProjectDialog(true);
-              // }}
-              disabled={status !== 'authenticated'}
-            >
-              <SaveAsIcon sx={{ fontSize: '1.2rem' }} />
-            </Button>
+            <span>
+              <Button
+                sx={{ zIndex: 6, mr: 1, backgroundColor: '#3f51b5' }}
+                variant='contained'
+                size='small'
+                color='info'
+                // onClick={() => {
+                //   setOpenProjectDialog(true);
+                // }}
+                disabled={status !== 'authenticated'}
+              >
+                <SaveAsIcon sx={{ fontSize: '1.2rem' }} />
+              </Button>
+            </span>
           </Tooltip>
 
           <Tooltip title='GENERATE CONFIG'>
