@@ -262,6 +262,11 @@ class Shapes {
               endItem: shape2.id,
               lineCap: null,
               lineColor: '#4a148c',
+              lineData: {
+                exitPoint: el.userValues.default.exitPoint,
+                position: 1,
+                totalExitPoints: 1,
+              },
             });
           }
         } else {
@@ -284,6 +289,11 @@ class Shapes {
                 endItem: shape2.id,
                 lineCap: null,
                 lineColor: '#4a148c',
+                lineData: {
+                  exitPoint: row.exitPoint,
+                  position: i + 1,
+                  totalExitPoints: el.userValues.switchArray.length + 1,
+                },
               });
             }
           });
@@ -307,6 +317,11 @@ class Shapes {
               endItem: shape2.id,
               lineCap: null,
               lineColor: '#4a148c',
+              lineData: {
+                exitPoint: el.userValues.default.exitPoint,
+                position: el.userValues.switchArray.length + 1,
+                totalExitPoints: el.userValues.switchArray.length + 1,
+              },
             });
           }
         }
@@ -417,9 +432,20 @@ class Shapes {
     this.shapes.splice(index, 1);
   }
 
+  removeConnectingLine(shape1Id, shape2Id, lineData = null) {
+    const index1 = this.getIndexById(shape1Id);
+    if (index1 !== -1) {
+      const shape1 = this.shapes[index1];
+      if (shape1.type !== 'pentagonSwitch' && shape1.type !== 'hexagon') {
+        // reset nextItem property
+        shape1.nextItem = null;
+      }
+    }
+  }
+
   removeShapeNextById(id) {
     // to reset nextItem by ID
-    let index = this.shapes.findIndex((el) => el.id === id);
+    let index = this.getIndexById(id);
     if (index !== -1) this.shapes[index].nextItem = null;
   }
 }

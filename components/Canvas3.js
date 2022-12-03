@@ -273,7 +273,7 @@ const CanvasComponent = () => {
         console.log(`💃🏻YES in pallet shape ${element.type}`);
         tooltipRef.current.style.top =
           realY - 10 + scrollOffsetY.current + 'px';
-        tooltipRef.current.style.left = realX + 50 + 'px';
+        tooltipRef.current.style.left = realX + 80 + 'px';
         tooltipRef.current.textContent = element.text;
         tooltipRef.current.style.visibility = 'visible';
       }
@@ -384,13 +384,23 @@ const CanvasComponent = () => {
       // root of dx^2 + dy^2
       let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
       console.log('🚀 ~ lineGroup.current.getLines ~ distance', distance);
+      if (distance < 5) {
+        console.log('line current:', el);
+      }
 
       if (distance < 5 && isDeleting) {
         console.log('remove; mouse on line; 🐁');
         console.log('remove el ', el);
-        stageGroup.current[pageNumber.current - 1].removeShapeNextById(
-          el.startItem
+        // stageGroup.current[pageNumber.current - 1].removeShapeNextById(
+        //   el.startItem
+        // );
+
+        stageGroup.current[pageNumber.current - 1].removeConnectingLine(
+          el.startItem,
+          el.endItem,
+          el.lineData
         );
+
         clearAndDraw();
         return;
       }
@@ -641,7 +651,8 @@ const CanvasComponent = () => {
         el.startItem,
         el.endItem,
         el.lineCap,
-        el.lineColor
+        el.lineColor,
+        el.lineData
       );
       lineGroup.current.addLine(newLine);
     });
