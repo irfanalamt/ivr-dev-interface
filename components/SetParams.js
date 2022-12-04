@@ -67,8 +67,8 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
 
     let codeString = `this.${shapeName || `setParams${shape.id}`}=function(){
       let newParams = ${JSON.stringify(menuObj)};
-      Ivr.params = {...Ivr.params,...newParams};
-    }`;
+      IVR.params = {...IVR.params,...newParams};
+    };`;
 
     shape.setFunctionString(codeString);
     console.log('🕺🏻setParams code:', codeString);

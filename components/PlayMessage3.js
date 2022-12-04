@@ -62,7 +62,7 @@ const PlayMessage = ({
     )};let params = ${JSON.stringify({
       interruptible,
       repeatOption,
-    })};await Ivr.playMessage(msgList,params);};`;
+    })};await IVR.playMessage(msgList,params);};`;
 
     shape.setFunctionString(codeString);
     console.log('🕺🏻playMessage code:', codeString);

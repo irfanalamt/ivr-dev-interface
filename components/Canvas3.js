@@ -3,7 +3,15 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import InfoIcon from '@mui/icons-material/Info';
 
-import { Box, Drawer, Pagination, Tooltip, Typography } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Drawer,
+  Pagination,
+  Snackbar,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/ShapeNew';
 import Shapes from '../models/Shapes';
@@ -21,6 +29,7 @@ const CanvasComponent = () => {
   const [isConnecting, setIsConnecting] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showInfoMessage, setShowInfoMessage] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const [showCanvasResetDialog, setShowCanvasResetDialog] = useState(false);
 
@@ -36,7 +45,8 @@ const CanvasComponent = () => {
   const tooltipRef = useRef(null);
   const stageTooltipRef = useRef(null);
   const lineTooltipRef = useRef(null);
-  const infoMessage = useRef(null);
+  const infoMessage = useRef('');
+  const snackbarMessage = useRef('');
   const connectShape1 = useRef(null),
     connectShape2 = useRef(null);
 
@@ -858,7 +868,11 @@ const CanvasComponent = () => {
   }
 
   function generateConfigFile() {
+    // setOpenSnackbar(true);
     const str = generateJS();
+    // if str false; prevent config generation
+    if (!str) return;
+
     const blob = new Blob([str]);
     const href = URL.createObjectURL(blob);
 
@@ -877,7 +891,7 @@ const CanvasComponent = () => {
   function generateJS() {
     // return a JS config code as string
 
-    const tempString1 = `function customIVR(){
+    const tempString1 = `function customIVR(IVR){
       IVR.menus =  require('/ivrs/customIVR/menus.json');
       IVR.params = {
         lang: 'en-SA',terminator:'#', maxRetries: 3, maxRepeats: 3,maxCallTime: 240, invalidTransferPoint: 'TP8001', timeoutTransferPoint: 'TP8001', goodbyeMessage: 'std-goodbye', firstTimeout: 10, interTimeout: 5,menuTimeout: 5,		terminateMessage: 'std-terminate', invalidPrompt: 'std-invalid',	timeOutPrompt: 'std-timeout', repeatInfoPrompt: 'std-repeat-info', confirmPrompt: 'std-confirm', cancelPrompt: 'std-cancel',	currency: 'SAR', confirmOption: 1,	cancelOption: 2, invalidAction: 'Disconnect',timeoutAction: 'Disconnect',	logDb: true						
@@ -887,11 +901,19 @@ const CanvasComponent = () => {
     const tempString2 = generateInitVariablesJS();
     const tempString3 = stageGroup.current[pageNumber.current - 1]
       .getShapes()
-      .filter((el) => el.functionString && el.type !== 'pentagon')
+      .filter((el) => el.functionString)
       .map((el) => el.functionString)
       .join(' ');
 
-    const tempString4 = generateMenuJS();
+    const tempString4 = generateMainJS();
+    if (!tempString4) {
+      snackbarMessage.current =
+        'Please add a setParams block to start control flow.';
+      setOpenSnackbar(true);
+      return false;
+    }
+
+    // generate code for each menu block; driver fns for all menu items
 
     const tempStringEnd = '} module.exports = customIVR;';
 
@@ -910,15 +932,25 @@ const CanvasComponent = () => {
     return codeString;
   }
 
-  function generateMenuJS() {
-    const arrayShapesTillMenu =
+  function generateMainJS() {
+    const [arrayShapesTillMenu, isMenuIndex] =
       stageGroup.current[pageNumber.current - 1].getShapesTillMenu();
 
-    if (arrayShapesTillMenu === null) return '//no setParams block found \n';
+    if (arrayShapesTillMenu === null) return false;
 
     const mainMenuString = `this.ivrMain=async function(){${arrayShapesTillMenu
       .map((el) => `await this.${el}();`)
-      .join('')}}`;
+      .join('')}};`;
+
+    console.log('isMenuIndex🎉', isMenuIndex);
+
+    if (isMenuIndex) {
+      const menuString =
+        stageGroup.current[pageNumber.current - 1].generateMenuCode(
+          isMenuIndex
+        );
+      return mainMenuString + menuString;
+    }
 
     return mainMenuString;
   }
@@ -1088,6 +1120,22 @@ const CanvasComponent = () => {
       >
         Im a lineTooltip
       </Typography>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        sx={{ mt: 10, mr: 5 }}
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity='warning'
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage.current}
+        </Alert>
+      </Snackbar>
+
       <ResetCanvasDialog
         open={showCanvasResetDialog}
         handleClose={() => setShowCanvasResetDialog(false)}

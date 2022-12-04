@@ -53,6 +53,19 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
       paramSelectedList,
       items: filteredItems,
     });
+
+    generateJS();
+  }
+
+  function generateJS() {
+    let menuString = JSON.stringify({ ...menuObj, items: itemsObj });
+
+    let codeString = `this.${
+      shapeName || `playMenu${shape.id}`
+    }= async function(){let menu =${menuString};await IVR.playMenu(menu);
+    };`;
+
+    shape.setFunctionString(codeString);
   }
 
   const optionalParamsList = [

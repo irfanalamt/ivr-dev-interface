@@ -68,7 +68,7 @@ const PlayConfirm = ({
       cancelOption,
       confirmPrompt,
       cancelPrompt,
-    })};await Ivr.playConfirm(msgList,params);};`;
+    })};await IVR.playConfirm(msgList,params);};`;
 
     shape.setFunctionString(codeString);
     console.log('🕺🏻playConfirm code:', codeString);

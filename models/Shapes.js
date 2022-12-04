@@ -118,11 +118,40 @@ class Shapes {
     return index;
   }
 
-  getShapesTillMenu() {
+  generateMenuCode(index) {
+    const menuShape = this.shapes[index];
+    const items = menuShape.userValues.items;
+
+    if (items.length === 0) return '';
+
+    let finalCode = '';
+
+    // denerate driver fn for each item
+
+    items.forEach((item) => {
+      if (item.nextId) {
+        const nextShapeIndex = this.getIndexById(item.nextId);
+        const [arrayShapesTillMenu, isMenuIndex] =
+          this.getShapesTillMenu(nextShapeIndex);
+
+        let code = `this.${menuShape.text}_${
+          item.action
+        }=async function(){${arrayShapesTillMenu
+          .map((el) => `await this.${el}();`)
+          .join('')}};`;
+
+        finalCode += code;
+      }
+    });
+
+    return finalCode;
+  }
+
+  getShapesTillMenu(index = null) {
     // return array of shape names till a menu
     let tempArray = [];
-
-    let i1 = this.getIndexOfFirstShape();
+    let isLastElementMenu = false;
+    let i1 = index ? index : this.getIndexOfFirstShape();
     // if no 1st shape (setParams) return null
     if (i1 === null) return null;
 
@@ -135,6 +164,10 @@ class Shapes {
       // get index of nextShape
       let nextShapeInd = this.shapes.findIndex((el) => el.id === nextShapeId);
       if (nextShapeInd === -1) break;
+      // if menu set index
+      if (this.shapes[nextShapeInd].type === 'hexagon') {
+        isLastElementMenu = nextShapeInd;
+      }
       // if not connector; add to array
       if (this.shapes[nextShapeInd].type !== 'smallCircle')
         tempArray.push(this.shapes[nextShapeInd].text);
@@ -142,7 +175,7 @@ class Shapes {
       i1 = nextShapeInd;
     }
 
-    return tempArray;
+    return [tempArray, isLastElementMenu];
   }
 
   isPlayMenuAction(menuID, id) {
