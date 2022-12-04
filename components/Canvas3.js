@@ -318,18 +318,21 @@ const CanvasComponent = () => {
 
     // check mouse on line
     lineGroup.current.getLines().forEach((el, i) => {
-      const linepoint = el.linepointNearestMouse(realX, realY);
-      let dx = realX - linepoint.x;
-      let dy = realY - linepoint.y;
-      // root of dx^2 + dy^2
-      let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
-      if (distance < 5) {
-        // mouse on line el
+      // if exitPoint present; check distance to place tooltip
+      if (el.lineData?.exitPoint) {
+        const linepoint = el.linepointNearestMouse(realX, realY);
+        let dx = realX - linepoint.x;
+        let dy = realY - linepoint.y;
+        // root of dx^2 + dy^2
+        let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+        if (distance < 5) {
+          // mouse on line el
 
-        lineTooltipRef.current.style.top = realY + 10 + 'px';
-        lineTooltipRef.current.style.left = realX + 30 + 'px';
-        lineTooltipRef.current.textContent = el.lineData.exitPoint;
-        lineTooltipRef.current.style.visibility = 'visible';
+          lineTooltipRef.current.style.top = realY + 10 + 'px';
+          lineTooltipRef.current.style.left = realX + 30 + 'px';
+          lineTooltipRef.current.textContent = el.lineData.exitPoint;
+          lineTooltipRef.current.style.visibility = 'visible';
+        }
       }
     });
   }
@@ -614,7 +617,6 @@ const CanvasComponent = () => {
     }
 
     if (realX == startX1 && realY == startY1) {
-      console.log('yaay mouseup same pos');
       // mouse clicked, released same spot in stage shape, check mouse in stage shape
       stageGroup.current[pageNumber.current - 1]
         .getShapes()
@@ -682,7 +684,7 @@ const CanvasComponent = () => {
     // Calculate all connecting lines return array of connections
     let connectionsArray =
       stageGroup.current[pageNumber.current - 1].getConnectionsArray();
-    console.log('🚀 ~ clearAndDraw ~ connectionsArray', connectionsArray);
+
     // init lineGroup
     lineGroup.current = new Lines([]);
     connectionsArray.forEach((el) => {
