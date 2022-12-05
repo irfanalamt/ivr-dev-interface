@@ -891,6 +891,16 @@ const CanvasComponent = () => {
   function generateJS() {
     // return a JS config code as string
 
+    // function that loops through all shapes except connector, switch or jumper; and check if they have fn string. if no return that shape name else false
+
+    const isFunctionStringPresent =
+      stageGroup.current[pageNumber.current - 1].isFunctionStringPresent();
+    if (isFunctionStringPresent) {
+      snackbarMessage.current = `Please update ${isFunctionStringPresent}. Default values detected.`;
+      setOpenSnackbar(true);
+      return false;
+    }
+
     const tempString1 = `function customIVR(IVR){
       IVR.menus =  require('/ivrs/customIVR/menus.json');
       IVR.params = {
@@ -905,21 +915,20 @@ const CanvasComponent = () => {
       .map((el) => el.functionString)
       .join(' ');
 
-    const tempString4 = generateMainJS();
-    if (!tempString4) {
-      snackbarMessage.current =
-        'Please add a setParams block to start control flow.';
-      setOpenSnackbar(true);
-      return false;
-    }
+    //const tempString4 = generateMainJS();
+
+    // if (!tempString4) {
+    //   snackbarMessage.current =
+    //     'Please add a setParams block to start control flow.';
+    //   setOpenSnackbar(true);
+    //   return false;
+    // }
 
     // generate code for each menu block; driver fns for all menu items
 
     const tempStringEnd = '} module.exports = customIVR;';
 
-    return (
-      tempString1 + tempString2 + tempString3 + tempString4 + tempStringEnd
-    );
+    return tempString1 + tempString2 + tempString3 + tempStringEnd;
   }
 
   function generateInitVariablesJS() {
@@ -933,6 +942,10 @@ const CanvasComponent = () => {
   }
 
   function generateMainJS() {
+    console.log(
+      ' stageGroup.current[pageNumber.current - 1]',
+      stageGroup.current[pageNumber.current - 1]
+    );
     const [arrayShapesTillMenu, isMenuIndex] =
       stageGroup.current[pageNumber.current - 1].getShapesTillMenu();
 

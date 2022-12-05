@@ -178,6 +178,21 @@ class Shapes {
     return [tempArray, isLastElementMenu];
   }
 
+  isFunctionStringPresent() {
+    for (let shape of this.shapes) {
+      if (
+        !['smallCircle', 'tinyCircle', 'triangle', 'pentagonSwitch'].includes(
+          shape.type
+        )
+      ) {
+        if (!shape.functionString) {
+          return shape.text;
+        }
+      }
+    }
+    return false;
+  }
+
   isPlayMenuAction(menuID, id) {
     // return true if shape is a valid playMenu action
     // else false
