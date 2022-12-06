@@ -920,6 +920,21 @@ const CanvasComponent = () => {
       .map((el) => el.functionString)
       .join(' ');
 
+    const indexOfStartShape =
+      stageGroup.current[pageNumber.current - 1].getIndexOfFirstShape();
+
+    if (!indexOfStartShape) {
+      snackbarMessage.current =
+        'Please add a setParams block to start control flow.';
+      setOpenSnackbar(true);
+      return false;
+    }
+    stageGroup.current[pageNumber.current - 1].traverseShapes(
+      indexOfStartShape
+    );
+
+    return false;
+
     //const tempString4 = generateMainJS();
 
     // if (!tempString4) {

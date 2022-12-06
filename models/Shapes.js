@@ -181,9 +181,13 @@ class Shapes {
   isFunctionStringPresent() {
     for (let shape of this.shapes) {
       if (
-        !['smallCircle', 'tinyCircle', 'triangle', 'pentagonSwitch'].includes(
-          shape.type
-        )
+        ![
+          'smallCircle',
+          'tinyCircle',
+          'triangle',
+          'pentagonSwitch',
+          'pentagon',
+        ].includes(shape.type)
       ) {
         if (!shape.functionString) return shape.text;
       }
@@ -214,6 +218,40 @@ class Shapes {
     }
 
     return false;
+  }
+
+  traverseShapes(indexOfStartShape) {
+    // Create an array to store the shapes that we have visited
+    let visitedShapes = [];
+
+    // Create a stack to store the shapes that we need to visit
+    let shapeStack = [this.shapes[indexOfStartShape]];
+
+    // Traverse the shapes array until all shapes have been visited
+    while (shapeStack.length > 0) {
+      // Pop the top shape from the stack
+      let currentShape = shapeStack.pop();
+
+      // Print the properties of the current shape
+      console.log('▶️', currentShape.text);
+
+      // If the current shape has a nextItem property, push the shape with the corresponding id onto the stack
+      if (currentShape.nextItem) {
+        shapeStack.push(
+          this.shapes.find((shape) => shape.id === currentShape.nextItem)
+        );
+      }
+
+      if (currentShape.type === 'hexagon') {
+        currentShape.userValues.items.forEach((item) => {
+          if (item.nextId) {
+            shapeStack.push(
+              this.shapes.find((shape) => shape.id === item.nextId)
+            );
+          }
+        });
+      }
+    }
   }
 
   getValidNextItem(i) {
