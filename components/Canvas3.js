@@ -594,7 +594,7 @@ const CanvasComponent = () => {
             realX,
             realY,
             130,
-            45,
+            35,
             'pentagonSwitch',
             '#795548',
             true
@@ -891,8 +891,13 @@ const CanvasComponent = () => {
   function generateJS() {
     // return a JS config code as string
 
-    // function that loops through all shapes except connector, switch or jumper; and check if they have fn string. if no return that shape name else false
+    if (stageGroup.current[pageNumber.current - 1].getShapes().length === 0) {
+      snackbarMessage.current = `No shapes added to stage.`;
+      setOpenSnackbar(true);
+      return false;
+    }
 
+    // function that loops through all shapes except connector, switch or jumper; and check if they have fn string. if no return that shape name else false
     const isFunctionStringPresent =
       stageGroup.current[pageNumber.current - 1].isFunctionStringPresent();
     if (isFunctionStringPresent) {

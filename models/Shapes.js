@@ -185,9 +185,7 @@ class Shapes {
           shape.type
         )
       ) {
-        if (!shape.functionString) {
-          return shape.text;
-        }
+        if (!shape.functionString) return shape.text;
       }
     }
     return false;
