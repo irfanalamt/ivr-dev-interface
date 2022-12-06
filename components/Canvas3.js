@@ -923,7 +923,7 @@ const CanvasComponent = () => {
     const indexOfStartShape =
       stageGroup.current[pageNumber.current - 1].getIndexOfFirstShape();
 
-    if (!indexOfStartShape) {
+    if (indexOfStartShape === null) {
       snackbarMessage.current =
         'Please add a setParams block to start control flow.';
       setOpenSnackbar(true);
