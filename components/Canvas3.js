@@ -53,7 +53,19 @@ const CanvasComponent = () => {
   const isSwitchExitPoint = useRef(null);
   const isMenuExitPoint = useRef(null);
 
-  const shapeCount = useRef(1);
+  const shapeCount = useRef({
+    rectangle: 1,
+    hexagon: 1,
+    invertedHexagon: 1,
+    roundedRectangle: 1,
+    roundedRectangle2: 1,
+    parallelogram: 1,
+    pentagon: 1,
+    pentagonSwitch: 1,
+    tinyCircle: 1,
+    smallCircle: 1,
+    triangle: 1,
+  });
   const scrollOffsetY = useRef(0);
   const pageNumber = useRef(1);
 
@@ -613,11 +625,10 @@ const CanvasComponent = () => {
       if (realX > 120) {
         //set unique id; add figure to stage
 
-        // // reset shapeCount if stageGroup empty
-        // if (stageGroup.current[pageNumber.current - 1].getShapes().length === 0)
-        //   shapeCount.current = 1;
-
-        stageFigure.setId(shapeCount.current++, pageNumber.current);
+        stageFigure.setId(
+          shapeCount.current[stageFigure.type]++,
+          pageNumber.current
+        );
         stageGroup.current[pageNumber.current - 1].addShape(stageFigure);
         console.log('🚀 ~ handleMouseUp ~ stageFigureAdded', stageFigure);
       }

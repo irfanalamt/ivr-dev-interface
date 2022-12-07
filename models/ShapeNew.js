@@ -62,7 +62,7 @@ class Shape {
   setId(id, page = 1) {
     if (page > 1) {
       this.id = parseInt(`${page}` + id);
-      this.text += `${page}` + `${id}`;
+      this.text += `${id}`;
       return;
     }
 
