@@ -38,69 +38,6 @@ class Shapes {
   addShape(newShape) {
     this.shapes.push(newShape);
   }
-  // cleanupExitShapes(id) {
-  //   // cleanup all exit shapes from shape with id
-  //   const idsToRemove = [];
-  //   this.shapes.forEach((shape, i) => {
-  //     if (shape.type === 'tinyCircle') {
-  //       if (shape.userValues.prevShapeId === id) {
-  //         idsToRemove.push(shape.id);
-  //       }
-  //     }
-  //   });
-
-  //   idsToRemove.forEach((id) => this.removeShapeById(id));
-  // }
-
-  // addExitShapes(exitPoints, id) {
-  //   const index = this.shapes.findIndex((shape) => shape.id === id);
-  //   const shapeBottom = this.shapes[index].getExitPoint();
-
-  //   if (index !== -1) {
-  //     exitPoints.forEach((point, i) => {
-  //       const newShape = new Shape(
-  //         shapeBottom[0],
-  //         shapeBottom[1],
-  //         15,
-  //         15,
-  //         'tinyCircle',
-  //         '#aeea00'
-  //       );
-
-  //       newShape.setUserValues({
-  //         prevShapeId: id,
-  //         position: i + 1,
-  //         name: point,
-  //       });
-  //       newShape.setId(parseInt(`99` + `${id}` + `${i + 1}`));
-  //       this.addShape(newShape);
-  //     });
-  //   }
-  // }
-
-  // updateExitPointsPosition() {
-  //   this.shapes.forEach((el) => {
-  //     if (el.type === 'tinyCircle') {
-  //       if (el.userValues?.prevShapeId) {
-  //         const prevShapeIndex = this.shapes.findIndex(
-  //           (shape) => shape.id === el.userValues.prevShapeId
-  //         );
-  //         if (prevShapeIndex !== -1) {
-  //           // update position of element wrt shape
-  //           const prevShape = this.shapes[prevShapeIndex];
-  //           const numberOfExitPoints = prevShape.userValues?.switchArray.length;
-  //           const positionOfExitPoint = el.userValues?.position;
-  //           // write function to get bottomPointForExit
-  //           const newXY = prevShape.getBottomPointForExit(
-  //             numberOfExitPoints,
-  //             positionOfExitPoint
-  //           );
-  //           el.setXY(...newXY);
-  //         }
-  //       }
-  //     }
-  //   });
-  // }
 
   getIndexById(id) {
     const index = this.shapes.findIndex((shape) => shape.id === id);
@@ -266,61 +203,6 @@ class Shapes {
       i = ind;
     }
   }
-
-  // getConnectionsArray() {
-  //   let tempArray = [];
-  //   this.shapes.forEach((el, i) => {
-  //     // if shape has nextitem, find nextShape from shapes array, push linecordinates to tempArray
-  //     if (el.nextItem !== null) {
-  //       let index = this.shapes.findIndex((elm) => elm.id === el.nextItem);
-  //       if (index !== -1) {
-  //         let shape1 = el;
-  //         let shape2 = this.shapes[index];
-  //         console.log('valid next shape:', this.getNextValidItem(i));
-  //         // let lineColor = this.getNextValidItem(i) === null ? 'red' : 'black';
-  //         tempArray.push({
-  //           x1: shape1.getExitPoint()[0],
-  //           y1: shape1.getExitPoint()[1],
-  //           x2: shape2.getEntryPoint()[0],
-  //           y2: shape2.getEntryPoint()[1],
-  //           startItem: shape1.id,
-  //           endItem: shape2.id,
-  //           lineCap: null,
-  //           lineColor: 'black',
-  //         });
-  //       }
-  //     }
-  //     // if type is playMenu, loop through items array and find action to connect to, find shape in shape array, push linecordinates to tempArray
-  //     if (el.type === 'hexagon') {
-  //       el.userValues?.items.forEach((elm) => {
-  //         if (elm.action) {
-  //           let index = this.shapes.findIndex((s) => s.text === elm.action);
-  //           if (index !== -1) {
-  //             let shape1 = el;
-  //             let shape2 = this.shapes[index];
-  //             // let lineColor =
-  //             //   this.getNextValidItem(index) === null ||
-  //             //   el.userValues.items.some(
-  //             //     (el) => el.action !== this.getNextValidItem(index)
-  //             //   )
-  //             //     ? 'red'
-  //             //     : 'black';
-  //             tempArray.push({
-  //               x1: shape1.getExitPoint()[0],
-  //               y1: shape1.getExitPoint()[1],
-  //               x2: shape2.getEntryPoint()[0],
-  //               y2: shape2.getEntryPoint()[1],
-  //               startItem: shape1.id,
-  //               endItem: shape2.id,
-  //               lineCap: parseInt(elm.digit),
-  //             });
-  //           }
-  //         }
-  //       });
-  //     }
-  //   });
-  //   return tempArray;
-  // }
 
   getConnectionsArray() {
     // to get cordinates to draw connections

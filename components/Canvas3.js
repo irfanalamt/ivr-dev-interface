@@ -106,25 +106,6 @@ const CanvasComponent = () => {
 
     contextRef.current = context1;
 
-    // const isExistingProject = JSON.parse(
-    //   localStorage.getItem('isExistingProject')
-    // );
-
-    // if (isExistingProject) {
-    //   const current_project = JSON.parse(localStorage.getItem('saved_project'));
-    //   console.log('🚀 ~ initializeCanvas ~ current_project', current_project);
-
-    //   // load stageGroup
-    //   const stageShapesArray = current_project.map((el) =>
-    //     Shape.createFromObject(el)
-    //   );
-    //   stageGroup.current = new Shapes('stage', stageShapesArray);
-    // } else {
-    //   // Initialize stageGroup
-    //   // new project
-    //   stageGroup.current = new Shapes('stage', []);
-    // }
-
     if (sessionStorage.getItem('saved-stage')) {
       retrieveFromSession();
     } else {

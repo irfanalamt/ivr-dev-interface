@@ -199,22 +199,6 @@ class Shape {
     };
   }
 
-  static createFromObject(shapeObj) {
-    const tempShape = new Shape(
-      shapeObj.x,
-      shapeObj.y,
-      shapeObj.width,
-      shapeObj.height,
-      shapeObj.type,
-      shapeObj.style,
-      shapeObj.stroke
-    );
-    tempShape.text = shapeObj.text;
-    tempShape.userValues = JSON.parse(shapeObj.userValues);
-
-    return tempShape;
-  }
-
   setWidthFromText() {
     switch (this.type) {
       case 'rectangle':
