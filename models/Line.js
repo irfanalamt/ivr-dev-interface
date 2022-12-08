@@ -21,6 +21,23 @@ class Line {
     this.lineColor = lineColor;
     this.lineData = lineData;
   }
+  drawArrow(ctx) {
+    const headlen = 8; // length of head in pixels
+    const angle = Math.atan2(this.y2 - this.y1, this.x2 - this.x1);
+    ctx.beginPath();
+    ctx.moveTo(this.x1, this.y1);
+    ctx.lineTo(this.x2, this.y2);
+    ctx.lineTo(
+      this.x2 - headlen * Math.cos(angle - Math.PI / 6),
+      this.y2 - headlen * Math.sin(angle - Math.PI / 6)
+    );
+    ctx.moveTo(this.x2, this.y2);
+    ctx.lineTo(
+      this.x2 - headlen * Math.cos(angle + Math.PI / 6),
+      this.y2 - headlen * Math.sin(angle + Math.PI / 6)
+    );
+    ctx.stroke();
+  }
 
   connectPoints(ctx) {
     const headLength = 8;

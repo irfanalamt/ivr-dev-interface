@@ -76,7 +76,6 @@ const CanvasComponent = () => {
 
   useEffect(() => {
     initializeCanvas();
-    console.log('session data:', data);
   }, []);
 
   useEffect(() => {
@@ -278,7 +277,7 @@ const CanvasComponent = () => {
         console.log(`💃🏻YES in pallet shape ${element.type}`);
         tooltipRef.current.style.top =
           realY - 10 + scrollOffsetY.current + 'px';
-        tooltipRef.current.style.left = realX + 80 + 'px';
+        tooltipRef.current.style.left = realX + 60 + 'px';
         tooltipRef.current.textContent = element.text;
         tooltipRef.current.style.visibility = 'visible';
         return;
@@ -992,7 +991,7 @@ const CanvasComponent = () => {
         generateFile={generateConfigFile}
       />
       <canvas
-        style={{ backgroundColor: '#F7FBFE', overflow: 'auto' }}
+        style={{ backgroundColor: '#F7FBFE' }}
         width={window.innerWidth * 0.9}
         height={window.innerHeight * 2}
         ref={canvasRef}
