@@ -219,40 +219,20 @@ const CanvasComponent = () => {
       80
     );
 
-    // draw shapes and lines
-
+    // palette and stage drawn on canvas
     palletGroup.current.drawAllShapes(contextRef.current);
-
     stageGroup.current[pageNumber.current - 1].drawAllShapes(
       contextRef.current
     );
 
     // Calculate all connecting lines return array of connections
-    // let connectionsArray =
-    //   stageGroup.current[pageNumber.current - 1].getConnectionsArray();
+    const connectionsArray =
+      stageGroup.current[pageNumber.current - 1].getConnectionsArray();
 
-    // // init lineGroup
-    // lineGroup.current = new Lines([]);
-    // connectionsArray.forEach((el) => {
-    //   let newLine = new Line(
-    //     el.x1,
-    //     el.y1,
-    //     el.x2,
-    //     el.y2,
-    //     el.startItem,
-    //     el.endItem,
-    //     el.lineCap,
-    //     el.lineColor,
-    //     el.lineData
-    //   );
-    //   lineGroup.current.addLine(newLine);
-    // });
-
-    // lineGroup.current
-    //   .getLines()
-    //   .forEach((el) => el.connectPoints(contextRef.current));
-
-    // console.log('lineGroup', lineGroup.current);
+    // initialize lineGroup,draw connections
+    lineGroup.current = new Lines([]);
+    lineGroup.current.setConnections(connectionsArray);
+    lineGroup.current.connectAllPoints(contextRef.current);
   }
 
   function handleCloseDrawer() {
