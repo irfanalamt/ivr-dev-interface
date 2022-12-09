@@ -96,7 +96,9 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
     }
 
     // check name unique
-    if (stageGroup.getShapes().some((el) => el.text === e.target.value)) {
+    if (
+      stageGroup.getShapesAsArray().some((el) => el.text === e.target.value)
+    ) {
       errorBox.style.display = 'block';
       e.target.style.backgroundColor = '#ffebee';
       errorBox.innerText = 'name NOT unique';

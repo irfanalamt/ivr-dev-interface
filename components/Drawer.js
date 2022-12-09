@@ -22,7 +22,7 @@ const DrawerComponent = ({
     if (!shape) return;
 
     switch (shape.type) {
-      case 'roundedRectangle':
+      case 'playMessage':
         return (
           <PlayMessage
             shape={shape}
@@ -32,7 +32,7 @@ const DrawerComponent = ({
           />
         );
 
-      case 'roundedRectangle2':
+      case 'playConfirm':
         return (
           <PlayConfirm
             shape={shape}
@@ -42,7 +42,7 @@ const DrawerComponent = ({
           />
         );
 
-      case 'invertedHexagon':
+      case 'callAPI':
         return (
           <CallApi
             shape={shape}
@@ -50,7 +50,7 @@ const DrawerComponent = ({
             userVariables={userVariables}
           />
         );
-      case 'parallelogram':
+      case 'getDigits':
         return (
           <GetDigits
             shape={shape}
@@ -59,7 +59,7 @@ const DrawerComponent = ({
             stageGroup={stageGroup}
           />
         );
-      case 'hexagon':
+      case 'playMenu':
         return (
           <PlayMenu
             shape={shape}
@@ -67,7 +67,7 @@ const DrawerComponent = ({
             stageGroup={stageGroup}
           />
         );
-      case 'pentagon':
+      case 'setParams':
         return (
           <SetParams
             shape={shape}
@@ -75,7 +75,7 @@ const DrawerComponent = ({
             stageGroup={stageGroup}
           />
         );
-      case 'rectangle':
+      case 'runScript':
         return (
           <FunctionBlock
             shape={shape}
@@ -83,7 +83,7 @@ const DrawerComponent = ({
             stageGroup={stageGroup}
           ></FunctionBlock>
         );
-      case 'triangle':
+      case 'jumper':
         return (
           <GoToBlock
             shape={shape}
@@ -91,7 +91,7 @@ const DrawerComponent = ({
             entireStageGroup={entireStageGroup}
           />
         );
-      case 'pentagonSwitch':
+      case 'switch':
         return (
           <SwitchBlock
             shape={shape}

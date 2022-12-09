@@ -77,7 +77,9 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
       return;
     }
 
-    if (stageGroup.getShapes().some((el) => el.text === e.target.value)) {
+    if (
+      stageGroup.getShapesAsArray().some((el) => el.text === e.target.value)
+    ) {
       e.target.style.backgroundColor = '#ffebee';
       setErrorObj((s) => {
         return { ...s, [name]: 'name NOT unique' };

@@ -6,6 +6,9 @@ class Shapes {
     this.shapes = shapes;
   }
 
+  getShapes() {
+    return this.shapes;
+  }
   getShapesAsArray() {
     return Object.values(this.shapes);
   }
@@ -13,7 +16,7 @@ class Shapes {
     return Object.entries(this.shapes);
   }
 
-  addShape(type, x, y, id, count) {
+  addShape(type, x, y, count, pageNumber) {
     console.log(type, x, y, 'ha');
     let stageFigure;
     switch (type) {
@@ -66,14 +69,43 @@ class Shapes {
         break;
     }
 
+    const id = this.generateID(stageFigure.type, pageNumber, count);
+
+    //append shapeCount to shape text
     stageFigure.text += count;
+    stageFigure.id = id;
+
+    //add shape to group
     this.shapes[id] = stageFigure;
   }
 
-  drawAllShapes(ctx) {
-    console.log('💃🏻drawAllShapes', this.groupname, this.shapes);
+  generateID(type, pageNumber, count) {
+    const shapeTypeLetterMap = {
+      setParams: 'A',
+      runScript: 'B',
+      callAPI: 'C',
+      playMenu: 'D',
+      getDigits: 'E',
+      playMessage: 'F',
+      playConfirm: 'G',
+      switch: 'H',
+      connector: 'I',
+      jumper: 'J',
+    };
 
+    const startCharacter = shapeTypeLetterMap[type] ?? 'X';
+    const pageCharacter = pageNumber < 10 ? `0${pageNumber}` : `${pageNumber}`;
+
+    return `${startCharacter}${pageCharacter}${count}`;
+  }
+
+  drawAllShapes(ctx) {
+    console.log('this.shapes', this.shapes);
     this.getShapesAsArray().forEach((el) => el.drawShape(ctx));
+  }
+
+  removeShape(key) {
+    delete this.shapes[key];
   }
 }
 

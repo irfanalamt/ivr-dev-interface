@@ -36,6 +36,96 @@ class Shape {
   setUserValues(userValues) {
     this.userValues = { ...userValues };
   }
+  setSelected(bool) {
+    this.selected = bool;
+  }
+  setFillStyle(hex) {
+    this.style = hex;
+  }
+  setFunctionString(text) {
+    this.functionString = text;
+  }
+  setText(inputText) {
+    this.text = inputText;
+
+    // auto set width from textSize
+    this.setWidthFromText();
+  }
+  setNextItem(item) {
+    this.nextItem = item;
+  }
+  isBetween(x, min, max) {
+    return x >= min && x <= max;
+  }
+  fillSelected(ctx) {
+    ctx.fillStyle = '#d4d7d8';
+    ctx.fill();
+  }
+  isNearExitPointSwitch(x, y) {
+    const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
+
+    if (numberOfExitPoints === 1) {
+      const bottomPoint = this.getExitPoint();
+
+      if (
+        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
+        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
+      ) {
+        return this.userValues.default.exitPoint;
+      }
+
+      return false;
+    }
+
+    for (let i = 1; i <= numberOfExitPoints; i++) {
+      const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
+
+      if (
+        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
+        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
+      ) {
+        if (i == numberOfExitPoints) {
+          // last exit point is the default exit point
+          return this.userValues.default.exitPoint;
+        }
+        return this.userValues.switchArray[i - 1].exitPoint;
+      }
+    }
+    return false;
+  }
+
+  isNearExitPointMenu(x, y) {
+    const numberOfExitPoints = this.userValues.items.length;
+
+    if (numberOfExitPoints === 0) return false;
+
+    if (numberOfExitPoints === 1) {
+      const bottomPoint = this.getExitPoint();
+
+      if (
+        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
+        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
+      ) {
+        return this.userValues.items[0].action;
+      }
+
+      return false;
+    }
+
+    // items >1
+
+    for (let i = 1; i <= numberOfExitPoints; i++) {
+      const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
+
+      if (
+        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
+        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
+      ) {
+        return this.userValues.items[i - 1].action;
+      }
+    }
+    return false;
+  }
 
   isMouseInShape(x, y) {
     // returns true if mouse is in shape; else false
@@ -47,6 +137,44 @@ class Shape {
     shapeBottom = this.y + this.height / 2;
 
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
+  }
+
+  setWidthFromText() {
+    switch (this.type) {
+      case 'runScript':
+        this.width = this.text.length * 11.5;
+        break;
+
+      case 'callAPI':
+        this.width = this.text.length * 10.5 + 10;
+        break;
+
+      case 'setParams':
+        this.width = this.text.length * 11.5;
+        break;
+
+      case 'switch':
+        this.width =
+          this.text.length * 12 < 130 ? 130 : this.text.length * 12 + 50;
+        break;
+
+      case 'playMenu':
+        this.width =
+          this.text.length * 12 < 125 ? 125 : this.text.length * 12 + 50;
+        break;
+
+      case 'getDigits':
+        this.width = this.text.length * 11 + 30;
+        break;
+
+      case 'playMessage':
+        this.width = this.text.length * 10.3 + 10;
+        break;
+
+      case 'playConfirm':
+        this.width = this.text.length * 10.3 + 10;
+        break;
+    }
   }
 
   drawShape(ctx) {

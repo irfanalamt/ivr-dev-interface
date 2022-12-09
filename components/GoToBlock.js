@@ -30,9 +30,9 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
     let exitPoints = [];
 
     entireStageGroup.forEach((page) => {
-      page.getShapes().forEach((el) => {
+      page.getShapesAsArray().forEach((el) => {
         if (
-          el.type === 'triangle' &&
+          el.type === 'jumper' &&
           el.userValues?.type === 'exit' &&
           el.text !== shapeName
         )
@@ -77,7 +77,7 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
 
     // check name unique in all pages
     for (const page of entireStageGroup) {
-      for (const el of page.getShapes()) {
+      for (const el of page.getShapesAsArray()) {
         if (el.text === e.target.value) {
           errorBox.style.display = 'block';
           e.target.style.backgroundColor = '#ffebee';
