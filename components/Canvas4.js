@@ -29,11 +29,16 @@ const CanvasComponent = () => {
   const [isConnecting, setIsConnecting] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showInfoMessage, setShowInfoMessage] = useState(false);
+  const [showCanvasResetDialog, setShowCanvasResetDialog] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const { status, data } = useSession();
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const scrollOffsetY = useRef(0);
   const pageNumber = useRef(1);
+  const snackbarMessage = useRef('');
 
   const palletGroup = useRef(null);
   const lineGroup = useRef(null);
@@ -57,6 +62,9 @@ const CanvasComponent = () => {
   const infoMessage = useRef('');
   const isSwitchExitPoint = useRef(null);
   const isMenuExitPoint = useRef(null);
+  const tooltipRef = useRef(null);
+  const stageTooltipRef = useRef(null);
+  const lineTooltipRef = useRef(null);
 
   let isDragging = false,
     isPalletShape = false;
@@ -251,6 +259,9 @@ const CanvasComponent = () => {
     palletGroup.current.getShapesEntries().forEach(([key, element]) => {
       if (element.isMouseInShape(realX, realY)) {
         console.log(`✨YES in pallette shape ${element.type}`);
+        setIsConnecting(0);
+        setIsDeleting(false);
+        setShowInfoMessage(false);
 
         currentShape.current = element;
         isDragging = true;
@@ -318,6 +329,32 @@ const CanvasComponent = () => {
           startY1 = realY;
         }
       });
+
+    lineGroup.current.getLines().forEach((el, i) => {
+      const linepoint = el.linepointNearestMouse(realX, realY);
+      let dx = realX - linepoint.x;
+      let dy = realY - linepoint.y;
+      // root of dx^2 + dy^2
+      let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+      console.log('🚀 ~ lineGroup.current.getLines ~ distance', distance);
+      if (distance < 5) {
+        console.log('line current:', el);
+      }
+
+      if (distance < 5 && isDeleting) {
+        console.log('remove; mouse on line; 🐁');
+        console.log('remove el ', el);
+
+        stageGroup.current[pageNumber.current - 1].removeConnectingLine(
+          el.startItem,
+          el.endItem,
+          el.lineData
+        );
+
+        clearAndDraw();
+        return;
+      }
+    });
   }
   function handleMouseMove(e) {
     e.preventDefault();
@@ -343,6 +380,76 @@ const CanvasComponent = () => {
       startY = realY;
       return;
     }
+
+    // reset tooltip; place tooltip on mouse pallet shape
+    tooltipRef.current.style.visibility = 'hidden';
+    palletGroup.current.getShapesAsArray().forEach((element) => {
+      if (element.isMouseInShape(realX, realY)) {
+        console.log(`💃🏻YES in pallet shape ${element.type}`);
+        tooltipRef.current.style.top =
+          realY - 10 + scrollOffsetY.current + 'px';
+        tooltipRef.current.style.left = realX + 60 + 'px';
+        tooltipRef.current.textContent = element.text;
+        tooltipRef.current.style.visibility = 'visible';
+        return;
+      }
+    });
+
+    stageTooltipRef.current.style.visibility = 'hidden';
+    stageGroup.current[pageNumber.current - 1]
+      .getShapesAsArray()
+      .forEach((el) => {
+        if (el.isMouseInShape(realX, realY)) {
+          // mouse on current stageShape
+          console.log(`💃🏻YES in stage shape ${el.type}${el.text}`);
+
+          if (el.type === 'switch') {
+            // if not false returned; else exitpoint returned
+            const isNearExitPoint = el.isNearExitPointSwitch(realX, realY);
+            if (isNearExitPoint) {
+              stageTooltipRef.current.style.top = realY + 10 + 'px';
+              stageTooltipRef.current.style.left = realX + 30 + 'px';
+              stageTooltipRef.current.textContent = isNearExitPoint;
+              stageTooltipRef.current.style.visibility = 'visible';
+            }
+          }
+          if (el.type === 'playMenu') {
+            const isNearExitPoint = el.isNearExitPointMenu(realX, realY);
+            if (isNearExitPoint) {
+              stageTooltipRef.current.style.top = realY + 10 + 'px';
+              stageTooltipRef.current.style.left = realX + 30 + 'px';
+              stageTooltipRef.current.textContent = isNearExitPoint;
+              stageTooltipRef.current.style.visibility = 'visible';
+            }
+          }
+
+          return;
+        }
+      });
+
+    // place and display line tooltip
+
+    lineTooltipRef.current.style.visibility = 'hidden';
+
+    // check mouse on line
+    lineGroup.current.getLines().forEach((el) => {
+      // if exitPoint present; check distance to place tooltip
+      if (el.lineData?.exitPoint) {
+        const linepoint = el.linepointNearestMouse(realX, realY);
+        let dx = realX - linepoint.x;
+        let dy = realY - linepoint.y;
+        // root of dx^2 + dy^2
+        let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
+        if (distance < 5) {
+          // mouse on line el
+
+          lineTooltipRef.current.style.top = realY + 10 + 'px';
+          lineTooltipRef.current.style.left = realX + 30 + 'px';
+          lineTooltipRef.current.textContent = el.lineData.exitPoint;
+          lineTooltipRef.current.style.visibility = 'visible';
+        }
+      }
+    });
   }
   function handleMouseUp(e) {
     e.preventDefault();
@@ -539,9 +646,138 @@ const CanvasComponent = () => {
     pageNumber.current = pageNum;
     clearAndDraw();
   }
+  function generateConfigFile() {
+    // setOpenSnackbar(true);
+    const str = generateJS();
+    // if str false; prevent config generation
+    if (!str) return;
+
+    const blob = new Blob([str]);
+    const href = URL.createObjectURL(blob);
+
+    // create "a" HTML element with href to file & click
+    const link = document.createElement('a');
+    link.href = href;
+    link.setAttribute('download', `config.js`); //or any other extension
+    document.body.appendChild(link);
+    link.click();
+
+    // clean up "a" element & remove ObjectURL
+    document.body.removeChild(link);
+    URL.revokeObjectURL(href);
+  }
+
+  function generateJS() {
+    // return a JS config code as string
+
+    if (
+      stageGroup.current[pageNumber.current - 1].getShapesAsArray().length === 0
+    ) {
+      snackbarMessage.current = `No shapes added to stage.`;
+      setOpenSnackbar(true);
+      return false;
+    }
+
+    // function that loops through all shapes except connector, switch or jumper; and check if they have fn string. if no return that shape name else false
+    const isFunctionStringPresent =
+      stageGroup.current[pageNumber.current - 1].isFunctionStringPresent();
+    if (isFunctionStringPresent) {
+      snackbarMessage.current = `Please update ${isFunctionStringPresent}. Default values detected.`;
+      setOpenSnackbar(true);
+      return false;
+    }
+
+    const tempString1 = `function customIVR(IVR){
+      IVR.menus =  require('/ivrs/customIVR/menus.json');
+      IVR.params = {
+        lang: 'en-SA',terminator:'#', maxRetries: 3, maxRepeats: 3,maxCallTime: 240, invalidTransferPoint: 'TP8001', timeoutTransferPoint: 'TP8001', goodbyeMessage: 'std-goodbye', firstTimeout: 10, interTimeout: 5,menuTimeout: 5,		terminateMessage: 'std-terminate', invalidPrompt: 'std-invalid',	timeOutPrompt: 'std-timeout', repeatInfoPrompt: 'std-repeat-info', confirmPrompt: 'std-confirm', cancelPrompt: 'std-cancel',	currency: 'SAR', confirmOption: 1,	cancelOption: 2, invalidAction: 'Disconnect',timeoutAction: 'Disconnect',	logDb: true						
+      };
+     `;
+
+    const tempString2 = generateInitVariablesJS();
+    const tempString3 = stageGroup.current[pageNumber.current - 1]
+      .getShapesAsArray()
+      .filter((el) => el.functionString)
+      .map((el) => el.functionString)
+      .join(' ');
+
+    const idOfStartShape =
+      stageGroup.current[pageNumber.current - 1].getIdOfFirstShape();
+
+    if (idOfStartShape === null) {
+      snackbarMessage.current =
+        'Please add a setParams block to start control flow.';
+      setOpenSnackbar(true);
+      return false;
+    }
+    stageGroup.current[pageNumber.current - 1].traverseShapes(idOfStartShape);
+
+    return false;
+
+    //const tempString4 = generateMainJS();
+
+    // if (!tempString4) {
+    //   snackbarMessage.current =
+    //     'Please add a setParams block to start control flow.';
+    //   setOpenSnackbar(true);
+    //   return false;
+    // }
+
+    // generate code for each menu block; driver fns for all menu items
+
+    const tempStringEnd = '} module.exports = customIVR;';
+
+    return tempString1 + tempString2 + tempString3 + tempStringEnd;
+  }
+
+  function generateInitVariablesJS() {
+    // global variables declared in InitVariables to config JS
+    let codeString = userVariables.current
+      .map((el) => `this.${el.name}${el.value ? `=${el.value};` : ';'}`)
+      .join('');
+
+    console.log('🚀 ~ generateJS ~ codeString', codeString);
+    return codeString;
+  }
+
+  function generateMainJS() {
+    console.log(
+      ' stageGroup.current[pageNumber.current - 1]',
+      stageGroup.current[pageNumber.current - 1]
+    );
+    const [arrayShapesTillMenu, isMenuIndex] =
+      stageGroup.current[pageNumber.current - 1].getShapesTillMenu();
+
+    if (arrayShapesTillMenu === null) return false;
+
+    const mainMenuString = `this.ivrMain=async function(){${arrayShapesTillMenu
+      .map((el) => `await this.${el}();`)
+      .join('')}};`;
+
+    console.log('isMenuIndex🎉', isMenuIndex);
+
+    if (isMenuIndex) {
+      const menuString =
+        stageGroup.current[pageNumber.current - 1].generateMenuCode(
+          isMenuIndex
+        );
+      return mainMenuString + menuString;
+    }
+
+    return mainMenuString;
+  }
 
   return (
     <>
+      <CanvasAppbar
+        data={data}
+        status={status}
+        isDeleting={isDeleting}
+        isConnecting={isConnecting}
+        stageGroup={stageGroup.current}
+        showResetDialog={() => setShowCanvasResetDialog(true)}
+        generateFile={generateConfigFile}
+      />
       <canvas
         style={{ backgroundColor: '#F7FBFE' }}
         width={window.innerWidth * 0.9}
@@ -550,7 +786,7 @@ const CanvasComponent = () => {
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
-      ></canvas>{' '}
+      ></canvas>
       <Box
         sx={{
           display: 'flex',
@@ -638,6 +874,12 @@ const CanvasComponent = () => {
           hidePrevButton={true}
         />
       </Box>
+      <Drawer anchor='left' open={isOpenVars}>
+        <InitVariables
+          handleCloseDrawer={() => setIsOpenVars(false)}
+          userVariables={userVariables.current}
+        />
+      </Drawer>
       <DrawerComponent
         isOpen={isOpenDrawer}
         handleCloseDrawer={handleCloseDrawer}
@@ -646,6 +888,66 @@ const CanvasComponent = () => {
         stageGroup={stageGroup.current[pageNumber.current - 1]}
         entireStageGroup={stageGroup.current}
       />
+      <ResetCanvasDialog
+        open={showCanvasResetDialog}
+        handleClose={() => setShowCanvasResetDialog(false)}
+      />
+      <Typography
+        sx={{
+          visibility: 'hidden',
+          position: 'absolute',
+          backgroundColor: '#e1f5fe',
+          px: 1,
+          boxShadow: 1,
+        }}
+        ref={tooltipRef}
+        variant='subtitle2'
+      >
+        Im a tooltip
+      </Typography>
+      <Typography
+        sx={{
+          visibility: 'hidden',
+          position: 'absolute',
+          backgroundColor: '#fce4ec',
+          px: 1,
+          boxShadow: 1,
+          borderRadius: 1,
+        }}
+        ref={stageTooltipRef}
+        variant='subtitle2'
+      >
+        Im a stageTooltip
+      </Typography>
+      <Typography
+        sx={{
+          visibility: 'hidden',
+          position: 'absolute',
+          backgroundColor: '#e0f7fa',
+          px: 1,
+          boxShadow: 1,
+          borderRadius: 1,
+        }}
+        ref={lineTooltipRef}
+        variant='subtitle2'
+      >
+        Im a lineTooltip
+      </Typography>
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        sx={{ mt: 10, mr: 5 }}
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity='warning'
+          sx={{ width: '100%' }}
+        >
+          {snackbarMessage.current}
+        </Alert>
+      </Snackbar>
     </>
   );
 };

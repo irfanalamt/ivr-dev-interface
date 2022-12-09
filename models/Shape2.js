@@ -61,6 +61,7 @@ class Shape {
     ctx.fillStyle = '#d4d7d8';
     ctx.fill();
   }
+
   isNearExitPointSwitch(x, y) {
     const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
 

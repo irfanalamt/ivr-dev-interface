@@ -103,6 +103,50 @@ class Shapes {
     console.log('this.shapes', this.shapes);
     this.getShapesAsArray().forEach((el) => el.drawShape(ctx));
   }
+
+  getIdOfFirstShape() {
+    // start shape is setParams
+    // if  found, return id; else return null
+
+    for (let shape of this.getShapesAsArray()) {
+      if (shape.type === 'setParams') {
+        return shape.id;
+      }
+    }
+
+    return null;
+  }
+
+  traverseShapes(id) {
+    // Create an array to store the shapes that we have visited
+    let visitedShapes = [];
+
+    // Create a stack to store the shapes that we need to visit
+    let shapeStack = [this.shapes[id]];
+
+    // Traverse the shapes array until all shapes have been visited
+    while (shapeStack.length > 0) {
+      // Pop the top shape from the stack
+      let currentShape = shapeStack.pop();
+
+      // Print the properties of the current shape
+      console.log('▶️', currentShape.text);
+
+      // If the current shape has a nextItem property, push the shape with the corresponding id onto the stack
+      if (currentShape.nextItem) {
+        shapeStack.push(this.shapes[currentShape.nextItem]);
+      }
+
+      if (currentShape.type === 'playMenu') {
+        currentShape.userValues.items.forEach((item) => {
+          if (item.nextId) {
+            shapeStack.push(this.shapes[item.nextId]);
+          }
+        });
+      }
+    }
+  }
+
   getConnectionsArray() {
     // traverse through all shapes, return an array of connections to draw arrows
 
@@ -268,9 +312,53 @@ class Shapes {
       });
     }
   }
+  isFunctionStringPresent() {
+    // check if all shapes have a fn string,return false;
+    // else return first shapeText without one
+    for (let shape of this.getShapesAsArray()) {
+      if (
+        !['connector', 'tinyCircle', 'jumper', 'switch', 'setParams'].includes(
+          shape.type
+        )
+      ) {
+        if (!shape.functionString) return shape.text;
+      }
+    }
+    return false;
+  }
 
   removeShape(key) {
     delete this.shapes[key];
+  }
+  removeConnectingLine(shape1Id, shape2Id, lineData = null) {
+    const shape1 = this.shapes[shape1Id];
+    if (shape1) {
+      console.log('▶️ ~ Shapes ~ removeConnectingLine ~ shape1', shape1);
+      if (shape1.type !== 'switch' && shape1.type !== 'playMenu') {
+        // single exit condition
+        // reset nextItem property
+        shape1.nextItem = null;
+        return;
+      }
+
+      if (shape1.type === 'switch') {
+        if (
+          lineData.totalExitPoints === 1 ||
+          lineData.position === lineData.totalExitPoints
+        ) {
+          // default condition
+          delete shape1.userValues.default.nextId;
+          return;
+        }
+
+        // switchArray > 0
+        delete shape1.userValues.switchArray[lineData.position - 1].nextId;
+      }
+
+      if (shape1.type === 'playMenu') {
+        delete shape1.userValues.items[lineData.position - 1].nextId;
+      }
+    }
   }
 }
 

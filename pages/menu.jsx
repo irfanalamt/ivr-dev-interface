@@ -72,7 +72,7 @@ const Menu = () => {
           color='success'
           onClick={() => {
             localStorage.setItem('isExistingProject', false);
-            Router.push('/stageCanvas2');
+            Router.push('/stageCanvas3');
           }}
         >
           Create new project <NoteAddIcon sx={{ fontSize: '2rem', ml: 1 }} />
