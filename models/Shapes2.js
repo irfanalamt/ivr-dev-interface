@@ -100,8 +100,12 @@ class Shapes {
   }
 
   drawAllShapes(ctx) {
-    console.log('this.shapes', this.shapes);
     this.getShapesAsArray().forEach((el) => el.drawShape(ctx));
+  }
+  addOffset(offset) {
+    this.getShapesAsArray().forEach((el) => {
+      el.y = el.getInitPos()[1] + offset;
+    });
   }
 
   getIdOfFirstShape() {

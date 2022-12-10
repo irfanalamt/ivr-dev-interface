@@ -381,19 +381,19 @@ const CanvasComponent = () => {
       return;
     }
 
-    // reset tooltip; place tooltip on mouse pallet shape
-    tooltipRef.current.style.visibility = 'hidden';
-    palletGroup.current.getShapesAsArray().forEach((element) => {
-      if (element.isMouseInShape(realX, realY)) {
-        console.log(`💃🏻YES in pallet shape ${element.type}`);
-        tooltipRef.current.style.top =
-          realY - 10 + scrollOffsetY.current + 'px';
-        tooltipRef.current.style.left = realX + 60 + 'px';
-        tooltipRef.current.textContent = element.text;
-        tooltipRef.current.style.visibility = 'visible';
-        return;
-      }
-    });
+    // // reset tooltip; place tooltip on mouse pallet shape
+    // tooltipRef.current.style.visibility = 'hidden';
+    // palletGroup.current.getShapesAsArray().forEach((element) => {
+    //   if (element.isMouseInShape(realX, realY)) {
+    //     console.log(`💃🏻YES in pallet shape ${element.type}`);
+    //     tooltipRef.current.style.top =
+    //       realY - 10 + scrollOffsetY.current + 'px';
+    //     tooltipRef.current.style.left = realX + 60 + 'px';
+    //     tooltipRef.current.textContent = element.text;
+    //     tooltipRef.current.style.visibility = 'visible';
+    //     return;
+    //   }
+    // });
 
     stageTooltipRef.current.style.visibility = 'hidden';
     stageGroup.current[pageNumber.current - 1]

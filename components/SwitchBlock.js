@@ -34,12 +34,13 @@ const SwitchBlock = ({
   function saveUserValues() {
     shape.setText(shapeName);
 
-    // filter our rows with both fields blank or has an error in either fields
+    // filter our rows with either fields blank or has an error in either fields
     const filteredUserValues = userValues
       .filter(
         (row) =>
           !(
-            (row.condition === '' && row.exitPoint === '') ||
+            row.condition === '' ||
+            row.exitPoint === '' ||
             row.conditionError ||
             row.exitError
           )
