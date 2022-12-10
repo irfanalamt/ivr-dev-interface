@@ -381,21 +381,21 @@ const CanvasComponent = () => {
       return;
     }
 
-    // // reset tooltip; place tooltip on mouse pallet shape
-    // tooltipRef.current.style.visibility = 'hidden';
-    // palletGroup.current.getShapesAsArray().forEach((element) => {
-    //   if (element.isMouseInShape(realX, realY)) {
-    //     console.log(`💃🏻YES in pallet shape ${element.type}`);
-    //     tooltipRef.current.style.top =
-    //       realY - 10 + scrollOffsetY.current + 'px';
-    //     tooltipRef.current.style.left = realX + 60 + 'px';
-    //     tooltipRef.current.textContent = element.text;
-    //     tooltipRef.current.style.visibility = 'visible';
-    //     return;
-    //   }
-    // });
+    // reset tooltip; place tooltip on mouse pallet shape
+    tooltipRef.current.style.display = 'none';
+    palletGroup.current.getShapesAsArray().forEach((element) => {
+      if (element.isMouseInShape(realX, realY)) {
+        console.log(`💃🏻YES in pallet shape ${element.type}`);
+        tooltipRef.current.style.display = 'block';
+        tooltipRef.current.style.top = realY - 5 + 'px';
+        tooltipRef.current.style.left = realX + 60 + 'px';
+        tooltipRef.current.textContent = element.text;
 
-    stageTooltipRef.current.style.visibility = 'hidden';
+        return;
+      }
+    });
+
+    stageTooltipRef.current.style.display = 'none';
     stageGroup.current[pageNumber.current - 1]
       .getShapesAsArray()
       .forEach((el) => {
@@ -407,19 +407,19 @@ const CanvasComponent = () => {
             // if not false returned; else exitpoint returned
             const isNearExitPoint = el.isNearExitPointSwitch(realX, realY);
             if (isNearExitPoint) {
+              stageTooltipRef.current.style.display = 'block';
               stageTooltipRef.current.style.top = realY + 10 + 'px';
               stageTooltipRef.current.style.left = realX + 30 + 'px';
               stageTooltipRef.current.textContent = isNearExitPoint;
-              stageTooltipRef.current.style.visibility = 'visible';
             }
           }
           if (el.type === 'playMenu') {
             const isNearExitPoint = el.isNearExitPointMenu(realX, realY);
             if (isNearExitPoint) {
+              stageTooltipRef.current.style.display = 'block';
               stageTooltipRef.current.style.top = realY + 10 + 'px';
               stageTooltipRef.current.style.left = realX + 30 + 'px';
               stageTooltipRef.current.textContent = isNearExitPoint;
-              stageTooltipRef.current.style.visibility = 'visible';
             }
           }
 
@@ -429,8 +429,7 @@ const CanvasComponent = () => {
 
     // place and display line tooltip
 
-    lineTooltipRef.current.style.visibility = 'hidden';
-
+    lineTooltipRef.current.style.display = 'none';
     // check mouse on line
     lineGroup.current.getLines().forEach((el) => {
       // if exitPoint present; check distance to place tooltip
@@ -442,11 +441,10 @@ const CanvasComponent = () => {
         let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
         if (distance < 5) {
           // mouse on line el
-
+          lineTooltipRef.current.style.display = 'block';
           lineTooltipRef.current.style.top = realY + 10 + 'px';
           lineTooltipRef.current.style.left = realX + 30 + 'px';
           lineTooltipRef.current.textContent = el.lineData.exitPoint;
-          lineTooltipRef.current.style.visibility = 'visible';
         }
       }
     });
@@ -898,7 +896,7 @@ const CanvasComponent = () => {
       />
       <Typography
         sx={{
-          visibility: 'hidden',
+          display: 'none',
           position: 'absolute',
           backgroundColor: '#e1f5fe',
           px: 1,
@@ -911,7 +909,7 @@ const CanvasComponent = () => {
       </Typography>
       <Typography
         sx={{
-          visibility: 'hidden',
+          display: 'none',
           position: 'absolute',
           backgroundColor: '#fce4ec',
           px: 1,
@@ -925,7 +923,7 @@ const CanvasComponent = () => {
       </Typography>
       <Typography
         sx={{
-          visibility: 'hidden',
+          display: 'none',
           position: 'absolute',
           backgroundColor: '#e0f7fa',
           px: 1,
