@@ -710,9 +710,11 @@ const CanvasComponent = () => {
       setOpenSnackbar(true);
       return false;
     }
-    stageGroup.current[pageNumber.current - 1].traverseShapes(idOfStartShape);
 
-    return false;
+    const tempString4 =
+      stageGroup.current[pageNumber.current - 1].traverseShapes(idOfStartShape);
+
+    console.log('tempString4:😊', tempString4);
 
     //const tempString4 = generateMainJS();
 
@@ -727,7 +729,9 @@ const CanvasComponent = () => {
 
     const tempStringEnd = '} module.exports = customIVR;';
 
-    return tempString1 + tempString2 + tempString3 + tempStringEnd;
+    return (
+      tempString1 + tempString2 + tempString3 + tempString4 + tempStringEnd
+    );
   }
 
   function generateInitVariablesJS() {

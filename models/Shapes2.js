@@ -124,7 +124,7 @@ class Shapes {
   traverseShapes(id) {
     // Create an array to store the shapes that we have visited
     let visitedShapes = [];
-
+    let tempString = this.generateMainMenuCode(id);
     // Create a stack to store the shapes that we need to visit
     let shapeStack = [this.shapes[id]];
 
@@ -135,6 +135,12 @@ class Shapes {
 
       // Print the properties of the current shape
       console.log('▶️', currentShape.text);
+      if (currentShape.type === 'playMenu') {
+        tempString += this.generateMenuCode(currentShape.id);
+      }
+      if (currentShape.type === 'switch') {
+        tempString += this.generateSwitchCode(currentShape.id);
+      }
 
       // If the current shape has a nextItem property, push the shape with the corresponding id onto the stack
       if (currentShape.nextItem) {
@@ -149,6 +155,130 @@ class Shapes {
         });
       }
     }
+    return tempString;
+  }
+  generateMainMenuCode(id) {
+    if (!this.shapes[id]) return '';
+
+    const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(id);
+
+    const mainMenuString = `this.ivrMain=async function(){${arrayShapesTillMenuSwitch
+      .map((el) => `await this.${el}();`)
+      .join('')}};`;
+
+    return mainMenuString;
+  }
+
+  generateSwitchCode(id) {
+    const switchShape = this.shapes[id];
+    if (!switchShape) return '';
+
+    let code = '';
+    if (switchShape.userValues.switchArray.length > 0) {
+      switchShape.userValues.switchArray.forEach((el) => {
+        if (el.nextId) {
+          const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+            el.nextId
+          );
+          code += !code
+            ? `if(${el.condition}){
+            ${arrayShapesTillMenuSwitch
+              .map((el) => `await this.${el}();`)
+              .join('')}
+          }`
+            : `else if(${el.condition}){
+            ${arrayShapesTillMenuSwitch
+              .map((el) => `await this.${el}();`)
+              .join('')}
+          }`;
+        }
+      });
+
+      if (code && switchShape.userValues.default.nextId) {
+        const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+          switchShape.userValues.default.nextId
+        );
+        code += `else{${arrayShapesTillMenuSwitch
+          .map((el) => `await this.${el}();`)
+          .join('')}}`;
+      }
+
+      let finalCode = `this.${switchShape.text}=async function(){${code}};`;
+      if (code) return finalCode;
+    }
+
+    if (
+      (switchShape.userValues.switchArray.length === 0 &&
+        switchShape.userValues.default.nextId) ||
+      !code
+    ) {
+      // default only condition
+      const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+        switchShape.userValues.default.nextId
+      );
+      let code = `this.${
+        switchShape.text
+      }=async function(){${arrayShapesTillMenuSwitch
+        .map((el) => `await this.${el}();`)
+        .join('')}};`;
+
+      return code;
+    }
+  }
+
+  generateMenuCode(id) {
+    const menuShape = this.shapes[id];
+    const items = menuShape.userValues.items;
+
+    if (items.length === 0) return '';
+
+    let finalCode = '';
+
+    // denerate driver fn for each item
+
+    items.forEach((item) => {
+      if (item.nextId) {
+        const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+          item.nextId
+        );
+
+        let code = `this.${menuShape.text}_${
+          item.action
+        }=async function(){${arrayShapesTillMenuSwitch
+          .map((el) => `await this.${el}();`)
+          .join('')}};`;
+        finalCode += code;
+      }
+    });
+
+    return finalCode;
+  }
+
+  getShapesTillMenuOrSwitch(id) {
+    // return an array of connected shapes till a multi-exit shape has reached
+
+    // return array of shape names till a menu
+    let tempArray = [];
+    let currentShape = this.shapes[id];
+    if (!currentShape) return null;
+
+    tempArray.push(currentShape.text);
+    let id1 = id;
+
+    while (1) {
+      let nextShapeId = this.shapes[id1].nextItem;
+      if (!nextShapeId) break;
+
+      let nextShape = this.shapes[nextShapeId];
+      if (!nextShape) break;
+
+      // if not connector; add to array
+      if (nextShape.type !== 'connector') tempArray.push(nextShape.text);
+
+      id1 = nextShapeId;
+    }
+
+    return tempArray;
   }
 
   getConnectionsArray() {
