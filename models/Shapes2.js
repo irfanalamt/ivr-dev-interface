@@ -342,6 +342,8 @@ class Shapes {
       // only default condition
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
+        let lineColor =
+          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
         tempArray.push({
           x1: shape1.getExitPoint()[0],
           y1: shape1.getExitPoint()[1],
@@ -350,7 +352,7 @@ class Shapes {
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
-          lineColor: '#4a148c',
+          lineColor: lineColor,
           lineData: {
             exitPoint: el.userValues.default.exitPoint,
             position: 1,
@@ -368,6 +370,8 @@ class Shapes {
             el.userValues.switchArray.length + 1,
             i + 1
           );
+          let lineColor =
+            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
           tempArray.push({
             x1: exitCordinate[0],
             y1: exitCordinate[1],
@@ -376,7 +380,7 @@ class Shapes {
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
-            lineColor: '#4a148c',
+            lineColor: lineColor,
             lineData: {
               exitPoint: row.exitPoint,
               position: i + 1,
@@ -395,6 +399,8 @@ class Shapes {
           el.userValues.switchArray.length + 1,
           el.userValues.switchArray.length + 1
         );
+        let lineColor =
+          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
         tempArray.push({
           x1: exitCordinate[0],
           y1: exitCordinate[1],
@@ -403,7 +409,7 @@ class Shapes {
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
-          lineColor: '#4a148c',
+          lineColor: lineColor,
           lineData: {
             exitPoint: el.userValues.default.exitPoint,
             position: el.userValues.switchArray.length + 1,
@@ -449,6 +455,8 @@ class Shapes {
             el.userValues.items.length,
             i + 1
           );
+          let lineColor =
+            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
           tempArray.push({
             x1: exitCordinate[0],
             y1: exitCordinate[1],
@@ -457,7 +465,7 @@ class Shapes {
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
-            lineColor: '#4a148c',
+            lineColor: lineColor,
             lineData: {
               exitPoint: row.action,
               position: i + 1,
