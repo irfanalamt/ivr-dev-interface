@@ -330,18 +330,11 @@ const CanvasComponent = () => {
         }
       });
 
-    lineGroup.current.getLines().forEach((el, i) => {
-      const linepoint = el.linepointNearestMouse(realX, realY);
-      let dx = realX - linepoint.x;
-      let dy = realY - linepoint.y;
-      // root of dx^2 + dy^2
-      let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
-      console.log('🚀 ~ lineGroup.current.getLines ~ distance', distance);
-      if (distance < 5) {
-        console.log('line current:', el);
-      }
+    lineGroup.current.getLines().forEach((el) => {
+      const isNearLine = el.isPointNearLine(realX, realY);
+      if (isNearLine) console.log(' 🕺🏻 isNearLine', el);
 
-      if (distance < 5 && isDeleting) {
+      if (isNearLine < 5 && isDeleting) {
         console.log('remove; mouse on line; 🐁');
         console.log('remove el ', el);
 
@@ -434,12 +427,8 @@ const CanvasComponent = () => {
     lineGroup.current.getLines().forEach((el) => {
       // if exitPoint present; check distance to place tooltip
       if (el.lineData?.exitPoint) {
-        const linepoint = el.linepointNearestMouse(realX, realY);
-        let dx = realX - linepoint.x;
-        let dy = realY - linepoint.y;
-        // root of dx^2 + dy^2
-        let distance = Math.abs(Math.sqrt(dx * dx + dy * dy));
-        if (distance < 5) {
+        const isNearLine = el.isPointNearLine(realX, realY);
+        if (isNearLine) {
           // mouse on line el
           lineTooltipRef.current.style.display = 'block';
           lineTooltipRef.current.style.top = realY + 10 + 'px';

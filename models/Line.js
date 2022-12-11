@@ -101,21 +101,53 @@ class Line {
     }
   }
 
-  linepointNearestMouse(x, y) {
-    const lerp = (a, b, x) => {
-      return a + x * (b - a);
-    };
+  isBetween(x, min, max) {
+    return x >= min && x <= max;
+  }
+  getLargest(a, b) {
+    return a > b ? a : b;
+  }
+  getSmallest(a, b) {
+    return a < b ? a : b;
+  }
+  isPointBetweenEnclosingRectangle(pointX, pointY) {
+    const largeX = this.getLargest(this.x1, this.x2);
+    const smallX = this.getSmallest(this.x1, this.x2);
+    const largeY = this.getLargest(this.y1, this.y2);
+    const smallY = this.getSmallest(this.y1, this.y2);
+    const isPointBetweenEnclosingRectangle =
+      this.isBetween(pointX, smallX, largeX) &&
+      this.isBetween(pointY, smallY, largeY);
 
-    let dx = this.x2 - this.x1;
-    let dy = this.y2 - this.y1;
-    let t = ((x - this.x1) * dx + (y - this.y1) * dy) / (dx * dx + dy * dy);
-    let lineX = lerp(this.x1, this.x2, t);
-    let lineY = lerp(this.y1, this.y2, t);
+    return isPointBetweenEnclosingRectangle;
+  }
 
-    return {
-      x: lineX,
-      y: lineY,
-    };
+  isPointNearLine(pointX, pointY) {
+    const isPointInRectangle = this.isPointBetweenEnclosingRectangle(
+      pointX,
+      pointY
+    );
+    if (!isPointInRectangle) return false;
+
+    // Calculate the distance between point and line
+    const distance =
+      Math.abs(
+        (this.y2 - this.y1) * pointX -
+          (this.x2 - this.x1) * pointY +
+          this.x2 * this.y1 -
+          this.y2 * this.x1
+      ) /
+      Math.sqrt(
+        Math.pow(this.y2 - this.y1, 2) + Math.pow(this.x2 - this.x1, 2)
+      );
+
+    // If distance is less than or equal to a certain tolerance, return true
+    if (distance <= 5) {
+      return true;
+    }
+
+    // Else return false
+    return false;
   }
 
   setColor(color) {
