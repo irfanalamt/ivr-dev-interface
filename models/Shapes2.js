@@ -284,6 +284,9 @@ class Shapes {
   getValidNextItem(id) {
     // return null if no valid next shape found(not connector)
     // if valid next shape found, return its id
+    const currentShape = this.shapes[id];
+    if (currentShape.type !== 'connector') return currentShape.id;
+
     while (true) {
       let nextShapeId = this.shapes[id].nextItem;
       if (!nextShapeId) return null;
@@ -315,7 +318,7 @@ class Shapes {
         if (shape2) {
           let shape1 = el;
           let lineColor =
-            this.getValidNextItem(shape1.id) === null ? '#AA2E25' : '#37474f';
+            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#37474f';
           tempArray.push({
             x1: shape1.getExitPoint()[0],
             y1: shape1.getExitPoint()[1],
@@ -417,6 +420,8 @@ class Shapes {
       // default condition; 1 exit middle bottom
       let shape2 = this.shapes[el.userValues.items[0].nextId];
       if (shape2) {
+        let lineColor =
+          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
         tempArray.push({
           x1: shape1.getExitPoint()[0],
           y1: shape1.getExitPoint()[1],
@@ -425,7 +430,7 @@ class Shapes {
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
-          lineColor: '#4a148c',
+          lineColor: lineColor,
           lineData: {
             exitPoint: el.userValues.items[0].action,
             position: 1,
