@@ -262,7 +262,8 @@ class Shapes {
     let currentShape = this.shapes[id];
     if (!currentShape) return null;
 
-    tempArray.push(currentShape.text);
+    if (currentShape.type !== 'connector') tempArray.push(currentShape.text);
+
     let id1 = id;
 
     while (1) {
@@ -279,6 +280,21 @@ class Shapes {
     }
 
     return tempArray;
+  }
+  getValidNextItem(id) {
+    // return null if no valid next shape found(not connector)
+    // if valid next shape found, return its id
+    while (true) {
+      let nextShapeId = this.shapes[id].nextItem;
+      if (!nextShapeId) return null;
+
+      let nextShape = this.shapes[nextShapeId];
+      if (!nextShape) return null;
+
+      if (nextShape.type !== 'connector') return nextShape.id;
+
+      id = nextShapeId;
+    }
   }
 
   getConnectionsArray() {
@@ -298,7 +314,8 @@ class Shapes {
         let shape2 = this.shapes[el.nextItem];
         if (shape2) {
           let shape1 = el;
-          // let lineColor = this.getValidNextItem(i) === null ? 'red' : 'black';
+          let lineColor =
+            this.getValidNextItem(shape1.id) === null ? '#AA2E25' : '#37474f';
           tempArray.push({
             x1: shape1.getExitPoint()[0],
             y1: shape1.getExitPoint()[1],
@@ -307,7 +324,7 @@ class Shapes {
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
-            lineColor: 'black',
+            lineColor: lineColor,
           });
         }
       }

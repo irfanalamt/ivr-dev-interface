@@ -23,7 +23,7 @@ class Lines {
     this.lines = linesArray;
   }
   connectAllPoints(ctx) {
-    this.lines.forEach((el) => el.connectPoints(ctx));
+    this.lines.forEach((el) => el.drawFilledArrow(ctx));
   }
   getLines() {
     return this.lines;
