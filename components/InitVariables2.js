@@ -18,7 +18,11 @@ import {
 import { useState } from 'react';
 import { addVariableElements } from '../src/helpers';
 
-const InitVariables = ({ handleCloseDrawer, userVariables = [] }) => {
+const InitVariables = ({
+  handleCloseDrawer,
+  userVariables = [],
+  setUserVariables,
+}) => {
   const [varObj, setVarObj] = useState(userVariables);
   const [varType, setVarType] = useState('prompt');
 
@@ -39,12 +43,7 @@ const InitVariables = ({ handleCloseDrawer, userVariables = [] }) => {
   function saveValues() {
     // remove variables with no name; save
     const filteredVarObj = varObj.filter((n) => n.name);
-    filteredVarObj.forEach((el) => {
-      if (userVariables.indexOf(el) == -1) {
-        userVariables.push(el);
-      }
-    });
-    console.log('userVariables:', userVariables);
+    setUserVariables(filteredVarObj);
   }
 
   return (

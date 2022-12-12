@@ -595,6 +595,10 @@ const CanvasComponent = () => {
     clearAndDraw();
   }
 
+  function setUserVariables(arr) {
+    userVariables.current = arr;
+  }
+
   function generateConfigFile() {
     // setOpenSnackbar(true);
     const str = generateJS();
@@ -831,6 +835,7 @@ const CanvasComponent = () => {
         <InitVariables
           handleCloseDrawer={() => setIsOpenVars(false)}
           userVariables={userVariables.current}
+          setUserVariables={setUserVariables}
         />
       </Drawer>
       <DrawerComponent

@@ -123,6 +123,7 @@ export function addInputElements(
               onChange={(e) => {
                 handleVarSelect(e, key);
               }}
+              size='small'
             >
               {userVariables
                 .filter((el) => el.type === 'prompt')
