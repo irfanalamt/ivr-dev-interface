@@ -69,7 +69,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
       variableName: resultName,
     });
 
-    generateJS(filteredMsgObj, entireParamsObj);
+    if (filteredMsgObj.length > 0) generateJS(filteredMsgObj, entireParamsObj);
   }
 
   function generateJS(filteredMsgObj, entireParamsObj) {

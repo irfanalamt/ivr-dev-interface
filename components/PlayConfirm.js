@@ -55,7 +55,7 @@ const PlayConfirm = ({
       messageList: filteredMsgObj,
     });
 
-    generateJS(filteredMsgObj);
+    if (filteredMsgObj.length > 0) generateJS(filteredMsgObj);
   }
 
   function generateJS(filteredMsgObj) {

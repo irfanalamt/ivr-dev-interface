@@ -54,7 +54,8 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
       items: filteredItems,
     });
 
-    generateJS();
+    // only generate if atleast 1 item with action present
+    if (filteredItems.length > 0) generateJS();
   }
 
   function generateJS() {

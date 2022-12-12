@@ -381,7 +381,7 @@ const CanvasComponent = () => {
         console.log(`💃🏻YES in pallet shape ${element.type}`);
         tooltipRef.current.style.display = 'block';
         tooltipRef.current.style.top = realY - 5 + 'px';
-        tooltipRef.current.style.left = realX + 60 + 'px';
+        tooltipRef.current.style.left = realX + 80 + 'px';
         tooltipRef.current.textContent = element.text;
 
         return;
@@ -594,6 +594,7 @@ const CanvasComponent = () => {
     pageNumber.current = pageNum;
     clearAndDraw();
   }
+
   function generateConfigFile() {
     // setOpenSnackbar(true);
     const str = generateJS();

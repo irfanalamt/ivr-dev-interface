@@ -62,6 +62,8 @@ class Shape {
     ctx.fill();
   }
 
+  showErrorColor() {}
+
   isNearExitPointSwitch(x, y) {
     const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
 
@@ -461,7 +463,7 @@ class Shape {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(this.text, this.x, this.y);
-      ctx.strokeStyle = '#c0ca33';
+      ctx.strokeStyle = this.style;
       ctx.stroke();
       return;
     }
