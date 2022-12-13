@@ -98,7 +98,10 @@ class Shape {
   }
 
   isNearExitPointMenu(x, y) {
-    const numberOfExitPoints = this.userValues.items.length;
+    const itemsWithoutDefaults = this.userValues.items.filter(
+      (item) => !(item.isDefault === true)
+    );
+    const numberOfExitPoints = itemsWithoutDefaults.length;
 
     if (numberOfExitPoints === 0) return false;
 
@@ -109,7 +112,7 @@ class Shape {
         this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
         this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
       ) {
-        return this.userValues.items[0].action;
+        return itemsWithoutDefaults[0].action;
       }
 
       return false;
@@ -124,7 +127,7 @@ class Shape {
         this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
         this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
       ) {
-        return this.userValues.items[i - 1].action;
+        return itemsWithoutDefaults[i - 1].action;
       }
     }
     return false;
@@ -600,7 +603,12 @@ class Shape {
   }
 
   drawExitPointsMenu(ctx) {
-    const numberOfExitPoints = this.userValues.items.length;
+    // only draw exitPoints for non default actions
+    const itemsWithoutDefaults = this.userValues.items.filter(
+      (item) => !(item.isDefault === true)
+    );
+    const numberOfExitPoints = itemsWithoutDefaults.length;
+
     if (numberOfExitPoints === 0) return;
 
     if (numberOfExitPoints === 1) {

@@ -422,9 +422,13 @@ class Shapes {
 
   getMenuConnections(tempArray, el) {
     let shape1 = el;
-    if (el.userValues.items.length === 1 && el.userValues.items[0].nextId) {
+    const itemsWithoutDefaults = shape1.userValues.items.filter(
+      (item) => !(item.isDefault === true)
+    );
+    const itemsLength = itemsWithoutDefaults.length;
+    if (itemsLength === 1 && itemsWithoutDefaults[0].nextId) {
       // default condition; 1 exit middle bottom
-      let shape2 = this.shapes[el.userValues.items[0].nextId];
+      let shape2 = this.shapes[itemsWithoutDefaults[0].nextId];
       if (shape2) {
         let lineColor =
           this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
@@ -438,7 +442,7 @@ class Shapes {
           lineCap: null,
           lineColor: lineColor,
           lineData: {
-            exitPoint: el.userValues.items[0].action,
+            exitPoint: itemsWithoutDefaults[0].action,
             position: 1,
             totalExitPoints: 1,
           },
@@ -446,15 +450,12 @@ class Shapes {
       }
     }
 
-    if (el.userValues.items.length > 1) {
+    if (itemsLength > 1) {
       // connectors>1; spread out bottom evenly
-      el.userValues.items.forEach((row, i) => {
+      itemsWithoutDefaults.forEach((row, i) => {
         let shape2 = this.shapes[row.nextId];
         if (shape2) {
-          let exitCordinate = shape1.getBottomPointForExit(
-            el.userValues.items.length,
-            i + 1
-          );
+          let exitCordinate = shape1.getBottomPointForExit(itemsLength, i + 1);
           let lineColor =
             this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
           tempArray.push({
@@ -469,7 +470,7 @@ class Shapes {
             lineData: {
               exitPoint: row.action,
               position: i + 1,
-              totalExitPoints: el.userValues.items.length,
+              totalExitPoints: itemsLength,
             },
           });
         }

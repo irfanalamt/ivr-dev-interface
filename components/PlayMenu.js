@@ -112,7 +112,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
   function handleItemsObjChange(value, key, name) {
     setItemsObj((s) => {
       const newArr = [...s];
-      newArr[key][name] = String(value);
+      newArr[key][name] = value;
       return newArr;
     });
   }
@@ -148,17 +148,31 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
     return (
       <List key={key}>
         <ListItem>
-          <Typography
-            sx={{
-              boxShadow: 1,
-              px: 1,
-              borderRadius: 1,
-              backgroundColor: '#f1f8e9',
-            }}
-            variant='h6'
-          >
-            {digit}
-          </Typography>
+          <Box sx={{ width: '35%' }}>
+            <Typography
+              sx={{
+                boxShadow: 1,
+                px: 1,
+                borderRadius: 1,
+                backgroundColor: '#f1f8e9',
+                width: 'max-content',
+              }}
+              variant='h6'
+            >
+              {digit}
+            </Typography>
+          </Box>
+          <Tooltip title='Use default actions' placement='top-end'>
+            <Switch
+              checked={itemsObj[key].isDefault ?? false}
+              onChange={(e) => {
+                handleItemsObjChange(e.target.checked, key, 'isDefault');
+
+                handleItemsObjChange('', key, 'action');
+              }}
+              sx={{ mx: 0.5 }}
+            />
+          </Tooltip>
         </ListItem>
         <ListItem>
           <Typography
@@ -167,14 +181,26 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
           >
             action:
           </Typography>
-          <TextField
-            value={itemsObj[key].action || ''}
+          <Select
+            sx={{ display: itemsObj[key].isDefault ? 'block' : 'none' }}
+            size='small'
+            value={itemsObj[key].isDefault ? itemsObj[key].action : ''}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'action');
-              handleValidation(e, `action${key}`, 'object');
+            }}
+          >
+            <MenuItem value='MainMenu'>MainMenu</MenuItem>
+            <MenuItem value='PreviousMenu'>PreviousMenu</MenuItem>
+            <MenuItem value='Disconnect'>Disconnect</MenuItem>
+            <MenuItem value='Transfer'>Transfer</MenuItem>
+          </Select>
+          <TextField
+            sx={{ display: !itemsObj[key].isDefault ? 'block' : 'none', mx: 1 }}
+            value={itemsObj[key].action ?? ''}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.value, key, 'action');
             }}
             helperText={errorObj[`action${key}`]}
-            sx={{ mx: 1 }}
             size='small'
             placeholder='required'
             autoFocus
@@ -206,7 +232,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             disable:
           </Typography>
           <Switch
-            checked={itemsObj[key].disable || false}
+            checked={itemsObj[key].disable ?? false}
             onChange={(e) => {
               handleItemsObjChange(e.target.checked, key, 'disable');
             }}
@@ -221,7 +247,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             silent:
           </Typography>
           <Switch
-            checked={itemsObj[key].silent || false}
+            checked={itemsObj[key].silent ?? false}
             onChange={(e) => {
               handleItemsObjChange(e.target.checked, key, 'silent');
             }}
@@ -585,7 +611,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
               ignoreBuffer:
             </Typography>
             <Switch
-              checked={menuObj.ignoreBuffer || false}
+              checked={menuObj.ignoreBuffer ?? false}
               onChange={(e) => {
                 handleMenuObjChange(e.target.checked, 'ignoreBuffer');
               }}
@@ -604,7 +630,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
               logDb:
             </Typography>
             <Switch
-              checked={menuObj.logDb || false}
+              checked={menuObj.logDb ?? false}
               onChange={(e) => {
                 handleMenuObjChange(e.target.checked, 'logDb');
               }}
@@ -672,7 +698,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
           </List>
         </Box>
         <Box id='tabPanel2' sx={{ display: tabValue == 1 ? 'block' : 'none' }}>
-          <ListItem sx={{ mt: 2 }}>
+          <ListItem sx={{ mb: 3, mt: 1 }}>
             <Paper
               sx={{
                 width: '100%',
