@@ -75,7 +75,11 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
     'invalidPrompt',
     'timeoutPrompt',
     'maxRetries',
-    'previousMenuId',
+    'previousMenuName',
+    'transferPoint',
+    'invalidTransferPoint',
+    'timeoutTransferPoint',
+    'menuTimeout',
   ];
 
   function handleAddParameter() {
@@ -480,7 +484,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             </Select>
           </ListItem>
         );
-      case 'previousMenuId':
+      case 'previousMenuName':
         return (
           <ListItem key={key}>
             <Typography
@@ -493,12 +497,113 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
                 fontWeight: 405,
               }}
             >
-              previousMenuId:
+              previousMenuName:
             </Typography>
             <TextField
-              value={menuObj.previousMenuId || ''}
+              value={menuObj.previousMenuName || ''}
               onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'previousMenuId');
+                handleMenuObjChange(e.target.value, 'previousMenuName');
+              }}
+              sx={{ mx: 0.5 }}
+              size='small'
+            />
+          </ListItem>
+        );
+
+      case 'transferPoint':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              transferPoint:
+            </Typography>
+            <TextField
+              value={menuObj.transferPoint || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'transferPoint');
+              }}
+              sx={{ mx: 0.5 }}
+              size='small'
+            />
+          </ListItem>
+        );
+      case 'invalidTransferPoint':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '40%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              invalidTransferPoint:
+            </Typography>
+            <TextField
+              value={menuObj.invalidTransferPoint || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'invalidTransferPoint');
+              }}
+              sx={{ mx: 0.5 }}
+              size='small'
+            />
+          </ListItem>
+        );
+      case 'timeoutTransferPoint':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '40%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              timeoutTransferPoint:
+            </Typography>
+            <TextField
+              value={menuObj.timeoutTransferPoint || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'timeoutTransferPoint');
+              }}
+              sx={{ mx: 0.5 }}
+              size='small'
+            />
+          </ListItem>
+        );
+      case 'menuTimeout':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '40%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}
+            >
+              menuTimeout:
+            </Typography>
+            <TextField
+              value={menuObj.menuTimeout || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'menuTimeout');
               }}
               sx={{ mx: 0.5 }}
               size='small'
