@@ -133,6 +133,11 @@ class Shapes {
       // Pop the top shape from the stack
       let currentShape = shapeStack.pop();
 
+      if (visitedShapes.includes(currentShape.id)) break;
+
+      // adding to visited array
+      visitedShapes.push(currentShape.id);
+
       // Print the properties of the current shape
       console.log('▶️', currentShape.text);
       if (currentShape.type === 'playMenu') {
