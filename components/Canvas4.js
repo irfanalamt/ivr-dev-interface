@@ -107,9 +107,15 @@ const CanvasComponent = () => {
   }
 
   function initializePallette() {
+    const canvasHeight = window.innerHeight;
+    const paletteHeight = canvasHeight - 110;
+
+    // Calculate the vertical space that each shape should occupy
+    const shapeHeight = paletteHeight / 10;
+
     const setParams = new Shape(
       40,
-      100 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 0,
       30,
       25,
       'setParams',
@@ -117,7 +123,7 @@ const CanvasComponent = () => {
     );
     const runScript = new Shape(
       40,
-      145 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 1,
       30,
       25,
       'runScript',
@@ -125,7 +131,7 @@ const CanvasComponent = () => {
     );
     const callAPI = new Shape(
       40,
-      195 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 2,
       35,
       20,
       'callAPI',
@@ -133,7 +139,7 @@ const CanvasComponent = () => {
     );
     const playMenu = new Shape(
       40,
-      245 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 3,
       40,
       25,
       'playMenu',
@@ -141,7 +147,7 @@ const CanvasComponent = () => {
     );
     const getDigits = new Shape(
       40,
-      290 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 4,
       26,
       17,
       'getDigits',
@@ -149,7 +155,7 @@ const CanvasComponent = () => {
     );
     const playMessage = new Shape(
       40,
-      335 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 5,
       40,
       25,
       'playMessage',
@@ -157,7 +163,7 @@ const CanvasComponent = () => {
     );
     const playConfirm = new Shape(
       40,
-      383 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 6,
       40,
       25,
       'playConfirm',
@@ -165,7 +171,7 @@ const CanvasComponent = () => {
     );
     const switchShape = new Shape(
       40,
-      433 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 7,
       40,
       25,
       'switch',
@@ -173,7 +179,7 @@ const CanvasComponent = () => {
     );
     const connector = new Shape(
       40,
-      480 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 8,
       22,
       22,
       'connector',
@@ -181,7 +187,7 @@ const CanvasComponent = () => {
     );
     const jumper = new Shape(
       40,
-      525 + scrollOffsetY.current,
+      80 + scrollOffsetY.current + shapeHeight * 9,
       30,
       30,
       'jumper',
@@ -215,8 +221,18 @@ const CanvasComponent = () => {
     contextRef.current.fillStyle = 'white';
 
     // draw bg palette rectangle
-    contextRef.current.strokeRect(5, 70 + scrollOffsetY.current, 70, 480);
-    contextRef.current.fillRect(5, 70 + scrollOffsetY.current, 70, 480);
+    contextRef.current.strokeRect(
+      5,
+      55 + scrollOffsetY.current,
+      70,
+      window.innerHeight - 105
+    );
+    contextRef.current.fillRect(
+      5,
+      55 + scrollOffsetY.current,
+      70,
+      window.innerHeight - 105
+    );
     contextRef.current.fillStyle = '#616161';
     contextRef.current.font = '20px Arial';
 
@@ -750,7 +766,7 @@ const CanvasComponent = () => {
           alignItems: 'center',
           position: 'fixed',
           bottom: 0,
-          backgroundColor: '#fafafa',
+          backgroundColor: '#eeeeee',
           width: '90vw',
         }}
       >
