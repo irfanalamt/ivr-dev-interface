@@ -47,14 +47,15 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
 
   function saveUserValues() {
     shape.setText(shapeName || 'playMenu');
-    const filteredItems = itemsObj.filter((item) => item.action);
+    // only save items with both action and prompt values
+    const filteredItems = itemsObj.filter((item) => item.action && item.prompt);
     shape.setUserValues({
       params: menuObj,
       paramSelectedList,
       items: filteredItems,
     });
 
-    // only generate if atleast 1 item with action present
+    // only generate if atleast 1 valid item
     if (filteredItems.length > 0) generateJS();
   }
 
@@ -75,7 +76,6 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
     'invalidPrompt',
     'timeoutPrompt',
     'maxRetries',
-    'previousMenuName',
     'transferPoint',
     'invalidTransferPoint',
     'timeoutTransferPoint',
@@ -120,6 +120,15 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
       return newArr;
     });
   }
+
+  function deleteItemObj(key, name) {
+    setItemsObj((s) => {
+      const newArr = [...s];
+      delete newArr[key][name];
+      return newArr;
+    });
+  }
+
   function handleValidation(e, name, type) {
     let errorMessage = checkValidity(type, e);
     if (errorMessage !== -1) {
@@ -191,6 +200,13 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             value={itemsObj[key].isDefault ? itemsObj[key].action : ''}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'action');
+
+              if (e.target.value !== 'Transfer') {
+                deleteItemObj(key, 'transferPoint');
+              }
+              if (e.target.value !== 'PreviousMenu') {
+                deleteItemObj(key, 'menuName');
+              }
             }}
           >
             <MenuItem value='MainMenu'>MainMenu</MenuItem>
@@ -210,6 +226,49 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             autoFocus
           />
         </ListItem>
+        <ListItem
+          sx={{
+            display: itemsObj[key].action === 'Transfer' ? 'flex' : 'none',
+          }}
+        >
+          <Typography
+            sx={{ width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
+            transferPoint:
+          </Typography>
+          <TextField
+            value={itemsObj[key].transferPoint || ''}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.value, key, 'transferPoint');
+            }}
+            helperText={errorObj[`transferPoint${key}`]}
+            sx={{ mx: 1 }}
+            size='small'
+          />
+        </ListItem>
+
+        <ListItem
+          sx={{
+            display: itemsObj[key].action === 'PreviousMenu' ? 'flex' : 'none',
+          }}
+        >
+          <Typography
+            sx={{ width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
+            menuName:
+          </Typography>
+          <TextField
+            value={itemsObj[key].menuName || ''}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.value, key, 'menuName');
+            }}
+            helperText={errorObj[`menuName${key}`]}
+            sx={{ mx: 1 }}
+            size='small'
+          />
+        </ListItem>
         <ListItem>
           <Typography
             sx={{ width: '35%', fontWeight: 405 }}
@@ -226,6 +285,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
             helperText={errorObj[`prompt${key}`]}
             sx={{ mx: 1 }}
             size='small'
+            placeholder='required'
           />
         </ListItem>
         <ListItem>
@@ -482,31 +542,6 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
                 })
               }
             </Select>
-          </ListItem>
-        );
-      case 'previousMenuName':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              previousMenuName:
-            </Typography>
-            <TextField
-              value={menuObj.previousMenuName || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'previousMenuName');
-              }}
-              sx={{ mx: 0.5 }}
-              size='small'
-            />
           </ListItem>
         );
 
