@@ -55,6 +55,7 @@ const CanvasComponent = () => {
     playMessage: 1,
     playConfirm: 1,
     switch: 1,
+    endFlow: 1,
     connector: 1,
     jumper: 1,
   });
@@ -111,7 +112,8 @@ const CanvasComponent = () => {
     const paletteHeight = canvasHeight - 110;
 
     // Calculate the vertical space that each shape should occupy
-    const shapeHeight = paletteHeight / 11;
+    const NUMBER_OF_SHAPES = 11;
+    const shapeHeight = paletteHeight / NUMBER_OF_SHAPES;
 
     const setParams = new Shape(
       40,

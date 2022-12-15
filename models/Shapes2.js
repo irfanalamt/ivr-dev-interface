@@ -61,6 +61,7 @@ class Shapes {
 
       case 'endFlow':
         stageFigure = new Shape(x, y, 35, 35, 'endFlow', '#e91e63', true);
+        stageFigure.setUserValues({ type: 'disconnect' });
         break;
 
       case 'connector':

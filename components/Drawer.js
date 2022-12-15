@@ -9,6 +9,7 @@ import PlayConfirm from './PlayConfirm';
 import PlayMenu from './PlayMenu';
 import SetParams from './SetParams';
 import SwitchBlock from './SwitchBlock';
+import EndFlow from './EndFlow';
 
 const DrawerComponent = ({
   isOpen,
@@ -100,6 +101,10 @@ const DrawerComponent = ({
             stageGroup={stageGroup}
           />
         );
+
+      case 'endFlow':
+        return <EndFlow shape={shape} handleCloseDrawer={handleCloseDrawer} />;
+
       default:
         return (
           <>
