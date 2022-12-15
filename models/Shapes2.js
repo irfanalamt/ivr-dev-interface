@@ -526,7 +526,13 @@ class Shapes {
       }
 
       if (shape1.type === 'playMenu') {
-        delete shape1.userValues.items[lineData.position - 1].nextId;
+        const exitPoint = lineData.exitPoint;
+        const index = shape1.userValues.items.findIndex(
+          (s) => s.action === exitPoint
+        );
+        if (index !== -1) {
+          delete shape1.userValues.items[index].nextId;
+        }
       }
     }
   }

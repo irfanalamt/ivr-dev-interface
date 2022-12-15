@@ -350,7 +350,7 @@ const CanvasComponent = () => {
       const isNearLine = el.isPointNearLine(realX, realY);
       if (isNearLine) console.log(' 🕺🏻 isNearLine', el);
 
-      if (isNearLine < 5 && isDeleting) {
+      if (isNearLine && isDeleting) {
         console.log('remove; mouse on line; 🐁');
         console.log('remove el ', el);
 
