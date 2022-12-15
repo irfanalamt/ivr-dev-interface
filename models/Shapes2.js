@@ -146,6 +146,8 @@ class Shapes {
 
       // Print the properties of the current shape
       console.log('▶️', currentShape.text);
+      if (currentShape.type === 'endFlow') break;
+
       if (currentShape.type === 'playMenu') {
         tempString += this.generateMenuCode(currentShape.id);
       }
@@ -493,9 +495,14 @@ class Shapes {
     // else return first shapeText without one
     for (let shape of this.getShapesAsArray()) {
       if (
-        !['connector', 'tinyCircle', 'jumper', 'switch', 'setParams'].includes(
-          shape.type
-        )
+        ![
+          'connector',
+          'tinyCircle',
+          'jumper',
+          'switch',
+          'setParams',
+          'endFlow',
+        ].includes(shape.type)
       ) {
         if (!shape.functionString) return shape.text;
       }

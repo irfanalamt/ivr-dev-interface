@@ -537,6 +537,14 @@ const CanvasComponent = () => {
       setTimeout(() => setShowInfoMessage(false), 3000);
       return;
     }
+
+    if (connectShape1.current.type === 'endFlow') {
+      infoMessage.current = 'cannot connect from endFlow.';
+      setShowInfoMessage(true);
+
+      return;
+    }
+
     // return if 1st shape is an exit jumper
     if (
       connectShape1.current.type === 'jumper' &&
