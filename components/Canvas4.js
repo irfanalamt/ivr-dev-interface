@@ -111,7 +111,7 @@ const CanvasComponent = () => {
     const paletteHeight = canvasHeight - 110;
 
     // Calculate the vertical space that each shape should occupy
-    const shapeHeight = paletteHeight / 10;
+    const shapeHeight = paletteHeight / 11;
 
     const setParams = new Shape(
       40,
@@ -177,17 +177,25 @@ const CanvasComponent = () => {
       'switch',
       '#3e2723'
     );
-    const connector = new Shape(
+    const endFlow = new Shape(
       40,
       80 + scrollOffsetY.current + shapeHeight * 8,
+      30,
+      30,
+      'endFlow',
+      '#f8bbd0'
+    );
+    const connector = new Shape(
+      40,
+      80 + scrollOffsetY.current + shapeHeight * 9,
       22,
       22,
       'connector',
-      '#827717'
+      '#b2dfdb'
     );
     const jumper = new Shape(
       40,
-      80 + scrollOffsetY.current + shapeHeight * 9,
+      80 + scrollOffsetY.current + shapeHeight * 10,
       30,
       30,
       'jumper',
@@ -202,8 +210,9 @@ const CanvasComponent = () => {
       6: playMessage,
       7: playConfirm,
       8: switchShape,
-      9: connector,
-      10: jumper,
+      9: endFlow,
+      10: connector,
+      11: jumper,
     });
   }
 

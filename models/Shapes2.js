@@ -59,8 +59,12 @@ class Shapes {
         });
         break;
 
+      case 'endFlow':
+        stageFigure = new Shape(x, y, 35, 35, 'endFlow', '#e91e63', true);
+        break;
+
       case 'connector':
-        stageFigure = new Shape(x, y, 25, 25, 'connector', '#e91e63', true);
+        stageFigure = new Shape(x, y, 25, 25, 'connector', '#009688', true);
         break;
 
       case 'jumper':
@@ -89,8 +93,9 @@ class Shapes {
       playMessage: 'F',
       playConfirm: 'G',
       switch: 'H',
-      connector: 'I',
-      jumper: 'J',
+      endFlow: 'I',
+      connector: 'J',
+      jumper: 'K',
     };
 
     const startCharacter = shapeTypeLetterMap[type] ?? 'X';

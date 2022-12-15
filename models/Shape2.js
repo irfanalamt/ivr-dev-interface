@@ -213,6 +213,10 @@ class Shape {
         this.drawRoundedRectangle2(ctx);
         break;
 
+      case 'endFlow':
+        this.drawEndCircle(ctx);
+        break;
+
       case 'connector':
         this.drawSmallCircle(ctx);
         break;
@@ -265,6 +269,38 @@ class Shape {
     ctx.fill();
   }
 
+  drawEndCircle(ctx) {
+    ctx.beginPath();
+
+    if (this.stroke) {
+      ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+      // fill color if selected
+      this.selected && this.fillSelected(ctx);
+      ctx.fillStyle = this.style;
+      ctx.fill();
+
+      ctx.lineWidth = 1;
+      ctx.font = '25px sans-serif';
+      ctx.fillStyle = 'black';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Χ', this.x, this.y + 2);
+
+      return;
+    }
+
+    ctx.fillStyle = this.style;
+    ctx.lineWidth = 2;
+    ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Χ', this.x, this.y + 1);
+  }
+
   drawSmallCircle(ctx) {
     ctx.beginPath();
 
@@ -272,7 +308,7 @@ class Shape {
       ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
       // fill color if selected
       this.selected && this.fillSelected(ctx);
-      ctx.fillStyle = '#009688';
+      ctx.fillStyle = this.style;
       ctx.fill();
 
       ctx.lineWidth = 1;
@@ -285,7 +321,7 @@ class Shape {
       return;
     }
 
-    ctx.fillStyle = '#b2dfdb';
+    ctx.fillStyle = this.style;
     ctx.lineWidth = 2;
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
     ctx.fill();
