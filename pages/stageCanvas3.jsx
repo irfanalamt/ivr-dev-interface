@@ -6,11 +6,7 @@ const DynamicCanvas = dynamic(() => import('../components/Canvas4'), {
 });
 
 const TestCanvas = () => {
-  return (
-    <Container>
-      <DynamicCanvas />
-    </Container>
-  );
+  return <DynamicCanvas />;
 };
 
 export default TestCanvas;

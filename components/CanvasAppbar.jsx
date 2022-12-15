@@ -29,13 +29,13 @@ const CanvasAppbar = ({
       <Box
         sx={{
           display: 'flex',
-          mb: 3,
-          backgroundColor: '#f9fbe7',
+          backgroundColor: '#f5f5f5',
           alignItems: 'center',
-          height: 50,
-          px: 2,
+          minHeight: 50,
+          height: '5vh',
+          px: 3,
           boxShadow: 1,
-          width: '90vw',
+          width: '100vw',
           mx: 'auto',
         }}
       >
