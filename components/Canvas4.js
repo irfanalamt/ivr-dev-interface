@@ -77,9 +77,19 @@ const CanvasComponent = () => {
     const handleScroll = (event) => {
       // draw palette dynamically on window scrollY
       scrollOffsetY.current = window.scrollY;
+      console.log('innerHeight', window.innerHeight);
       initializePallette();
       clearAndDraw();
     };
+    const handleResize = (event) => {
+      // Update the canvas size
+      canvasRef.current.width = window.innerWidth * 0.9;
+      canvasRef.current.height = window.innerHeight * 2;
+
+      // Redraw the shapes
+      clearAndDraw();
+    };
+    window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
