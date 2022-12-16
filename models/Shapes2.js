@@ -450,7 +450,7 @@ class Shapes {
           x1: shape1.getExitPoint()[0],
           y1: shape1.getExitPoint()[1],
           x2: shape2.getRelativePosition(shape1)[0],
-          y2: shape2.ggetRelativePosition(shape1)[1],
+          y2: shape2.getRelativePosition(shape1)[1],
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,

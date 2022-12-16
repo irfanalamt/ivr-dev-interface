@@ -10,6 +10,7 @@ import PlayMenu from './PlayMenu';
 import SetParams from './SetParams';
 import SwitchBlock from './SwitchBlock';
 import EndFlow from './EndFlow';
+import { useRef } from 'react';
 
 const DrawerComponent = ({
   isOpen,
@@ -127,8 +128,14 @@ const DrawerComponent = ({
         );
     }
   };
+
+  function handleClosing() {
+    shape.setSelected(false);
+    handleCloseDrawer();
+  }
+
   return (
-    <Drawer anchor='right' open={isOpen}>
+    <Drawer anchor='right' open={isOpen} onClose={handleClosing}>
       {myList()}
     </Drawer>
   );
