@@ -100,12 +100,15 @@ const CanvasComponent = () => {
 
   useEffect(() => {
     if (isConnecting == 1) {
-      infoMessage.current = 'Choose first element.';
+      infoMessage.current = 'Choose 1st element.';
       setShowInfoMessage(true);
     } else if (isConnecting == 2) {
-      infoMessage.current = 'Choose next element.';
+      infoMessage.current = 'Choose 2nd element.';
       setShowInfoMessage(true);
     } else if (isConnecting == 0) {
+      connectShape1.current?.setSelected(false);
+      connectShape2.current?.setSelected(false);
+      clearAndDraw();
       setShowInfoMessage(false);
     }
   }, [isConnecting]);
