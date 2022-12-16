@@ -24,6 +24,46 @@ class Shape {
     return [this.x, this.y - this.height / 2];
   }
 
+  getRelativePosition(shape2) {
+    console.log({ x1: this.x, y1: this.y, x2: shape2.x, y2: shape2.y });
+    // if (this.x > shape2.x && this.y < shape2.y) {
+    //   return this.getBottomCordinates();
+    // } else if (this.x < shape2.x && this.y > shape2.y) {
+    //   return this.getTopCordinates();
+    // } else if (this.x < shape2.x && this.y < shape2.y) {
+    //   return this.getRightCordinates();
+    // } else if (this.x > shape2.x && this.y > shape2.y) {
+    //   return this.getLeftCordinates();
+    // } else return this.getBottomCordinates();
+
+    if (
+      this.x < shape2.x &&
+      this.isBetween(shape2.y, this.y - this.height, this.y + this.height)
+    ) {
+      return this.getRightCordinates();
+    } else if (
+      shape2.x < this.x &&
+      this.isBetween(shape2.y, this.y - this.height, this.y + this.height)
+    ) {
+      return this.getLeftCordinates();
+    } else if (this.y < shape2.y) {
+      return this.getBottomCordinates();
+    } else return this.getTopCordinates();
+  }
+
+  getBottomCordinates() {
+    return [this.x, this.y + this.height / 2];
+  }
+  getTopCordinates() {
+    return [this.x, this.y - this.height / 2];
+  }
+  getLeftCordinates() {
+    return [this.x - this.width / 2, this.y];
+  }
+  getRightCordinates() {
+    return [this.x + this.width / 2, this.y];
+  }
+
   getExitPoint() {
     return [this.x, this.y + this.height / 2];
   }

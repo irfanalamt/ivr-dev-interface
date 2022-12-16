@@ -332,11 +332,12 @@ class Shapes {
           let shape1 = el;
           let lineColor =
             this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#37474f';
+          console.log('shape1🟢', shape1, 'shape2', shape2);
           tempArray.push({
-            x1: shape1.getExitPoint()[0],
-            y1: shape1.getExitPoint()[1],
-            x2: shape2.getEntryPoint()[0],
-            y2: shape2.getEntryPoint()[1],
+            x1: shape1.getRelativePosition(shape2)[0],
+            y1: shape1.getRelativePosition(shape2)[1],
+            x2: shape2.getRelativePosition(shape1)[0],
+            y2: shape2.getRelativePosition(shape1)[1],
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,

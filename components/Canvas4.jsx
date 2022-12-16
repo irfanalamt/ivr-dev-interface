@@ -94,6 +94,7 @@ const CanvasComponent = () => {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -396,6 +397,7 @@ const CanvasComponent = () => {
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
 
+    // console.log('realX:', realX, window.innerWidth, 'realY:', realY);
     // reset cursor if not connecting
     if (isConnecting === 0) canvasRef.current.style.cursor = 'default';
 

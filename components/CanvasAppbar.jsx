@@ -44,7 +44,12 @@ const CanvasAppbar = ({
         </Avatar>
 
         <Typography
-          sx={{ display: 'flex', alignItems: 'center', mx: 2 }}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mx: 2,
+            color: '#424242',
+          }}
           variant='subtitle2'
         >
           <AccountCircleIcon sx={{ mr: 0.25, fontSize: '1.2rem' }} />
