@@ -27,12 +27,20 @@ class Shape {
   getRelativePosition(shape2) {
     if (
       this.x < shape2.x &&
-      this.isBetween(shape2.y, this.y - this.height, this.y + this.height)
+      this.isBetween(
+        shape2.y,
+        this.y - this.height * 2,
+        this.y + this.height * 2
+      )
     ) {
       return this.getRightCordinates();
     } else if (
       shape2.x < this.x &&
-      this.isBetween(shape2.y, this.y - this.height, this.y + this.height)
+      this.isBetween(
+        shape2.y,
+        this.y - this.height * 2,
+        this.y + this.height * 2
+      )
     ) {
       return this.getLeftCordinates();
     } else if (this.y < shape2.y) {
