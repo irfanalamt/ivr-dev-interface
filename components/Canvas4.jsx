@@ -98,6 +98,18 @@ const CanvasComponent = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isConnecting == 1) {
+      infoMessage.current = 'Choose first element.';
+      setShowInfoMessage(true);
+    } else if (isConnecting == 2) {
+      infoMessage.current = 'Choose next element.';
+      setShowInfoMessage(true);
+    } else if (isConnecting == 0) {
+      setShowInfoMessage(false);
+    }
+  }, [isConnecting]);
+
   function initializeCanvas() {
     const context1 = canvasRef.current.getContext('2d');
 
@@ -356,7 +368,7 @@ const CanvasComponent = () => {
             connectShape2.current = element;
             element.setSelected(true);
             clearAndDraw();
-            setIsConnecting(0);
+            setIsConnecting(1);
             connectShapes();
             return;
           }
@@ -847,8 +859,6 @@ const CanvasComponent = () => {
               onClick={() => {
                 if (!isDeleting && isConnecting === 0) {
                   setIsConnecting(1);
-                  infoMessage.current = 'Click on shapes to connect';
-                  setShowInfoMessage(true);
                 }
                 isConnecting > 0 && setIsConnecting(0);
                 setIsDeleting(false);
