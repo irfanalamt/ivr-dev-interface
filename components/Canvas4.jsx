@@ -168,7 +168,7 @@ const CanvasComponent = () => {
       40,
       55 + scrollOffsetY.current + shapeHeight * 3,
       35,
-      20,
+      25,
       'callAPI',
       '#0d47a1'
     );

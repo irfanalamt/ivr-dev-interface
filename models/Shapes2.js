@@ -29,7 +29,7 @@ class Shapes {
         break;
 
       case 'callAPI':
-        stageFigure = new Shape(x, y, 90, 20, 'callAPI', null, true);
+        stageFigure = new Shape(x, y, 90, 30, 'callAPI', null, true);
         break;
 
       case 'playMenu':
