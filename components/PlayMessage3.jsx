@@ -44,6 +44,7 @@ const PlayMessage = ({
 
   function saveUserValues() {
     // remove null values; SAVE
+
     const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
     clearAndDraw();

@@ -114,6 +114,12 @@ const CanvasComponent = () => {
     }
   }, [isConnecting]);
 
+  useEffect(() => {
+    if (isDeleting) {
+      canvasRef.current.style.cursor = 'pointer';
+    }
+  }, [isDeleting]);
+
   function initializeCanvas() {
     const context1 = canvasRef.current.getContext('2d');
 
@@ -415,7 +421,8 @@ const CanvasComponent = () => {
 
     // console.log('realX:', realX, window.innerWidth, 'realY:', realY);
     // reset cursor if not connecting
-    if (isConnecting === 0) canvasRef.current.style.cursor = 'default';
+    if (isConnecting === 0 && !isDeleting)
+      canvasRef.current.style.cursor = 'default';
 
     if (isDragging) {
       // drag shape - mousemove
@@ -564,6 +571,13 @@ const CanvasComponent = () => {
     // return if connecting shapes same
     if (connectShape1.current === connectShape2.current) {
       infoMessage.current = 'connecting shapes are the same.';
+      setShowInfoMessage(true);
+      setTimeout(() => setShowInfoMessage(false), 3000);
+      return;
+    }
+
+    if (connectShape2.current.nextItem === connectShape1.current.id) {
+      infoMessage.current = 'invalid connection.';
       setShowInfoMessage(true);
       setTimeout(() => setShowInfoMessage(false), 3000);
       return;
