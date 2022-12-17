@@ -21,7 +21,7 @@ import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { useState } from 'react';
 
-const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
+const CallApi = ({ shape, handleCloseDrawer, userVariables, clearAndDraw }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [inputArr, setInputArr] = useState(
     shape.userValues?.inputArr || [
@@ -64,6 +64,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables }) => {
 
   function saveUserValues() {
     shape.setText(shapeName || 'callAPI');
+    clearAndDraw();
     shape.setUserValues({ endpoint, inputArr, outputArr });
     console.log('🌟', { inputArr, outputArr });
     generateJS();

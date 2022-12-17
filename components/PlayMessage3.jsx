@@ -27,6 +27,7 @@ const PlayMessage = ({
   handleCloseDrawer,
   userVariables,
   stageGroup,
+  clearAndDraw,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
@@ -45,6 +46,7 @@ const PlayMessage = ({
     // remove null values; SAVE
     const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
+    clearAndDraw();
 
     shape.setUserValues({
       params: { interruptible, repeatOption },

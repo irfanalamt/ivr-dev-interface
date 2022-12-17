@@ -20,7 +20,7 @@ import {
 import { useState } from 'react';
 import { checkValidity } from '../src/helpers';
 
-const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
+const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
   const [shapeName, setShapeName] = useState(
     shape.text || `setParams${shape.id}`
   );
@@ -51,7 +51,7 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup }) => {
 
   function saveUserValues() {
     shape.setText(shapeName || `setParams${shape.id}`);
-
+    clearAndDraw();
     shape.setUserValues({
       params: menuObj,
       paramSelectedList,

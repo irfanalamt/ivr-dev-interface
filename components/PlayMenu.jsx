@@ -25,7 +25,7 @@ import {
 import { useState } from 'react';
 import { checkValidity } from '../src/helpers';
 
-const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
+const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
   const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
@@ -47,6 +47,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup }) => {
 
   function saveUserValues() {
     shape.setText(shapeName || 'playMenu');
+    clearAndDraw();
     // only save items with both action and prompt values
     const filteredItems = itemsObj.filter((item) => item.action && item.prompt);
     shape.setUserValues({

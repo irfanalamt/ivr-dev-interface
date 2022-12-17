@@ -879,6 +879,7 @@ const CanvasComponent = () => {
         userVariables={userVariables.current}
         stageGroup={stageGroup.current[pageNumber.current - 1]}
         entireStageGroup={stageGroup.current}
+        clearAndDraw={clearAndDraw}
       />
       <ResetCanvasDialog
         open={showCanvasResetDialog}

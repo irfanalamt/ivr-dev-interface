@@ -25,7 +25,13 @@ import {
   addParamsElements,
 } from '../src/helpers';
 
-const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
+const GetDigits = ({
+  shape,
+  handleCloseDrawer,
+  userVariables,
+  stageGroup,
+  clearAndDraw,
+}) => {
   const [resultName, setResultName] = useState(
     shape.userValues?.variableName ?? ''
   );
@@ -63,6 +69,7 @@ const GetDigits = ({ shape, handleCloseDrawer, userVariables, stageGroup }) => {
     };
 
     shape.setText(shapeName);
+    clearAndDraw();
     shape.setUserValues({
       params: entireParamsObj,
       messageList: filteredMsgObj,

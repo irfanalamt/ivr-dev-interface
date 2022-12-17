@@ -245,7 +245,7 @@ class Shape {
   drawInvertedHexagon(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
-
+    this.stroke && this.setWidthFromText(ctx);
     ctx.moveTo(this.width * 0.5, -this.height * 0.5);
     ctx.lineTo(this.width * 0.5, this.height * 0.5);
     ctx.lineTo(0, this.height * 0.5 + this.height * 0.3);
@@ -257,7 +257,6 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
-      this.setWidthFromText(ctx);
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
@@ -383,7 +382,7 @@ class Shape {
   drawPentagon(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
-
+    this.stroke && this.setWidthFromText(ctx);
     ctx.moveTo(this.width * 0.5, -this.height * 0.5);
     ctx.lineTo(this.width * 0.5, 10);
     ctx.lineTo(0, this.height * 0.5 + 2);
@@ -394,7 +393,6 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
-      this.setWidthFromText(ctx);
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
@@ -417,6 +415,7 @@ class Shape {
   drawParallelogram(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
+    this.stroke && this.setWidthFromText(ctx);
     ctx.lineTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
     ctx.lineTo(-this.width * 0.5 - this.height * 0.5, this.height * 0.5);
     ctx.lineTo(-this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
@@ -425,7 +424,6 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
-      this.setWidthFromText(ctx);
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
@@ -447,7 +445,7 @@ class Shape {
   drawHexagon(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
-
+    this.stroke && this.setWidthFromText(ctx);
     ctx.moveTo(this.width * 0.5, 0);
     ctx.lineTo(this.width * 0.4, 0.5 * this.height);
 
@@ -459,7 +457,6 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
-      this.setWidthFromText(ctx);
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
@@ -483,6 +480,7 @@ class Shape {
   drawRoundedRectangle(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
+    this.stroke && this.setWidthFromText(ctx);
     ctx.moveTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
     ctx.lineTo(-(this.width * 0.5 - this.height * 0.5), this.height * 0.5);
 
@@ -505,7 +503,6 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
-      this.setWidthFromText(ctx);
       // fill color if selected
       this.selected && this.fillSelected(ctx);
 
@@ -527,7 +524,7 @@ class Shape {
   drawRoundedRectangle2(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
-
+    this.stroke && this.setWidthFromText(ctx);
     ctx.moveTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
     ctx.lineTo(-(this.width * 0.5 - this.height * 0.5), this.height * 0.5);
     // ctx.lineTo(-this.width * 0.5, -this.height * 0.5);
@@ -550,7 +547,6 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
-      this.setWidthFromText(ctx);
       // fill color if selected
       this.selected && this.fillSelected(ctx);
 
@@ -602,7 +598,7 @@ class Shape {
   drawPentagonSwitch(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
-
+    this.stroke && this.setWidthFromText(ctx);
     ctx.moveTo(this.width * 0.5, this.height * 0.1);
     ctx.lineTo(this.width * 0.5, this.height * 0.5);
     ctx.lineTo(-this.width * 0.5, this.height * 0.5);
@@ -613,7 +609,6 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
-      this.setWidthFromText(ctx);
       // exit points for switch when in stage
 
       // fill color if selected

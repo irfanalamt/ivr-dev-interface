@@ -13,7 +13,12 @@ import { useState } from 'react';
 
 import { checkValidity } from '../src/helpers';
 
-const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
+const FunctionBlock = ({
+  shape,
+  handleCloseDrawer,
+  stageGroup,
+  clearAndDraw,
+}) => {
   const [shapeName, setShapeName] = useState(shape.text);
 
   const [functionString, setFunctionString] = useState('');
@@ -22,7 +27,7 @@ const FunctionBlock = ({ shape, handleCloseDrawer, stageGroup }) => {
 
   function saveUserValues() {
     shape.setText(shapeName || `runScript${shape.id}`);
-
+    clearAndDraw();
     let isValid = isValidJs();
     if (isValid) {
       generateJS();

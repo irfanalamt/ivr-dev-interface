@@ -27,6 +27,7 @@ const PlayConfirm = ({
   handleCloseDrawer,
   userVariables,
   stageGroup,
+  clearAndDraw,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
@@ -50,6 +51,7 @@ const PlayConfirm = ({
   function saveUserValues() {
     const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
+    clearAndDraw();
     shape.setUserValues({
       params: { confirmOption, cancelOption, confirmPrompt, cancelPrompt },
       messageList: filteredMsgObj,

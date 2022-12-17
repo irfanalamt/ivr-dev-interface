@@ -3,7 +3,7 @@ import Drawer from '@mui/material/Drawer';
 import PlayMessage from './PlayMessage3';
 import CallApi from './CallApi';
 import FunctionBlock from './FunctionBlock';
-import GetDigits from './GetDigits2';
+import GetDigits from './GetDigits';
 import GoToBlock from './GoToBlock';
 import PlayConfirm from './PlayConfirm';
 import PlayMenu from './PlayMenu';
@@ -19,6 +19,7 @@ const DrawerComponent = ({
   userVariables,
   stageGroup,
   entireStageGroup,
+  clearAndDraw,
 }) => {
   const myList = () => {
     if (!shape) return;
@@ -31,6 +32,7 @@ const DrawerComponent = ({
             handleCloseDrawer={handleCloseDrawer}
             userVariables={userVariables}
             stageGroup={stageGroup}
+            clearAndDraw={clearAndDraw}
           />
         );
 
@@ -41,6 +43,7 @@ const DrawerComponent = ({
             handleCloseDrawer={handleCloseDrawer}
             userVariables={userVariables}
             stageGroup={stageGroup}
+            clearAndDraw={clearAndDraw}
           />
         );
 
@@ -50,6 +53,7 @@ const DrawerComponent = ({
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             userVariables={userVariables}
+            clearAndDraw={clearAndDraw}
           />
         );
       case 'getDigits':
@@ -59,6 +63,7 @@ const DrawerComponent = ({
             handleCloseDrawer={handleCloseDrawer}
             userVariables={userVariables}
             stageGroup={stageGroup}
+            clearAndDraw={clearAndDraw}
           />
         );
       case 'playMenu':
@@ -67,6 +72,7 @@ const DrawerComponent = ({
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             stageGroup={stageGroup}
+            clearAndDraw={clearAndDraw}
           />
         );
       case 'setParams':
@@ -75,6 +81,7 @@ const DrawerComponent = ({
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             stageGroup={stageGroup}
+            clearAndDraw={clearAndDraw}
           />
         );
       case 'runScript':
@@ -83,6 +90,7 @@ const DrawerComponent = ({
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             stageGroup={stageGroup}
+            clearAndDraw={clearAndDraw}
           ></FunctionBlock>
         );
       case 'jumper':
@@ -100,6 +108,7 @@ const DrawerComponent = ({
             handleCloseDrawer={handleCloseDrawer}
             userVariables={userVariables}
             stageGroup={stageGroup}
+            clearAndDraw={clearAndDraw}
           />
         );
 

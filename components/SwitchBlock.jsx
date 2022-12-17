@@ -20,6 +20,7 @@ const SwitchBlock = ({
   handleCloseDrawer,
   userVariables,
   stageGroup,
+  clearAndDraw,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [userValues, setUserValues] = useState(
@@ -33,7 +34,7 @@ const SwitchBlock = ({
 
   function saveUserValues() {
     shape.setText(shapeName);
-
+    clearAndDraw();
     // filter our rows with either fields blank or has an error in either fields
     const filteredUserValues = userValues
       .filter(
