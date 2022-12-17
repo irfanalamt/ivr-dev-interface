@@ -1,3 +1,5 @@
+import { shape } from '@mui/system';
+
 class Shape {
   constructor(x, y, width, height, type, style = 'black', stroke = false) {
     this.x = x;
@@ -84,9 +86,6 @@ class Shape {
   }
   setText(inputText) {
     this.text = inputText;
-
-    // auto set width from textSize
-    this.setWidthFromText();
   }
   setNextItem(item) {
     this.nextItem = item;
@@ -98,8 +97,6 @@ class Shape {
     ctx.fillStyle = '#d4d7d8';
     ctx.fill();
   }
-
-  showErrorColor() {}
 
   isNearExitPointSwitch(x, y) {
     const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
@@ -182,42 +179,15 @@ class Shape {
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
   }
 
-  setWidthFromText() {
-    switch (this.type) {
-      case 'runScript':
-        this.width = this.text.length * 11.5;
-        break;
+  setWidthFromText(ctx) {
+    const width = ctx.measureText(this.text).width;
 
-      case 'callAPI':
-        this.width = this.text.length * 10.5 + 10;
-        break;
-
-      case 'setParams':
-        this.width = this.text.length * 11.5;
-        break;
-
-      case 'switch':
-        this.width =
-          this.text.length * 12 < 130 ? 130 : this.text.length * 12 + 50;
-        break;
-
-      case 'playMenu':
-        this.width =
-          this.text.length * 12 < 125 ? 125 : this.text.length * 12 + 50;
-        break;
-
-      case 'getDigits':
-        this.width = this.text.length * 11 + 30;
-        break;
-
-      case 'playMessage':
-        this.width = this.text.length * 10.3 + 10;
-        break;
-
-      case 'playConfirm':
-        this.width = this.text.length * 10.3 + 10;
-        break;
+    if (this.type === 'playMenu' || this.type === 'switch') {
+      this.width = width + 25 > 125 ? width + 30 : 125;
+      return;
     }
+
+    this.width = width + 20;
   }
 
   drawShape(ctx) {
@@ -287,6 +257,7 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      this.setWidthFromText(ctx);
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
@@ -372,6 +343,7 @@ class Shape {
 
   drawRectangle(ctx) {
     if (this.stroke) {
+      this.setWidthFromText(ctx);
       if (this.selected) {
         ctx.fillStyle = '#eceff1';
         ctx.fillRect(
@@ -422,6 +394,7 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      this.setWidthFromText(ctx);
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
@@ -452,6 +425,7 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      this.setWidthFromText(ctx);
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
@@ -485,6 +459,7 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      this.setWidthFromText(ctx);
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
@@ -530,6 +505,7 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      this.setWidthFromText(ctx);
       // fill color if selected
       this.selected && this.fillSelected(ctx);
 
@@ -574,6 +550,7 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      this.setWidthFromText(ctx);
       // fill color if selected
       this.selected && this.fillSelected(ctx);
 
@@ -636,6 +613,7 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     if (this.stroke) {
+      this.setWidthFromText(ctx);
       // exit points for switch when in stage
 
       // fill color if selected
@@ -646,7 +624,7 @@ class Shape {
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(this.text, this.x, this.y + 7);
+      ctx.fillText(this.text, this.x, this.y + 6);
       ctx.strokeStyle = this.style;
       ctx.stroke();
       this.drawExitPointsSwitch(ctx);
