@@ -142,18 +142,15 @@ const CanvasComponent = () => {
   }
 
   function initializePallette() {
-    const paletteHeight = window.innerHeight * 0.85;
+    const paletteHeight = window.innerHeight - 110;
 
     // Calculate the vertical space that each shape should occupy
     const NUMBER_OF_SHAPES = 12;
     const shapeHeight = paletteHeight / NUMBER_OF_SHAPES;
-    const startY = 0.06 * window.innerHeight + paletteHeight * 0.06;
-    console.log(startY, 'dsd');
-    const shapeY = startY < 80 ? 80 : startY;
 
     const setParams = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 0,
+      55 + scrollOffsetY.current + shapeHeight * 1,
       30,
       25,
       'setParams',
@@ -161,7 +158,7 @@ const CanvasComponent = () => {
     );
     const runScript = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 1,
+      55 + scrollOffsetY.current + shapeHeight * 2,
       30,
       25,
       'runScript',
@@ -169,7 +166,7 @@ const CanvasComponent = () => {
     );
     const callAPI = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 2,
+      55 + scrollOffsetY.current + shapeHeight * 3,
       35,
       20,
       'callAPI',
@@ -177,7 +174,7 @@ const CanvasComponent = () => {
     );
     const playMenu = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 3,
+      55 + scrollOffsetY.current + shapeHeight * 4,
       40,
       25,
       'playMenu',
@@ -185,7 +182,7 @@ const CanvasComponent = () => {
     );
     const getDigits = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 4,
+      55 + scrollOffsetY.current + shapeHeight * 5,
       26,
       17,
       'getDigits',
@@ -193,7 +190,7 @@ const CanvasComponent = () => {
     );
     const playMessage = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 5,
+      55 + scrollOffsetY.current + shapeHeight * 6,
       40,
       25,
       'playMessage',
@@ -201,7 +198,7 @@ const CanvasComponent = () => {
     );
     const playConfirm = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 6,
+      55 + scrollOffsetY.current + shapeHeight * 7,
       40,
       25,
       'playConfirm',
@@ -209,7 +206,7 @@ const CanvasComponent = () => {
     );
     const switchShape = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 7,
+      55 + scrollOffsetY.current + shapeHeight * 8,
       40,
       25,
       'switch',
@@ -217,7 +214,7 @@ const CanvasComponent = () => {
     );
     const endFlow = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 8,
+      55 + scrollOffsetY.current + shapeHeight * 9,
       30,
       30,
       'endFlow',
@@ -225,7 +222,7 @@ const CanvasComponent = () => {
     );
     const connector = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 9,
+      55 + scrollOffsetY.current + shapeHeight * 10,
       22,
       22,
       'connector',
@@ -233,7 +230,7 @@ const CanvasComponent = () => {
     );
     const jumper = new Shape(
       40,
-      shapeY + scrollOffsetY.current + shapeHeight * 10,
+      55 + scrollOffsetY.current + shapeHeight * 11,
       30,
       30,
       'jumper',
@@ -270,15 +267,15 @@ const CanvasComponent = () => {
     // draw bg palette rectangle
     contextRef.current.strokeRect(
       5,
-      0.07 * window.innerHeight + scrollOffsetY.current,
+      55 + scrollOffsetY.current,
       70,
-      window.innerHeight * 0.87
+      window.innerHeight - 110
     );
     contextRef.current.fillRect(
       5,
-      0.07 * window.innerHeight + scrollOffsetY.current,
+      55 + scrollOffsetY.current,
       70,
-      window.innerHeight * 0.87
+      window.innerHeight - 110
     );
     contextRef.current.fillStyle = '#616161';
     contextRef.current.font = '20px Arial';
@@ -834,8 +831,7 @@ const CanvasComponent = () => {
           bottom: 0,
           backgroundColor: '#eeeeee',
           px: 2,
-          minHeight: 50,
-          height: '5vh',
+          height: 50,
           width: '100vw',
         }}
       >
