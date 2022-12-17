@@ -58,7 +58,7 @@ const CanvasAppbar = ({
             <ModeIcon
               sx={{
                 fontSize:
-                  isConnecting == 0 && !isDeleting ? '2.3rem' : '1.9rem',
+                  isConnecting == 0 && !isDeleting ? '2.3rem' : '1.8rem',
                 boxShadow: 1,
                 borderRadius: 2,
                 backgroundColor:
@@ -73,7 +73,7 @@ const CanvasAppbar = ({
           <Tooltip title='connect'>
             <ArrowRightAltIcon
               sx={{
-                fontSize: isConnecting > 0 ? '2.3rem' : '1.9rem',
+                fontSize: isConnecting > 0 ? '2.3rem' : '1.8rem',
                 ml: 2,
                 boxShadow: 1,
                 borderRadius: 2,
@@ -88,7 +88,7 @@ const CanvasAppbar = ({
           <Tooltip title='delete'>
             <DeleteIcon
               sx={{
-                fontSize: isDeleting ? '2.3rem' : '1.9rem',
+                fontSize: isDeleting ? '2.3rem' : '1.8rem',
                 ml: 2,
                 boxShadow: 1,
                 borderRadius: 2,
