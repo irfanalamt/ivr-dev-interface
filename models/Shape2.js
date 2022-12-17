@@ -384,11 +384,12 @@ class Shape {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
     this.stroke && this.setWidthFromText(ctx);
-    ctx.moveTo(this.width * 0.5, -this.height * 0.5);
-    ctx.lineTo(this.width * 0.5, 10);
-    ctx.lineTo(0, this.height * 0.5 + 2);
-    ctx.lineTo(-this.width * 0.5, 10);
-    ctx.lineTo(-this.width * 0.5, -this.height * 0.5);
+
+    ctx.moveTo(this.width / 2, -this.height / 2);
+    ctx.lineTo(this.width / 2, this.height / 3);
+    ctx.lineTo(0, this.height / 2);
+    ctx.lineTo(-this.width / 2, this.height / 3);
+    ctx.lineTo(-this.width / 2, -this.height / 2);
 
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
