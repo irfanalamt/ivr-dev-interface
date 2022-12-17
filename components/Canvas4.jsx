@@ -100,6 +100,7 @@ const CanvasComponent = () => {
 
   useEffect(() => {
     if (isConnecting == 1) {
+      canvasRef.current.style.cursor = 'crosshair';
       infoMessage.current = 'Choose 1st element.';
       setShowInfoMessage(true);
     } else if (isConnecting == 2) {
@@ -795,7 +796,9 @@ const CanvasComponent = () => {
         data={data}
         status={status}
         isDeleting={isDeleting}
+        setIsDeleting={setIsDeleting}
         isConnecting={isConnecting}
+        setIsConnecting={setIsConnecting}
         stageGroup={stageGroup.current}
         showResetDialog={() => setShowCanvasResetDialog(true)}
         generateFile={generateConfigFile}
@@ -850,42 +853,7 @@ const CanvasComponent = () => {
           {infoMessage.current}
         </Typography>
 
-        <Box sx={{ ml: '40vw', position: 'fixed', mt: 1 }}>
-          <Tooltip title='connect shapes' placement='left-start'>
-            <ArrowRightAltIcon
-              sx={{
-                fontSize: isConnecting > 0 ? '2rem' : '1.9rem',
-                boxShadow: 1,
-                borderRadius: 2,
-                backgroundColor: isConnecting > 0 ? '#00897b' : '#e0f2f1',
-              }}
-              onClick={() => {
-                if (!isDeleting && isConnecting === 0) {
-                  setIsConnecting(1);
-                }
-                isConnecting > 0 && setIsConnecting(0);
-                setIsDeleting(false);
-                canvasRef.current.style.cursor = 'crosshair';
-              }}
-            />
-          </Tooltip>
-          <Tooltip title='remove item' placement='right-start'>
-            <DeleteIcon
-              sx={{
-                fontSize: isDeleting ? '2rem' : '1.9rem',
-                ml: 2,
-                boxShadow: 1,
-                borderRadius: 2,
-                backgroundColor: isDeleting ? '#e91e63' : '#fce4ec',
-              }}
-              onClick={() => {
-                setIsDeleting(!isDeleting);
-                setIsConnecting(0);
-                console.log('is deleting', isDeleting);
-              }}
-            />
-          </Tooltip>
-        </Box>
+        <Box sx={{ ml: '40vw', position: 'fixed', mt: 1 }}></Box>
 
         <Pagination
           sx={{ position: 'fixed', right: '5vw', mr: 1 }}

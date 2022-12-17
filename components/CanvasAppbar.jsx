@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ModeIcon from '@mui/icons-material/Mode';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import SaveIcon from '@mui/icons-material/Save';
@@ -19,11 +20,20 @@ const CanvasAppbar = ({
   status,
   data,
   isConnecting,
+  setIsDeleting,
+  setIsConnecting,
   isDeleting,
   stageGroup,
   showResetDialog,
   generateFile,
 }) => {
+  function getBgColor() {
+    if (isConnecting > 0) return '#e0f2f1';
+    if (isDeleting) return '#fce4ec';
+
+    return '#e1f5fe';
+  }
+
   return (
     <Box sx={{ position: 'fixed', top: 0 }}>
       <Box
@@ -39,54 +49,86 @@ const CanvasAppbar = ({
           mx: 'auto',
         }}
       >
-        <Avatar sx={{ backgroundColor: '#bbdefb' }}>
+        <Avatar sx={{ backgroundColor: '#bbdefb', mr: 2 }}>
           <ArchitectureIcon sx={{ fontSize: '2rem', color: 'black' }} />
         </Avatar>
 
+        <Box sx={{ ml: 4, display: 'flex', alignItems: 'center' }}>
+          <Tooltip title='draw'>
+            <ModeIcon
+              sx={{
+                fontSize:
+                  isConnecting == 0 && !isDeleting ? '2.3rem' : '1.9rem',
+                boxShadow: 1,
+                borderRadius: 2,
+                backgroundColor:
+                  isConnecting == 0 && !isDeleting ? '#03a9f4' : '#e1f5fe',
+              }}
+              onClick={() => {
+                setIsConnecting(0);
+                setIsDeleting(false);
+              }}
+            />
+          </Tooltip>
+          <Tooltip title='connect'>
+            <ArrowRightAltIcon
+              sx={{
+                fontSize: isConnecting > 0 ? '2.3rem' : '1.9rem',
+                ml: 2,
+                boxShadow: 1,
+                borderRadius: 2,
+                backgroundColor: isConnecting > 0 ? '#00897b' : '#e0f2f1',
+              }}
+              onClick={() => {
+                setIsDeleting(false);
+                setIsConnecting(1);
+              }}
+            />
+          </Tooltip>
+          <Tooltip title='delete'>
+            <DeleteIcon
+              sx={{
+                fontSize: isDeleting ? '2.3rem' : '1.9rem',
+                ml: 2,
+                boxShadow: 1,
+                borderRadius: 2,
+                backgroundColor: isDeleting ? '#e91e63' : '#fce4ec',
+              }}
+              onClick={() => {
+                setIsDeleting(true);
+                setIsConnecting(0);
+              }}
+            />
+          </Tooltip>
+        </Box>
         <Typography
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            mx: 2,
-            color: '#424242',
-          }}
-          variant='subtitle2'
-        >
-          <AccountCircleIcon sx={{ mr: 0.25, fontSize: '1.2rem' }} />
-          {status === 'authenticated' ? data.user.email : 'Guest User'}
-        </Typography>
-        <Typography
-          sx={{
-            ml: 2,
-            width: 'max-content',
-            alignItems: 'center',
-            display: isDeleting ? 'flex' : 'none',
-            fontSize: '1.2rem',
+            ml: 4,
+            backgroundColor: getBgColor(),
+            px: 1,
+            fontWeight: 'bold',
             boxShadow: 1,
-            backgroundColor: '#f48fb1',
-            px: 2,
           }}
-          variant='subtitle2'
+          variant='body1'
         >
-          <DeleteIcon /> Delete mode
-        </Typography>
-        <Typography
-          sx={{
-            ml: 2,
-            width: 'max-content',
-            alignItems: 'center',
-            display: isConnecting ? 'flex' : 'none',
-            fontSize: '1.2rem',
-            boxShadow: 1,
-            backgroundColor: '#80cbc4',
-            px: 2,
-          }}
-          variant='subtitle2'
-        >
-          <ArrowRightAltIcon />
-          Connect mode
+          {isConnecting > 0 && 'Connect mode'}
+          {isDeleting && 'Delete mode'}
+          {isConnecting == 0 && !isDeleting && 'Draw mode'}
         </Typography>
         <Box sx={{ ml: 'auto' }}>
+          <Typography
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              color: '#424242',
+            }}
+            variant='subtitle2'
+          >
+            <AccountCircleIcon sx={{ mr: 0.25, fontSize: '1.2rem' }} />
+            {status === 'authenticated' ? data.user.email : 'Guest User'}
+          </Typography>
+        </Box>
+        <Box sx={{ ml: 2 }}>
           <Tooltip title='RESET CANVAS'>
             <Button
               sx={{ zIndex: 6, mr: 1, backgroundColor: '#00bcd4' }}
