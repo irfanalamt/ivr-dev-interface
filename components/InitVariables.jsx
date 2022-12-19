@@ -209,7 +209,7 @@ const InitVariables = ({
             name='name'
             placeholder='required'
             onChange={handleChange}
-            value={varList[selectedIndex]?.name}
+            value={varList[selectedIndex]?.name ?? ''}
             size='small'
             multiline
             autoFocus
@@ -222,7 +222,7 @@ const InitVariables = ({
             name='value'
             placeholder='required'
             onChange={handleChange}
-            value={varList[selectedIndex]?.value}
+            value={varList[selectedIndex]?.value ?? ''}
             size='small'
             multiline
           />
@@ -235,7 +235,7 @@ const InitVariables = ({
             sx={{ ml: 1, width: '75%' }}
             name='description'
             onChange={handleChange}
-            value={varList[selectedIndex]?.description}
+            value={varList[selectedIndex]?.description ?? ''}
             size='small'
           />
           <Button sx={{ ml: 1 }} color='success' onClick={handleSaveVariable}>
