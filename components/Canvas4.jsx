@@ -18,7 +18,7 @@ import Shapes from '../models/Shapes2';
 import Line from '../models/Line';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
-import InitVariables from './InitVariables2';
+import InitVariables from './InitVariables';
 import { useSession } from 'next-auth/react';
 import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
@@ -305,6 +305,7 @@ const CanvasComponent = () => {
 
   function handleCloseDrawer() {
     setIsOpenDrawer(false);
+    initializePallette();
     clearAndDraw();
   }
 
@@ -875,7 +876,11 @@ const CanvasComponent = () => {
           hidePrevButton={true}
         />
       </Box>
-      <Drawer anchor='left' open={isOpenVars}>
+      <Drawer
+        anchor='left'
+        open={isOpenVars}
+        onClose={() => setIsOpenVars(false)}
+      >
         <InitVariables
           handleCloseDrawer={() => setIsOpenVars(false)}
           userVariables={userVariables.current}
