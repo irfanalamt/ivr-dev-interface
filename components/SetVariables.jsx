@@ -21,7 +21,7 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 
-const InitVariables = ({
+const SetVariables = ({
   handleCloseDrawer,
   userVariables = [],
   setUserVariables,
@@ -252,4 +252,4 @@ const InitVariables = ({
   );
 };
 
-export default InitVariables;
+export default SetVariables;

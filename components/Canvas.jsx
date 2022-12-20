@@ -18,7 +18,7 @@ import Shapes from '../models/Shapes2';
 import Line from '../models/Line';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
-import InitVariables from './InitVariables';
+import SetVariables from './SetVariables2';
 import { useSession } from 'next-auth/react';
 import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
@@ -837,7 +837,7 @@ const CanvasComponent = () => {
         }}
       >
         <Box sx={{ mt: 1, ml: 1 }}>
-          <Tooltip title='InitVariables' placement='right-start'>
+          <Tooltip title='setVariables' placement='right-start'>
             <SettingsApplicationsIcon
               sx={{ fontSize: '2rem' }}
               onClick={() => setIsOpenVars(true)}
@@ -881,8 +881,12 @@ const CanvasComponent = () => {
         open={isOpenVars}
         onClose={() => setIsOpenVars(false)}
       >
-        <InitVariables
-          handleCloseDrawer={() => setIsOpenVars(false)}
+        <SetVariables
+          handleCloseDrawer={() => {
+            setIsOpenVars(false);
+            initializePallette();
+            clearAndDraw();
+          }}
           userVariables={userVariables.current}
           setUserVariables={setUserVariables}
         />

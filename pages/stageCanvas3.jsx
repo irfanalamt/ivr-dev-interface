@@ -1,12 +1,11 @@
-import { Container } from '@mui/material';
 import dynamic from 'next/dynamic';
 
-const DynamicCanvas = dynamic(() => import('../components/Canvas4'), {
+const DynamicCanvas = dynamic(() => import('../components/Canvas'), {
   ssr: false,
 });
 
-const TestCanvas = () => {
+const CanvasPage = () => {
   return <DynamicCanvas />;
 };
 
-export default TestCanvas;
+export default CanvasPage;
