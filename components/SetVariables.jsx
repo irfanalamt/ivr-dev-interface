@@ -2,6 +2,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
+  Box,
   Button,
   Divider,
   List,
@@ -27,161 +28,141 @@ const SetVariables = ({
   setUserVariables,
 }) => {
   const [varList, setVarList] = useState(userVariables);
+  const [selectedVarIndex, setSelectedVarIndex] = useState('');
   const [varType, setVarType] = useState('prompt');
-  const [selectedIndex, setSelectedIndex] = useState(null);
 
-  function handleRowClick(e, index) {
-    setSelectedIndex(index);
-  }
+  const [isNewVariable, setIsNewVariable] = useState(false);
+  const [newVar, setNewVar] = useState({
+    type: '',
+    name: '',
+    value: '',
+    description: '',
+  });
 
   function handleAddVariable() {
-    setVarList((list) => [
-      ...list,
-      {
-        type: varType,
-        name: '',
-        value: '',
-        description: '',
-      },
-    ]);
-    setSelectedIndex(varList.length);
+    setIsNewVariable(true);
   }
-
-  function handleChange(e) {
+  function handleNewVarChange(e) {
     const { value, name } = e.target;
-
+    setNewVar((v) => ({ ...v, [name]: value }));
+  }
+  function handleVarChange(e) {
+    const { value, name } = e.target;
     setVarList((list) => {
       const tempArray = [...list];
-      tempArray[selectedIndex][name] = value;
+      tempArray[selectedVarIndex][name] = value;
       return tempArray;
     });
   }
-
-  function handleRemoveVariable() {
-    setVarList((list) => {
-      const tempArray = [...list];
-      tempArray.splice(selectedIndex, 1);
-      return tempArray;
-    });
-
-    setSelectedIndex(null);
-  }
-
   function handleSaveVariable() {
     // only save vars with name and value property
     const filteredVariables = varList.filter((v) => v.name && v.value);
     setVarList(filteredVariables);
     setUserVariables(filteredVariables);
-    setSelectedIndex(null);
+
+    setIsNewVariable(false);
+    setSelectedVarIndex('');
+  }
+
+  function handleSaveNewVariable() {
+    setVarList((s) => [...s, newVar]);
+
+    setUserVariables([...varList, newVar]);
+    setNewVar({});
+
+    setIsNewVariable(false);
+    setSelectedVarIndex('');
+  }
+
+  function handleRemoveVariable() {
+    setVarList((s) => {
+      const tempArray = [...s];
+      tempArray.splice(selectedVarIndex, 1);
+      setUserVariables(tempArray);
+      return tempArray;
+    });
+    setSelectedVarIndex('');
+  }
+  function handleRemoveNewVariable() {
+    setNewVar({});
+    setIsNewVariable(false);
   }
 
   return (
     <List sx={{ minWidth: 350 }}>
-      <ListItem>
+      <Box
+        sx={{
+          mt: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <Typography
           sx={{
             backgroundColor: '#ffab91',
             px: 2,
             py: 1,
             boxShadow: 1,
-            ml: -2,
             fontSize: '1.5rem',
+            width: 'max-content',
           }}
           variant='h6'
         >
-          Init Variables
+          Set Variables
         </Typography>
-        <Tooltip title='SAVE CHANGES'>
-          <Button
-            size='small'
-            variant='outlined'
-            color='success'
-            sx={{ height: 30, ml: 'auto' }}
-            onClick={handleSaveVariable}
-          >
-            <SaveRoundedIcon />
-          </Button>
-        </Tooltip>
         <Tooltip title='CLOSE'>
           <Button
             size='small'
             variant='outlined'
             color='error'
-            sx={{ height: 30, ml: 1 }}
+            sx={{ height: 30, mr: 1 }}
             onClick={handleCloseDrawer}
           >
             <CloseRoundedIcon sx={{ fontSize: 21 }} />
           </Button>
         </Tooltip>
+      </Box>
+      <ListItem sx={{ mt: 5, ml: 1 }}>
+        <Tooltip title='variable list' placement='top-end'>
+          <Select
+            sx={{ minWidth: '50%' }}
+            onChange={(e) => {
+              setSelectedVarIndex(e.target.value);
+              setIsNewVariable(false);
+            }}
+            value={isNewVariable ? '' : selectedVarIndex}
+          >
+            {varList.map((v, i) => (
+              <MenuItem value={i} key={i}>
+                {v.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </Tooltip>
       </ListItem>
-      <ListItem sx={{ mt: 4 }}>
-        <Select
-          value={varType}
-          onChange={(e) => setVarType(e.target.value)}
-          size='small'
-        >
-          <MenuItem value='prompt'>Prompt</MenuItem>
-          <MenuItem value='number'>Number</MenuItem>
-          <MenuItem value='date'>Date</MenuItem>
-          <MenuItem value='day'>Day</MenuItem>
-          <MenuItem value='month'>Month</MenuItem>
-          <MenuItem value='time'>Time</MenuItem>
-        </Select>
-
+      <ListItem>
         <Button
-          onClick={handleAddVariable}
-          sx={{ ml: 2 }}
+          onClick={() => {
+            handleAddVariable();
+            setSelectedVarIndex('');
+          }}
+          sx={{ ml: 1 }}
           variant='outlined'
-          size='small'
           color='success'
         >
           Add variable
         </Button>
       </ListItem>
-      <ListItem>
-        {varList.length === 0 ? (
-          <Typography
-            sx={{ mx: 'auto', mt: 2, backgroundColor: '#ffebee', p: 1 }}
-            variant='h5'
-          >
-            No variables added
-          </Typography>
-        ) : (
-          <TableContainer component={Paper}>
-            <Table size='small'>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: '#fbe9e7' }}>
-                  <TableCell>TYPE</TableCell>
-                  <TableCell align='center'>NAME</TableCell>
-                  <TableCell align='center'>VALUE</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {varList.map((data, i) => (
-                  <TableRow
-                    onClick={(e) => handleRowClick(e, i)}
-                    key={i}
-                    hover
-                    selected={i == selectedIndex ? true : false}
-                  >
-                    <TableCell variant='head'>{data.type}</TableCell>
-                    <TableCell align='left'>{data.name}</TableCell>
-                    <TableCell align='left'>{data.value}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </ListItem>
+
       <List
         sx={{
+          width: 450,
           mt: 1,
-          display: selectedIndex !== null ? 'block' : 'none',
-          width: 500,
+          display: isNewVariable || selectedVarIndex !== '' ? 'block' : 'none',
         }}
       >
-        <Divider />
+        <Divider sx={{ mb: 1 }} />
         <ListItem>
           <Typography
             sx={{ fontWeight: 'bold', fontSize: '1.05rem' }}
@@ -189,27 +170,34 @@ const SetVariables = ({
           >
             type:
           </Typography>
-          <Typography
-            sx={{
-              ml: 1,
-              fontSize: '1.05rem',
-              px: 1,
-              backgroundColor: '#e3f2fd',
-            }}
+          <Select
+            sx={{ ml: 1, width: 120 }}
+            value={varType}
+            onChange={(e) => setVarType(e.target.value)}
+            size='small'
           >
-            {varList[selectedIndex]?.type}
-          </Typography>
+            <MenuItem value='prompt'>Prompt</MenuItem>
+            <MenuItem value='number'>Number</MenuItem>
+            <MenuItem value='date'>Date</MenuItem>
+            <MenuItem value='day'>Day</MenuItem>
+            <MenuItem value='month'>Month</MenuItem>
+            <MenuItem value='time'>Time</MenuItem>
+          </Select>
         </ListItem>
+
         <ListItem>
           <Typography sx={{ fontWeight: 'bold' }} variant='body1'>
             name:
           </Typography>
           <TextField
             sx={{ ml: 1 }}
+            value={
+              (isNewVariable ? newVar.name : varList[selectedVarIndex]?.name) ??
+              ''
+            }
+            onChange={isNewVariable ? handleNewVarChange : handleVarChange}
             name='name'
             placeholder='required'
-            onChange={handleChange}
-            value={varList[selectedIndex]?.name ?? ''}
             size='small'
             multiline
             autoFocus
@@ -219,10 +207,14 @@ const SetVariables = ({
           </Typography>
           <TextField
             sx={{ ml: 1 }}
+            value={
+              (isNewVariable
+                ? newVar.value
+                : varList[selectedVarIndex]?.value) ?? ''
+            }
+            onChange={isNewVariable ? handleNewVarChange : handleVarChange}
             name='value'
             placeholder='required'
-            onChange={handleChange}
-            value={varList[selectedIndex]?.value ?? ''}
             size='small'
             multiline
           />
@@ -233,20 +225,36 @@ const SetVariables = ({
           </Typography>
           <TextField
             sx={{ ml: 1, width: '75%' }}
+            value={
+              (isNewVariable
+                ? newVar.description
+                : varList[selectedVarIndex]?.description) ?? ''
+            }
+            onChange={isNewVariable ? handleNewVarChange : handleVarChange}
             name='description'
-            onChange={handleChange}
-            value={varList[selectedIndex]?.description ?? ''}
             size='small'
           />
-          <Button sx={{ ml: 1 }} color='success' onClick={handleSaveVariable}>
+          <Button
+            sx={{ ml: 1 }}
+            color='success'
+            onClick={() => {
+              isNewVariable ? handleSaveNewVariable() : handleSaveVariable();
+            }}
+          >
             <SaveRoundedIcon />
           </Button>
-          <Button color='error' onClick={handleRemoveVariable}>
+          <Button
+            color='error'
+            onClick={() => {
+              isNewVariable
+                ? handleRemoveNewVariable()
+                : handleRemoveVariable();
+            }}
+          >
             <RemoveCircleIcon />
           </Button>
         </ListItem>
-
-        <Divider />
+        <Divider sx={{ mt: 1 }} />
       </List>
     </List>
   );

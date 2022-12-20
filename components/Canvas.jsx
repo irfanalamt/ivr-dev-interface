@@ -18,7 +18,7 @@ import Shapes from '../models/Shapes2';
 import Line from '../models/Line';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
-import SetVariables from './SetVariables2';
+import SetVariables from './SetVariables';
 import { useSession } from 'next-auth/react';
 import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
