@@ -8,7 +8,7 @@ import GoToBlock from './GoToBlock';
 import PlayConfirm from './PlayConfirm';
 import PlayMenu from './PlayMenu';
 import PlayMessage from './PlayMessage';
-import SetParams from './SetParams';
+import SetParams from './SetParams2';
 import SwitchBlock from './SwitchBlock';
 
 const DrawerComponent = ({
