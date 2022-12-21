@@ -1,5 +1,3 @@
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import InfoIcon from '@mui/icons-material/Info';
 
@@ -15,10 +13,9 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import Shape from '../models/Shape2';
 import Shapes from '../models/Shapes2';
-import Line from '../models/Line';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
-import SetVariables from './SetVariables';
+import SetVariables from './SetVariables2';
 import { useSession } from 'next-auth/react';
 import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
