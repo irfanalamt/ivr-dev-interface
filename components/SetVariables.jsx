@@ -60,6 +60,11 @@ const SetVariables = ({
   };
 
   const handleSave = () => {
+    if (!currVariable.name || !currVariable.value) {
+      // prevent save if required values absent
+      return;
+    }
+
     if (selectedVarIndex === '') {
       setVarList((v) => {
         const temp = [...v];
@@ -214,6 +219,7 @@ const SetVariables = ({
             sx={{ ml: 1, width: '55%' }}
             size='small'
             name='name'
+            placeholder={isViewMode === false ? 'required' : ''}
             value={currVariable.name ?? ''}
             onChange={handleVarChange}
             disabled={isViewMode === true}
@@ -227,6 +233,7 @@ const SetVariables = ({
             sx={{ ml: 1, width: '55%' }}
             size='small'
             name='value'
+            placeholder={isViewMode === false ? 'required' : ''}
             value={currVariable.value ?? ''}
             onChange={handleVarChange}
             disabled={isViewMode === true}
