@@ -106,12 +106,12 @@ const SetVariables = ({
           <Button
             size='small'
             variant='contained'
-            color='error'
             sx={{
               height: 30,
               mr: 1,
               color: 'black',
               backgroundColor: '#dcdcdc',
+              '&:hover': { backgroundColor: '#e57373' },
             }}
             onClick={handleCloseDrawer}
           >
@@ -182,7 +182,7 @@ const SetVariables = ({
           Delete
         </Button>
       </ListItem>
-      <List sx={{ mt: 2 }}>
+      <List sx={{ mt: 4 }}>
         <Divider sx={{ mb: 1 }} />
         <ListItem>
           <Typography sx={{ fontWeight: 'bold', width: '30%' }} variant='body1'>
