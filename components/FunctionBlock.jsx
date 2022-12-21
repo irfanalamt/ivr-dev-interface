@@ -1,8 +1,10 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
+  Box,
   Button,
   Chip,
+  Divider,
   List,
   ListItem,
   TextField,
@@ -101,64 +103,88 @@ const FunctionBlock = ({
   }
 
   return (
-    <List>
-      <ListItem>
-        <Tooltip title='CLOSE'>
-          <Button
-            size='small'
-            variant='outlined'
-            color='error'
-            sx={{ height: 30 }}
-            onClick={() => {
-              shape.setSelected(false);
-              handleCloseDrawer();
-            }}
-          >
-            <CloseRoundedIcon sx={{ fontSize: 21 }} />
-          </Button>
-        </Tooltip>
-        <Tooltip title='SAVE'>
-          <Button
-            sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-            size='small'
-            variant='outlined'
-            color='success'
-            onClick={saveUserValues}
-          >
-            <SaveRoundedIcon sx={{ fontSize: 20 }} />
-          </Button>
-        </Tooltip>
-      </ListItem>
-      <ListItem>
-        <Chip
-          sx={{ backgroundColor: '#ff5722', mx: 'auto', px: 2, py: 3 }}
-          label={<Typography variant='h6'>RunScript</Typography>}
-        />
-      </ListItem>
-      <ListItem sx={{ my: 2 }}>
-        <Typography variant='button' sx={{ fontSize: 16, width: '35%' }}>
-          Name:
+    <List sx={{ minWidth: 350 }}>
+      <Box
+        sx={{
+          mt: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
+        <Typography
+          sx={{
+            backgroundColor: '#ff5722',
+            px: 2,
+            py: 1,
+            boxShadow: 1,
+            fontSize: '1.5rem',
+            width: 'max-content',
+          }}
+          variant='h6'
+        >
+          Run Script
+        </Typography>
+        <Box>
+          <Tooltip title='SAVE'>
+            <Button
+              sx={{
+                height: 30,
+                mr: 1,
+                color: 'black',
+                backgroundColor: '#dcdcdc',
+                '&:hover': { backgroundColor: '#aed581' },
+              }}
+              size='small'
+              variant='contained'
+              onClick={saveUserValues}
+            >
+              <SaveRoundedIcon sx={{ fontSize: 21 }} />
+            </Button>
+          </Tooltip>
+          <Tooltip title='CLOSE'>
+            <Button
+              size='small'
+              variant='contained'
+              sx={{
+                height: 30,
+                mr: 1,
+                color: 'black',
+                backgroundColor: '#dcdcdc',
+                '&:hover': { backgroundColor: '#e57373' },
+              }}
+              onClick={() => {
+                shape.setSelected(false);
+                handleCloseDrawer();
+              }}
+            >
+              <CloseRoundedIcon sx={{ fontSize: 21 }} />
+            </Button>
+          </Tooltip>
+        </Box>
+      </Box>
+
+      <ListItem sx={{ my: 4 }}>
+        <Typography
+          sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
+          variant='body1'
+        >
+          Name
         </Typography>
         <TextField
-          value={shapeName || ''}
+          sx={{ ml: 2, width: 180 }}
+          size='small'
+          value={shapeName}
           onChange={(e) => {
             setShapeName(e.target.value);
-            handleValidation(e, 'menuId', 'object');
           }}
-          sx={{
-            mx: 0.5,
-          }}
-          helperText={errorObj.menuId}
-          error={errorObj.menuId}
-          size='small'
         />
       </ListItem>
 
-      <ListItem>
+      <ListItem sx={{ mt: 4 }}>
         <TextField
           sx={{
             mx: 'auto',
-            mt: 2,
             backgroundColor: isFunctionError && '#ffebee',
           }}
           label={isFunctionError ? 'code invalid' : 'Function code'}
@@ -173,9 +199,13 @@ const FunctionBlock = ({
       </ListItem>
       <ListItem>
         <Button
-          sx={{ mx: 'auto' }}
+          sx={{
+            mx: 'auto',
+            backgroundColor: '#dcdcdc',
+            color: '#1b5e20',
+            '&:hover': { backgroundColor: '#b0b0b0' },
+          }}
           variant='contained'
-          color='success'
           onClick={handleFunctionValidation}
         >
           Validate
