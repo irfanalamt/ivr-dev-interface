@@ -61,7 +61,7 @@ const CanvasAppbar = ({
                 boxShadow: 1,
                 borderRadius: 2,
                 backgroundColor:
-                  isConnecting == 0 && !isDeleting ? '#03a9f4' : '#e1f5fe',
+                  isConnecting == 0 && !isDeleting ? '#03a9f4' : '#dcdcdc',
               }}
               onClick={() => {
                 setIsConnecting(0);
@@ -76,7 +76,7 @@ const CanvasAppbar = ({
                 ml: 2,
                 boxShadow: 1,
                 borderRadius: 2,
-                backgroundColor: isConnecting > 0 ? '#00897b' : '#e0f2f1',
+                backgroundColor: isConnecting > 0 ? '#00897b' : '#dcdcdc',
               }}
               onClick={() => {
                 setIsDeleting(false);
@@ -91,7 +91,7 @@ const CanvasAppbar = ({
                 ml: 2,
                 boxShadow: 1,
                 borderRadius: 2,
-                backgroundColor: isDeleting ? '#e91e63' : '#fce4ec',
+                backgroundColor: isDeleting ? '#e91e63' : '#dcdcdc',
               }}
               onClick={() => {
                 setIsDeleting(true);
@@ -130,7 +130,13 @@ const CanvasAppbar = ({
         <Box sx={{ ml: 2 }}>
           <Tooltip title='RESET CANVAS'>
             <Button
-              sx={{ zIndex: 6, mr: 1, backgroundColor: '#00bcd4' }}
+              sx={{
+                zIndex: 6,
+                mr: 1,
+                backgroundColor: '#dcdcdc',
+                color: 'black',
+                '&:hover': { backgroundColor: '#64b5f6' },
+              }}
               variant='contained'
               size='small'
               color='info'
@@ -139,50 +145,57 @@ const CanvasAppbar = ({
               <RestartAltIcon sx={{ fontSize: '1.2rem' }} />
             </Button>
           </Tooltip>
-          <Tooltip title='SAVE'>
-            <span>
-              <Button
-                sx={{ zIndex: 6, mr: 1, backgroundColor: '#2196f3' }}
-                variant='contained'
-                size='small'
-                color='info'
-                // onClick={() => {
-                //   const serializedShapes =
-                //     stageGroup.current.getSerializedShapes();
-                //   localStorage.setItem('isExistingProject', true);
-                //   localStorage.setItem(
-                //     'saved_project',
-                //     JSON.stringify(serializedShapes)
-                //   );
-                // }}
-                disabled={status !== 'authenticated'}
-              >
-                <SaveIcon sx={{ fontSize: '1.2rem' }} />
-              </Button>
-            </span>
-          </Tooltip>
-          <Tooltip title='SAVE AS'>
-            <span>
-              <Button
-                sx={{ zIndex: 6, mr: 1, backgroundColor: '#3f51b5' }}
-                variant='contained'
-                size='small'
-                color='info'
-                // onClick={() => {
-                //   setOpenProjectDialog(true);
-                // }}
-                disabled={status !== 'authenticated'}
-              >
-                <SaveAsIcon sx={{ fontSize: '1.2rem' }} />
-              </Button>
-            </span>
-          </Tooltip>
-
+          <Box sx={{ display: status !== 'authenticated' ? 'none' : 'inline' }}>
+            <Tooltip title='SAVE'>
+              <span>
+                <Button
+                  sx={{ zIndex: 6, mr: 1, backgroundColor: '#2196f3' }}
+                  variant='contained'
+                  size='small'
+                  color='info'
+                  // onClick={() => {
+                  //   const serializedShapes =
+                  //     stageGroup.current.getSerializedShapes();
+                  //   localStorage.setItem('isExistingProject', true);
+                  //   localStorage.setItem(
+                  //     'saved_project',
+                  //     JSON.stringify(serializedShapes)
+                  //   );
+                  // }}
+                  disabled={status !== 'authenticated'}
+                >
+                  <SaveIcon sx={{ fontSize: '1.2rem' }} />
+                </Button>
+              </span>
+            </Tooltip>
+            <Tooltip title='SAVE AS'>
+              <span>
+                <Button
+                  sx={{ zIndex: 6, mr: 1, backgroundColor: '#3f51b5' }}
+                  variant='contained'
+                  size='small'
+                  color='info'
+                  // onClick={() => {
+                  //   setOpenProjectDialog(true);
+                  // }}
+                  disabled={status !== 'authenticated'}
+                >
+                  <SaveAsIcon sx={{ fontSize: '1.2rem' }} />
+                </Button>
+              </span>
+            </Tooltip>
+          </Box>
           <Tooltip title='GENERATE CONFIG'>
             <Button
-              sx={{ zIndex: 6, backgroundColor: '#4caf50' }}
+              sx={{
+                zIndex: 6,
+                backgroundColor: '#66bb6a',
+                color: 'black',
+                '&:hover': {
+                  backgroundColor: '#43a047',
+                },
+              }}
               size='small'
-              color='success'
               variant='contained'
               onClick={generateFile}
             >
