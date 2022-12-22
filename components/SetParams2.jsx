@@ -22,6 +22,7 @@ import {
 import { useState } from 'react';
 import defaultParams from '../src/defaultParams';
 import { getArrayFromRange } from '../src/helpers';
+import DrawerTop from './DrawerTop';
 defaultParams;
 
 const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
@@ -69,65 +70,13 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
 
   return (
     <List sx={{ minWidth: 350 }}>
-      <Box
-        sx={{
-          mt: 1,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <Typography
-          sx={{
-            backgroundColor: '#e91e63',
-            px: 2,
-            py: 1,
-            boxShadow: 1,
-            fontSize: '1.5rem',
-            width: 'max-content',
-          }}
-          variant='h6'
-        >
-          Set Params
-        </Typography>
-        <Box>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{
-                height: 30,
-                mr: 1,
-                color: 'black',
-                backgroundColor: '#dcdcdc',
-                '&:hover': { backgroundColor: '#aed581' },
-              }}
-              size='small'
-              variant='contained'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='contained'
-              sx={{
-                height: 30,
-                mr: 1,
-                color: 'black',
-                backgroundColor: '#dcdcdc',
-                '&:hover': { backgroundColor: '#e57373' },
-              }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-        </Box>
-      </Box>
+      <DrawerTop
+        saveUserValues={saveUserValues}
+        shape={shape}
+        handleCloseDrawer={handleCloseDrawer}
+        backgroundColor='#e91e63'
+        blockName='Set Params'
+      />
       <ListItem sx={{ mt: 4 }}>
         <Typography
           sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}

@@ -14,6 +14,7 @@ import {
 import { useState } from 'react';
 
 import { checkValidity } from '../src/helpers';
+import DrawerTop from './DrawerTop';
 
 const FunctionBlock = ({
   shape,
@@ -104,65 +105,13 @@ const FunctionBlock = ({
 
   return (
     <List sx={{ minWidth: 350 }}>
-      <Box
-        sx={{
-          mt: 1,
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <Typography
-          sx={{
-            backgroundColor: '#ff5722',
-            px: 2,
-            py: 1,
-            boxShadow: 1,
-            fontSize: '1.5rem',
-            width: 'max-content',
-          }}
-          variant='h6'
-        >
-          Run Script
-        </Typography>
-        <Box>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{
-                height: 30,
-                mr: 1,
-                color: 'black',
-                backgroundColor: '#dcdcdc',
-                '&:hover': { backgroundColor: '#aed581' },
-              }}
-              size='small'
-              variant='contained'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='contained'
-              sx={{
-                height: 30,
-                mr: 1,
-                color: 'black',
-                backgroundColor: '#dcdcdc',
-                '&:hover': { backgroundColor: '#e57373' },
-              }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-        </Box>
-      </Box>
+      <DrawerTop
+        saveUserValues={saveUserValues}
+        shape={shape}
+        handleCloseDrawer={handleCloseDrawer}
+        backgroundColor='#ff5722'
+        blockName='Run Script'
+      />
 
       <ListItem sx={{ my: 4 }}>
         <Typography
