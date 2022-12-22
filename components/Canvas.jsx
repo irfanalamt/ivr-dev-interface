@@ -832,6 +832,7 @@ const CanvasComponent = () => {
           height: 50,
           width: '100vw',
         }}
+        id='bottomBar'
       >
         <Box sx={{ mt: 1, ml: 1 }}>
           <Tooltip title='setVariables' placement='right-start'>
@@ -864,9 +865,12 @@ const CanvasComponent = () => {
         <Box sx={{ ml: '40vw', position: 'fixed', mt: 1 }}></Box>
 
         <Pagination
-          sx={{ position: 'fixed', right: '5vw', mr: 1 }}
+          sx={{
+            position: 'fixed',
+            right: '5vw',
+            mr: 1,
+          }}
           count={4}
-          color='primary'
           shape='rounded'
           onChange={handlePageChange}
           hideNextButton={true}

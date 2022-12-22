@@ -20,6 +20,8 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import { useState } from 'react';
+import DrawerTop from './DrawerTop';
+import DrawerName from './DrawerName';
 
 const CallApi = ({ shape, handleCloseDrawer, userVariables, clearAndDraw }) => {
   const [shapeName, setShapeName] = useState(shape.text);
@@ -144,56 +146,17 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables, clearAndDraw }) => {
   return (
     <>
       <List sx={{ minWidth: 300 }}>
+        <DrawerTop
+          saveUserValues={saveUserValues}
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          backgroundColor='#2196f3'
+          blockName='Call API'
+        />
+        <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+        <Divider sx={{ mb: 2 }} />
         <ListItem>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='outlined'
-              color='error'
-              sx={{ height: 30 }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-              size='small'
-              variant='outlined'
-              color='success'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 20 }} />
-            </Button>
-          </Tooltip>
-        </ListItem>
-        <ListItem>
-          <Chip
-            sx={{ backgroundColor: '#2196f3', mx: 'auto', px: 2, py: 3 }}
-            label={<Typography variant='h6'>Call API</Typography>}
-          />
-        </ListItem>
-        <ListItem sx={{ mb: 2 }}>
-          <Typography variant='button' sx={{ fontSize: 16, width: '35%' }}>
-            Name:
-          </Typography>
-          <TextField
-            value={shapeName || ''}
-            onChange={(e) => {
-              setShapeName(e.target.value);
-            }}
-            sx={{
-              mx: 0.5,
-            }}
-            size='small'
-          />
-        </ListItem>
-        <ListItem>
-          <Typography sx={{ fontSize: '1.1rem', mr: 1 }} variant='h6'>
+          <Typography sx={{ fontSize: '1.1rem' }} variant='h6'>
             REST endpoint:
           </Typography>
         </ListItem>
@@ -208,117 +171,127 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables, clearAndDraw }) => {
             }}
           />
         </ListItem>
+        <Divider sx={{ mt: 2 }} />
+        <ListItem>
+          <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
+            Input Variables:
+          </Typography>
+          <Button
+            sx={{
+              ml: 1,
+              backgroundColor: '#dcdcdc',
+              '&:hover': { backgroundColor: '#b0b0b0' },
+            }}
+            size='small'
+            variant='contained'
+            onClick={addInput}
+          >
+            <AddRoundedIcon sx={{ color: 'green', fontSize: '1.2rem' }} />
+          </Button>
+          <Button
+            sx={{
+              ml: 1,
+              backgroundColor: '#dcdcdc',
+              '&:hover': { backgroundColor: '#b0b0b0' },
+            }}
+            size='small'
+            variant='contained'
+            onClick={removeInput}
+          >
+            <RemoveRoundedIcon sx={{ color: 'red', fontSize: '1.2rem' }} />
+          </Button>
+        </ListItem>
+        <ListItem>
+          {inputArr?.map((item, i) => {
+            return (
+              <Select
+                sx={{ mr: 0.5 }}
+                onChange={(e) => {
+                  handleInputArrChange(e, i);
+                }}
+                value={item.value}
+                key={i}
+                size='small'
+              >
+                {userVariables?.map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            );
+          })}
+        </ListItem>
+        <Divider sx={{ mt: 2 }} />
+        <ListItem>
+          <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
+            Output Variables:
+          </Typography>
 
-        <Paper
-          sx={{
-            width: '95%',
-            px: 2,
-            py: 1,
-            mx: 'auto',
-            my: 2,
-            backgroundColor: '#f9fbe7',
-          }}
-        >
-          <ListItem>
-            <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
-              Input Variables:
-            </Typography>
-            <IconButton
-              sx={{ mr: 1 }}
-              size='large'
-              color='success'
-              onClick={addInput}
-            >
-              <AddRoundedIcon />
-            </IconButton>
-            <IconButton size='large' color='error' onClick={removeInput}>
-              <RemoveRoundedIcon />
-            </IconButton>
-          </ListItem>
-          <ListItem>
-            {inputArr?.map((item, i) => {
-              return (
-                <Select
-                  sx={{ mr: 0.5 }}
-                  onChange={(e) => {
-                    handleInputArrChange(e, i);
-                  }}
-                  value={item.value}
-                  key={i}
-                  size='small'
-                >
-                  {userVariables?.map((el, i) => {
-                    return (
-                      <MenuItem key={i} value={el.name}>
-                        {el.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              );
-            })}
-          </ListItem>
-        </Paper>
-        <Paper
-          sx={{
-            width: '95%',
-            px: 2,
-            py: 1,
-            mx: 'auto',
-            my: 2,
-            backgroundColor: '#f9fbe7',
-          }}
-        >
-          <ListItem>
-            <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
-              Output Variables:
-            </Typography>
-
-            <IconButton
-              sx={{ mr: 1 }}
-              size='large'
-              color='success'
-              onClick={addOutput}
-            >
-              <AddRoundedIcon />
-            </IconButton>
-            <IconButton size='large' color='error' onClick={removeOutput}>
-              <RemoveRoundedIcon />
-            </IconButton>
-          </ListItem>
-          <ListItem>
-            {outputArr?.map((item, i) => {
-              return (
-                <Select
-                  sx={{ mr: 0.5 }}
-                  onChange={(e) => {
-                    handleOutputArrChange(e, i);
-                  }}
-                  value={item.value}
-                  key={i}
-                  size='small'
-                >
-                  {userVariables?.map((el, i) => {
-                    return (
-                      <MenuItem key={i} value={el.name}>
-                        {el.name}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              );
-            })}
-          </ListItem>
-        </Paper>
+          <Button
+            sx={{
+              ml: 1,
+              backgroundColor: '#dcdcdc',
+              '&:hover': { backgroundColor: '#b0b0b0' },
+            }}
+            size='small'
+            variant='contained'
+            onClick={addOutput}
+          >
+            <AddRoundedIcon sx={{ color: 'green', fontSize: '1.2rem' }} />
+          </Button>
+          <Button
+            sx={{
+              ml: 1,
+              backgroundColor: '#dcdcdc',
+              '&:hover': { backgroundColor: '#b0b0b0' },
+            }}
+            size='small'
+            variant='contained'
+            onClick={removeOutput}
+          >
+            <RemoveRoundedIcon sx={{ color: 'red', fontSize: '1.2rem' }} />
+          </Button>
+        </ListItem>
+        <ListItem>
+          {outputArr?.map((item, i) => {
+            return (
+              <Select
+                sx={{ mr: 0.5 }}
+                onChange={(e) => {
+                  handleOutputArrChange(e, i);
+                }}
+                value={item.value}
+                key={i}
+                size='small'
+              >
+                {userVariables?.map((el, i) => {
+                  return (
+                    <MenuItem key={i} value={el.name}>
+                      {el.name}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            );
+          })}
+        </ListItem>
 
         <ListItem>
           <Button
             onClick={handleApiCall}
-            sx={{ mx: 'auto' }}
+            sx={{
+              mx: 'auto',
+              mt: 2,
+              backgroundColor: '#dcdcdc',
+              '&:hover': { backgroundColor: '#b0b0b0' },
+            }}
             variant='contained'
             size='small'
           >
-            <SendRoundedIcon />
+            <SendRoundedIcon sx={{ color: '#2196f3' }} />
           </Button>
         </ListItem>
       </List>

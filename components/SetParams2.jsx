@@ -22,6 +22,7 @@ import {
 import { useState } from 'react';
 import defaultParams from '../src/defaultParams';
 import { getArrayFromRange } from '../src/helpers';
+import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 defaultParams;
 
@@ -77,23 +78,8 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
         backgroundColor='#e91e63'
         blockName='Set Params'
       />
-      <ListItem sx={{ mt: 4 }}>
-        <Typography
-          sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
-          variant='body1'
-        >
-          Name
-        </Typography>
-        <TextField
-          sx={{ ml: 2, width: 180 }}
-          size='small'
-          value={shapeName}
-          onChange={(e) => {
-            setShapeName(e.target.value);
-          }}
-        />
-      </ListItem>
-      <Divider sx={{ mt: 4 }} />
+      <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+      <Divider />
       <ListItem sx={{ mt: 4 }}>
         <InputLabel id='select-label'>parameter list</InputLabel>
         <Select
