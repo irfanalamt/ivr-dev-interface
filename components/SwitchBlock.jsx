@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   List,
   ListItem,
   TextField,
@@ -14,6 +15,8 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { useState } from 'react';
 import ResetCanvasDialog from './ResetCanvasDialog';
+import DrawerTop from './DrawerTop';
+import DrawerName from './DrawerName';
 
 const SwitchBlock = ({
   shape,
@@ -145,50 +148,15 @@ const SwitchBlock = ({
   return (
     <>
       <List>
-        <ListItem>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='outlined'
-              color='error'
-              sx={{ height: 30 }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-              size='small'
-              variant='outlined'
-              color='success'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 20 }} />
-            </Button>
-          </Tooltip>
-        </ListItem>
-        <ListItem>
-          <Chip
-            sx={{ backgroundColor: '#795548', mx: 'auto', px: 2, py: 3 }}
-            label={<Typography variant='h6'>Switch</Typography>}
-          />
-        </ListItem>
-        <ListItem sx={{ mt: 1, mb: 3 }}>
-          <Typography variant='button' sx={{ fontSize: 15, width: '35%' }}>
-            Name:
-          </Typography>
-          <TextField
-            sx={{ width: 180, marginX: 1 }}
-            size='small'
-            value={shapeName}
-            onChange={(e) => setShapeName(e.target.value)}
-          ></TextField>
-        </ListItem>
+        <DrawerTop
+          aveUserValues={saveUserValues}
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          backgroundColor='#795548'
+          blockName='Switch'
+        />
+        <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+        <Divider sx={{ mb: 4 }} />
         <ListItem>
           <Typography
             sx={{ fontSize: '1.2rem', width: '75%', mx: 0.5 }}
@@ -292,24 +260,31 @@ const SwitchBlock = ({
           />
         </ListItem>
 
-        <ListItem>
+        <ListItem sx={{ mt: 2 }}>
           <Tooltip title='Add exitPoint' placement='bottom'>
             <Button
-              sx={{ mx: 1, backgroundColor: '#8bc34a', color: '#424242' }}
+              sx={{
+                mx: 1,
+                backgroundColor: '#dcdcdc',
+                '&:hover': { backgroundColor: '#b0b0b0' },
+              }}
               size='small'
               onClick={handleAddCondition}
             >
-              <AddCircleIcon />
+              <AddCircleIcon sx={{ fontSize: '1.2rem', color: '#1b5e20' }} />
             </Button>
           </Tooltip>
           <Tooltip title='Remove exitPoint' placement='bottom'>
             <Button
-              sx={{ mx: 1, backgroundColor: '#e91e63', color: '#424242' }}
+              sx={{
+                mx: 1,
+                backgroundColor: '#dcdcdc',
+                '&:hover': { backgroundColor: '#b0b0b0' },
+              }}
               size='small'
-              color='error'
               onClick={handleRemoveCondition}
             >
-              <RemoveCircleIcon />
+              <RemoveCircleIcon sx={{ fontSize: '1.2rem', color: '#b71c1c' }} />
             </Button>
           </Tooltip>
         </ListItem>

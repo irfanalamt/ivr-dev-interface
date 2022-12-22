@@ -10,6 +10,7 @@ import {
   Chip,
   Divider,
   IconButton,
+  InputLabel,
   List,
   ListItem,
   MenuItem,
@@ -24,6 +25,8 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { checkValidity } from '../src/helpers';
+import DrawerName from './DrawerName';
+import DrawerTop from './DrawerTop';
 
 const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
   const [shapeName, setShapeName] = useState(shape.text);
@@ -341,19 +344,20 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
             ))}
           </Select>
           <Tooltip title='Remove item' placement='top-start'>
-            <RemoveCircleIcon
-              sx={{
-                ml: 'auto',
-                color: '#ef5350',
-                boxShadow: 1,
-                width: 'max-content',
-                borderRadius: 1,
-                fontSize: '1.5rem',
-              }}
+            <IconButton
+              sx={{ ml: 'auto' }}
+              size='large'
               onClick={(e) => {
                 handleRemoveItem(e, key);
               }}
-            />
+            >
+              <RemoveCircleIcon
+                sx={{
+                  fontSize: '1.5rem',
+                  '&:hover': { color: '#e57373' },
+                }}
+              />
+            </IconButton>
           </Tooltip>
         </ListItem>
         <Divider sx={{ my: 2 }} />
@@ -652,57 +656,14 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
   return (
     <>
       <List sx={{ minWidth: 350 }}>
-        <ListItem>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='outlined'
-              color='error'
-              sx={{ height: 30 }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-              size='small'
-              variant='outlined'
-              color='success'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 20 }} />
-            </Button>
-          </Tooltip>
-        </ListItem>
-        <ListItem>
-          <Chip
-            sx={{ backgroundColor: '#009688', mx: 'auto', px: 2, py: 3 }}
-            label={<Typography variant='h6'>Play Menu</Typography>}
-          />
-        </ListItem>
-        <ListItem sx={{ my: 2 }}>
-          <Typography variant='button' sx={{ fontSize: 16, width: '35%' }}>
-            Name:
-          </Typography>
-          <TextField
-            value={shapeName || ''}
-            onChange={(e) => {
-              setShapeName(e.target.value);
-              handleValidation(e, 'menuId', 'object');
-            }}
-            sx={{
-              mx: 0.5,
-            }}
-            helperText={errorObj.menuId}
-            error={errorObj.menuId}
-            size='small'
-          />
-        </ListItem>
+        <DrawerTop
+          saveUserValues={saveUserValues}
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          backgroundColor='#009688'
+          blockName='Play Menu'
+        />
+        <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
         <ListItem>
           <Tabs
             sx={{ marginX: 'auto' }}
@@ -816,21 +777,22 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
             </Select>
             <Tooltip title='Add parameter'>
               <IconButton
-                sx={{ ml: 2 }}
-                color='success'
+                sx={{
+                  ml: 2,
+                }}
                 size='large'
                 onClick={handleAddParameter}
               >
-                <AddCircleOutlineRoundedIcon />
+                <AddCircleOutlineRoundedIcon
+                  sx={{ '&:hover': { color: '#81c784' } }}
+                />
               </IconButton>
             </Tooltip>
             <Tooltip title='Remove parameter'>
-              <IconButton
-                color='error'
-                size='large'
-                onClick={handleRemoveParameter}
-              >
-                <RemoveCircleOutlineRoundedIcon />
+              <IconButton size='large' onClick={handleRemoveParameter}>
+                <RemoveCircleOutlineRoundedIcon
+                  sx={{ '&:hover': { color: '#e57373' } }}
+                />
               </IconButton>
             </Tooltip>
           </ListItem>
@@ -839,72 +801,62 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
           </List>
         </Box>
         <Box id='tabPanel2' sx={{ display: tabValue == 1 ? 'block' : 'none' }}>
-          <ListItem sx={{ mb: 3, mt: 1 }}>
-            <Paper
-              sx={{
-                width: '100%',
-                p: 2,
-                backgroundColor: '#f9fbe7',
-                display: 'flex',
-                alignItems: 'center',
+          <ListItem sx={{ mb: 2, mt: 1 }}>
+            <InputLabel id='select-label'>Select Item</InputLabel>
+            <Select
+              labelId='select-label'
+              value={itemSelected}
+              onChange={(e) => {
+                setItemSelected(e.target.value);
               }}
+              sx={{ ml: 2 }}
+              size='small'
             >
-              <Typography
-                sx={{ width: '35%', fontSize: 17, fontWeight: 405 }}
-                variant='subtitle1'
-              >
-                Select Item
-              </Typography>
-              <Select
-                value={itemSelected}
-                onChange={(e) => {
-                  setItemSelected(e.target.value);
-                }}
-                sx={{ mx: 1 }}
-                size='small'
-              >
-                {itemsObj.length > 0
-                  ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*']
-                      .filter((el) => !itemsObj.some((e) => e.digit == el))
-                      .map((el, i) => (
-                        <MenuItem key={i} value={el}>
-                          {el}
-                        </MenuItem>
-                      ))
-                  : [
-                      '0',
-                      '1',
-                      '2',
-                      '3',
-                      '4',
-                      '5',
-                      '6',
-                      '7',
-                      '8',
-                      '9',
-                      '#',
-                      '*',
-                    ].map((el, i) => (
+              {itemsObj.length > 0
+                ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*']
+                    .filter((el) => !itemsObj.some((e) => e.digit == el))
+                    .map((el, i) => (
                       <MenuItem key={i} value={el}>
                         {el}
                       </MenuItem>
-                    ))}
-              </Select>
-              <Tooltip title='Add Item' placement='right-start'>
+                    ))
+                : [
+                    '0',
+                    '1',
+                    '2',
+                    '3',
+                    '4',
+                    '5',
+                    '6',
+                    '7',
+                    '8',
+                    '9',
+                    '#',
+                    '*',
+                  ].map((el, i) => (
+                    <MenuItem key={i} value={el}>
+                      {el}
+                    </MenuItem>
+                  ))}
+            </Select>
+            <Tooltip title='Add Item' placement='right-start'>
+              <IconButton
+                sx={{
+                  mx: 2,
+                  '&:hover': { color: '#81c784' },
+                }}
+                size='large'
+                onClick={handleAddItem}
+              >
                 <AddCircleIcon
                   sx={{
-                    mx: 2,
-                    color: '#4caf50',
-                    boxShadow: 1,
-                    width: 'max-content',
-                    borderRadius: 1,
                     fontSize: '1.5rem',
                   }}
-                  onClick={handleAddItem}
                 />
-              </Tooltip>
-            </Paper>
+              </IconButton>
+            </Tooltip>
           </ListItem>
+          <Divider sx={{ mb: 2 }} />
           {/* <pre>{JSON.stringify(itemsObj, null, 2)}</pre> */}
           {itemsObj?.map((el, i) => addItemElements(el.digit, i))}
         </Box>

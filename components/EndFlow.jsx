@@ -23,6 +23,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useRef, useState } from 'react';
+import DrawerTop from './DrawerTop';
 
 const EndFlow = ({ shape, handleCloseDrawer }) => {
   const [type, setType] = useState(shape.userValues?.type ?? 'disconnect');
@@ -50,41 +51,15 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
   return (
     <>
       <List sx={{ minWidth: 350 }}>
-        <ListItem>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='outlined'
-              color='error'
-              sx={{ height: 30 }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-              size='small'
-              variant='outlined'
-              color='success'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 20 }} />
-            </Button>
-          </Tooltip>
-        </ListItem>
-        <ListItem>
-          <Chip
-            sx={{ backgroundColor: '#f8bbd0', mx: 'auto', px: 2, py: 3 }}
-            label={<Typography variant='h6'>EndFlow</Typography>}
-          />
-        </ListItem>
-        <ListItem>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='subtitle2'>
+        <DrawerTop
+          aveUserValues={saveUserValues}
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          backgroundColor='#f8bbd0'
+          blockName='End Flow'
+        />
+        <ListItem sx={{ mt: 4 }}>
+          <Typography sx={{ fontSize: '1.1rem' }} variant='h6'>
             Type:
           </Typography>
         </ListItem>
@@ -109,8 +84,10 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
             />
           </RadioGroup>
         </ListItem>
-        <ListItem sx={{ display: type === 'transfer' ? 'flex' : 'none' }}>
-          <Typography variant='subtitle1' sx={{ fontSize: 15 }}>
+        <ListItem
+          sx={{ display: type === 'transfer' ? 'flex' : 'none', mt: 2 }}
+        >
+          <Typography variant='body1' sx={{ fontWeight: 'bold', fontSize: 15 }}>
             transferPoint:
           </Typography>
           <TextField
