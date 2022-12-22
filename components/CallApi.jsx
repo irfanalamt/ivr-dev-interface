@@ -150,7 +150,7 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables, clearAndDraw }) => {
           saveUserValues={saveUserValues}
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
-          backgroundColor='#2196f3'
+          backgroundColor='#bbdefb'
           blockName='Call API'
         />
         <DrawerName shapeName={shapeName} setShapeName={setShapeName} />

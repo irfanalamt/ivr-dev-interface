@@ -75,7 +75,7 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
         saveUserValues={saveUserValues}
         shape={shape}
         handleCloseDrawer={handleCloseDrawer}
-        backgroundColor='#e91e63'
+        backgroundColor='#f8bbd0'
         blockName='Set Params'
       />
       <DrawerName shapeName={shapeName} setShapeName={setShapeName} />

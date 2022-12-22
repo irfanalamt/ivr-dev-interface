@@ -24,6 +24,8 @@ import {
   checkValidity,
   addParamsElements,
 } from '../src/helpers';
+import DrawerTop from './DrawerTop';
+import DrawerName from './DrawerName';
 
 const GetDigits = ({
   shape,
@@ -150,60 +152,14 @@ const GetDigits = ({
   return (
     <>
       <List sx={{ minWidth: 370 }}>
-        <ListItem>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='outlined'
-              color='error'
-              sx={{ height: 30 }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-              size='small'
-              variant='outlined'
-              color='success'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 20 }} />
-            </Button>
-          </Tooltip>
-        </ListItem>
-        <ListItem>
-          <Chip
-            sx={{ backgroundColor: '#b39ddb', mx: 'auto', px: 2, py: 3 }}
-            label={<Typography variant='h6'>Get Digits</Typography>}
-          />
-        </ListItem>
-        <ListItem sx={{ marginTop: 1 }}>
-          <Typography variant='button' sx={{ fontSize: 16, width: '40%' }}>
-            Name:
-          </Typography>
-          <TextField
-            sx={{ width: 180, marginX: 1 }}
-            size='small'
-            value={shapeName}
-            onChange={(e) => {
-              setShapeName(e.target.value);
-              handleNameValidation(e);
-            }}
-          ></TextField>
-        </ListItem>
-        <ListItem>
-          <Typography
-            sx={{ marginX: 'auto', boxShadow: 1, paddingX: 1, display: 'none' }}
-            variant='subtitle2'
-            id='name-error-box'
-          ></Typography>
-        </ListItem>
+        <DrawerTop
+          saveUserValues={saveUserValues}
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          backgroundColor='#d1c4e9'
+          blockName='Get Digits'
+        />
+        <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
         <ListItem>
           <Typography variant='button' sx={{ width: '40%' }}>
             Result Variable:

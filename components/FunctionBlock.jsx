@@ -14,6 +14,7 @@ import {
 import { useState } from 'react';
 
 import { checkValidity } from '../src/helpers';
+import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 
 const FunctionBlock = ({
@@ -109,26 +110,11 @@ const FunctionBlock = ({
         saveUserValues={saveUserValues}
         shape={shape}
         handleCloseDrawer={handleCloseDrawer}
-        backgroundColor='#ff5722'
+        backgroundColor='#ffe0b2'
         blockName='Run Script'
       />
 
-      <ListItem sx={{ my: 4 }}>
-        <Typography
-          sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
-          variant='body1'
-        >
-          Name
-        </Typography>
-        <TextField
-          sx={{ ml: 2, width: 180 }}
-          size='small'
-          value={shapeName}
-          onChange={(e) => {
-            setShapeName(e.target.value);
-          }}
-        />
-      </ListItem>
+      <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
 
       <ListItem sx={{ mt: 4 }}>
         <TextField

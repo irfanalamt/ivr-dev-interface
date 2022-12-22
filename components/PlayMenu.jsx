@@ -660,7 +660,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
           saveUserValues={saveUserValues}
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
-          backgroundColor='#009688'
+          backgroundColor='#b2dfdb'
           blockName='Play Menu'
         />
         <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
@@ -802,7 +802,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
         </Box>
         <Box id='tabPanel2' sx={{ display: tabValue == 1 ? 'block' : 'none' }}>
           <ListItem sx={{ mb: 2, mt: 1 }}>
-            <InputLabel id='select-label'>Select Item</InputLabel>
+            <InputLabel id='select-label'>Select Digit</InputLabel>
             <Select
               labelId='select-label'
               value={itemSelected}
