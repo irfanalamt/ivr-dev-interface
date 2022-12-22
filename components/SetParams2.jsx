@@ -164,7 +164,10 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
           ))}
         </Select>
       </ListItem>
-      <ListItem sx={{ mt: 4 }} id='paramter-view-area'>
+      <ListItem
+        sx={{ mt: 4, justifyContent: 'center' }}
+        id='paramter-view-area'
+      >
         <Typography variant='body1'>{currentParam.name}:</Typography>
         {currentParam.type === 'select' && (
           <Select
