@@ -22,6 +22,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { checkValidity } from '../src/helpers';
 
 const SetVariables = ({
   handleCloseDrawer,
@@ -32,6 +33,7 @@ const SetVariables = ({
   const [selectedVarIndex, setSelectedVarIndex] = useState('');
   const [isViewMode, setIsViewMode] = useState(true);
   const [currVariable, setCurrVariable] = useState({});
+  const [errorText, setErrorText] = useState('');
 
   const handleAdd = () => {
     setSelectedVarIndex('');
@@ -56,11 +58,30 @@ const SetVariables = ({
 
   const handleVarChange = (e) => {
     const { value, name } = e.target;
+
     setCurrVariable((v) => ({ ...currVariable, [name]: value }));
   };
 
+  const handleValidation = (e) => {
+    let fieldType = '';
+    if (!currVariable) {
+      fieldType = 'prompt';
+    } else {
+      fieldType = currVariable.type;
+    }
+
+    const errorM = checkValidity(fieldType, e);
+    if (errorM === -1) {
+      // No error condition
+      setErrorText('');
+      return;
+    }
+
+    setErrorText(errorM);
+  };
+
   const handleSave = () => {
-    if (!currVariable.name || !currVariable.value) {
+    if (!currVariable.name || !currVariable.value || errorText !== '') {
       // prevent save if required values absent
       return;
     }
@@ -123,7 +144,24 @@ const SetVariables = ({
             <CloseRoundedIcon sx={{ fontSize: 21 }} />
           </Button>
         </Tooltip>
-      </Box>
+      </Box>{' '}
+      <Typography
+        sx={{
+          backgroundColor: ' #FFE4E1',
+          color: '#FF0000',
+          width: 'max-content',
+          position: 'absolute',
+          px: 1,
+          mt: 1,
+          left: 0,
+          right: 0,
+          mx: 'auto',
+          fontSize: '0.75rem',
+        }}
+        variant='subtitle1'
+      >
+        {errorText}
+      </Typography>
       <ListItem sx={{ mt: 4 }}>
         <InputLabel id='select-label'>variable list</InputLabel>
         <Select
@@ -235,7 +273,10 @@ const SetVariables = ({
             name='value'
             placeholder={isViewMode === false ? 'required' : ''}
             value={currVariable.value ?? ''}
-            onChange={handleVarChange}
+            onChange={(e) => {
+              handleValidation(e);
+              handleVarChange(e);
+            }}
             disabled={isViewMode === true}
           />
         </ListItem>
