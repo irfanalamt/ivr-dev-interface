@@ -38,10 +38,10 @@ const PlayConfirm = ({
   const [msgObjType, setMsgObjType] = useState('prompt');
   const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
   const [confirmOption, setConfirmOption] = useState(
-    shape.userValues?.params.confirmOption ?? 1
+    shape.userValues?.params.confirmOption ?? ''
   );
   const [cancelOption, setCancelOption] = useState(
-    shape.userValues?.params.cancelOption ?? 9
+    shape.userValues?.params.cancelOption ?? ''
   );
   const [confirmPrompt, setConfirmPrompt] = useState(
     shape.userValues?.params.confirmPrompt ?? ''

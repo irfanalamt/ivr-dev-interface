@@ -1,30 +1,18 @@
-import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
-  Box,
-  Button,
-  Chip,
   Divider,
-  IconButton,
   InputLabel,
   List,
   ListItem,
   MenuItem,
-  Paper,
   Select,
   Switch,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import defaultParams from '../src/defaultParams';
-import { getArrayFromRange } from '../src/helpers';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
-defaultParams;
 
 const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
   const [shapeName, setShapeName] = useState(shape.text);
