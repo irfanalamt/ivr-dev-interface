@@ -190,7 +190,7 @@ const GetDigits = ({
                 })}
             </Select>
           ) : (
-            <Typography sx={{ color: '#616161', fontSize: 18 }}>
+            <Typography sx={{ color: '#616161' }}>
               No variables added
             </Typography>
           )}
