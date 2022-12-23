@@ -13,6 +13,8 @@ import {
   Chip,
   IconButton,
   Paper,
+  InputLabel,
+  Divider,
 } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
@@ -165,7 +167,7 @@ const GetDigits = ({
           stageGroup={stageGroup}
         />
         <ListItem>
-          <Typography variant='button' sx={{ width: '40%' }}>
+          <Typography variant='body1' sx={{ width: '40%', fontWeight: 'bold' }}>
             Result Variable:
           </Typography>
 
@@ -188,7 +190,7 @@ const GetDigits = ({
                 })}
             </Select>
           ) : (
-            <Typography sx={{ color: '#f44336', fontSize: 18 }} variant='h6'>
+            <Typography sx={{ color: '#616161', fontSize: 18 }}>
               No variables added
             </Typography>
           )}
@@ -207,50 +209,52 @@ const GetDigits = ({
           </Tabs>
         </ListItem>
         <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
-          <ListItem>
-            <Paper
-              sx={{ width: '100%', px: 2, py: 1, backgroundColor: '#f9fbe7' }}
+          <ListItem sx={{ mt: 1 }}>
+            <InputLabel id='select-label'>object type:</InputLabel>
+            <Select
+              labelId='select-label'
+              sx={{ ml: 2 }}
+              value={msgObjType}
+              onChange={(e) => {
+                setMsgObjType(e.target.value);
+              }}
+              size='small'
             >
-              <Tooltip title='object type:'>
-                <Select
-                  sx={{ width: '40%' }}
-                  value={msgObjType}
-                  onChange={(e) => {
-                    setMsgObjType(e.target.value);
-                  }}
-                  size='small'
-                >
-                  <MenuItem value='prompt'>Prompt</MenuItem>
-                  <MenuItem value='number'>Number</MenuItem>
-                  <MenuItem value='ordinal'>Ordinal</MenuItem>
-                  <MenuItem value='amount'>Amount</MenuItem>
-                  <MenuItem value='digit'>Digit</MenuItem>
-                  <MenuItem value='date'>Date</MenuItem>
-                  <MenuItem value='day'>Day</MenuItem>
-                  <MenuItem value='month'>Month</MenuItem>
-                  <MenuItem value='time'>Time</MenuItem>
-                </Select>
-              </Tooltip>
-              <Tooltip title='Add'>
-                <IconButton
-                  onClick={() => {
-                    setMsgObjType('prompt');
-                    addInput();
-                  }}
-                  sx={{ ml: 2 }}
-                  color='success'
-                  size='large'
-                >
-                  <AddBoxRoundedIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title='Remove'>
-                <IconButton color='error' size='large' onClick={removeInput}>
-                  <RemoveCircleRoundedIcon />
-                </IconButton>
-              </Tooltip>
-            </Paper>
+              <MenuItem value='prompt'>Prompt</MenuItem>
+              <MenuItem value='number'>Number</MenuItem>
+              <MenuItem value='ordinal'>Ordinal</MenuItem>
+              <MenuItem value='amount'>Amount</MenuItem>
+              <MenuItem value='digit'>Digit</MenuItem>
+              <MenuItem value='date'>Date</MenuItem>
+              <MenuItem value='day'>Day</MenuItem>
+              <MenuItem value='month'>Month</MenuItem>
+              <MenuItem value='time'>Time</MenuItem>
+            </Select>
+
+            <Tooltip title='Add'>
+              <IconButton
+                sx={{
+                  ml: 2,
+                }}
+                size='large'
+                onClick={() => {
+                  setMsgObjType('prompt');
+                  addInput();
+                }}
+              >
+                <AddBoxRoundedIcon sx={{ '&:hover': { color: '#81c784' } }} />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title='Remove'>
+              <IconButton size='large' onClick={removeInput}>
+                <RemoveCircleRoundedIcon
+                  sx={{ '&:hover': { color: '#e57373' } }}
+                />
+              </IconButton>
+            </Tooltip>
           </ListItem>
+          <Divider sx={{ my: 2 }} />
           {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
           <List>
             {msgObj?.map((el, i) => {
@@ -367,21 +371,20 @@ const GetDigits = ({
             </Select>
             <Tooltip title='Add'>
               <IconButton
-                onClick={addParamsInput}
-                sx={{ ml: 2 }}
-                color='success'
+                sx={{
+                  ml: 2,
+                }}
                 size='large'
+                onClick={addParamsInput}
               >
-                <AddBoxRoundedIcon />
+                <AddBoxRoundedIcon sx={{ '&:hover': { color: '#81c784' } }} />
               </IconButton>
             </Tooltip>
             <Tooltip title='Remove'>
-              <IconButton
-                color='error'
-                size='large'
-                onClick={removeParamsInput}
-              >
-                <RemoveCircleRoundedIcon />
+              <IconButton size='large' onClick={removeParamsInput}>
+                <RemoveCircleRoundedIcon
+                  sx={{ '&:hover': { color: '#e57373' } }}
+                />
               </IconButton>
             </Tooltip>
           </ListItem>

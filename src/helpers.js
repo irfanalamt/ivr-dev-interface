@@ -136,14 +136,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <TextField
             sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
             size='small'
@@ -195,14 +188,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <TextField
             sx={{
               mx: 0.5,
@@ -258,14 +244,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <TextField
             size='small'
             sx={{
@@ -321,14 +300,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <TextField
             size='small'
             sx={{
@@ -402,14 +374,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <TextField
             sx={{
               mx: 0.5,
@@ -477,14 +442,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <Select
             sx={{ mx: 0.5 }}
             placeholder='day'
@@ -543,14 +501,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <TextField
             id={`digit${key}`}
             sx={{
@@ -608,14 +559,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <Select
             sx={{ mx: 0.5 }}
             size='small'
@@ -688,14 +632,7 @@ export function addInputElements(
                 })}
             </Select>
           )}
-          {msgObj[key].useVar === true && userVariables.length == 0 && (
-            <Typography
-              sx={{ mr: 1, color: '#ef5350', px: 0.5, boxShadow: 1 }}
-              variant='subtitle2'
-            >
-              No variables added
-            </Typography>
-          )}
+
           <TextField
             sx={{
               mx: 0.5,
