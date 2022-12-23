@@ -453,13 +453,13 @@ export function addInputElements(
               handleMsgObjChange(e, key);
             }}
           >
-            <MenuItem value='mon'>Monday</MenuItem>
-            <MenuItem value='tue'>Tuesday</MenuItem>
-            <MenuItem value='wed'>Wednesday</MenuItem>
-            <MenuItem value='thu'>Thursday</MenuItem>
-            <MenuItem value='fri'>Friday</MenuItem>
-            <MenuItem value='sat'>Saturday</MenuItem>
-            <MenuItem value='sun'>Sunday</MenuItem>
+            <MenuItem value='sun'>01 &nbsp;Sunday</MenuItem>
+            <MenuItem value='mon'>02 &nbsp;Monday</MenuItem>
+            <MenuItem value='tue'>03 &nbsp;Tuesday</MenuItem>
+            <MenuItem value='wed'>04 &nbsp;Wednesday</MenuItem>
+            <MenuItem value='thu'>05 &nbsp;Thursday</MenuItem>
+            <MenuItem value='fri'>06 &nbsp;Friday</MenuItem>
+            <MenuItem value='sat'>07 &nbsp;Saturday</MenuItem>
           </Select>
         </ListItem>
       );
@@ -569,18 +569,18 @@ export function addInputElements(
               handleMsgObjChange(e, key);
             }}
           >
-            <MenuItem value={1}>January</MenuItem>
-            <MenuItem value={2}>February</MenuItem>
-            <MenuItem value={3}>March</MenuItem>
-            <MenuItem value={4}>April</MenuItem>
-            <MenuItem value={5}>May</MenuItem>
-            <MenuItem value={6}>June</MenuItem>
-            <MenuItem value={7}>July</MenuItem>
-            <MenuItem value={8}>August</MenuItem>
-            <MenuItem value={9}>September</MenuItem>
-            <MenuItem value={10}>October</MenuItem>
-            <MenuItem value={11}>November</MenuItem>
-            <MenuItem value={12}>December</MenuItem>
+            <MenuItem value={1}>01 &nbsp;January</MenuItem>
+            <MenuItem value={2}>02 &nbsp;February</MenuItem>
+            <MenuItem value={3}>03 &nbsp;March</MenuItem>
+            <MenuItem value={4}>04 &nbsp;April</MenuItem>
+            <MenuItem value={5}>05 &nbsp;May</MenuItem>
+            <MenuItem value={6}>06 &nbsp;June</MenuItem>
+            <MenuItem value={7}>07 &nbsp;July</MenuItem>
+            <MenuItem value={8}>08 &nbsp;August</MenuItem>
+            <MenuItem value={9}>09 &nbsp;September</MenuItem>
+            <MenuItem value={10}>10 &nbsp;October</MenuItem>
+            <MenuItem value={11}>11 &nbsp;November</MenuItem>
+            <MenuItem value={12}>12 &nbsp;December</MenuItem>
           </Select>
           <Typography sx={{ marginLeft: 2 }} variant='body1'>
             isHijri:
