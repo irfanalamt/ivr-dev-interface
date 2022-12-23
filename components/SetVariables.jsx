@@ -1,5 +1,4 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
@@ -9,14 +8,7 @@ import {
   List,
   ListItem,
   MenuItem,
-  Paper,
   Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Tooltip,
   Typography,
@@ -32,13 +24,17 @@ const SetVariables = ({
   const [varList, setVarList] = useState(userVariables);
   const [selectedVarIndex, setSelectedVarIndex] = useState('');
   const [isViewMode, setIsViewMode] = useState(true);
-  const [currVariable, setCurrVariable] = useState({});
+  const [currVariable, setCurrVariable] = useState({
+    type: 'prompt',
+    name: '',
+    value: '',
+    description: '',
+  });
   const [errorText, setErrorText] = useState('');
 
   const handleAdd = () => {
     setSelectedVarIndex('');
     setIsViewMode(false);
-    setCurrVariable({});
   };
 
   const handleModify = () => {
@@ -63,14 +59,16 @@ const SetVariables = ({
   };
 
   const handleValidation = (e) => {
-    let fieldType = '';
-    if (!currVariable) {
-      fieldType = 'prompt';
+    const { name } = e.target;
+
+    let errorM = -1;
+
+    if (name === 'name') {
+      errorM = checkValidity('object', e);
     } else {
-      fieldType = currVariable.type;
+      errorM = checkValidity(currVariable.type, e);
     }
 
-    const errorM = checkValidity(fieldType, e);
     if (errorM === -1) {
       // No error condition
       setErrorText('');
@@ -144,7 +142,7 @@ const SetVariables = ({
             <CloseRoundedIcon sx={{ fontSize: 21 }} />
           </Button>
         </Tooltip>
-      </Box>{' '}
+      </Box>
       <Typography
         sx={{
           backgroundColor: ' #FFE4E1',
@@ -259,7 +257,10 @@ const SetVariables = ({
             name='name'
             placeholder={isViewMode === false ? 'required' : ''}
             value={currVariable.name ?? ''}
-            onChange={handleVarChange}
+            onChange={(e) => {
+              handleValidation(e);
+              handleVarChange(e);
+            }}
             disabled={isViewMode === true}
           />
         </ListItem>
