@@ -735,7 +735,7 @@ export function checkValidity(name, e) {
   switch (name) {
     case 'object':
       let objectRegex = /^[a-zA-z_]+[a-zA-z0-9_]*$/;
-      if (value == '' || value == null) return 'Name is required';
+      if (value == '' || value == null) return 'name is required';
       if (!objectRegex.test(value)) return 'name not in valid format';
       return -1;
 

@@ -159,7 +159,11 @@ const GetDigits = ({
           backgroundColor='#d1c4e9'
           blockName='Get Digits'
         />
-        <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+        <DrawerName
+          shapeName={shapeName}
+          setShapeName={setShapeName}
+          stageGroup={stageGroup}
+        />
         <ListItem>
           <Typography variant='button' sx={{ width: '40%' }}>
             Result Variable:

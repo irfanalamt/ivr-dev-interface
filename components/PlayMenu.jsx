@@ -663,7 +663,11 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
           backgroundColor='#b2dfdb'
           blockName='Play Menu'
         />
-        <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+        <DrawerName
+          shapeName={shapeName}
+          setShapeName={setShapeName}
+          stageGroup={stageGroup}
+        />
         <ListItem>
           <Tabs
             sx={{ marginX: 'auto' }}

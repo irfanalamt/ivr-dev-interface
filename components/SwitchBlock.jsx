@@ -155,7 +155,11 @@ const SwitchBlock = ({
           backgroundColor='#795548'
           blockName='Switch'
         />
-        <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+        <DrawerName
+          shapeName={shapeName}
+          setShapeName={setShapeName}
+          stageGroup={stageGroup}
+        />
         <Divider sx={{ mb: 4 }} />
         <ListItem>
           <Typography

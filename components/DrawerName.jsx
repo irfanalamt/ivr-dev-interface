@@ -2,10 +2,22 @@ import { ListItem, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { checkValidity } from '../src/helpers';
 
-const DrawerName = ({ shapeName, setShapeName, errorMessage = '' }) => {
+const DrawerName = ({
+  shapeName,
+  setShapeName,
+  errorMessage = '',
+  stageGroup = null,
+}) => {
   const [errorText, setErrorText] = useState(errorMessage);
 
   const handleNameValidation = (e) => {
+    if (
+      stageGroup?.getShapesAsArray().some((el) => el.text === e.target.value)
+    ) {
+      setErrorText('name NOT unique');
+      return;
+    }
+
     const errorM = checkValidity('object', e);
     if (errorM === -1) {
       // No error condition

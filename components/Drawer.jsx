@@ -53,6 +53,7 @@ const DrawerComponent = ({
             handleCloseDrawer={handleCloseDrawer}
             userVariables={userVariables}
             clearAndDraw={clearAndDraw}
+            stageGroup={stageGroup}
           />
         );
       case 'getDigits':

@@ -78,7 +78,11 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
         backgroundColor='#f8bbd0'
         blockName='Set Params'
       />
-      <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+      <DrawerName
+        shapeName={shapeName}
+        setShapeName={setShapeName}
+        stageGroup={stageGroup}
+      />
       <Divider />
       <ListItem sx={{ mt: 4 }}>
         <InputLabel id='select-label'>parameter list</InputLabel>

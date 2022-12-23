@@ -27,7 +27,6 @@ const FunctionBlock = ({
 
   const [functionString, setFunctionString] = useState('');
   const [isFunctionError, setIsFunctionError] = useState(false);
-  const [errorObj, setErrorObj] = useState({});
 
   function saveUserValues() {
     shape.setText(shapeName || `runScript${shape.id}`);
@@ -76,34 +75,6 @@ const FunctionBlock = ({
     return isValid;
   }
 
-  function handleValidation(e, name, type) {
-    let errorMessage = checkValidity(type, e);
-    if (errorMessage !== -1) {
-      e.target.style.backgroundColor = '#ffebee';
-      setErrorObj((s) => {
-        return { ...s, [name]: errorMessage };
-      });
-      return;
-    }
-
-    if (
-      stageGroup.getShapesAsArray().some((el) => el.text === e.target.value)
-    ) {
-      e.target.style.backgroundColor = '#ffebee';
-      setErrorObj((s) => {
-        return { ...s, [name]: 'name NOT unique' };
-      });
-      return;
-    }
-    // no error condition
-    setErrorObj((s) => {
-      const newObj = { ...s };
-      delete newObj[name];
-      return newObj;
-    });
-    e.target.style.backgroundColor = '#f1f8e9';
-  }
-
   return (
     <List sx={{ minWidth: 350 }}>
       <DrawerTop
@@ -114,7 +85,11 @@ const FunctionBlock = ({
         blockName='Run Script'
       />
 
-      <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+      <DrawerName
+        shapeName={shapeName}
+        setShapeName={setShapeName}
+        stageGroup={stageGroup}
+      />
 
       <ListItem sx={{ mt: 4 }}>
         <TextField

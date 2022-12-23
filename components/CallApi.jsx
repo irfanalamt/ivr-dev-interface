@@ -23,7 +23,13 @@ import { useState } from 'react';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
 
-const CallApi = ({ shape, handleCloseDrawer, userVariables, clearAndDraw }) => {
+const CallApi = ({
+  shape,
+  handleCloseDrawer,
+  userVariables,
+  clearAndDraw,
+  stageGroup,
+}) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [inputArr, setInputArr] = useState(
     shape.userValues?.inputArr || [
@@ -153,7 +159,11 @@ const CallApi = ({ shape, handleCloseDrawer, userVariables, clearAndDraw }) => {
           backgroundColor='#bbdefb'
           blockName='Call API'
         />
-        <DrawerName shapeName={shapeName} setShapeName={setShapeName} />
+        <DrawerName
+          shapeName={shapeName}
+          setShapeName={setShapeName}
+          stageGroup={stageGroup}
+        />
         <Divider sx={{ mb: 2 }} />
         <ListItem>
           <Typography sx={{ fontSize: '1.1rem' }} variant='h6'>
