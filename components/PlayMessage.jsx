@@ -6,7 +6,9 @@ import {
   Box,
   Button,
   Chip,
+  Divider,
   IconButton,
+  InputLabel,
   List,
   ListItem,
   MenuItem,
@@ -21,6 +23,8 @@ import {
 } from '@mui/material';
 import { useRef, useState } from 'react';
 import { addInputElements, checkValidity } from '../src/helpers';
+import DrawerName from './DrawerName';
+import DrawerTop from './DrawerTop';
 
 const PlayMessage = ({
   shape,
@@ -37,10 +41,8 @@ const PlayMessage = ({
     shape.userValues?.params.interruptible ?? true
   );
   const [repeatOption, setRepeatOption] = useState(
-    shape.userValues?.params.repeatOption ?? 9
+    shape.userValues?.params.repeatOption ?? ''
   );
-
-  const nameErrorRef = useRef(null);
 
   function saveUserValues() {
     // remove null values; SAVE
@@ -86,96 +88,21 @@ const PlayMessage = ({
     });
   }
 
-  function handleNameValidation(e) {
-    let errorBox = nameErrorRef.current;
-    let errorMessage = checkValidity('object', e);
-    if (errorMessage !== -1) {
-      errorBox.style.display = 'block';
-      e.target.style.backgroundColor = '#ffebee';
-      errorBox.innerText = errorMessage;
-      return;
-    }
-
-    // check name unique
-    if (
-      stageGroup.getShapesAsArray().some((el) => el.text === e.target.value)
-    ) {
-      errorBox.style.display = 'block';
-      e.target.style.backgroundColor = '#ffebee';
-      errorBox.innerText = 'name NOT unique';
-      return;
-    }
-
-    // no error condition
-    errorBox.style.display = 'none';
-    e.target.style.backgroundColor = '#f1f8e9';
-    errorBox.innerText = '';
-  }
-
   return (
     <>
       <List sx={{ minWidth: 350 }}>
-        <ListItem>
-          <Tooltip title='CLOSE'>
-            <Button
-              size='small'
-              variant='outlined'
-              color='error'
-              sx={{ height: 30 }}
-              onClick={() => {
-                shape.setSelected(false);
-                handleCloseDrawer();
-              }}
-            >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
-            </Button>
-          </Tooltip>
-          <Tooltip title='SAVE'>
-            <Button
-              sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-              size='small'
-              variant='outlined'
-              color='success'
-              onClick={saveUserValues}
-            >
-              <SaveRoundedIcon sx={{ fontSize: 20 }} />
-            </Button>
-          </Tooltip>
-        </ListItem>
-        <ListItem>
-          <Chip
-            sx={{ backgroundColor: '#f0f4c3', mx: 'auto', px: 2, py: 3 }}
-            label={<Typography variant='h6'>Play Message</Typography>}
-          />
-        </ListItem>
-        <ListItem sx={{ marginTop: 1 }}>
-          <Typography variant='button' sx={{ fontSize: 15, width: '35%' }}>
-            Name:
-          </Typography>
-          <TextField
-            sx={{ width: 180, marginX: 1 }}
-            size='small'
-            value={shapeName}
-            onChange={(e) => {
-              handleNameValidation(e);
-              setShapeName(e.target.value);
-            }}
-          ></TextField>
-        </ListItem>
-        <ListItem>
-          <Typography
-            sx={{
-              marginX: 'auto',
-              boxShadow: 1,
-              paddingX: 1,
-              backgroundColor: '#ffcdd2',
-            }}
-            variant='subtitle2'
-            ref={nameErrorRef}
-            id='name-error-box'
-          ></Typography>
-        </ListItem>
-
+        <DrawerTop
+          saveUserValues={saveUserValues}
+          shape={shape}
+          handleCloseDrawer={handleCloseDrawer}
+          backgroundColor='#f0f4c3'
+          blockName='Play Message'
+        />
+        <DrawerName
+          shapeName={shapeName}
+          setShapeName={setShapeName}
+          stageGroup={stageGroup}
+        />
         <ListItem>
           <Tabs
             sx={{ marginX: 'auto' }}
@@ -191,49 +118,48 @@ const PlayMessage = ({
       </List>
       <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
         <ListItem>
-          <Paper
-            sx={{ width: '100%', px: 2, py: 1, backgroundColor: '#f9fbe7' }}
+          <InputLabel id='select-label'>object type:</InputLabel>
+          <Select
+            labelId='select-label'
+            value={msgObjType}
+            onChange={(e) => {
+              setMsgObjType(e.target.value);
+            }}
+            sx={{ ml: 2 }}
+            size='small'
           >
-            <Tooltip title='object type:'>
-              <Select
-                value={msgObjType}
-                onChange={(e) => {
-                  setMsgObjType(e.target.value);
-                }}
-                sx={{ width: '35%' }}
-                size='small'
-              >
-                <MenuItem value='prompt'>Prompt</MenuItem>
-                <MenuItem value='number'>Number</MenuItem>
-                <MenuItem value='ordinal'>Ordinal</MenuItem>
-                <MenuItem value='amount'>Amount</MenuItem>
-                <MenuItem value='digit'>Digit</MenuItem>
-                <MenuItem value='date'>Date</MenuItem>
-                <MenuItem value='day'>Day</MenuItem>
-                <MenuItem value='month'>Month</MenuItem>
-                <MenuItem value='time'>Time</MenuItem>
-              </Select>
-            </Tooltip>
-            <Tooltip title='Add'>
-              <IconButton
-                size='large'
-                color='success'
-                onClick={() => {
-                  addInput();
-                  setMsgObjType('prompt');
-                }}
-                sx={{ ml: 2 }}
-              >
-                <AddBoxRoundedIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip size='large' color='error' title='Remove'>
-              <IconButton onClick={removeInput}>
-                <RemoveCircleRoundedIcon />
-              </IconButton>
-            </Tooltip>
-          </Paper>
+            <MenuItem value='prompt'>Prompt</MenuItem>
+            <MenuItem value='number'>Number</MenuItem>
+            <MenuItem value='ordinal'>Ordinal</MenuItem>
+            <MenuItem value='amount'>Amount</MenuItem>
+            <MenuItem value='digit'>Digit</MenuItem>
+            <MenuItem value='date'>Date</MenuItem>
+            <MenuItem value='day'>Day</MenuItem>
+            <MenuItem value='month'>Month</MenuItem>
+            <MenuItem value='time'>Time</MenuItem>
+          </Select>
+
+          <Tooltip title='Add'>
+            <IconButton
+              sx={{ ml: 1 }}
+              size='large'
+              onClick={() => {
+                addInput();
+                setMsgObjType('prompt');
+              }}
+            >
+              <AddBoxRoundedIcon sx={{ '&:hover': { color: '#81c784' } }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Remove'>
+            <IconButton size='large' onClick={removeInput}>
+              <RemoveCircleRoundedIcon
+                sx={{ '&:hover': { color: '#e57373' } }}
+              />
+            </IconButton>
+          </Tooltip>
         </ListItem>
+        <Divider sx={{ my: 2 }} />
         {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
         <List>
           {msgObj?.map((el, i) => {
