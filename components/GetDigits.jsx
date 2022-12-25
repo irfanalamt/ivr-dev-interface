@@ -97,46 +97,6 @@ const GetDigits = ({
     console.log('🕺🏻getDigits code:', codeString);
   }
 
-  function handleNameValidation(e) {
-    let errorBox = document.getElementById('name-error-box');
-    let errorMessage = checkValidity('object', e);
-    if (errorMessage !== -1) {
-      errorBox.style.display = 'block';
-      e.target.style.backgroundColor = '#ffebee';
-      errorBox.innerText = errorMessage;
-      return;
-    }
-
-    // check name unique
-    if (
-      stageGroup.getShapesAsArray().some((el) => el.text === e.target.value)
-    ) {
-      errorBox.style.display = 'block';
-      e.target.style.backgroundColor = '#ffebee';
-      errorBox.innerText = 'name NOT unique';
-      return;
-    }
-
-    // no error condition
-    errorBox.style.display = 'none';
-    e.target.style.backgroundColor = '#f1f8e9';
-    errorBox.innerText = '';
-  }
-
-  function addInput() {
-    setMsgObj((s) => {
-      return [...s, { type: msgObjType, value: '' }];
-    });
-  }
-  function removeInput() {
-    if (msgObj === null || msgObj === undefined) return;
-    setMsgObj((s) => {
-      const newArr = [...s];
-      newArr.pop();
-      return newArr;
-    });
-  }
-
   function addParamsInput() {
     setParamsObj((s) => {
       return [...s, { type: paramsObjType, value: '' }];
@@ -210,65 +170,12 @@ const GetDigits = ({
           </Tabs>
         </ListItem>
         <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
-          <MessageList messageList={msgObj} setMessageList={setMsgObj} />
-          {/* <ListItem sx={{ mt: 1 }}>
-            <InputLabel id='select-label'>object type:</InputLabel>
-            <Select
-              labelId='select-label'
-              sx={{ ml: 2 }}
-              value={msgObjType}
-              onChange={(e) => {
-                setMsgObjType(e.target.value);
-              }}
-              size='small'
-            >
-              <MenuItem value='prompt'>Prompt</MenuItem>
-              <MenuItem value='number'>Number</MenuItem>
-              <MenuItem value='ordinal'>Ordinal</MenuItem>
-              <MenuItem value='amount'>Amount</MenuItem>
-              <MenuItem value='digit'>Digit</MenuItem>
-              <MenuItem value='date'>Date</MenuItem>
-              <MenuItem value='day'>Day</MenuItem>
-              <MenuItem value='month'>Month</MenuItem>
-              <MenuItem value='time'>Time</MenuItem>
-            </Select>
+          <MessageList
+            messageList={msgObj}
+            setMessageList={setMsgObj}
+            userVariables={userVariables}
+          />
 
-            <Tooltip title='Add'>
-              <IconButton
-                sx={{
-                  ml: 2,
-                }}
-                size='large'
-                onClick={() => {
-                  setMsgObjType('prompt');
-                  addInput();
-                }}
-              >
-                <AddBoxRoundedIcon sx={{ '&:hover': { color: '#81c784' } }} />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title='Remove'>
-              <IconButton size='large' onClick={removeInput}>
-                <RemoveCircleRoundedIcon
-                  sx={{ '&:hover': { color: '#e57373' } }}
-                />
-              </IconButton>
-            </Tooltip>
-          </ListItem> */}
-          <Divider sx={{ my: 2 }} />
-          {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
-          {/* <List>
-            {msgObj?.map((el, i) => {
-              return addInputElements(
-                el.type,
-                i,
-                msgObj,
-                setMsgObj,
-                userVariables
-              );
-            })}
-          </List> */}
           <ListItem>
             <Typography
               sx={{

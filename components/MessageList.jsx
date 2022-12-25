@@ -1,6 +1,7 @@
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import {
+  Divider,
   IconButton,
   InputLabel,
   List,
@@ -15,7 +16,7 @@ import {
 import { useEffect } from 'react';
 import { useState } from 'react';
 
-const MessageList = ({ messageList, setMessageList }) => {
+const MessageList = ({ messageList, setMessageList, userVariables }) => {
   const [selectIndex, setSelectIndex] = useState(0);
 
   const messageListObjects = [
@@ -121,33 +122,92 @@ const MessageList = ({ messageList, setMessageList }) => {
           </IconButton>
         </Tooltip>
       </ListItem>
+      <Divider sx={{ mt: 1 }} />
       <List>
         {messageList.map((m, i) => {
           if (['prompt', 'number', 'ordinal', 'digit'].includes(m.type))
             return (
               <ListItem key={i}>
+                <Tooltip title='useVariable' placement='top-start'>
+                  <Switch
+                    name='useVariable'
+                    sx={{ mr: 2 }}
+                    size='small'
+                    checked={m.useVariable ?? false}
+                    onChange={(e) => handleChangeSwitch(e, i)}
+                  />
+                </Tooltip>
                 <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
                 <TextField
                   name='value'
-                  sx={{ width: m.type === 'prompt' ? 180 : 100 }}
+                  sx={{
+                    display: m.useVariable ? 'none' : 'block',
+                    width: m.type === 'prompt' ? 180 : 100,
+                  }}
                   size='small'
                   value={m.value}
                   onChange={(e) => handleChange(e, i)}
                 />
+                <Select
+                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  size='small'
+                  name='value'
+                  value={m.value}
+                  onChange={(e) => handleChange(e, i)}
+                >
+                  {userVariables
+                    .filter(
+                      (el) =>
+                        el.type === (m.type === 'prompt' ? 'prompt' : 'number')
+                    )
+                    .map((el, i) => {
+                      return (
+                        <MenuItem key={i} value={`$${el.name}` ?? ''}>
+                          {el.name}
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
               </ListItem>
             );
 
           if (m.type === 'amount')
             return (
               <ListItem key={i}>
+                <Tooltip title='useVariable' placement='top-start'>
+                  <Switch
+                    name='useVariable'
+                    sx={{ mr: 2 }}
+                    size='small'
+                    checked={m.useVariable ?? false}
+                    onChange={(e) => handleChangeSwitch(e, i)}
+                  />
+                </Tooltip>
                 <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
                 <TextField
                   name='value'
                   size='small'
-                  sx={{ width: 120 }}
+                  sx={{ width: 120, display: m.useVariable ? 'none' : 'block' }}
                   value={m.value}
                   onChange={(e) => handleChange(e, i)}
                 />
+                <Select
+                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  size='small'
+                  name='value'
+                  value={m.value}
+                  onChange={(e) => handleChange(e, i)}
+                >
+                  {userVariables
+                    .filter((el) => el.type === 'number')
+                    .map((el, i) => {
+                      return (
+                        <MenuItem key={i} value={`$${el.name}` ?? ''}>
+                          {el.name}
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
                 <Typography sx={{ mr: 1, ml: 2 }}>currency:</Typography>
                 <TextField
                   name='currency'
@@ -162,15 +222,41 @@ const MessageList = ({ messageList, setMessageList }) => {
           if (m.type === 'date')
             return (
               <ListItem key={i}>
+                <Tooltip title='useVariable' placement='top-start'>
+                  <Switch
+                    name='useVariable'
+                    sx={{ mr: 2 }}
+                    size='small'
+                    checked={m.useVariable ?? false}
+                    onChange={(e) => handleChangeSwitch(e, i)}
+                  />
+                </Tooltip>
                 <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
                 <TextField
                   name='value'
-                  sx={{ width: 150 }}
+                  sx={{ width: 150, display: m.useVariable ? 'none' : 'block' }}
                   size='small'
                   placeholder='yyyymmdd'
                   value={m.value}
                   onChange={(e) => handleChange(e, i)}
                 />
+                <Select
+                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  size='small'
+                  name='value'
+                  value={m.value}
+                  onChange={(e) => handleChange(e, i)}
+                >
+                  {userVariables
+                    .filter((el) => el.type === m.type)
+                    .map((el, i) => {
+                      return (
+                        <MenuItem key={i} value={`$${el.name}` ?? ''}>
+                          {el.name}
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
                 <Typography sx={{ ml: 2 }}>playYear:</Typography>
                 <Switch
                   name='playYear'
@@ -182,15 +268,41 @@ const MessageList = ({ messageList, setMessageList }) => {
           if (m.type === 'time')
             return (
               <ListItem key={i}>
+                <Tooltip title='useVariable' placement='top-start'>
+                  <Switch
+                    name='useVariable'
+                    sx={{ mr: 2 }}
+                    size='small'
+                    checked={m.useVariable ?? false}
+                    onChange={(e) => handleChangeSwitch(e, i)}
+                  />
+                </Tooltip>
                 <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
                 <TextField
                   name='value'
-                  sx={{ width: 100 }}
+                  sx={{ width: 100, display: m.useVariable ? 'none' : 'block' }}
                   placeholder='hhmm'
                   size='small'
                   value={m.value}
                   onChange={(e) => handleChange(e, i)}
                 />
+                <Select
+                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  size='small'
+                  name='value'
+                  value={m.value}
+                  onChange={(e) => handleChange(e, i)}
+                >
+                  {userVariables
+                    .filter((el) => el.type === m.type)
+                    .map((el, i) => {
+                      return (
+                        <MenuItem key={i} value={`$${el.name}` ?? ''}>
+                          {el.name}
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
                 <Typography sx={{ ml: 2 }}>is24:</Typography>
                 <Switch
                   name='is24'
@@ -203,10 +315,23 @@ const MessageList = ({ messageList, setMessageList }) => {
           if (m.type === 'day')
             return (
               <ListItem key={i}>
+                <Tooltip title='useVariable' placement='top-start'>
+                  <Switch
+                    name='useVariable'
+                    sx={{ mr: 2 }}
+                    size='small'
+                    checked={m.useVariable ?? false}
+                    onChange={(e) => handleChangeSwitch(e, i)}
+                  />
+                </Tooltip>
                 <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
                 <Select
                   name='value'
-                  sx={{ width: 'max-content', minWidth: 100 }}
+                  sx={{
+                    width: 'max-content',
+                    minWidth: 100,
+                    display: m.useVariable ? 'none' : 'block',
+                  }}
                   size='small'
                   value={m.value}
                   onChange={(e) => handleChange(e, i)}
@@ -217,16 +342,46 @@ const MessageList = ({ messageList, setMessageList }) => {
                     </MenuItem>
                   ))}
                 </Select>
+                <Select
+                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  size='small'
+                  name='value'
+                  value={m.value}
+                  onChange={(e) => handleChange(e, i)}
+                >
+                  {userVariables
+                    .filter((el) => el.type === m.type)
+                    .map((el, i) => {
+                      return (
+                        <MenuItem key={i} value={`$${el.name}` ?? ''}>
+                          {el.name}
+                        </MenuItem>
+                      );
+                    })}
+                </Select>
               </ListItem>
             );
 
           if (m.type === 'month')
             return (
               <ListItem key={i}>
+                <Tooltip title='useVariable' placement='top-start'>
+                  <Switch
+                    name='useVariable'
+                    sx={{ mr: 2 }}
+                    size='small'
+                    checked={m.useVariable ?? false}
+                    onChange={(e) => handleChangeSwitch(e, i)}
+                  />
+                </Tooltip>
                 <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
                 <Select
                   name='value'
-                  sx={{ width: 'max-content', minWidth: 100 }}
+                  sx={{
+                    width: 'max-content',
+                    minWidth: 100,
+                    display: m.useVariable ? 'none' : 'block',
+                  }}
                   size='small'
                   value={m.value}
                   onChange={(e) => handleChange(e, i)}
@@ -236,6 +391,23 @@ const MessageList = ({ messageList, setMessageList }) => {
                       {d}
                     </MenuItem>
                   ))}
+                </Select>
+                <Select
+                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  size='small'
+                  name='value'
+                  value={m.value}
+                  onChange={(e) => handleChange(e, i)}
+                >
+                  {userVariables
+                    .filter((el) => el.type === m.type)
+                    .map((el, i) => {
+                      return (
+                        <MenuItem key={i} value={`$${el.name}` ?? ''}>
+                          {el.name}
+                        </MenuItem>
+                      );
+                    })}
                 </Select>
                 <Typography sx={{ ml: 2 }}>isHijri:</Typography>
                 <Switch
