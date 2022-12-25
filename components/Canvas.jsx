@@ -890,6 +890,7 @@ const CanvasComponent = () => {
           }}
           userVariables={userVariables.current}
           setUserVariables={setUserVariables}
+          entireStageGroup={stageGroup.current}
         />
       </Drawer>
       <DrawerComponent

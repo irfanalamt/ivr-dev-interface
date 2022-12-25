@@ -20,6 +20,7 @@ const SetVariables = ({
   handleCloseDrawer,
   userVariables = [],
   setUserVariables,
+  entireStageGroup,
 }) => {
   const [varList, setVarList] = useState(userVariables);
   const [selectedVarIndex, setSelectedVarIndex] = useState('');
@@ -42,6 +43,19 @@ const SetVariables = ({
   };
 
   const handleDelete = () => {
+    // check if var in use. if so prevent delete
+
+    for (const stage of entireStageGroup) {
+      let isVariableInUse = stage.checkVariableInUse(
+        varList[selectedVarIndex].name
+      );
+
+      if (isVariableInUse) {
+        setErrorText('Variable in use. Cannot delete.');
+        return;
+      }
+    }
+
     setVarList((v) => {
       const temp = [...v];
       temp.splice(selectedVarIndex, 1);
@@ -85,6 +99,7 @@ const SetVariables = ({
     }
 
     if (selectedVarIndex === '') {
+      // save new variable
       setVarList((v) => {
         const temp = [...v];
         temp[varList.length] = currVariable;
@@ -93,6 +108,12 @@ const SetVariables = ({
       });
       setSelectedVarIndex(varList.length);
     } else {
+      // modify existing variable
+
+      entireStageGroup.forEach((stage) => {
+        stage.modifyVariable(varList[selectedVarIndex].name, currVariable.name);
+      });
+
       setVarList((v) => {
         const temp = [...v];
         temp[selectedVarIndex] = currVariable;

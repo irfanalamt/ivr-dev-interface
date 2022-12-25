@@ -550,6 +550,25 @@ class Shapes {
       }
     }
   }
+  checkVariableInUse(varName) {
+    for (const shape of this.getShapesAsArray()) {
+      for (const message of shape.userValues.messageList) {
+        if (message.value === `$${varName}`) return true;
+      }
+    }
+    return false;
+  }
+  modifyVariable(varName, newVarName) {
+    // checks if any of the shapes have used this variable name, if so modify it.
+
+    this.getShapesAsArray().forEach((shape) => {
+      shape.userValues.messageList.forEach((message) => {
+        if (message.value === `$${varName}`) {
+          message.value = `$${newVarName}`;
+        }
+      });
+    });
+  }
 }
 
 export default Shapes;
