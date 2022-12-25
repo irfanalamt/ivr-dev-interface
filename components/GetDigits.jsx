@@ -28,6 +28,7 @@ import {
 } from '../src/helpers';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
+import MessageList from './MessageList';
 
 const GetDigits = ({
   shape,
@@ -209,7 +210,8 @@ const GetDigits = ({
           </Tabs>
         </ListItem>
         <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
-          <ListItem sx={{ mt: 1 }}>
+          <MessageList messageList={msgObj} setMessageList={setMsgObj} />
+          {/* <ListItem sx={{ mt: 1 }}>
             <InputLabel id='select-label'>object type:</InputLabel>
             <Select
               labelId='select-label'
@@ -253,10 +255,10 @@ const GetDigits = ({
                 />
               </IconButton>
             </Tooltip>
-          </ListItem>
+          </ListItem> */}
           <Divider sx={{ my: 2 }} />
           {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
-          <List>
+          {/* <List>
             {msgObj?.map((el, i) => {
               return addInputElements(
                 el.type,
@@ -266,7 +268,7 @@ const GetDigits = ({
                 userVariables
               );
             })}
-          </List>
+          </List> */}
           <ListItem>
             <Typography
               sx={{
