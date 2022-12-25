@@ -109,6 +109,7 @@ const PlayMessage = ({
           messageList={msgObj}
           setMessageList={setMsgObj}
           userVariables={userVariables}
+          setErrorText={setErrorText}
         />
 
         <ListItem>

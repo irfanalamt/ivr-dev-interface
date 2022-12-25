@@ -101,6 +101,7 @@ const PlayConfirm = ({
           messageList={msgObj}
           setMessageList={setMsgObj}
           userVariables={userVariables}
+          setErrorText={setErrorText}
         />
         <ListItem>
           <Typography
