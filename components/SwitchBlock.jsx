@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Chip,
   Divider,
   List,
   ListItem,
@@ -9,12 +8,9 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { useState } from 'react';
-import ResetCanvasDialog from './ResetCanvasDialog';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
 
@@ -34,6 +30,7 @@ const SwitchBlock = ({
   const [defaultExitPoint, setDefaultExitPoint] = useState(
     shape.userValues?.default.exitPoint ?? 'default'
   );
+  const [errorText, setErrorText] = useState('');
 
   function saveUserValues() {
     shape.setText(shapeName);
@@ -159,6 +156,8 @@ const SwitchBlock = ({
           shapeName={shapeName}
           setShapeName={setShapeName}
           stageGroup={stageGroup}
+          errorText={errorText}
+          setErrorText={setErrorText}
         />
         <Divider sx={{ mb: 4 }} />
         <ListItem>

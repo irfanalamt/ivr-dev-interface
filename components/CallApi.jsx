@@ -1,21 +1,15 @@
 import {
   Alert,
   Button,
-  Chip,
   Divider,
-  IconButton,
   List,
   ListItem,
   MenuItem,
-  Paper,
   Select,
   Snackbar,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
@@ -46,7 +40,7 @@ const CallApi = ({
     ]
   );
   const [endpoint, setEndpoint] = useState(shape.userValues?.endpoint || '');
-
+  const [errorText, setErrorText] = useState('');
   const [openToast, setOpenToast] = useState(false);
 
   function handleInputArrChange(e, index) {
@@ -163,6 +157,8 @@ const CallApi = ({
           shapeName={shapeName}
           setShapeName={setShapeName}
           stageGroup={stageGroup}
+          errorText={errorText}
+          setErrorText={setErrorText}
         />
         <Divider sx={{ mb: 2 }} />
         <ListItem>

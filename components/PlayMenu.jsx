@@ -1,20 +1,15 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
-  Button,
-  Chip,
   Divider,
   IconButton,
   InputLabel,
   List,
   ListItem,
   MenuItem,
-  Paper,
   Select,
   Switch,
   Tab,
@@ -39,6 +34,7 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
   const [itemsObj, setItemsObj] = useState(shape.userValues?.items || []);
   const [itemSelected, setItemSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
+  const [errorText, setErrorText] = useState('');
 
   function handleMenuObjChange(value, name) {
     setMenuObj((s) => {
@@ -667,6 +663,8 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
           shapeName={shapeName}
           setShapeName={setShapeName}
           stageGroup={stageGroup}
+          errorText={errorText}
+          setErrorText={setErrorText}
         />
         <ListItem>
           <Tabs

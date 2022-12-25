@@ -16,7 +16,7 @@ import DrawerTop from './DrawerTop';
 
 const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
   const [shapeName, setShapeName] = useState(shape.text);
-
+  const [errorText, setErrorText] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const paramList = shape.userValues?.params ?? defaultParams;
@@ -70,6 +70,8 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
         shapeName={shapeName}
         setShapeName={setShapeName}
         stageGroup={stageGroup}
+        errorText={errorText}
+        setErrorText={setErrorText}
       />
       <Divider />
       <ListItem sx={{ mt: 4 }}>

@@ -43,6 +43,7 @@ const PlayMessage = ({
   const [repeatOption, setRepeatOption] = useState(
     shape.userValues?.params.repeatOption ?? ''
   );
+  const [errorText, setErrorText] = useState('');
 
   function saveUserValues() {
     // remove null values; SAVE
@@ -87,6 +88,8 @@ const PlayMessage = ({
           shapeName={shapeName}
           setShapeName={setShapeName}
           stageGroup={stageGroup}
+          errorText={errorText}
+          setErrorText={setErrorText}
         />
         <ListItem>
           <Tabs

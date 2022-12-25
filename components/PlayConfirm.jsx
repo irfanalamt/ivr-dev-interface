@@ -1,28 +1,15 @@
-import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
-  Button,
-  Chip,
-  Divider,
-  IconButton,
-  InputLabel,
   List,
   ListItem,
   MenuItem,
-  Paper,
   Select,
-  Switch,
   Tab,
   Tabs,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
-import { useRef, useState } from 'react';
-import { addInputElements, checkValidity } from '../src/helpers';
+import { useState } from 'react';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 import MessageList from './MessageList';
@@ -49,6 +36,7 @@ const PlayConfirm = ({
   const [cancelPrompt, setCancelPrompt] = useState(
     shape.userValues?.params.cancelPrompt ?? ''
   );
+  const [errorText, setErrorText] = useState('');
 
   function saveUserValues() {
     const filteredMsgObj = msgObj.filter((n) => n.value);
@@ -92,6 +80,8 @@ const PlayConfirm = ({
           shapeName={shapeName}
           setShapeName={setShapeName}
           stageGroup={stageGroup}
+          errorText={errorText}
+          setErrorText={setErrorText}
         />
         <ListItem>
           <Tabs

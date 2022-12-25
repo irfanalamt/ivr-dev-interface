@@ -5,11 +5,10 @@ import { checkValidity } from '../src/helpers';
 const DrawerName = ({
   shapeName,
   setShapeName,
-  errorMessage = '',
+  errorText,
+  setErrorText,
   stageGroup = null,
 }) => {
-  const [errorText, setErrorText] = useState(errorMessage);
-
   const handleNameValidation = (e) => {
     if (
       stageGroup?.getShapesAsArray().some((el) => el.text === e.target.value)

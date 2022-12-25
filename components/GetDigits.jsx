@@ -1,31 +1,19 @@
 import {
   Tabs,
-  Button,
   List,
   ListItem,
   Tab,
-  TextField,
   Typography,
   Tooltip,
   Box,
   Select,
   MenuItem,
-  Chip,
   IconButton,
-  Paper,
-  InputLabel,
-  Divider,
 } from '@mui/material';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
 import { useState } from 'react';
-import {
-  addInputElements,
-  checkValidity,
-  addParamsElements,
-} from '../src/helpers';
+import { addParamsElements } from '../src/helpers';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
 import MessageList from './MessageList';
@@ -49,11 +37,11 @@ const GetDigits = ({
     shape.userValues?.params.maxDigits ?? 1
   );
   const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
-  const [msgObjType, setMsgObjType] = useState('prompt');
   const [paramsObj, setParamsObj] = useState(
     shape.userValues?.params.paramsList ?? []
   );
   const [paramsObjType, setParamsObjType] = useState('');
+  const [errorText, setErrorText] = useState('');
 
   const paramsObjOptions = [
     'terminator',
@@ -126,6 +114,8 @@ const GetDigits = ({
           shapeName={shapeName}
           setShapeName={setShapeName}
           stageGroup={stageGroup}
+          errorText={errorText}
+          setErrorText={setErrorText}
         />
         <ListItem>
           <Typography variant='body1' sx={{ width: '40%', fontWeight: 'bold' }}>
@@ -174,6 +164,7 @@ const GetDigits = ({
             messageList={msgObj}
             setMessageList={setMsgObj}
             userVariables={userVariables}
+            setErrorText={setErrorText}
           />
 
           <ListItem>

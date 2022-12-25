@@ -15,8 +15,14 @@ import {
 } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import { checkValidity } from '../src/helpers';
 
-const MessageList = ({ messageList, setMessageList, userVariables }) => {
+const MessageList = ({
+  messageList,
+  setMessageList,
+  userVariables,
+  setErrorText,
+}) => {
   const [selectIndex, setSelectIndex] = useState(0);
 
   const messageListObjects = [
@@ -73,12 +79,27 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
     });
   };
 
-  const handleChange = (e, index) => {
+  const handleChange = (e, index, type = null) => {
     const { value, name } = e.target;
+
+    let isError = false;
+
+    if (type) {
+      const errorM = checkValidity(type, e);
+      if (errorM === -1) {
+        // no validation error
+        setErrorText('');
+      } else {
+        isError = true;
+        console.log('error: ' + errorM);
+        setErrorText(errorM);
+      }
+    }
 
     setMessageList((m) => {
       const temp = [...m];
       temp[index][name] = value;
+      if (type) temp[index].isError = isError;
       return temp;
     });
   };
@@ -89,6 +110,7 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
     setMessageList((m) => {
       const temp = [...m];
       temp[index][name] = checked;
+      temp[index].value = '';
       return temp;
     });
   };
@@ -145,14 +167,17 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
                     width: m.type === 'prompt' ? 180 : 100,
                   }}
                   size='small'
-                  value={m.value}
-                  onChange={(e) => handleChange(e, i)}
+                  value={m.value ?? ''}
+                  onChange={(e) => {
+                    handleChange(e, i, m.type);
+                  }}
+                  error={m.isError}
                 />
                 <Select
                   sx={{ display: m.useVariable ? 'block' : 'none' }}
                   size='small'
                   name='value'
-                  value={m.value}
+                  value={m.useVariable ? m.value : ''}
                   onChange={(e) => handleChange(e, i)}
                 >
                   {userVariables
@@ -188,14 +213,17 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
                   name='value'
                   size='small'
                   sx={{ width: 120, display: m.useVariable ? 'none' : 'block' }}
-                  value={m.value}
-                  onChange={(e) => handleChange(e, i)}
+                  value={m.value ?? ''}
+                  onChange={(e) => {
+                    handleChange(e, i, m.type);
+                  }}
+                  error={m.isError}
                 />
                 <Select
                   sx={{ display: m.useVariable ? 'block' : 'none' }}
                   size='small'
                   name='value'
-                  value={m.value}
+                  value={m.useVariable ? m.value : ''}
                   onChange={(e) => handleChange(e, i)}
                 >
                   {userVariables
@@ -237,14 +265,17 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
                   sx={{ width: 150, display: m.useVariable ? 'none' : 'block' }}
                   size='small'
                   placeholder='yyyymmdd'
-                  value={m.value}
-                  onChange={(e) => handleChange(e, i)}
+                  value={m.value ?? ''}
+                  onChange={(e) => {
+                    handleChange(e, i, m.type);
+                  }}
+                  error={m.isError}
                 />
                 <Select
                   sx={{ display: m.useVariable ? 'block' : 'none' }}
                   size='small'
                   name='value'
-                  value={m.value}
+                  value={m.useVariable ? m.value : ''}
                   onChange={(e) => handleChange(e, i)}
                 >
                   {userVariables
@@ -283,14 +314,17 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
                   sx={{ width: 100, display: m.useVariable ? 'none' : 'block' }}
                   placeholder='hhmm'
                   size='small'
-                  value={m.value}
-                  onChange={(e) => handleChange(e, i)}
+                  value={m.value ?? ''}
+                  onChange={(e) => {
+                    handleChange(e, i, m.type);
+                  }}
+                  error={m.isError}
                 />
                 <Select
                   sx={{ display: m.useVariable ? 'block' : 'none' }}
                   size='small'
                   name='value'
-                  value={m.value}
+                  value={m.useVariable ? m.value : ''}
                   onChange={(e) => handleChange(e, i)}
                 >
                   {userVariables
@@ -333,7 +367,7 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
                     display: m.useVariable ? 'none' : 'block',
                   }}
                   size='small'
-                  value={m.value}
+                  value={m.value ?? ''}
                   onChange={(e) => handleChange(e, i)}
                 >
                   {dayValues.map((d, i) => (
@@ -346,7 +380,7 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
                   sx={{ display: m.useVariable ? 'block' : 'none' }}
                   size='small'
                   name='value'
-                  value={m.value}
+                  value={m.useVariable ? m.value : ''}
                   onChange={(e) => handleChange(e, i)}
                 >
                   {userVariables
@@ -383,7 +417,7 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
                     display: m.useVariable ? 'none' : 'block',
                   }}
                   size='small'
-                  value={m.value}
+                  value={m.value ?? ''}
                   onChange={(e) => handleChange(e, i)}
                 >
                   {monthValues.map((d, i) => (
@@ -396,7 +430,7 @@ const MessageList = ({ messageList, setMessageList, userVariables }) => {
                   sx={{ display: m.useVariable ? 'block' : 'none' }}
                   size='small'
                   name='value'
-                  value={m.value}
+                  value={m.useVariable ? m.value : ''}
                   onChange={(e) => handleChange(e, i)}
                 >
                   {userVariables

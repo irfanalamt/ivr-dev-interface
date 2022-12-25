@@ -27,6 +27,7 @@ const FunctionBlock = ({
 
   const [functionString, setFunctionString] = useState('');
   const [isFunctionError, setIsFunctionError] = useState(false);
+  const [errorText, setErrorText] = useState('');
 
   function saveUserValues() {
     shape.setText(shapeName || `runScript${shape.id}`);
@@ -89,6 +90,8 @@ const FunctionBlock = ({
         shapeName={shapeName}
         setShapeName={setShapeName}
         stageGroup={stageGroup}
+        errorText={errorText}
+        setErrorText={setErrorText}
       />
 
       <ListItem sx={{ mt: 4 }}>
