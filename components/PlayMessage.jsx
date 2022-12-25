@@ -25,6 +25,7 @@ import { useRef, useState } from 'react';
 import { addInputElements, checkValidity } from '../src/helpers';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
+import MessageList from './MessageList';
 
 const PlayMessage = ({
   shape,
@@ -35,7 +36,6 @@ const PlayMessage = ({
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
-  const [msgObjType, setMsgObjType] = useState('prompt');
   const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
   const [interruptible, setInterruptible] = useState(
     shape.userValues?.params.interruptible ?? true
@@ -73,21 +73,6 @@ const PlayMessage = ({
     console.log('🕺🏻playMessage code:', codeString);
   }
 
-  function addInput() {
-    setMsgObj((s) => {
-      return [...s, { type: msgObjType, value: '' }];
-    });
-  }
-
-  function removeInput() {
-    if (msgObj === null || msgObj === undefined) return;
-    setMsgObj((s) => {
-      const newArr = [...s];
-      newArr.pop();
-      return newArr;
-    });
-  }
-
   return (
     <>
       <List sx={{ minWidth: 350 }}>
@@ -117,61 +102,12 @@ const PlayMessage = ({
         </ListItem>
       </List>
       <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
-        <ListItem>
-          <InputLabel id='select-label'>object type:</InputLabel>
-          <Select
-            labelId='select-label'
-            value={msgObjType}
-            onChange={(e) => {
-              setMsgObjType(e.target.value);
-            }}
-            sx={{ ml: 2 }}
-            size='small'
-          >
-            <MenuItem value='prompt'>Prompt</MenuItem>
-            <MenuItem value='number'>Number</MenuItem>
-            <MenuItem value='ordinal'>Ordinal</MenuItem>
-            <MenuItem value='amount'>Amount</MenuItem>
-            <MenuItem value='digit'>Digit</MenuItem>
-            <MenuItem value='date'>Date</MenuItem>
-            <MenuItem value='day'>Day</MenuItem>
-            <MenuItem value='month'>Month</MenuItem>
-            <MenuItem value='time'>Time</MenuItem>
-          </Select>
+        <MessageList
+          messageList={msgObj}
+          setMessageList={setMsgObj}
+          userVariables={userVariables}
+        />
 
-          <Tooltip title='Add'>
-            <IconButton
-              sx={{ ml: 1 }}
-              size='large'
-              onClick={() => {
-                addInput();
-                setMsgObjType('prompt');
-              }}
-            >
-              <AddBoxRoundedIcon sx={{ '&:hover': { color: '#81c784' } }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title='Remove'>
-            <IconButton size='large' onClick={removeInput}>
-              <RemoveCircleRoundedIcon
-                sx={{ '&:hover': { color: '#e57373' } }}
-              />
-            </IconButton>
-          </Tooltip>
-        </ListItem>
-        <Divider sx={{ my: 2 }} />
-        {/* <pre>{JSON.stringify(msgObj, null, 2)}</pre> */}
-        <List>
-          {msgObj?.map((el, i) => {
-            return addInputElements(
-              el.type,
-              i,
-              msgObj,
-              setMsgObj,
-              userVariables
-            );
-          })}
-        </List>
         <ListItem>
           <Typography
             sx={{
