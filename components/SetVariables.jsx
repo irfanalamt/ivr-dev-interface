@@ -34,13 +34,13 @@ const SetVariables = ({
   const [errorText, setErrorText] = useState('');
 
   const dayValues = [
-    '01 Sunday',
-    '02 Monday',
-    '03 Tuesday',
-    '04 Wednesday',
-    '05 Thursday',
-    '06 Friday',
-    '07 Saturday',
+    '1 Sunday',
+    '2 Monday',
+    '3 Tuesday',
+    '4 Wednesday',
+    '5 Thursday',
+    '6 Friday',
+    '7 Saturday',
   ];
 
   const monthValues = [
