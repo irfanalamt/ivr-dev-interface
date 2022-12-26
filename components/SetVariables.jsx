@@ -33,8 +33,39 @@ const SetVariables = ({
   });
   const [errorText, setErrorText] = useState('');
 
+  const dayValues = [
+    '01 Sunday',
+    '02 Monday',
+    '03 Tuesday',
+    '04 Wednesday',
+    '05 Thursday',
+    '06 Friday',
+    '07 Saturday',
+  ];
+
+  const monthValues = [
+    '01 January',
+    '02 February',
+    '03 March',
+    '04 April',
+    '05 May',
+    '06 June',
+    '07 July',
+    '08 August',
+    '09 September',
+    '10 October',
+    '11 November',
+    '12 December',
+  ];
+
   const handleAdd = () => {
     setSelectedVarIndex('');
+    setCurrVariable({
+      type: 'prompt',
+      name: '',
+      value: '',
+      description: '',
+    });
     setIsViewMode(false);
   };
 
@@ -289,8 +320,47 @@ const SetVariables = ({
           <Typography sx={{ fontWeight: 'bold', width: '30%' }} variant='body1'>
             defaultValue:
           </Typography>
+          <Select
+            size='small'
+            name='value'
+            sx={{
+              display:
+                currVariable.type === 'day' || currVariable.type === 'month'
+                  ? 'block'
+                  : 'none',
+              minWidth: '30%',
+              ml: 1,
+            }}
+            value={
+              currVariable.type === 'day' || currVariable.type === 'month'
+                ? currVariable.value
+                : ''
+            }
+            onChange={handleVarChange}
+          >
+            {currVariable.type === 'day' &&
+              dayValues.map((d, i) => (
+                <MenuItem value={i + 1} key={i}>
+                  {d}
+                </MenuItem>
+              ))}
+            {currVariable.type === 'month' &&
+              monthValues.map((d, i) => (
+                <MenuItem value={i + 1} key={i}>
+                  {d}
+                </MenuItem>
+              ))}
+          </Select>
           <TextField
-            sx={{ ml: 1, width: '55%' }}
+            sx={{
+              ml: 1,
+              width: '55%',
+              display: !(
+                currVariable.type === 'day' || currVariable.type === 'month'
+              )
+                ? 'block'
+                : 'none',
+            }}
             size='small'
             name='value'
             placeholder={isViewMode === false ? 'required' : ''}
