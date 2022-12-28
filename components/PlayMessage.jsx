@@ -33,6 +33,7 @@ const PlayMessage = ({
   userVariables,
   stageGroup,
   clearAndDraw,
+  childRef,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
@@ -59,6 +60,16 @@ const PlayMessage = ({
 
     if (filteredMsgObj.length > 0) generateJS(filteredMsgObj);
   }
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: {
+        params: { interruptible, repeatOption },
+        messageList: msgObj,
+      },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS(filteredMsgObj) {
     let codeString = `this.${

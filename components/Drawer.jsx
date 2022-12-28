@@ -1,5 +1,6 @@
 import { Button, Typography } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
+import { useRef } from 'react';
 import CallApi from './CallApi';
 import EndFlow from './EndFlow';
 import FunctionBlock from './FunctionBlock';
@@ -20,6 +21,28 @@ const DrawerComponent = ({
   entireStageGroup,
   clearAndDraw,
 }) => {
+  const childRef = {};
+
+  const handleClosing = () => {
+    shape.setSelected(false);
+    if (!childRef.getCurrentUserValues) {
+      // if function not present in child, close the drawer
+      handleCloseDrawer();
+      return;
+    }
+    const currentValues = childRef.getCurrentUserValues();
+    const existingValues = JSON.stringify({
+      name: shape.text,
+      userValues: shape.userValues,
+    });
+    console.log('childRef.current', childRef);
+    console.log('current:', currentValues);
+    console.log('existing values:', existingValues);
+
+    // allow closing only if values unchanged
+    if (currentValues === existingValues) handleCloseDrawer();
+  };
+
   const myList = () => {
     if (!shape) return;
 
@@ -27,6 +50,7 @@ const DrawerComponent = ({
       case 'playMessage':
         return (
           <PlayMessage
+            childRef={childRef}
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             userVariables={userVariables}
@@ -43,6 +67,7 @@ const DrawerComponent = ({
             userVariables={userVariables}
             stageGroup={stageGroup}
             clearAndDraw={clearAndDraw}
+            childRef={childRef}
           />
         );
 
@@ -54,6 +79,7 @@ const DrawerComponent = ({
             userVariables={userVariables}
             clearAndDraw={clearAndDraw}
             stageGroup={stageGroup}
+            childRef={childRef}
           />
         );
       case 'getDigits':
@@ -64,6 +90,7 @@ const DrawerComponent = ({
             userVariables={userVariables}
             stageGroup={stageGroup}
             clearAndDraw={clearAndDraw}
+            childRef={childRef}
           />
         );
       case 'playMenu':
@@ -73,6 +100,7 @@ const DrawerComponent = ({
             handleCloseDrawer={handleCloseDrawer}
             stageGroup={stageGroup}
             clearAndDraw={clearAndDraw}
+            childRef={childRef}
           />
         );
       case 'setParams':
@@ -82,6 +110,7 @@ const DrawerComponent = ({
             handleCloseDrawer={handleCloseDrawer}
             stageGroup={stageGroup}
             clearAndDraw={clearAndDraw}
+            childRef={childRef}
           />
         );
       case 'runScript':
@@ -91,7 +120,8 @@ const DrawerComponent = ({
             handleCloseDrawer={handleCloseDrawer}
             stageGroup={stageGroup}
             clearAndDraw={clearAndDraw}
-          ></FunctionBlock>
+            childRef={childRef}
+          />
         );
       case 'jumper':
         return (
@@ -109,6 +139,7 @@ const DrawerComponent = ({
             userVariables={userVariables}
             stageGroup={stageGroup}
             clearAndDraw={clearAndDraw}
+            childRef={childRef}
           />
         );
 
@@ -137,11 +168,6 @@ const DrawerComponent = ({
         );
     }
   };
-
-  function handleClosing() {
-    shape.setSelected(false);
-    handleCloseDrawer();
-  }
 
   return (
     <Drawer anchor='right' open={isOpen} onClose={handleClosing}>

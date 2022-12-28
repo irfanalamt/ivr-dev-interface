@@ -20,6 +20,7 @@ const PlayConfirm = ({
   userVariables,
   stageGroup,
   clearAndDraw,
+  childRef,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
@@ -49,6 +50,17 @@ const PlayConfirm = ({
 
     if (filteredMsgObj.length > 0) generateJS(filteredMsgObj);
   }
+
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: {
+        params: { confirmOption, cancelOption, confirmPrompt, cancelPrompt },
+        messageList: msgObj,
+      },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS(filteredMsgObj) {
     let codeString = `this.${

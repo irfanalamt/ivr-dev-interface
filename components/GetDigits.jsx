@@ -24,6 +24,7 @@ const GetDigits = ({
   userVariables,
   stageGroup,
   clearAndDraw,
+  childRef,
 }) => {
   const [resultName, setResultName] = useState(
     shape.userValues?.variableName ?? ''
@@ -71,6 +72,22 @@ const GetDigits = ({
 
     if (filteredMsgObj.length > 0) generateJS(filteredMsgObj, entireParamsObj);
   }
+
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: {
+        params: {
+          minDigits,
+          maxDigits,
+          paramsList: paramsObj,
+        },
+        messageList: msgObj,
+        variableName: resultName,
+      },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS(filteredMsgObj, entireParamsObj) {
     let codeString = `this.${

@@ -23,6 +23,7 @@ const CallApi = ({
   userVariables,
   clearAndDraw,
   stageGroup,
+  childRef,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [inputArr, setInputArr] = useState(
@@ -71,6 +72,14 @@ const CallApi = ({
     console.log('🌟', { inputArr, outputArr });
     generateJS();
   }
+
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: { endpoint, inputArr, outputArr },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS() {
     if (!endpoint || !inputArr[0].value || !outputArr[0].value) {

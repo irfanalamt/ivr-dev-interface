@@ -23,7 +23,13 @@ import { checkValidity } from '../src/helpers';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 
-const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
+const PlayMenu = ({
+  shape,
+  handleCloseDrawer,
+  stageGroup,
+  clearAndDraw,
+  childRef,
+}) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
   const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
@@ -58,6 +64,17 @@ const PlayMenu = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
     // only generate if atleast 1 valid item
     if (filteredItems.length > 0) generateJS();
   }
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: {
+        params: menuObj,
+        paramSelectedList,
+        items: itemsObj,
+      },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS() {
     let menuString = JSON.stringify({ ...menuObj, items: itemsObj });

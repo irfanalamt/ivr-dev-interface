@@ -22,10 +22,11 @@ const FunctionBlock = ({
   handleCloseDrawer,
   stageGroup,
   clearAndDraw,
+  childRef,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
 
-  const [functionString, setFunctionString] = useState('');
+  const [functionString, setFunctionString] = useState();
   const [isFunctionError, setIsFunctionError] = useState(false);
   const [errorText, setErrorText] = useState('');
 
@@ -37,6 +38,14 @@ const FunctionBlock = ({
       generateJS();
     }
   }
+
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: null,
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS() {
     if (functionString.length < 2) {

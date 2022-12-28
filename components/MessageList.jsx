@@ -61,9 +61,9 @@ const MessageList = ({
     '12 December',
   ];
 
-  useEffect(() => {
-    console.log(JSON.stringify(messageList, null, 2));
-  }, [messageList]);
+  // useEffect(() => {
+  //   console.log(JSON.stringify(messageList, null, 2));
+  // }, [messageList]);
 
   const handleAdd = () => {
     const objType = messageListObjects[selectIndex];

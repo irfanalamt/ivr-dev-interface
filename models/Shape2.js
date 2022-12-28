@@ -14,6 +14,7 @@ class Shape {
     this.text = type;
     this.selected = false;
     this.userValues = null;
+
     this.nextItem = null;
     this.functionString = '';
   }
@@ -67,6 +68,7 @@ class Shape {
   setUserValues(userValues) {
     this.userValues = { ...userValues };
   }
+
   setSelected(bool) {
     this.selected = bool;
   }

@@ -20,6 +20,7 @@ const SwitchBlock = ({
   userVariables,
   stageGroup,
   clearAndDraw,
+  childRef,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [userValues, setUserValues] = useState(
@@ -60,6 +61,17 @@ const SwitchBlock = ({
       default: { ...shape.userValues?.default, exitPoint: defaultExitPoint },
     });
   }
+
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: {
+        switchArray: userValues,
+        default: { ...shape.userValues?.default, exitPoint: defaultExitPoint },
+      },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function handleChangeUserValues(e, index) {
     const { name, value } = e.target;

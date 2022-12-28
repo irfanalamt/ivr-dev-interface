@@ -14,7 +14,13 @@ import defaultParams from '../src/defaultParams';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 
-const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
+const SetParams = ({
+  shape,
+  handleCloseDrawer,
+  stageGroup,
+  clearAndDraw,
+  childRef,
+}) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [errorText, setErrorText] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -38,6 +44,16 @@ const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
     // });
     // generateJS();
   }
+
+  const getCurrentUserValues = () => {
+    const newParamList = [...paramList];
+    newParamList[selectedIndex] = currentParam;
+    return JSON.stringify({
+      name: shapeName,
+      userValues: { params: newParamList },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   const handleParamChange = (e) => {
     const { value } = e.target;
