@@ -676,6 +676,11 @@ export function checkValidity(name, e) {
       if (!objectRegex.test(value)) return 'name not in valid format';
       return -1;
 
+    case 'action':
+      const actionRegex = /^[a-zA-Z0-9]{2,}$/;
+      if (!actionRegex.test(value)) return 'action not in valid format';
+      return -1;
+
     case 'prompt':
       const promptRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
 

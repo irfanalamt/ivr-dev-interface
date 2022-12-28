@@ -236,6 +236,7 @@ const PlayMenu = ({
             value={itemsObj[key].action ?? ''}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'action');
+              handleValidation(e, `action${key}`, 'action');
             }}
             helperText={errorObj[`action${key}`]}
             size='small'
