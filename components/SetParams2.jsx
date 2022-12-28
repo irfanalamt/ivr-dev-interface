@@ -1,4 +1,5 @@
 import {
+  Button,
   Divider,
   InputLabel,
   List,
@@ -7,12 +8,14 @@ import {
   Select,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import defaultParams from '../src/defaultParams';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
+import SaveIcon from '@mui/icons-material/Save';
 
 const SetParams = ({
   shape,
@@ -144,6 +147,11 @@ const SetParams = ({
             onChange={handleParamChangeSwitch}
           />
         )}
+        <Tooltip title='update parameter' placement='top-end'>
+          <Button sx={{ ml: 2 }} onClick={saveUserValues}>
+            <SaveIcon sx={{ fontSize: '1.3rem', color: '#424242' }} />
+          </Button>
+        </Tooltip>
       </ListItem>
     </List>
   );
