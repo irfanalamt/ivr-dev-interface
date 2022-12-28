@@ -129,6 +129,12 @@ const SetVariables = ({
       return;
     }
 
+    if (varList.some((v) => v.name === currVariable.name)) {
+      // name not unique
+      setErrorText('variable name NOT unique');
+      return;
+    }
+
     if (selectedVarIndex === '') {
       // save new variable
       setVarList((v) => {
