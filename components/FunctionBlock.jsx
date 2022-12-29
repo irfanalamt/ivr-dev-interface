@@ -31,8 +31,12 @@ const FunctionBlock = ({
   );
   const [isFunctionError, setIsFunctionError] = useState(false);
   const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   function saveUserValues() {
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
+
     shape.setText(shapeName || `runScript${shape.id}`);
     shape.setUserValues({ script: functionString });
     clearAndDraw();
@@ -104,6 +108,7 @@ const FunctionBlock = ({
         stageGroup={stageGroup}
         errorText={errorText}
         setErrorText={setErrorText}
+        successText={successText}
       />
 
       <ListItem sx={{ mt: 4 }}>

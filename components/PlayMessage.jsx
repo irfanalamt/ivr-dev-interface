@@ -45,10 +45,12 @@ const PlayMessage = ({
     shape.userValues?.params.repeatOption ?? ''
   );
   const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   function saveUserValues() {
     // remove null values; SAVE
-
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
     const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
     clearAndDraw();
@@ -101,6 +103,7 @@ const PlayMessage = ({
           stageGroup={stageGroup}
           errorText={errorText}
           setErrorText={setErrorText}
+          successText={successText}
         />
         <ListItem>
           <Tabs

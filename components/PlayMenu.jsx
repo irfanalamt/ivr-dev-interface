@@ -41,6 +41,7 @@ const PlayMenu = ({
   const [itemSelected, setItemSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
   const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   function handleMenuObjChange(value, name) {
     setMenuObj((s) => {
@@ -51,6 +52,9 @@ const PlayMenu = ({
   }
 
   function saveUserValues() {
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
+
     shape.setText(shapeName || 'playMenu');
     clearAndDraw();
     // only save items with both action and prompt values
@@ -683,6 +687,7 @@ const PlayMenu = ({
           stageGroup={stageGroup}
           errorText={errorText}
           setErrorText={setErrorText}
+          successText={successText}
         />
         <ListItem>
           <Tabs

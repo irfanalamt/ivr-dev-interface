@@ -43,6 +43,7 @@ const GetDigits = ({
   );
   const [paramsObjType, setParamsObjType] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   const paramsObjOptions = [
     'terminator',
@@ -53,6 +54,9 @@ const GetDigits = ({
   ];
 
   function saveUserValues() {
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
+
     // remove null values; SAVE
     const filteredMsgObj = msgObj.filter((n) => n.value);
     const filteredParamsObj = paramsObj.filter((n) => n.value);
@@ -133,6 +137,7 @@ const GetDigits = ({
           stageGroup={stageGroup}
           errorText={errorText}
           setErrorText={setErrorText}
+          successText={successText}
         />
         <ListItem>
           <Typography variant='body1' sx={{ width: '40%', fontWeight: 'bold' }}>

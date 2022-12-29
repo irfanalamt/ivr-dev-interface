@@ -32,8 +32,12 @@ const SwitchBlock = ({
     shape.userValues?.default.exitPoint ?? 'default'
   );
   const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   function saveUserValues() {
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
+
     shape.setText(shapeName);
     clearAndDraw();
     // filter our rows with either fields blank or has an error in either fields
@@ -158,7 +162,7 @@ const SwitchBlock = ({
     <>
       <List>
         <DrawerTop
-          aveUserValues={saveUserValues}
+          saveUserValues={saveUserValues}
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
           backgroundColor='#795548'
@@ -170,6 +174,7 @@ const SwitchBlock = ({
           stageGroup={stageGroup}
           errorText={errorText}
           setErrorText={setErrorText}
+          successText={successText}
         />
         <Divider sx={{ mb: 4 }} />
         <ListItem>

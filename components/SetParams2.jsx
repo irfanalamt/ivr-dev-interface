@@ -32,8 +32,12 @@ const SetParams = ({
   const [currentParam, setCurrentParam] = useState(
     paramList[selectedIndex] ?? ''
   );
+  const [successText, setSuccessText] = useState('');
 
   function saveUserValues() {
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
+
     shape.setText(shapeName || `setParams${shape.id}`);
     clearAndDraw();
     const newParamList = [...paramList];
@@ -91,6 +95,7 @@ const SetParams = ({
         stageGroup={stageGroup}
         errorText={errorText}
         setErrorText={setErrorText}
+        successText={successText}
       />
       <Divider />
       <ListItem sx={{ mt: 4 }}>

@@ -38,8 +38,12 @@ const PlayConfirm = ({
     shape.userValues?.params.cancelPrompt ?? ''
   );
   const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   function saveUserValues() {
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
+
     const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
     clearAndDraw();
@@ -94,6 +98,7 @@ const PlayConfirm = ({
           stageGroup={stageGroup}
           errorText={errorText}
           setErrorText={setErrorText}
+          successText={successText}
         />
         <ListItem>
           <Tabs

@@ -43,6 +43,7 @@ const CallApi = ({
   const [endpoint, setEndpoint] = useState(shape.userValues?.endpoint || '');
   const [errorText, setErrorText] = useState('');
   const [openToast, setOpenToast] = useState(false);
+  const [successText, setSuccessText] = useState('');
 
   function handleInputArrChange(e, index) {
     console.log('🚀 ~ handleInputArrChange ~ e', e);
@@ -66,6 +67,9 @@ const CallApi = ({
   }
 
   function saveUserValues() {
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
+
     shape.setText(shapeName || 'callAPI');
     clearAndDraw();
     shape.setUserValues({ endpoint, inputArr, outputArr });
@@ -168,6 +172,7 @@ const CallApi = ({
           stageGroup={stageGroup}
           errorText={errorText}
           setErrorText={setErrorText}
+          successText={successText}
         />
         <Divider sx={{ mb: 2 }} />
         <ListItem>

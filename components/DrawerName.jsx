@@ -8,6 +8,7 @@ const DrawerName = ({
   errorText,
   setErrorText,
   stageGroup = null,
+  successText = '',
 }) => {
   const handleNameValidation = (e) => {
     if (
@@ -45,6 +46,23 @@ const DrawerName = ({
         variant='subtitle1'
       >
         {errorText}
+      </Typography>
+      <Typography
+        sx={{
+          backgroundColor: '#7eca8f',
+          color: '#ffffff',
+          width: 'max-content',
+          position: 'absolute',
+          px: 1,
+          mt: 1,
+          left: 0,
+          right: 0,
+          mx: 'auto',
+          fontSize: '0.75rem',
+        }}
+        variant='subtitle1'
+      >
+        {successText}
       </Typography>
       <ListItem sx={{ my: 4 }}>
         <Typography
