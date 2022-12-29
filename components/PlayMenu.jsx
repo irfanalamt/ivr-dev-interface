@@ -30,14 +30,17 @@ const PlayMenu = ({
   clearAndDraw,
   childRef,
 }) => {
+  const userValues = shape.userValues
+    ? JSON.parse(JSON.stringify(shape.userValues))
+    : {};
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
-  const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
+  const [menuObj, setMenuObj] = useState(userValues.params || {});
   const [paramSelected, setParamSelected] = useState('');
   const [paramSelectedList, setParamSelectedList] = useState(
-    shape.userValues?.paramSelectedList || []
+    userValues.paramSelectedList || []
   );
-  const [itemsObj, setItemsObj] = useState(shape.userValues?.items || []);
+  const [itemsObj, setItemsObj] = useState(userValues.items || []);
   const [itemSelected, setItemSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
   const [errorText, setErrorText] = useState('');

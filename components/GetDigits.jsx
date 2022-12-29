@@ -26,20 +26,17 @@ const GetDigits = ({
   clearAndDraw,
   childRef,
 }) => {
-  const [resultName, setResultName] = useState(
-    shape.userValues?.variableName ?? ''
-  );
+  const userValues = shape.userValues
+    ? JSON.parse(JSON.stringify(shape.userValues))
+    : {};
+  const [resultName, setResultName] = useState(userValues.variableName ?? '');
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
-  const [minDigits, setMinDigits] = useState(
-    shape.userValues?.params.minDigits ?? 1
-  );
-  const [maxDigits, setMaxDigits] = useState(
-    shape.userValues?.params.maxDigits ?? 1
-  );
-  const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
+  const [minDigits, setMinDigits] = useState(userValues.params.minDigits ?? 1);
+  const [maxDigits, setMaxDigits] = useState(userValues.params.maxDigits ?? 1);
+  const [msgObj, setMsgObj] = useState(userValues.messageList || []);
   const [paramsObj, setParamsObj] = useState(
-    shape.userValues?.params.paramsList ?? []
+    userValues.params.paramsList ?? []
   );
   const [paramsObjType, setParamsObjType] = useState('');
   const [errorText, setErrorText] = useState('');

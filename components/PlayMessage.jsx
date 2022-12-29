@@ -35,14 +35,17 @@ const PlayMessage = ({
   clearAndDraw,
   childRef,
 }) => {
+  const userValues = shape.userValues
+    ? JSON.parse(JSON.stringify(shape.userValues))
+    : {};
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
-  const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
+  const [msgObj, setMsgObj] = useState(userValues.messageList || []);
   const [interruptible, setInterruptible] = useState(
-    shape.userValues?.params.interruptible ?? true
+    userValues.params.interruptible ?? true
   );
   const [repeatOption, setRepeatOption] = useState(
-    shape.userValues?.params.repeatOption ?? ''
+    userValues.params.repeatOption ?? ''
   );
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');

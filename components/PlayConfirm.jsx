@@ -22,20 +22,23 @@ const PlayConfirm = ({
   clearAndDraw,
   childRef,
 }) => {
+  const userValues = shape.userValues
+    ? JSON.parse(JSON.stringify(shape.userValues))
+    : {};
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
-  const [msgObj, setMsgObj] = useState(shape.userValues?.messageList || []);
+  const [msgObj, setMsgObj] = useState(userValues.messageList || []);
   const [confirmOption, setConfirmOption] = useState(
-    shape.userValues?.params.confirmOption ?? ''
+    userValues.params.confirmOption ?? ''
   );
   const [cancelOption, setCancelOption] = useState(
-    shape.userValues?.params.cancelOption ?? ''
+    userValues.params.cancelOption ?? ''
   );
   const [confirmPrompt, setConfirmPrompt] = useState(
-    shape.userValues?.params.confirmPrompt ?? ''
+    userValues.params.confirmPrompt ?? ''
   );
   const [cancelPrompt, setCancelPrompt] = useState(
-    shape.userValues?.params.cancelPrompt ?? ''
+    userValues.params.cancelPrompt ?? ''
   );
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
