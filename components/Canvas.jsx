@@ -11,8 +11,8 @@ import {
   Typography,
 } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import Shape from '../models/Shape2';
-import Shapes from '../models/Shapes2';
+import Shape from '../models/Shape';
+import Shapes from '../models/Shapes';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
 import SetVariables from './SetVariables';

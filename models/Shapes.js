@@ -1,62 +1,381 @@
-import Shape from './ShapeNew';
+import Shape from './Shape';
 
 class Shapes {
   constructor(groupname, shapes) {
     this.groupname = groupname;
     this.shapes = shapes;
   }
-  setShapes(data) {
-    let newShapesArray = [];
-    data.forEach((el) => {
-      let { x, y, width, height, type, name, userValues } = el;
-      console.log('set shapes', name, type);
-      let newShape = new Shape(x, y, width, height, type, null, true);
-      newShape.setText(name);
-      newShapesArray.push(newShape);
-      newShape.setUserValues(userValues);
-    });
-    let newShapes = new Shapes('stage', newShapesArray);
-    return newShapes;
-  }
 
-  getSerializedShapes() {
-    const serializedShapesArray = this.shapes.map((el) => el.getSerialized());
-    console.log(
-      '🚀 ~ Shapes ~ getSerializedShapes ~ serializedShapesArray',
-      serializedShapesArray
-    );
-
-    return serializedShapesArray;
-  }
-
-  displayAll() {
-    return `name=${this.groupname} shapes=${this.shapes}`;
-  }
   getShapes() {
     return this.shapes;
   }
-  addShape(newShape) {
-    this.shapes.push(newShape);
+  getShapesAsArray() {
+    return Object.values(this.shapes);
+  }
+  getShapesEntries() {
+    return Object.entries(this.shapes);
   }
 
-  getIndexById(id) {
-    const index = this.shapes.findIndex((shape) => shape.id === id);
+  addShape(type, x, y, count, pageNumber) {
+    console.log(type, x, y, 'ha');
+    let stageFigure;
+    switch (type) {
+      case 'setParams':
+        stageFigure = new Shape(x, y, 120, 30, 'setParams', '#e91e63', true);
+        stageFigure.setUserValues({
+          params: [
+            {
+              name: 'maxRetries',
+              value: 1,
+              type: 'select',
+              optionList: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            },
+            {
+              name: 'maxRepeats',
+              value: 1,
+              type: 'select',
+              optionList: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            },
+            { name: 'language', value: 'enBcx' },
+            { name: 'currency', value: 'SAR' },
+            {
+              name: 'terminator',
+              value: 'X',
+              type: 'select',
+              optionList: [
+                'X',
+                '#',
+                '*',
+                '0',
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6',
+                '7',
+                '8',
+                '9',
+              ],
+            },
+            { name: 'firstTimeout', value: 10 },
+            { name: 'interTimeout', value: 5 },
+            { name: 'menuTimeout', value: 5 },
+            { name: 'maxCallTime', value: 3600 },
+            { name: 'invalidAction', value: 'disconnect' },
+            { name: 'timeoutAction', value: 'disconnect' },
+            {
+              name: 'confirmOption',
+              value: 1,
+              type: 'select',
+              optionList: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            },
+            {
+              name: 'cancelOption',
+              value: 2,
+              type: 'select',
+              optionList: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            },
+            { name: 'invalidPrompt', value: 'std-invalid' },
+            { name: 'timeoutPrompt', value: 'std-timeout' },
+            { name: 'cancelPrompt', value: 'std-cancel' },
+            { name: 'goodbyeMessage', value: 'std-goodbye' },
+            { name: 'terminateMessage', value: 'std-terminate' },
+            { name: 'repeatInfoPrompt', value: 'std-repeat-info' },
+            { name: 'confirmPrompt', value: 'std-confirm' },
+            {
+              name: 'hotkeyMainMenu',
+              value: 'X',
+              type: 'select',
+              optionList: [
+                'X',
+                '#',
+                '*',
+                '0',
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6',
+                '7',
+                '8',
+                '9',
+              ],
+            },
+            {
+              name: 'hotkeyTransfer',
+              value: 'X',
+              type: 'select',
+              optionList: [
+                'X',
+                '#',
+                '*',
+                '0',
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+                '6',
+                '7',
+                '8',
+                '9',
+              ],
+            },
+            { name: 'transferPoint', value: '' },
+            { name: 'invalidTransferPoint', value: '' },
+            { name: 'timeoutTransferPoint', value: '' },
+            { name: 'logDB', value: false, type: 'switch' },
+          ],
+        });
+        break;
 
-    return index;
+      case 'runScript':
+        stageFigure = new Shape(x, y, 105, 30, 'runScript', null, true);
+        stageFigure.setUserValues({ script: '' });
+        break;
+
+      case 'callAPI':
+        stageFigure = new Shape(x, y, 90, 30, 'callAPI', null, true);
+        stageFigure.setUserValues({
+          endpoint: '',
+          inputArr: [{ value: '' }],
+          outputArr: [{ value: '' }],
+        });
+        break;
+
+      case 'playMenu':
+        stageFigure = new Shape(x, y, 125, 30, 'playMenu', '#009688', true);
+        stageFigure.setUserValues({
+          params: {},
+          paramSelectedList: [],
+          items: [],
+        });
+        break;
+
+      case 'getDigits':
+        stageFigure = new Shape(x, y, 110, 30, 'getDigits', '#9c27b0', true);
+        stageFigure.setUserValues({
+          params: { minDigits: 1, maxDigits: 1, paramsList: [] },
+          messageList: [],
+          variableName: '',
+        });
+        break;
+
+      case 'playMessage':
+        stageFigure = new Shape(x, y, 145, 30, 'playMessage', '#c0ca33', true);
+        stageFigure.setUserValues({
+          params: { interruptible: true, repeatOption: '' },
+          messageList: [],
+        });
+        break;
+
+      case 'playConfirm':
+        stageFigure = new Shape(x, y, 135, 30, 'playConfirm', '#7cb342', true);
+        stageFigure.setUserValues({
+          params: {
+            confirmOption: '',
+            cancelOption: '',
+            confirmPrompt: '',
+            cancelPrompt: '',
+          },
+          messageList: [],
+        });
+        break;
+
+      case 'switch':
+        stageFigure = new Shape(x, y, 130, 35, 'switch', '#795548', true);
+        stageFigure.setUserValues({
+          switchArray: [
+            { condition: '', exitPoint: '', conditionError: '', exitError: '' },
+          ],
+          default: { exitPoint: 'default' },
+        });
+        break;
+
+      case 'endFlow':
+        stageFigure = new Shape(x, y, 35, 35, 'endFlow', '#e91e63', true);
+        stageFigure.setUserValues({ type: 'disconnect' });
+        break;
+
+      case 'connector':
+        stageFigure = new Shape(x, y, 25, 25, 'connector', '#009688', true);
+        break;
+
+      case 'jumper':
+        stageFigure = new Shape(x, y, 30, 30, 'jumper', '#f57f17', true);
+        stageFigure.setUserValues({ type: 'exit' });
+        break;
+    }
+
+    const id = this.generateID(stageFigure.type, pageNumber, count);
+
+    //append shapeCount to shape text
+    stageFigure.text += count;
+    stageFigure.id = id;
+
+    //add shape to group
+    this.shapes[id] = stageFigure;
   }
 
-  getIndexOfFirstShape() {
-    // first shape is always setParams
-    // find it and return index
-    const index = this.shapes.findIndex((shape) => shape.type === 'pentagon');
+  generateID(type, pageNumber, count) {
+    const shapeTypeLetterMap = {
+      setParams: 'A',
+      runScript: 'B',
+      callAPI: 'C',
+      playMenu: 'D',
+      getDigits: 'E',
+      playMessage: 'F',
+      playConfirm: 'G',
+      switch: 'H',
+      endFlow: 'I',
+      connector: 'J',
+      jumper: 'K',
+    };
 
-    if (index === -1) return null;
+    const startCharacter = shapeTypeLetterMap[type] ?? 'X';
+    const pageCharacter = pageNumber < 10 ? `0${pageNumber}` : `${pageNumber}`;
 
-    return index;
+    return `${startCharacter}${pageCharacter}${count}`;
   }
 
-  generateMenuCode(index) {
-    const menuShape = this.shapes[index];
+  drawAllShapes(ctx) {
+    this.getShapesAsArray().forEach((el) => el.drawShape(ctx));
+  }
+  addOffset(offset) {
+    this.getShapesAsArray().forEach((el) => {
+      el.y = el.getInitPos()[1] + offset;
+    });
+  }
+
+  getIdOfFirstShape() {
+    // start shape is setParams
+    // if  found, return id; else return null
+
+    for (let shape of this.getShapesAsArray()) {
+      if (shape.type === 'setParams') {
+        return shape.id;
+      }
+    }
+
+    return null;
+  }
+
+  traverseShapes(id) {
+    // Create an array to store the shapes that we have visited
+    let visitedShapes = [];
+    let tempString = this.generateMainMenuCode(id);
+    // Create a stack to store the shapes that we need to visit
+    let shapeStack = [this.shapes[id]];
+
+    // Traverse the shapes array until all shapes have been visited
+    while (shapeStack.length > 0) {
+      // Pop the top shape from the stack
+      let currentShape = shapeStack.pop();
+
+      if (visitedShapes.includes(currentShape.id)) break;
+
+      // adding to visited array
+      visitedShapes.push(currentShape.id);
+
+      // Print the properties of the current shape
+      console.log('▶️', currentShape.text);
+      if (currentShape.type === 'endFlow') break;
+
+      if (currentShape.type === 'playMenu') {
+        tempString += this.generateMenuCode(currentShape.id);
+      }
+      if (currentShape.type === 'switch') {
+        tempString += this.generateSwitchCode(currentShape.id);
+      }
+
+      // If the current shape has a nextItem property, push the shape with the corresponding id onto the stack
+      if (currentShape.nextItem) {
+        shapeStack.push(this.shapes[currentShape.nextItem]);
+      }
+
+      if (currentShape.type === 'playMenu') {
+        currentShape.userValues.items.forEach((item) => {
+          if (item.nextId) {
+            shapeStack.push(this.shapes[item.nextId]);
+          }
+        });
+      }
+    }
+    return tempString;
+  }
+  generateMainMenuCode(id) {
+    if (!this.shapes[id]) return '';
+
+    const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(id);
+
+    const mainMenuString = `this.ivrMain=async function(){${arrayShapesTillMenuSwitch
+      .map((el) => `await this.${el}();`)
+      .join('')}};`;
+
+    return mainMenuString;
+  }
+
+  generateSwitchCode(id) {
+    const switchShape = this.shapes[id];
+    if (!switchShape) return '';
+
+    let code = '';
+    if (switchShape.userValues.switchArray.length > 0) {
+      switchShape.userValues.switchArray.forEach((el) => {
+        if (el.nextId) {
+          const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+            el.nextId
+          );
+          code += !code
+            ? `if(${el.condition}){
+            ${arrayShapesTillMenuSwitch
+              .map((el) => `await this.${el}();`)
+              .join('')}
+          }`
+            : `else if(${el.condition}){
+            ${arrayShapesTillMenuSwitch
+              .map((el) => `await this.${el}();`)
+              .join('')}
+          }`;
+        }
+      });
+
+      if (code && switchShape.userValues.default.nextId) {
+        const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+          switchShape.userValues.default.nextId
+        );
+        code += `else{${arrayShapesTillMenuSwitch
+          .map((el) => `await this.${el}();`)
+          .join('')}}`;
+      }
+
+      let finalCode = `this.${switchShape.text}=async function(){${code}};`;
+      if (code) return finalCode;
+    }
+
+    if (
+      (switchShape.userValues.switchArray.length === 0 &&
+        switchShape.userValues.default.nextId) ||
+      !code
+    ) {
+      // default only condition
+      const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+        switchShape.userValues.default.nextId
+      );
+      let code = `this.${
+        switchShape.text
+      }=async function(){${arrayShapesTillMenuSwitch
+        .map((el) => `await this.${el}();`)
+        .join('')}};`;
+
+      return code;
+    }
+  }
+
+  generateMenuCode(id) {
+    const menuShape = this.shapes[id];
     const items = menuShape.userValues.items;
 
     if (items.length === 0) return '';
@@ -67,16 +386,15 @@ class Shapes {
 
     items.forEach((item) => {
       if (item.nextId) {
-        const nextShapeIndex = this.getIndexById(item.nextId);
-        const [arrayShapesTillMenu, isMenuIndex] =
-          this.getShapesTillMenu(nextShapeIndex);
+        const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+          item.nextId
+        );
 
         let code = `this.${menuShape.text}_${
           item.action
-        }=async function(){${arrayShapesTillMenu
+        }=async function(){${arrayShapesTillMenuSwitch
           .map((el) => `await this.${el}();`)
           .join('')}};`;
-
         finalCode += code;
       }
     });
@@ -84,279 +402,77 @@ class Shapes {
     return finalCode;
   }
 
-  getShapesTillMenu(index = null) {
+  getShapesTillMenuOrSwitch(id) {
+    // return an array of connected shapes till a multi-exit shape has reached
+
     // return array of shape names till a menu
     let tempArray = [];
-    let isLastElementMenu = false;
-    let i1 = index ? index : this.getIndexOfFirstShape();
-    // if no 1st shape (setParams) return null
-    if (i1 === null) return null;
+    let currentShape = this.shapes[id];
+    if (!currentShape) return null;
 
-    tempArray.push(this.shapes[i1].text);
+    if (currentShape.type !== 'connector') tempArray.push(currentShape.text);
+
+    let id1 = id;
 
     while (1) {
-      let nextShapeId = this.shapes[i1].nextItem;
-      if (nextShapeId === null || nextShapeId === undefined) break;
+      let nextShapeId = this.shapes[id1].nextItem;
+      if (!nextShapeId) break;
 
-      // get index of nextShape
-      let nextShapeInd = this.shapes.findIndex((el) => el.id === nextShapeId);
-      if (nextShapeInd === -1) break;
-      // if menu set index
-      if (this.shapes[nextShapeInd].type === 'hexagon') {
-        isLastElementMenu = nextShapeInd;
-      }
+      let nextShape = this.shapes[nextShapeId];
+      if (!nextShape) break;
+
       // if not connector; add to array
-      if (this.shapes[nextShapeInd].type !== 'smallCircle')
-        tempArray.push(this.shapes[nextShapeInd].text);
+      if (nextShape.type !== 'connector') tempArray.push(nextShape.text);
 
-      i1 = nextShapeInd;
+      id1 = nextShapeId;
     }
 
-    return [tempArray, isLastElementMenu];
+    return tempArray;
   }
+  getValidNextItem(id) {
+    // return null if no valid next shape found(not connector)
+    // if valid next shape found, return its id
+    const currentShape = this.shapes[id];
+    if (currentShape.type !== 'connector') return currentShape.id;
 
-  isFunctionStringPresent() {
-    for (let shape of this.shapes) {
-      if (
-        ![
-          'smallCircle',
-          'tinyCircle',
-          'triangle',
-          'pentagonSwitch',
-          'pentagon',
-        ].includes(shape.type)
-      ) {
-        if (!shape.functionString) return shape.text;
-      }
-    }
-    return false;
-  }
-
-  isPlayMenuAction(menuID, id) {
-    // return true if shape is a valid playMenu action
-    // else false
-
-    let menuInd = this.shapes.findIndex((el) => el.id === menuID);
-    let menuShape = this.shapes[menuInd];
-
-    if (menuShape.userValues?.items.some((el) => parseInt(el.action) === id)) {
-      return true;
-    }
-
-    return false;
-  }
-
-  isPlayMenuConnector(id) {
-    // return id of shape if connector is connected to any playMenu
-    // else false
-
-    for (const el of this.shapes) {
-      if (el.type === 'hexagon' && el.connectors.includes(id)) return el.id;
-    }
-
-    return false;
-  }
-
-  traverseShapes(indexOfStartShape) {
-    // Create an array to store the shapes that we have visited
-    let visitedShapes = [];
-
-    // Create a stack to store the shapes that we need to visit
-    let shapeStack = [this.shapes[indexOfStartShape]];
-
-    // Traverse the shapes array until all shapes have been visited
-    while (shapeStack.length > 0) {
-      // Pop the top shape from the stack
-      let currentShape = shapeStack.pop();
-
-      // Print the properties of the current shape
-      console.log('▶️', currentShape.text);
-
-      // If the current shape has a nextItem property, push the shape with the corresponding id onto the stack
-      if (currentShape.nextItem) {
-        shapeStack.push(
-          this.shapes.find((shape) => shape.id === currentShape.nextItem)
-        );
-      }
-
-      if (currentShape.type === 'hexagon') {
-        currentShape.userValues.items.forEach((item) => {
-          if (item.nextId) {
-            shapeStack.push(
-              this.shapes.find((shape) => shape.id === item.nextId)
-            );
-          }
-        });
-      }
-    }
-  }
-
-  getValidNextItem(i) {
     while (true) {
-      let nextShapeId = this.shapes[i].nextItem;
-      if (nextShapeId === null || nextShapeId === undefined) return null;
+      let nextShapeId = this.shapes[id].nextItem;
+      if (!nextShapeId) return null;
 
-      let ind = this.shapes.findIndex((el) => el.id === nextShapeId);
-      if (ind !== -1 && this.shapes[ind].type !== 'smallCircle') {
-        return this.shapes[ind].id;
-      }
-      i = ind;
+      let nextShape = this.shapes[nextShapeId];
+      if (!nextShape) return null;
+
+      if (nextShape.type !== 'connector') return nextShape.id;
+
+      id = nextShapeId;
     }
   }
 
   getConnectionsArray() {
-    // to get cordinates to draw connections
+    // traverse through all shapes, return an array of connections to draw arrows
 
-    let tempArray = [];
-    this.shapes.forEach((el, i) => {
-      if (el.type === 'pentagonSwitch') {
-        // draw connecting lines for switch
-        let shape1 = el;
-        if (el.userValues.switchArray.length === 0) {
-          // only default condition
-
-          let index = this.getIndexById(el.userValues.default.nextId);
-
-          if (index !== -1) {
-            let shape2 = this.shapes[index];
-            tempArray.push({
-              x1: shape1.getExitPoint()[0],
-              y1: shape1.getExitPoint()[1],
-              x2: shape2.getEntryPoint()[0],
-              y2: shape2.getEntryPoint()[1],
-              startItem: shape1.id,
-              endItem: shape2.id,
-              lineCap: null,
-              lineColor: '#4a148c',
-              lineData: {
-                exitPoint: el.userValues.default.exitPoint,
-                position: 1,
-                totalExitPoints: 1,
-              },
-            });
-          }
-        } else {
-          // switchArray has atleast one element
-
-          el.userValues.switchArray.forEach((row, i) => {
-            let index = this.getIndexById(row.nextId);
-            if (index !== -1) {
-              let shape2 = this.shapes[index];
-              let exitCordinate = shape1.getBottomPointForExit(
-                el.userValues.switchArray.length + 1,
-                i + 1
-              );
-              tempArray.push({
-                x1: exitCordinate[0],
-                y1: exitCordinate[1],
-                x2: shape2.getEntryPoint()[0],
-                y2: shape2.getEntryPoint()[1],
-                startItem: shape1.id,
-                endItem: shape2.id,
-                lineCap: null,
-                lineColor: '#4a148c',
-                lineData: {
-                  exitPoint: row.exitPoint,
-                  position: i + 1,
-                  totalExitPoints: el.userValues.switchArray.length + 1,
-                },
-              });
-            }
-          });
-
-          // default condition right end of switch
-
-          let index = this.getIndexById(el.userValues.default.nextId);
-
-          if (index !== -1) {
-            let shape2 = this.shapes[index];
-            let exitCordinate = shape1.getBottomPointForExit(
-              el.userValues.switchArray.length + 1,
-              el.userValues.switchArray.length + 1
-            );
-            tempArray.push({
-              x1: exitCordinate[0],
-              y1: exitCordinate[1],
-              x2: shape2.getEntryPoint()[0],
-              y2: shape2.getEntryPoint()[1],
-              startItem: shape1.id,
-              endItem: shape2.id,
-              lineCap: null,
-              lineColor: '#4a148c',
-              lineData: {
-                exitPoint: el.userValues.default.exitPoint,
-                position: el.userValues.switchArray.length + 1,
-                totalExitPoints: el.userValues.switchArray.length + 1,
-              },
-            });
-          }
-        }
+    const tempArray = [];
+    this.getShapesAsArray().forEach((el) => {
+      if (el.type === 'switch') {
+        this.getSwitchConnections(tempArray, el);
       }
 
-      if (el.type === 'hexagon') {
-        let shape1 = el;
-        if (el.userValues.items.length === 1 && el.userValues.items[0].nextId) {
-          let index = this.getIndexById(el.userValues.items[0].nextId);
-          if (index !== -1) {
-            let shape2 = this.shapes[index];
-            tempArray.push({
-              x1: shape1.getExitPoint()[0],
-              y1: shape1.getExitPoint()[1],
-              x2: shape2.getEntryPoint()[0],
-              y2: shape2.getEntryPoint()[1],
-              startItem: shape1.id,
-              endItem: shape2.id,
-              lineCap: null,
-              lineColor: '#4a148c',
-              lineData: {
-                exitPoint: el.userValues.items[0].action,
-                position: 1,
-                totalExitPoints: 1,
-              },
-            });
-          }
-        }
-
-        if (el.userValues.items.length > 1) {
-          el.userValues.items.forEach((row, i) => {
-            let index = this.getIndexById(row.nextId);
-            if (index !== -1) {
-              let shape2 = this.shapes[index];
-              let exitCordinate = shape1.getBottomPointForExit(
-                el.userValues.items.length,
-                i + 1
-              );
-              tempArray.push({
-                x1: exitCordinate[0],
-                y1: exitCordinate[1],
-                x2: shape2.getEntryPoint()[0],
-                y2: shape2.getEntryPoint()[1],
-                startItem: shape1.id,
-                endItem: shape2.id,
-                lineCap: null,
-                lineColor: '#4a148c',
-                lineData: {
-                  exitPoint: row.action,
-                  position: i + 1,
-                  totalExitPoints: el.userValues.items.length,
-                },
-              });
-            }
-          });
-        }
+      if (el.type === 'playMenu') {
+        this.getMenuConnections(tempArray, el);
       }
-      // draw lines to connected playMenu connectors
+
       if (el.nextItem !== null) {
-        let index = this.shapes.findIndex((elm) => elm.id === el.nextItem);
-        if (index !== -1) {
+        let shape2 = this.shapes[el.nextItem];
+        if (shape2) {
           let shape1 = el;
-          let shape2 = this.shapes[index];
-          let lineColor = this.getValidNextItem(i) === null ? 'red' : 'black';
+          let lineColor =
+            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#37474f';
+          console.log('shape1🟢', shape1, 'shape2', shape2);
           tempArray.push({
-            x1: shape1.getExitPoint()[0],
-            y1: shape1.getExitPoint()[1],
-            x2: shape2.getEntryPoint()[0],
-            y2: shape2.getEntryPoint()[1],
+            x1: shape1.getRelativePosition(shape2)[0],
+            y1: shape1.getRelativePosition(shape2)[1],
+            x2: shape2.getRelativePosition(shape1)[0],
+            y2: shape2.getRelativePosition(shape1)[1],
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
@@ -365,41 +481,186 @@ class Shapes {
         }
       }
     });
-
     return tempArray;
   }
 
-  removeShapeById(id) {
-    const index = this.shapes.findIndex((shape) => shape.id === id);
-    if (index !== -1) {
-      this.shapes.splice(index, 1);
+  getSwitchConnections(tempArray, el) {
+    // draw connecting lines for switch
+    let shape1 = el;
+    if (el.userValues.switchArray.length === 0) {
+      // only default condition
+      let shape2 = this.shapes[el.userValues.default.nextId];
+      if (shape2) {
+        let lineColor =
+          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+        tempArray.push({
+          x1: shape1.getExitPoint()[0],
+          y1: shape1.getExitPoint()[1],
+          x2: shape2.getRelativePosition(shape1)[0],
+          y2: shape2.getRelativePosition(shape1)[1],
+          startItem: shape1.id,
+          endItem: shape2.id,
+          lineCap: null,
+          lineColor: lineColor,
+          lineData: {
+            exitPoint: el.userValues.default.exitPoint,
+            position: 1,
+            totalExitPoints: 1,
+          },
+        });
+      }
+    } else {
+      // switchArray has atleast one element
+
+      el.userValues.switchArray.forEach((row, i) => {
+        let shape2 = this.shapes[row.nextId];
+        if (shape2) {
+          let exitCordinate = shape1.getBottomPointForExit(
+            el.userValues.switchArray.length + 1,
+            i + 1
+          );
+          let lineColor =
+            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+          tempArray.push({
+            x1: exitCordinate[0],
+            y1: exitCordinate[1],
+            x2: shape2.getRelativePosition(shape1)[0],
+            y2: shape2.getRelativePosition(shape1)[1],
+            startItem: shape1.id,
+            endItem: shape2.id,
+            lineCap: null,
+            lineColor: lineColor,
+            lineData: {
+              exitPoint: row.exitPoint,
+              position: i + 1,
+              totalExitPoints: el.userValues.switchArray.length + 1,
+            },
+          });
+        }
+      });
+
+      // default condition right end of switch
+
+      let shape2 = this.shapes[el.userValues.default.nextId];
+
+      if (shape2) {
+        let exitCordinate = shape1.getBottomPointForExit(
+          el.userValues.switchArray.length + 1,
+          el.userValues.switchArray.length + 1
+        );
+        let lineColor =
+          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+        tempArray.push({
+          x1: exitCordinate[0],
+          y1: exitCordinate[1],
+          x2: shape2.getRelativePosition(shape1)[0],
+          y2: shape2.getRelativePosition(shape1)[1],
+          startItem: shape1.id,
+          endItem: shape2.id,
+          lineCap: null,
+          lineColor: lineColor,
+          lineData: {
+            exitPoint: el.userValues.default.exitPoint,
+            position: el.userValues.switchArray.length + 1,
+            totalExitPoints: el.userValues.switchArray.length + 1,
+          },
+        });
+      }
     }
   }
-  removeShape(index) {
-    // if any shapes has next item that matches the removing shape id;
-    // reset nextItem
-    let ind = this.shapes.findIndex(
-      (elm) => elm.nextItem === this.shapes[index].id
+
+  getMenuConnections(tempArray, el) {
+    let shape1 = el;
+    const itemsWithoutDefaults = shape1.userValues.items.filter(
+      (item) => !(item.isDefault === true)
     );
+    const itemsLength = itemsWithoutDefaults.length;
+    if (itemsLength === 1 && itemsWithoutDefaults[0].nextId) {
+      // default condition; 1 exit middle bottom
+      let shape2 = this.shapes[itemsWithoutDefaults[0].nextId];
+      if (shape2) {
+        let lineColor =
+          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+        tempArray.push({
+          x1: shape1.getExitPoint()[0],
+          y1: shape1.getExitPoint()[1],
+          x2: shape2.getRelativePosition(shape1)[0],
+          y2: shape2.getRelativePosition(shape1)[1],
+          startItem: shape1.id,
+          endItem: shape2.id,
+          lineCap: null,
+          lineColor: lineColor,
+          lineData: {
+            exitPoint: itemsWithoutDefaults[0].action,
+            position: 1,
+            totalExitPoints: 1,
+          },
+        });
+      }
+    }
 
-    if (ind !== -1) this.shapes[ind].nextItem = null;
-
-    this.shapes.splice(index, 1);
+    if (itemsLength > 1) {
+      // connectors>1; spread out bottom evenly
+      itemsWithoutDefaults.forEach((row, i) => {
+        let shape2 = this.shapes[row.nextId];
+        if (shape2) {
+          let exitCordinate = shape1.getBottomPointForExit(itemsLength, i + 1);
+          let lineColor =
+            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+          tempArray.push({
+            x1: exitCordinate[0],
+            y1: exitCordinate[1],
+            x2: shape2.getRelativePosition(shape1)[0],
+            y2: shape2.getRelativePosition(shape1)[1],
+            startItem: shape1.id,
+            endItem: shape2.id,
+            lineCap: null,
+            lineColor: lineColor,
+            lineData: {
+              exitPoint: row.action,
+              position: i + 1,
+              totalExitPoints: itemsLength,
+            },
+          });
+        }
+      });
+    }
+  }
+  isFunctionStringPresent() {
+    // check if all shapes have a fn string,return false;
+    // else return first shapeText without one
+    for (let shape of this.getShapesAsArray()) {
+      if (
+        ![
+          'connector',
+          'tinyCircle',
+          'jumper',
+          'switch',
+          'setParams',
+          'endFlow',
+        ].includes(shape.type)
+      ) {
+        if (!shape.functionString) return shape.text;
+      }
+    }
+    return false;
   }
 
+  removeShape(key) {
+    delete this.shapes[key];
+  }
   removeConnectingLine(shape1Id, shape2Id, lineData = null) {
-    const index1 = this.getIndexById(shape1Id);
-    if (index1 !== -1) {
-      const shape1 = this.shapes[index1];
+    const shape1 = this.shapes[shape1Id];
+    if (shape1) {
       console.log('▶️ ~ Shapes ~ removeConnectingLine ~ shape1', shape1);
-      if (shape1.type !== 'pentagonSwitch' && shape1.type !== 'hexagon') {
+      if (shape1.type !== 'switch' && shape1.type !== 'playMenu') {
         // single exit condition
         // reset nextItem property
         shape1.nextItem = null;
         return;
       }
 
-      if (shape1.type === 'pentagonSwitch') {
+      if (shape1.type === 'switch') {
         if (
           lineData.totalExitPoints === 1 ||
           lineData.position === lineData.totalExitPoints
@@ -413,16 +674,38 @@ class Shapes {
         delete shape1.userValues.switchArray[lineData.position - 1].nextId;
       }
 
-      if (shape1.type === 'hexagon') {
-        delete shape1.userValues.items[lineData.position - 1].nextId;
+      if (shape1.type === 'playMenu') {
+        const exitPoint = lineData.exitPoint;
+        const index = shape1.userValues.items.findIndex(
+          (s) => s.action === exitPoint
+        );
+        if (index !== -1) {
+          delete shape1.userValues.items[index].nextId;
+        }
       }
     }
   }
+  checkVariableInUse(varName) {
+    for (const shape of this.getShapesAsArray()) {
+      for (const message of shape.userValues?.messageList) {
+        if (message.value === `$${varName}`) return true;
+      }
+    }
+    return false;
+  }
+  modifyVariable(varName, newVarName) {
+    // checks if any of the shapes have used this variable name, if so modify it.
 
-  removeShapeNextById(id) {
-    // to reset nextItem by ID
-    let index = this.getIndexById(id);
-    if (index !== -1) this.shapes[index].nextItem = null;
+    this.getShapesAsArray().forEach((shape) => {
+      shape.userValues.messageList?.forEach((message) => {
+        if (message.value === `$${varName}`) {
+          message.value = `$${newVarName}`;
+        }
+      });
+      if (shape.userValues.variableName === varName) {
+        shape.userValues.variableName = newVarName;
+      }
+    });
   }
 }
 

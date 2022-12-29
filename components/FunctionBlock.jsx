@@ -26,12 +26,15 @@ const FunctionBlock = ({
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
 
-  const [functionString, setFunctionString] = useState();
+  const [functionString, setFunctionString] = useState(
+    shape.userValues?.script || ''
+  );
   const [isFunctionError, setIsFunctionError] = useState(false);
   const [errorText, setErrorText] = useState('');
 
   function saveUserValues() {
     shape.setText(shapeName || `runScript${shape.id}`);
+    shape.setUserValues({ script: functionString });
     clearAndDraw();
     let isValid = isValidJs();
     if (isValid) {
@@ -42,7 +45,7 @@ const FunctionBlock = ({
   const getCurrentUserValues = () => {
     return JSON.stringify({
       name: shapeName,
-      userValues: null,
+      userValues: { script: functionString },
     });
   };
   childRef.getCurrentUserValues = getCurrentUserValues;
