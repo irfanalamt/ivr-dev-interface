@@ -686,7 +686,7 @@ class Shapes {
   }
   checkVariableInUse(varName) {
     for (const shape of this.getShapesAsArray()) {
-      for (const message of shape.userValues.messageList) {
+      for (const message of shape.userValues?.messageList) {
         if (message.value === `$${varName}`) return true;
       }
     }
@@ -696,7 +696,7 @@ class Shapes {
     // checks if any of the shapes have used this variable name, if so modify it.
 
     this.getShapesAsArray().forEach((shape) => {
-      shape.userValues.messageList.forEach((message) => {
+      shape.userValues.messageList?.forEach((message) => {
         if (message.value === `$${varName}`) {
           message.value = `$${newVarName}`;
         }

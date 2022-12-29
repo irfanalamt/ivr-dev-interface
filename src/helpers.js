@@ -677,7 +677,7 @@ export function checkValidity(name, e) {
       return -1;
 
     case 'action':
-      const actionRegex = /^[a-zA-Z0-9]{2,}$/;
+      const actionRegex = /^[a-zA-Z0-9]+$/;
       if (!actionRegex.test(value)) return 'action not in valid format';
       return -1;
 
