@@ -129,7 +129,10 @@ const SetVariables = ({
       return;
     }
 
-    if (varList.some((v) => v.name === currVariable.name)) {
+    // filter out the current element from list
+    const newVarList = varList.filter((v, i) => i !== selectedVarIndex);
+
+    if (newVarList.some((v) => v.name === currVariable.name)) {
       // name not unique
       setErrorText('variable name NOT unique');
       return;
@@ -295,7 +298,7 @@ const SetVariables = ({
               handleVarChange(e);
             }}
             size='small'
-            disabled={isViewMode === true}
+            disabled={isViewMode === true || selectedVarIndex !== ''}
           >
             <MenuItem value='prompt'>Prompt</MenuItem>
             <MenuItem value='number'>Number</MenuItem>
