@@ -85,7 +85,7 @@ const MessageList = ({
     let isError = false;
 
     if (type) {
-      const errorM = checkValidity(type, e);
+      const errorM = checkValidity(type, value);
       if (errorM === -1) {
         // no validation error
         setErrorText('');

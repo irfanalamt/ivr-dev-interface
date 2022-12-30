@@ -666,8 +666,7 @@ export function addInputElements(
   }
 }
 
-export function checkValidity(name, e) {
-  const { value } = e.target;
+export function checkValidity(name, value) {
   // return error string if invalid; else returns -1
   switch (name) {
     case 'object':

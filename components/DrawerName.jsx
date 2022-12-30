@@ -9,24 +9,47 @@ const DrawerName = ({
   setErrorText,
   stageGroup = null,
   successText = '',
+  drawerNameRef = null,
+  shapeId = null,
 }) => {
-  const handleNameValidation = (e) => {
-    if (
-      stageGroup?.getShapesAsArray().some((el) => el.text === e.target.value)
-    ) {
+  const handleNameValidation = (value) => {
+    // Get all shapes in the stage group, excluding the current shape
+    const otherShapes = stageGroup
+      ?.getShapesAsArray()
+      .filter((el) => el.id !== shapeId);
+
+    // Check if the value is already in use by another shape in the stage group
+    if (otherShapes.some((el) => el.text === value)) {
       setErrorText('name NOT unique');
-      return;
+      return 'name NOT unique';
     }
 
-    const errorM = checkValidity('object', e);
+    const errorM = checkValidity('object', value);
     if (errorM === -1) {
       // No error condition
       setErrorText('');
-      return;
+      return false;
     }
 
     setErrorText(errorM);
+    return errorM;
   };
+
+  const checkNameUnique = (value) => {
+    const otherShapes = stageGroup
+      ?.getShapesAsArray()
+      .filter((el) => el.id !== shapeId);
+
+    // Check if the value is already in use by another shape in the stage group
+    if (otherShapes.some((el) => el.text === value)) {
+      setErrorText('name NOT unique');
+      return 'name NOT unique';
+    }
+  };
+
+  if (drawerNameRef) {
+    drawerNameRef.current.handleNameValidation = handleNameValidation;
+  }
 
   return (
     <>
@@ -76,7 +99,7 @@ const DrawerName = ({
           size='small'
           value={shapeName}
           onChange={(e) => {
-            handleNameValidation(e);
+            handleNameValidation(e.target.value);
             setShapeName(e.target.value);
           }}
         />

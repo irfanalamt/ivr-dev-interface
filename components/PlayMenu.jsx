@@ -154,7 +154,7 @@ const PlayMenu = ({
   }
 
   function handleValidation(e, name, type) {
-    let errorMessage = checkValidity(type, e);
+    let errorMessage = checkValidity(type, e.target.value);
     if (errorMessage !== -1) {
       e.target.style.backgroundColor = '#ffebee';
       setErrorObj((s) => {

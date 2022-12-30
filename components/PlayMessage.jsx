@@ -50,10 +50,33 @@ const PlayMessage = ({
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
 
+  const drawerNameRef = useRef({});
+
   function saveUserValues() {
-    // remove null values; SAVE
+    // validate current shapeName user entered with th validation function in a child component
+    const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
+
+    if (isNameError) {
+      setErrorText(isNameError);
+      return;
+    }
+
+    const index = msgObj.findIndex((m) => m.isError);
+    if (index !== -1) {
+      setErrorText(`Error found in messageList object ${index + 1}`);
+      return;
+    }
+    console.log('drawerRef', drawerNameRef.current.handleNameValidation);
+
+    if (errorText !== '') {
+      setErrorText('Save failed');
+      return;
+    }
+
+    //save success message
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
+    // remove null values; SAVE
     const filteredMsgObj = msgObj.filter((n) => n.value);
     shape.setText(shapeName);
     clearAndDraw();
@@ -101,12 +124,14 @@ const PlayMessage = ({
           blockName='Play Message'
         />
         <DrawerName
+          drawerNameRef={drawerNameRef}
           shapeName={shapeName}
           setShapeName={setShapeName}
           stageGroup={stageGroup}
           errorText={errorText}
           setErrorText={setErrorText}
           successText={successText}
+          shapeId={shape.id}
         />
         <ListItem>
           <Tabs
