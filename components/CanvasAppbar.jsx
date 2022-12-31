@@ -7,10 +7,10 @@ import {
   Container,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import SaveAsIcon from '@mui/icons-material/SaveAs';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ModeIcon from '@mui/icons-material/Mode';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
 import SaveIcon from '@mui/icons-material/Save';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -24,6 +24,7 @@ const CanvasAppbar = ({
   stageGroup,
   showResetDialog,
   generateFile,
+  saveToFile,
 }) => {
   function getBgColor() {
     if (isConnecting > 0) return '#e0f2f1';
@@ -113,6 +114,22 @@ const CanvasAppbar = ({
           {isConnecting == 0 && !isDeleting && 'Draw mode'}
         </Typography>
         <Box sx={{ ml: 'auto' }}>
+          <Tooltip title='SAVE TO FILE'>
+            <Button
+              sx={{
+                zIndex: 6,
+                mr: 1,
+                backgroundColor: '#dcdcdc',
+                color: 'black',
+              }}
+              variant='contained'
+              size='small'
+              color='secondary'
+              onClick={saveToFile}
+            >
+              <SaveAsIcon sx={{ fontSize: '1.2rem' }} />
+            </Button>
+          </Tooltip>
           <Tooltip title='RESET CANVAS'>
             <Button
               sx={{
@@ -124,7 +141,6 @@ const CanvasAppbar = ({
               }}
               variant='contained'
               size='small'
-              color='info'
               onClick={showResetDialog}
             >
               <RestartAltIcon sx={{ fontSize: '1.2rem' }} />

@@ -2,17 +2,43 @@ import {
   Avatar,
   Box,
   Button,
-  Chip,
   Container,
   Stack,
   Typography,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import { useRouter } from 'next/router';
 
 const Home = () => {
+  const router = useRouter();
+
+  const handleNewProject = () => {
+    router.push('/stageCanvas3');
+  };
+
+  const handleOpenProject = () => {
+    // Prompt user to select a file
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.onchange = handleFileSelect;
+    fileInput.click();
+  };
+
+  const handleFileSelect = (event) => {
+    const file = event.target.files[0];
+    // Use file to load project data and set it in the component state
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const contents = event.target.result;
+      router.push({
+        pathname: '/stageCanvas3',
+        query: { projectData: contents },
+      });
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <Container>
       <Box
@@ -67,12 +93,16 @@ const Home = () => {
         >
           <Button
             sx={{ textAlign: 'center' }}
-            href='/stageCanvas3'
             variant='contained'
+            onClick={handleNewProject}
           >
             Start new project
           </Button>
-          <Button sx={{ textAlign: 'center' }} variant='outlined'>
+          <Button
+            sx={{ textAlign: 'center' }}
+            variant='outlined'
+            onClick={handleOpenProject}
+          >
             Open saved project
           </Button>
         </Stack>

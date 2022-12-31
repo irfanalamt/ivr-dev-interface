@@ -104,14 +104,14 @@ const SetVariables = ({
   };
 
   const handleValidation = (e) => {
-    const { name } = e.target;
+    const { name, value } = e.target;
 
     let errorM = -1;
 
     if (name === 'name') {
-      errorM = checkValidity('object', e);
+      errorM = checkValidity('object', value);
     } else {
-      errorM = checkValidity(currVariable.type, e);
+      errorM = checkValidity(currVariable.type, value);
     }
 
     if (errorM === -1) {

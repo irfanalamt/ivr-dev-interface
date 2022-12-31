@@ -18,8 +18,12 @@ import DrawerComponent from './Drawer';
 import SetVariables from './SetVariables';
 import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
+import { useRouter } from 'next/router';
 
 const CanvasComponent = () => {
+  const router = useRouter();
+  const { projectData } = router.query;
+
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isOpenVars, setIsOpenVars] = useState(false);
   const [isConnecting, setIsConnecting] = useState(0);
@@ -68,14 +72,14 @@ const CanvasComponent = () => {
 
   useEffect(() => {
     initializeCanvas();
-    const handleScroll = (event) => {
+    const handleScroll = () => {
       // draw palette dynamically on window scrollY
       scrollOffsetY.current = window.scrollY;
       console.log('innerHeight', window.innerHeight);
       initializePallette();
       clearAndDraw();
     };
-    const handleResize = (event) => {
+    const handleResize = () => {
       // Update the canvas size
       canvasRef.current.width = window.innerWidth - 20;
       canvasRef.current.height = window.innerHeight * 2;
@@ -121,15 +125,32 @@ const CanvasComponent = () => {
     context1.strokeStyle = 'black';
     context1.lineWidth = 3;
 
-    initializePallette();
+    if (projectData) {
+      //console.log('YES projectData:' + projectData);
 
-    if (stageGroup.current.length < 1) {
-      // Each stage element is a page
+      const currentProject = JSON.parse(projectData);
+      const userVariablesCurrent = currentProject.userVariables;
+      const stageGroupCurrent = currentProject.stageGroup;
+
+      userVariables.current = userVariablesCurrent;
+
+      stageGroup.current = [];
+      stageGroupCurrent.forEach((stage) => {
+        Object.setPrototypeOf(stage, Shapes.prototype);
+
+        Object.values(stage.shapes).forEach((shape) => {
+          Object.setPrototypeOf(shape, Shape.prototype);
+        });
+        stageGroup.current.push(stage);
+      });
+    } else {
       stageGroup.current = [];
       for (let i = 1; i <= 4; i++) {
         stageGroup.current.push(new Shapes(`p${i}`, {}));
       }
     }
+
+    initializePallette();
 
     contextRef.current = context1;
     clearAndDraw();
@@ -311,7 +332,7 @@ const CanvasComponent = () => {
     const realY = clientY - boundingRect.top;
 
     // check mouse in palette shape
-    palletGroup.current.getShapesEntries().forEach(([key, element]) => {
+    palletGroup.current.getShapesEntries().forEach(([, element]) => {
       if (element.isMouseInShape(realX, realY)) {
         console.log(`✨YES in pallette shape ${element.type}`);
         setIsConnecting(0);
@@ -671,6 +692,23 @@ const CanvasComponent = () => {
     userVariables.current = arr;
   }
 
+  function saveToFile() {
+    const filename = prompt('Enter a filename without extension:');
+    if (!filename) return;
+    const data = {
+      stageGroup: stageGroup.current,
+      userVariables: userVariables.current,
+    };
+
+    const file = new Blob([JSON.stringify(data)], { type: 'text/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(file);
+    link.download = `${filename}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   function generateConfigFile() {
     // setOpenSnackbar(true);
     const str = generateJS();
@@ -769,33 +807,6 @@ const CanvasComponent = () => {
     return codeString;
   }
 
-  function generateMainJS() {
-    console.log(
-      ' stageGroup.current[pageNumber.current - 1]',
-      stageGroup.current[pageNumber.current - 1]
-    );
-    const [arrayShapesTillMenu, isMenuIndex] =
-      stageGroup.current[pageNumber.current - 1].getShapesTillMenu();
-
-    if (arrayShapesTillMenu === null) return false;
-
-    const mainMenuString = `this.ivrMain=async function(){${arrayShapesTillMenu
-      .map((el) => `await this.${el}();`)
-      .join('')}};`;
-
-    console.log('isMenuIndex🎉', isMenuIndex);
-
-    if (isMenuIndex) {
-      const menuString =
-        stageGroup.current[pageNumber.current - 1].generateMenuCode(
-          isMenuIndex
-        );
-      return mainMenuString + menuString;
-    }
-
-    return mainMenuString;
-  }
-
   return (
     <>
       <CanvasAppbar
@@ -806,6 +817,7 @@ const CanvasComponent = () => {
         stageGroup={stageGroup.current}
         showResetDialog={() => setShowCanvasResetDialog(true)}
         generateFile={generateConfigFile}
+        saveToFile={saveToFile}
       />
       <canvas
         style={{ backgroundColor: '#EFF7FD' }}
