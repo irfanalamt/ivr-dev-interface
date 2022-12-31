@@ -65,10 +65,16 @@ const Home = () => {
           spacing={2}
           justifyContent='center'
         >
-          <Button href='/stageCanvas3' variant='contained'>
+          <Button
+            sx={{ textAlign: 'center' }}
+            href='/stageCanvas3'
+            variant='contained'
+          >
             Start new project
           </Button>
-          <Button variant='outlined'>Open saved project</Button>
+          <Button sx={{ textAlign: 'center' }} variant='outlined'>
+            Open saved project
+          </Button>
         </Stack>
       </Container>
     </Container>
