@@ -16,7 +16,6 @@ import Shapes from '../models/Shapes';
 import Lines from '../models/Lines';
 import DrawerComponent from './Drawer';
 import SetVariables from './SetVariables';
-import { useSession } from 'next-auth/react';
 import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
 
@@ -28,8 +27,6 @@ const CanvasComponent = () => {
   const [showInfoMessage, setShowInfoMessage] = useState(false);
   const [showCanvasResetDialog, setShowCanvasResetDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
-  const { status, data } = useSession();
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -802,8 +799,6 @@ const CanvasComponent = () => {
   return (
     <>
       <CanvasAppbar
-        data={data}
-        status={status}
         isDeleting={isDeleting}
         setIsDeleting={setIsDeleting}
         isConnecting={isConnecting}

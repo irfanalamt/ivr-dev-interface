@@ -4,27 +4,24 @@ import {
   Button,
   Chip,
   Container,
+  Stack,
   Typography,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
-import { useSession, signOut } from 'next-auth/react';
 
-export default function Home() {
-  const { status, data } = useSession();
-
+const Home = () => {
   return (
     <Container>
       <Box
         sx={{
           display: 'flex',
-          my: 1,
-          backgroundColor: '#f9fbe7',
+          backgroundColor: '#f5f5f5',
           alignItems: 'center',
-          height: 80,
-          px: 2,
+          height: 50,
+          px: 3,
           boxShadow: 1,
         }}
       >
@@ -43,117 +40,39 @@ export default function Home() {
           </Avatar>
           IVR canvas
         </Typography>
-
-        {status === 'authenticated' ? (
-          <>
-            <Typography
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                backgroundColor: '#aed581',
-                width: 'max-content',
-                px: 2,
-                py: 1,
-                borderRadius: 2,
-                mx: 1,
-              }}
-              variant='body2'
-            >
-              <AccountCircleIcon sx={{ mr: 0.5 }} />
-              {data.user.email}
-            </Typography>
-            <Button
-              onClick={() => signOut()}
-              variant='contained'
-              color='secondary'
-            >
-              Signout <ExitToAppIcon sx={{ mx: 0.5 }} />
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button href='/signin' sx={{ mx: 1, color: 'black' }}>
-              Login
-            </Button>
-            <Button
-              href='/signup'
-              sx={{ backgroundColor: '#2196f3' }}
-              variant='contained'
-            >
-              Signup
-            </Button>
-          </>
-        )}
       </Box>
-
-      {/* <Typography
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            mt: 4,
-            backgroundColor: '#aed581',
-            width: 'max-content',
-            px: 2,
-            py: 1,
-            borderRadius: 2,
-          }}
-          variant='body2'
-        >
-          <AccountCircleIcon sx={{ mr: 0.5 }} />
-          {data.user.email}
-        </Typography> */}
-
-      <Box sx={{ textAlign: 'center', px: 3, my: 3 }}>
+      <Container sx={{ py: 8 }} maxWidth='sm'>
         <Typography
-          sx={{
-            fontSize: '3rem',
-            fontWeight: 200,
-            display: 'inline',
-          }}
-          variant='subtitle1'
+          variant='h4'
+          align='center'
+          color='text.primary'
+          gutterBottom
         >
-          {`Create custom `}
+          IVR canvas
         </Typography>
         <Typography
-          sx={{
-            fontSize: '3rem',
-            fontWeight: 200,
-            display: 'inline',
-            color: '#2196f3',
-          }}
-          variant='subtitle1'
+          variant='h5'
+          align='center'
+          color='text.secondary'
+          paragraph
         >
-          {`
-          IVR experiences `}
+          Easily design personalized IVR flows using our intuitive, visual
+          editor
         </Typography>
-        <Typography
-          sx={{
-            fontSize: '3rem',
-            fontWeight: 200,
-            display: 'inline',
-          }}
-          variant='subtitle1'
+        <Stack
+          sx={{ pt: 4 }}
+          direction='row'
+          spacing={2}
+          justifyContent='center'
         >
-          {`using visual, drag-and-drop approaches.`}
-        </Typography>
-      </Box>
-
-      <Box sx={{ textAlign: 'center', my: 4 }}>
-        <Button
-          sx={{
-            height: 70,
-            width: 200,
-            backgroundColor: '#1e88e5',
-            color: 'white',
-            fontSize: '1rem',
-          }}
-          href='/menu'
-          variant='contained'
-          color='success'
-        >
-          Get started <PlayCircleFilledIcon sx={{ ml: 1 }} />
-        </Button>
-      </Box>
+          <Button href='/stageCanvas3' variant='contained'>
+            Start new project
+          </Button>
+          <Button variant='outlined'>Open saved project</Button>
+        </Stack>
+      </Container>
     </Container>
   );
-}
+};
+
+export default Home;
