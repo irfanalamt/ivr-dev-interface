@@ -146,16 +146,20 @@ const CanvasComponent = () => {
         stageGroup.current.push(stage);
       });
     } else {
-      stageGroup.current = [];
-      for (let i = 1; i <= 4; i++) {
-        stageGroup.current.push(new Shapes(`p${i}`, {}));
-      }
+      resetStage();
     }
 
     initializePallette();
 
     contextRef.current = context1;
     clearAndDraw();
+  }
+
+  function resetStage() {
+    stageGroup.current = [];
+    for (let i = 1; i <= 4; i++) {
+      stageGroup.current.push(new Shapes(`p${i}`, {}));
+    }
   }
 
   function initializePallette() {
@@ -706,7 +710,7 @@ const CanvasComponent = () => {
     const file = new Blob([JSON.stringify(data)], { type: 'text/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(file);
-    link.download = `${filename}.json`;
+    link.download = `${filename}.ivrf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -914,7 +918,11 @@ const CanvasComponent = () => {
       />
       <ResetCanvasDialog
         open={showCanvasResetDialog}
-        handleClose={() => setShowCanvasResetDialog(false)}
+        handleClose={() => {
+          setShowCanvasResetDialog(false);
+          clearAndDraw();
+        }}
+        resetStage={resetStage}
       />
       <Typography
         sx={{

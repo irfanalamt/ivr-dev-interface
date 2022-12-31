@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 
-const ResetCanvasDialog = ({ open, handleClose }) => {
+const ResetCanvasDialog = ({ open, handleClose, resetStage }) => {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{'Clear entire canvas?'}</DialogTitle>
@@ -30,8 +30,7 @@ const ResetCanvasDialog = ({ open, handleClose }) => {
           size='small'
           color='error'
           onClick={() => {
-            sessionStorage.removeItem('saved-stage');
-            location.reload();
+            resetStage();
             handleClose();
           }}
           autoFocus
