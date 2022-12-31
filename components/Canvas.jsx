@@ -131,8 +131,10 @@ const CanvasComponent = () => {
       const currentProject = JSON.parse(projectData);
       const userVariablesCurrent = currentProject.userVariables;
       const stageGroupCurrent = currentProject.stageGroup;
+      const shapeCountCurrent = currentProject.shapeCount;
 
       userVariables.current = userVariablesCurrent;
+      shapeCount.current = shapeCountCurrent;
 
       stageGroup.current = [];
       stageGroupCurrent.forEach((stage) => {
@@ -698,6 +700,7 @@ const CanvasComponent = () => {
     const data = {
       stageGroup: stageGroup.current,
       userVariables: userVariables.current,
+      shapeCount: shapeCount.current,
     };
 
     const file = new Blob([JSON.stringify(data)], { type: 'text/json' });
