@@ -11,7 +11,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import defaultParams from '../src/defaultParams';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
@@ -34,7 +34,22 @@ const SetParams = ({
   );
   const [successText, setSuccessText] = useState('');
 
+  const drawerNameRef = useRef({});
+
   function saveUserValues() {
+    // validate current shapeName user entered with th validation function in a child component
+    const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
+
+    if (isNameError) {
+      setErrorText(isNameError);
+      return;
+    }
+
+    if (errorText !== '') {
+      setErrorText('Save failed');
+      return;
+    }
+
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
 
@@ -96,6 +111,8 @@ const SetParams = ({
         errorText={errorText}
         setErrorText={setErrorText}
         successText={successText}
+        drawerNameRef={drawerNameRef}
+        shapeId={shape.id}
       />
       <Divider />
       <ListItem sx={{ mt: 4 }}>

@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { addParamsElements } from '../src/helpers';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
@@ -42,6 +42,8 @@ const GetDigits = ({
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
 
+  const drawerNameRef = useRef({});
+
   const paramsObjOptions = [
     'terminator',
     'maxRetries',
@@ -51,6 +53,26 @@ const GetDigits = ({
   ];
 
   function saveUserValues() {
+    // validate current shapeName user entered with th validation function in a child component
+    const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
+
+    if (isNameError) {
+      setErrorText(isNameError);
+      return;
+    }
+
+    const index = msgObj.findIndex((m) => m.isError);
+    if (index !== -1) {
+      setErrorText(`Error found in messageList object ${index + 1}`);
+      return;
+    }
+    console.log('drawerRef', drawerNameRef.current.handleNameValidation);
+
+    if (errorText !== '') {
+      setErrorText('Save failed');
+      return;
+    }
+
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
 
@@ -135,6 +157,8 @@ const GetDigits = ({
           errorText={errorText}
           setErrorText={setErrorText}
           successText={successText}
+          drawerNameRef={drawerNameRef}
+          shapeId={shape.id}
         />
         <ListItem>
           <Typography variant='body1' sx={{ width: '40%', fontWeight: 'bold' }}>

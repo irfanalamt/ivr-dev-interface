@@ -13,7 +13,7 @@ import {
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
 
@@ -45,6 +45,8 @@ const CallApi = ({
   const [openToast, setOpenToast] = useState(false);
   const [successText, setSuccessText] = useState('');
 
+  const drawerNameRef = useRef({});
+
   function handleInputArrChange(e, index) {
     console.log('🚀 ~ handleInputArrChange ~ e', e);
     e.preventDefault();
@@ -67,6 +69,19 @@ const CallApi = ({
   }
 
   function saveUserValues() {
+    // validate current shapeName user entered with th validation function in a child component
+    const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
+
+    if (isNameError) {
+      setErrorText(isNameError);
+      return;
+    }
+
+    if (errorText !== '') {
+      setErrorText('Save failed');
+      return;
+    }
+
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
 
@@ -173,6 +188,8 @@ const CallApi = ({
           errorText={errorText}
           setErrorText={setErrorText}
           successText={successText}
+          drawerNameRef={drawerNameRef}
+          shapeId={shape.id}
         />
         <Divider sx={{ mb: 2 }} />
         <ListItem>

@@ -18,7 +18,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { checkValidity } from '../src/helpers';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
@@ -46,6 +46,8 @@ const PlayMenu = ({
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
 
+  const drawerNameRef = useRef({});
+
   function handleMenuObjChange(value, name) {
     setMenuObj((s) => {
       const newArr = { ...s };
@@ -55,6 +57,28 @@ const PlayMenu = ({
   }
 
   function saveUserValues() {
+    // validate current shapeName user entered with th validation function in a child component
+    const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
+
+    if (isNameError) {
+      setErrorText(isNameError);
+      return;
+    }
+    if (errorText !== '') {
+      setErrorText('Save failed');
+      return;
+    }
+
+    const errorString = Object.keys(errorObj)[0];
+
+    if (errorString) {
+      let restOfString = errorString.slice(0, -1);
+      let lastChar = parseInt(errorString.slice(-1));
+
+      setErrorText(`Error found in ${restOfString} item ${lastChar + 1}`);
+      return;
+    }
+
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
 
@@ -691,6 +715,8 @@ const PlayMenu = ({
           errorText={errorText}
           setErrorText={setErrorText}
           successText={successText}
+          drawerNameRef={drawerNameRef}
+          shapeId={shape.id}
         />
         <ListItem>
           <Tabs

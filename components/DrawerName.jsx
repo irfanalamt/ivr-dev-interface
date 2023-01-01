@@ -35,18 +35,6 @@ const DrawerName = ({
     return errorM;
   };
 
-  const checkNameUnique = (value) => {
-    const otherShapes = stageGroup
-      ?.getShapesAsArray()
-      .filter((el) => el.id !== shapeId);
-
-    // Check if the value is already in use by another shape in the stage group
-    if (otherShapes.some((el) => el.text === value)) {
-      setErrorText('name NOT unique');
-      return 'name NOT unique';
-    }
-  };
-
   if (drawerNameRef) {
     drawerNameRef.current.handleNameValidation = handleNameValidation;
   }
