@@ -127,7 +127,7 @@ const SetParams = ({
         shapeId={shape.id}
       />
       <Divider />
-      <ListItem sx={{ mt: 4 }}>
+      <ListItem sx={{ mt: 2 }}>
         <InputLabel id='select-label'>parameter list</InputLabel>
         <Select
           sx={{ ml: 2 }}
@@ -144,7 +144,7 @@ const SetParams = ({
         </Select>
       </ListItem>
       <ListItem
-        sx={{ mt: 4, justifyContent: 'center' }}
+        sx={{ mt: 2, justifyContent: 'center' }}
         id='paramter-view-area'
       >
         <Typography variant='body1'>{selectedParameter.name}:</Typography>
@@ -164,7 +164,7 @@ const SetParams = ({
         )}
         {!selectedParameter.type && (
           <TextField
-            sx={{ ml: 2, width: '45%' }}
+            sx={{ ml: 2, width: 150 }}
             size='small'
             name='name'
             value={selectedParameter.value}
