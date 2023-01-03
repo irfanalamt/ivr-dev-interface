@@ -121,7 +121,7 @@ const CallApi = ({
     let codeString = `this.${
       shapeName || `callAPI${shape.id}`
     }=async function(){let endpoint = '${endpoint}';let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI(endpoint,inputVars);${outputVarsString}
-}`;
+};`;
 
     shape.setFunctionString(codeString);
     console.log('🕺🏻callAPI code:', codeString);

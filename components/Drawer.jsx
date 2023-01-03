@@ -9,7 +9,7 @@ import GoToBlock from './GoToBlock';
 import PlayConfirm from './PlayConfirm';
 import PlayMenu from './PlayMenu';
 import PlayMessage from './PlayMessage';
-import SetParams from './SetParams2';
+import SetParams from './SetParams3';
 import SwitchBlock from './SwitchBlock';
 
 const DrawerComponent = ({
@@ -121,6 +121,7 @@ const DrawerComponent = ({
             stageGroup={stageGroup}
             clearAndDraw={clearAndDraw}
             childRef={childRef}
+            userVariables={userVariables}
           />
         );
       case 'jumper':

@@ -1,19 +1,6 @@
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
-import {
-  Box,
-  Button,
-  Chip,
-  Divider,
-  List,
-  ListItem,
-  TextField,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Button, List, ListItem, TextField } from '@mui/material';
 import { useRef, useState } from 'react';
 
-import { checkValidity } from '../src/helpers';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 
@@ -23,6 +10,7 @@ const FunctionBlock = ({
   stageGroup,
   clearAndDraw,
   childRef,
+  userVariables,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
 
@@ -36,7 +24,7 @@ const FunctionBlock = ({
   const drawerNameRef = useRef({});
 
   function saveUserValues() {
-    // validate current shapeName user entered with th validation function in a child component
+    // validate current shapeName user entered with validation function in a child component
     const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
 
     if (isNameError) {
@@ -83,9 +71,32 @@ const FunctionBlock = ({
     console.log('🕺🏻runScript code:', codeString);
   }
 
+  function validateString() {
+    // First, check if the string is a valid JavaScript expression
+    try {
+      eval(functionString);
+    } catch (error) {
+      return false;
+    }
+
+    // If the string is a valid expression, check if it uses 'this.variableName'
+    if (str.includes('this.')) {
+      // Extract the variable name from the string
+      const variableName = str.match(/this\.(.*)/)[1];
+
+      // Check if the variable name is present in the userVariables array
+      if (!userVariables.some((variable) => variable.name === variableName)) {
+        return false;
+      }
+    }
+
+    // If the string passes both checks, it is valid
+    return true;
+  }
+
   function handleFunctionValidation() {
     console.log('Function text', functionString);
-    let isValid = isValidJs();
+    let isValid = validateString();
     if (isValid) {
       console.log('its valid! ✅');
       setIsFunctionError(false);
