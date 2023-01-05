@@ -70,6 +70,14 @@ const SetParams = ({
     // generateJS();
   };
 
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: { params: modifiedParameters },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
+
   const handleSelectedParameterChange = (e) => {
     const { value } = e.target;
 
@@ -97,6 +105,13 @@ const SetParams = ({
     const newModifiedParameters = { ...modifiedParameters };
     newModifiedParameters[selectedParameter.name] = selectedParameter;
     setModifiedParameters(newModifiedParameters);
+    shape.setUserValues({
+      params: newModifiedParameters,
+    });
+    setSuccessText('parameter updated');
+    setTimeout(() => {
+      setSuccessText('');
+    }, 2000);
   };
 
   const handleDeleteParameter = (parameterName) => {

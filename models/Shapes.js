@@ -22,6 +22,7 @@ class Shapes {
     switch (type) {
       case 'setParams':
         stageFigure = new Shape(x, y, 120, 30, 'setParams', '#e91e63', true);
+        stageFigure.setUserValues({ params: {} });
 
         break;
 
