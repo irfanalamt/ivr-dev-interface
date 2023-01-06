@@ -80,9 +80,9 @@ const FunctionBlock = ({
     }
 
     // If the string is a valid expression, check if it uses 'this.variableName'
-    if (str.includes('this.')) {
+    if (functionString.includes('this.')) {
       // Extract the variable name from the string
-      const variableName = str.match(/this\.(.*)/)[1];
+      const variableName = functionString.match(/this\.(.*)/)[1];
 
       // Check if the variable name is present in the userVariables array
       if (!userVariables.some((variable) => variable.name === variableName)) {

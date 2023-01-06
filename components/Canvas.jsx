@@ -1,5 +1,6 @@
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import InfoIcon from '@mui/icons-material/Info';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 import {
   Alert,
@@ -27,7 +28,6 @@ const CanvasComponent = () => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isOpenVars, setIsOpenVars] = useState(false);
   const [isConnecting, setIsConnecting] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [showInfoMessage, setShowInfoMessage] = useState(false);
   const [showCanvasResetDialog, setShowCanvasResetDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -111,12 +111,6 @@ const CanvasComponent = () => {
       setShowInfoMessage(false);
     }
   }, [isConnecting]);
-
-  useEffect(() => {
-    if (isDeleting) {
-      canvasRef.current.style.cursor = 'pointer';
-    }
-  }, [isDeleting]);
 
   function initializeCanvas() {
     const context1 = canvasRef.current.getContext('2d');
@@ -308,6 +302,19 @@ const CanvasComponent = () => {
       80
     );
 
+    if (isDragging) {
+      const img = new Image();
+      img.src = '/icons/delete.png';
+
+      contextRef.current.drawImage(
+        img,
+        window.innerWidth - 80,
+        window.innerHeight - 110 + scrollOffsetY.current,
+        50,
+        50
+      );
+    }
+
     // palette and stage drawn on canvas
     palletGroup.current.drawAllShapes(contextRef.current);
     stageGroup.current[pageNumber.current - 1].drawAllShapes(
@@ -342,7 +349,6 @@ const CanvasComponent = () => {
       if (element.isMouseInShape(realX, realY)) {
         console.log(`✨YES in pallette shape ${element.type}`);
         setIsConnecting(0);
-        setIsDeleting(false);
         setShowInfoMessage(false);
 
         currentShape.current = element;
@@ -366,11 +372,6 @@ const CanvasComponent = () => {
           // reset infoMsg on stage shape click
           setShowInfoMessage(false);
 
-          if (isDeleting) {
-            stageGroup.current[pageNumber.current - 1].removeShape(key);
-            clearAndDraw();
-            return;
-          }
           if (isConnecting === 1) {
             connectShape1.current = element;
             element.setSelected(true);
@@ -411,25 +412,6 @@ const CanvasComponent = () => {
           startY1 = realY;
         }
       });
-
-    lineGroup.current.getLines().forEach((el) => {
-      const isNearLine = el.isPointNearLine(realX, realY);
-      if (isNearLine) console.log(' 🕺🏻 isNearLine', el);
-
-      if (isNearLine && isDeleting) {
-        console.log('remove; mouse on line; 🐁');
-        console.log('remove el ', el);
-
-        stageGroup.current[pageNumber.current - 1].removeConnectingLine(
-          el.startItem,
-          el.endItem,
-          el.lineData
-        );
-
-        clearAndDraw();
-        return;
-      }
-    });
   }
   function handleMouseMove(e) {
     e.preventDefault();
@@ -440,8 +422,7 @@ const CanvasComponent = () => {
 
     // console.log('realX:', realX, window.innerWidth, 'realY:', realY);
     // reset cursor if not connecting
-    if (isConnecting === 0 && !isDeleting)
-      canvasRef.current.style.cursor = 'default';
+    if (isConnecting === 0) canvasRef.current.style.cursor = 'default';
 
     if (isDragging) {
       // drag shape - mousemove
@@ -528,6 +509,21 @@ const CanvasComponent = () => {
     const boundingRect = canvasRef.current.getBoundingClientRect();
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
+
+    if (currentShape) {
+      if (
+        currentShape.current.y >
+          window.innerHeight - 100 + scrollOffsetY.current &&
+        currentShape.current.x + currentShape.current.width / 2 >
+          window.innerWidth - 60
+      ) {
+        console.log('deletee☄️');
+        stageGroup.current[pageNumber.current - 1].removeShape(
+          currentShape.current.id
+        );
+        clearAndDraw();
+      }
+    }
 
     // reset dragging mode
     isDragging = false;
@@ -817,15 +813,13 @@ const CanvasComponent = () => {
   return (
     <>
       <CanvasAppbar
-        isDeleting={isDeleting}
-        setIsDeleting={setIsDeleting}
         isConnecting={isConnecting}
         setIsConnecting={setIsConnecting}
         stageGroup={stageGroup.current}
         showResetDialog={() => setShowCanvasResetDialog(true)}
         generateFile={generateConfigFile}
         saveToFile={saveToFile}
-      />
+      />{' '}
       <canvas
         style={{ backgroundColor: '#EFF7FD' }}
         width={window.innerWidth - 20}

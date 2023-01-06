@@ -221,7 +221,7 @@ const SetParams = ({
               {typeof p.value === 'boolean' && `${p.value}`}
             </Typography>
             <Button
-              sx={{ ml: 'auto' }}
+              sx={{ ml: 'auto', mr: -3 }}
               onClick={() => {
                 handleDeleteParameter(p.name);
               }}

@@ -18,9 +18,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 const CanvasAppbar = ({
   isConnecting,
-  setIsDeleting,
   setIsConnecting,
-  isDeleting,
   stageGroup,
   showResetDialog,
   generateFile,
@@ -28,7 +26,6 @@ const CanvasAppbar = ({
 }) => {
   function getBgColor() {
     if (isConnecting > 0) return '#e0f2f1';
-    if (isDeleting) return '#fce4ec';
 
     return '#e1f5fe';
   }
@@ -55,16 +52,13 @@ const CanvasAppbar = ({
           <Tooltip title='draw'>
             <ModeIcon
               sx={{
-                fontSize:
-                  isConnecting == 0 && !isDeleting ? '2.3rem' : '1.8rem',
+                fontSize: isConnecting == 0 ? '2.3rem' : '1.8rem',
                 boxShadow: 1,
                 borderRadius: 2,
-                backgroundColor:
-                  isConnecting == 0 && !isDeleting ? '#03a9f4' : '#dcdcdc',
+                backgroundColor: isConnecting == 0 ? '#03a9f4' : '#dcdcdc',
               }}
               onClick={() => {
                 setIsConnecting(0);
-                setIsDeleting(false);
               }}
             />
           </Tooltip>
@@ -78,23 +72,7 @@ const CanvasAppbar = ({
                 backgroundColor: isConnecting > 0 ? '#00897b' : '#dcdcdc',
               }}
               onClick={() => {
-                setIsDeleting(false);
                 setIsConnecting(1);
-              }}
-            />
-          </Tooltip>
-          <Tooltip title='delete'>
-            <DeleteIcon
-              sx={{
-                fontSize: isDeleting ? '2.3rem' : '1.8rem',
-                ml: 2,
-                boxShadow: 1,
-                borderRadius: 2,
-                backgroundColor: isDeleting ? '#e91e63' : '#dcdcdc',
-              }}
-              onClick={() => {
-                setIsDeleting(true);
-                setIsConnecting(0);
               }}
             />
           </Tooltip>
@@ -110,8 +88,8 @@ const CanvasAppbar = ({
           variant='body1'
         >
           {isConnecting > 0 && 'Connect mode'}
-          {isDeleting && 'Delete mode'}
-          {isConnecting == 0 && !isDeleting && 'Draw mode'}
+
+          {isConnecting == 0 && 'Draw mode'}
         </Typography>
         <Box sx={{ ml: 'auto' }}>
           <Tooltip title='SAVE TO FILE'>
