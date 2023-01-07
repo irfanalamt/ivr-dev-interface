@@ -1,6 +1,8 @@
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import InfoIcon from '@mui/icons-material/Info';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+const prettier = require('prettier');
+const babelParser = require('@babel/parser');
 
 import {
   Alert,
@@ -150,10 +152,26 @@ const CanvasComponent = () => {
   }
 
   function resetStage() {
+    // clear out all shapes on stage; reset shapecount
+
     stageGroup.current = [];
     for (let i = 1; i <= 4; i++) {
       stageGroup.current.push(new Shapes(`p${i}`, {}));
     }
+
+    shapeCount.current = {
+      setParams: 1,
+      runScript: 1,
+      callAPI: 1,
+      playMenu: 1,
+      getDigits: 1,
+      playMessage: 1,
+      playConfirm: 1,
+      switch: 1,
+      endFlow: 1,
+      connector: 1,
+      jumper: 1,
+    };
   }
 
   function initializePallette() {
@@ -756,8 +774,33 @@ const CanvasComponent = () => {
     const tempString1 = `function customIVR(IVR){
       IVR.menus =  require('/ivrs/customIVR/menus.json');
       IVR.params = {
-        lang: 'en-SA',terminator:'#', maxRetries: 3, maxRepeats: 3,maxCallTime: 240, invalidTransferPoint: 'TP8001', timeoutTransferPoint: 'TP8001', goodbyeMessage: 'std-goodbye', firstTimeout: 10, interTimeout: 5,menuTimeout: 5,		terminateMessage: 'std-terminate', invalidPrompt: 'std-invalid',	timeOutPrompt: 'std-timeout', repeatInfoPrompt: 'std-repeat-info', confirmPrompt: 'std-confirm', cancelPrompt: 'std-cancel',	currency: 'SAR', confirmOption: 1,	cancelOption: 2, invalidAction: 'Disconnect',timeoutAction: 'Disconnect',	logDb: true						
-      };
+        maxRetries: 1,
+        maxRepeats: 1,
+        language: 'enBcx',
+        currency: 'SAR',
+        terminator: 'X',
+        firstTimeout: 10,
+        interTimeout: 5,
+        menuTimeout: 5,
+        maxCallTime: 3600,
+        invalidAction: 'disconnect',
+        timeoutAction: 'disconnect',
+        confirmOption: 1,
+        cancelOption: 2,
+        invalidPrompt: 'std-invalid',
+        timeoutPrompt: 'std-timeout',
+        cancelPrompt: 'std-cancel',
+        goodbyeMessage: 'std-goodbye',
+        terminateMessage: 'std-terminate',
+        repeatInfoPrompt: 'std-repeat-info',
+        confirmPrompt: 'std-confirm',
+        hotkeyMainMenu: 'X',
+        hotkeyTransfer: 'X',
+        transferPoint: '',
+        invalidTransferPoint: '',
+        timeoutTransferPoint: '',
+        logDB: false
+        };
      `;
 
     const tempString2 = generateInitVariablesJS();
@@ -795,9 +838,15 @@ const CanvasComponent = () => {
 
     const tempStringEnd = '} module.exports = customIVR;';
 
-    return (
-      tempString1 + tempString2 + tempString3 + tempString4 + tempStringEnd
-    );
+    const finalCodeString =
+      tempString1 + tempString2 + tempString3 + tempString4 + tempStringEnd;
+
+    const formattedCode = prettier.format(finalCodeString, {
+      parser: 'babel',
+      parser: (text, options) => babelParser.parse(text, options),
+    });
+
+    return formattedCode;
   }
 
   function generateInitVariablesJS() {

@@ -67,8 +67,34 @@ const SetParams = ({
       params: modifiedParameters,
     });
 
-    // generateJS();
+    generateJS();
   };
+
+  function generateJS() {
+    if (Object.keys(modifiedParameters).length === 0) {
+      shape.setFunctionString('');
+      return;
+    }
+
+    const codeParamArray = [];
+    for (const prop in modifiedParameters) {
+      const newObject = {
+        name: modifiedParameters[prop].name,
+        value: modifiedParameters[prop].value,
+      };
+      codeParamArray.push(newObject);
+    }
+
+    let codeString = `this.${
+      shapeName || `setParams${shape.id}`
+    }= async function(){
+      let newParams = ${JSON.stringify(codeParamArray)};
+      IVR.params = {...IVR.params,...newParams};
+    };`;
+
+    shape.setFunctionString(codeString);
+    console.log('🕺🏻setParams code:', codeString);
+  }
 
   const getCurrentUserValues = () => {
     return JSON.stringify({
