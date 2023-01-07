@@ -528,7 +528,7 @@ const CanvasComponent = () => {
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
 
-    if (currentShape) {
+    if (currentShape && !isPalletShape) {
       if (
         currentShape.current.y >
           window.innerHeight - 100 + scrollOffsetY.current &&
@@ -540,6 +540,8 @@ const CanvasComponent = () => {
           currentShape.current.id
         );
         clearAndDraw();
+        snackbarMessage.current = `${currentShape.current.text} deleted.`;
+        setOpenSnackbar(true);
       }
     }
 
@@ -773,8 +775,8 @@ const CanvasComponent = () => {
 
     const tempString1 = `function customIVR(IVR){
       IVR.params = {
-        maxRetries: 1,
-        maxRepeats: 1,
+        maxRetries: 3,
+        maxRepeats: 3,
         language: 'enBcx',
         currency: 'SAR',
         terminator: 'X',
@@ -1009,9 +1011,9 @@ const CanvasComponent = () => {
       </Typography>
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        sx={{ mt: 10, mr: 5 }}
+        sx={{ mt: 5, mr: 1 }}
         open={openSnackbar}
-        autoHideDuration={6000}
+        autoHideDuration={2500}
         onClose={() => setOpenSnackbar(false)}
       >
         <Alert
