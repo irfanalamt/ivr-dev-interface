@@ -772,7 +772,6 @@ const CanvasComponent = () => {
     }
 
     const tempString1 = `function customIVR(IVR){
-      IVR.menus =  require('/ivrs/customIVR/menus.json');
       IVR.params = {
         maxRetries: 1,
         maxRepeats: 1,

@@ -92,10 +92,15 @@ const PlayConfirm = ({
   childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS(filteredMsgObj) {
+    const codeMessageObject = filteredMsgObj.map((obj) => {
+      const { isError, useVariable, ...rest } = obj;
+      return rest;
+    });
+
     let codeString = `this.${
       shapeName || `playConfirm${shape.id}`
     }= async function(){let msgList = ${JSON.stringify(
-      filteredMsgObj
+      codeMessageObject
     )};let params = ${JSON.stringify({
       confirmOption,
       cancelOption,

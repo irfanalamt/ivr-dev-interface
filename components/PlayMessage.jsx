@@ -100,10 +100,15 @@ const PlayMessage = ({
   childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS(filteredMsgObj) {
+    const codeMessageObject = filteredMsgObj.map((obj) => {
+      const { isError, useVariable, ...rest } = obj;
+      return rest;
+    });
+
     let codeString = `this.${
       shapeName || `playMessage${shape.id}`
     }= async function(){let msgList = ${JSON.stringify(
-      filteredMsgObj
+      codeMessageObject
     )};let params = ${JSON.stringify({
       interruptible,
       repeatOption,

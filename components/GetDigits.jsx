@@ -113,10 +113,15 @@ const GetDigits = ({
   childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS(filteredMsgObj, entireParamsObj) {
+    const codeMessageObject = filteredMsgObj.map((obj) => {
+      const { isError, useVariable, ...rest } = obj;
+      return rest;
+    });
+
     let codeString = `this.${
       shapeName || `getDigits${shape.id}`
     }= async function(){let msgList = ${JSON.stringify(
-      filteredMsgObj
+      codeMessageObject
     )};let params = ${JSON.stringify(entireParamsObj)};this.${
       resultName || 'default'
     } = await IVR.getDigits(msgList,params); 
