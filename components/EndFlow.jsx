@@ -22,6 +22,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useEffect } from 'react';
 import { useRef, useState } from 'react';
 import DrawerTop from './DrawerTop';
 
@@ -32,13 +33,31 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
     shape.userValues?.transferPoint ?? ''
   );
 
+  useEffect(() => {
+    generateJS();
+  }, []);
+
   function saveUserValues() {
     if (type === 'disconnect') {
       shape.setUserValues({ type, transferPoint: null });
+      generateJS();
       return;
     }
 
     shape.setUserValues({ type, transferPoint });
+    generateJS();
+  }
+
+  function generateJS() {
+    const codeString = `this.${
+      shape.text || `EndFlow${shape.id}`
+    }=async function(){${
+      type === 'disconnect'
+        ? `doDisconnect();`
+        : `doTransfer('${transferPoint}');`
+    }};`;
+
+    shape.setFunctionString(codeString);
   }
 
   function handleTypeChange(e) {
@@ -52,7 +71,7 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
     <>
       <List sx={{ minWidth: 350 }}>
         <DrawerTop
-          aveUserValues={saveUserValues}
+          saveUserValues={saveUserValues}
           shape={shape}
           handleCloseDrawer={handleCloseDrawer}
           backgroundColor='#f8bbd0'

@@ -61,7 +61,7 @@ class Shapes {
       case 'playMessage':
         stageFigure = new Shape(x, y, 145, 30, 'playMessage', '#c0ca33', true);
         stageFigure.setUserValues({
-          params: { interruptible: true, repeatOption: '' },
+          params: { interruptible: true, repeatOption: 'X' },
           messageList: [],
         });
         break;
@@ -70,8 +70,8 @@ class Shapes {
         stageFigure = new Shape(x, y, 135, 30, 'playConfirm', '#7cb342', true);
         stageFigure.setUserValues({
           params: {
-            confirmOption: '',
-            cancelOption: '',
+            confirmOption: 'X',
+            cancelOption: 'X',
             confirmPrompt: '',
             cancelPrompt: '',
           },
@@ -526,14 +526,9 @@ class Shapes {
     // else return first shapeText without one
     for (let shape of this.getShapesAsArray()) {
       if (
-        ![
-          'connector',
-          'tinyCircle',
-          'jumper',
-          'switch',
-          'setParams',
-          'endFlow',
-        ].includes(shape.type)
+        !['connector', 'tinyCircle', 'jumper', 'switch', 'setParams'].includes(
+          shape.type
+        )
       ) {
         if (!shape.functionString) return shape.text;
       }

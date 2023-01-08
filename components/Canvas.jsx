@@ -845,6 +845,7 @@ const CanvasComponent = () => {
     const formattedCode = prettier.format(finalCodeString, {
       parser: 'babel',
       parser: (text, options) => babelParser.parse(text, options),
+      singleQuote: true,
     });
 
     return formattedCode;

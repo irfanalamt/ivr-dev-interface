@@ -1,28 +1,15 @@
-import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
-  Button,
-  Chip,
-  Divider,
-  IconButton,
-  InputLabel,
   List,
   ListItem,
   MenuItem,
-  Paper,
   Select,
   Switch,
   Tab,
   Tabs,
-  TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { useRef, useState } from 'react';
-import { addInputElements, checkValidity } from '../src/helpers';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 import MessageList from './MessageList';
@@ -45,7 +32,7 @@ const PlayMessage = ({
     userValues.params.interruptible ?? true
   );
   const [repeatOption, setRepeatOption] = useState(
-    userValues.params.repeatOption ?? ''
+    userValues.params.repeatOption || 'X'
   );
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
@@ -197,6 +184,7 @@ const PlayMessage = ({
               setRepeatOption(e.target.value);
             }}
           >
+            <MenuItem value='X'>X</MenuItem>
             <MenuItem value={0}>0</MenuItem>
             <MenuItem value={1}>1</MenuItem>
             <MenuItem value={2}>2</MenuItem>

@@ -178,6 +178,7 @@ const PlayConfirm = ({
               setConfirmOption(e.target.value);
             }}
           >
+            <MenuItem value='X'>X</MenuItem>
             <MenuItem value={0}>0</MenuItem>
             <MenuItem value={1}>1</MenuItem>
             <MenuItem value={2}>2</MenuItem>
@@ -202,6 +203,7 @@ const PlayConfirm = ({
               setCancelOption(e.target.value);
             }}
           >
+            <MenuItem value='X'>X</MenuItem>
             <MenuItem value={0}>0</MenuItem>
             <MenuItem value={1}>1</MenuItem>
             <MenuItem value={2}>2</MenuItem>
