@@ -53,8 +53,8 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
       shape.text || `EndFlow${shape.id}`
     }=async function(){${
       type === 'disconnect'
-        ? `doDisconnect();`
-        : `doTransfer('${transferPoint}');`
+        ? `IVR.doDisconnect();`
+        : `IVR.doTransfer('${transferPoint}');`
     }};`;
 
     shape.setFunctionString(codeString);
