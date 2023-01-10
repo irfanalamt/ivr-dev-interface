@@ -21,6 +21,7 @@ import SetVariables from './SetVariables';
 import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
 import { useRouter } from 'next/router';
+import SaveFileDialog from './SaveFileDialog';
 
 const CanvasComponent = () => {
   const router = useRouter();
@@ -31,7 +32,10 @@ const CanvasComponent = () => {
   const [isConnecting, setIsConnecting] = useState(0);
   const [showInfoMessage, setShowInfoMessage] = useState(false);
   const [showCanvasResetDialog, setShowCanvasResetDialog] = useState(false);
+  const [showSaveFileDialog, setShowSaveFileDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+
+  const [ivrName, setIvrName] = useState('');
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -519,7 +523,7 @@ const CanvasComponent = () => {
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
 
-    if (currentShape && !isPalletShape) {
+    if (currentShape.current && !isPalletShape) {
       if (
         currentShape.current.y >
           window.innerHeight - 100 + scrollOffsetY.current &&
@@ -714,9 +718,9 @@ const CanvasComponent = () => {
     userVariables.current = arr;
   }
 
-  function saveToFile() {
-    const filename = prompt('Enter a filename without extension:');
-    if (!filename) return;
+  function saveToFile(ivrName, version) {
+    setIvrName(`${ivrName}_${version}`);
+
     const data = {
       stageGroup: stageGroup.current,
       userVariables: userVariables.current,
@@ -726,7 +730,7 @@ const CanvasComponent = () => {
     const file = new Blob([JSON.stringify(data)], { type: 'text/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(file);
-    link.download = `${filename}.ivrf`;
+    link.download = `${ivrName}.ivrf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -744,7 +748,7 @@ const CanvasComponent = () => {
     // create "a" HTML element with href to file & click
     const link = document.createElement('a');
     link.href = href;
-    link.setAttribute('download', `config.js`); //or any other extension
+    link.setAttribute('download', `${ivrName}.js`); //or any other extension
     document.body.appendChild(link);
     link.click();
 
@@ -764,6 +768,12 @@ const CanvasComponent = () => {
       return false;
     }
 
+    if (!ivrName) {
+      snackbarMessage.current = `Please save first to generate script.`;
+      setOpenSnackbar(true);
+      return false;
+    }
+
     // function that loops through all shapes except connector, switch or jumper; and check if they have fn string. if no return that shape name else false
     const isFunctionStringPresent =
       stageGroup.current[pageNumber.current - 1].isFunctionStringPresent();
@@ -773,7 +783,7 @@ const CanvasComponent = () => {
       return false;
     }
 
-    const tempString1 = `function customIVR(IVR){
+    const tempString1 = `function ${ivrName}(IVR){
       IVR.params = {
         maxRetries: 3,
         maxRepeats: 3,
@@ -824,18 +834,7 @@ const CanvasComponent = () => {
     const tempString4 =
       stageGroup.current[pageNumber.current - 1].traverseShapes(idOfStartShape);
 
-    //const tempString4 = generateMainJS();
-
-    // if (!tempString4) {
-    //   snackbarMessage.current =
-    //     'Please add a setParams block to start control flow.';
-    //   setOpenSnackbar(true);
-    //   return false;
-    // }
-
-    // generate code for each menu block; driver fns for all menu items
-
-    const tempStringEnd = '} module.exports = customIVR;';
+    const tempStringEnd = `} module.exports = ${ivrName} ;`;
 
     const finalCodeString =
       tempString1 + tempString2 + tempString3 + tempString4 + tempStringEnd;
@@ -863,11 +862,11 @@ const CanvasComponent = () => {
       <CanvasAppbar
         isConnecting={isConnecting}
         setIsConnecting={setIsConnecting}
-        stageGroup={stageGroup.current}
         showResetDialog={() => setShowCanvasResetDialog(true)}
+        showSaveFileDialog={() => setShowSaveFileDialog(true)}
         generateFile={generateConfigFile}
-        saveToFile={saveToFile}
-      />{' '}
+        ivrName={ivrName}
+      />
       <canvas
         style={{ backgroundColor: '#EFF7FD' }}
         width={window.innerWidth - 20}
@@ -918,8 +917,6 @@ const CanvasComponent = () => {
           {infoMessage.current}
         </Typography>
 
-        <Box sx={{ ml: '40vw', position: 'fixed', mt: 1 }}></Box>
-
         <Pagination
           sx={{
             position: 'fixed',
@@ -965,6 +962,14 @@ const CanvasComponent = () => {
           clearAndDraw();
         }}
         resetStage={resetStage}
+      />
+      <SaveFileDialog
+        open={showSaveFileDialog}
+        handleClose={() => {
+          setShowSaveFileDialog(false);
+          clearAndDraw();
+        }}
+        saveToFile={saveToFile}
       />
       <Typography
         sx={{

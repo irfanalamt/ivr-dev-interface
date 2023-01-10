@@ -1,28 +1,18 @@
-import {
-  Avatar,
-  Box,
-  Typography,
-  Button,
-  Tooltip,
-  Container,
-} from '@mui/material';
+import { Avatar, Box, Typography, Button, Tooltip } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ModeIcon from '@mui/icons-material/Mode';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import SaveIcon from '@mui/icons-material/Save';
 import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
-import DeleteIcon from '@mui/icons-material/Delete';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 
 const CanvasAppbar = ({
   isConnecting,
   setIsConnecting,
-  stageGroup,
   showResetDialog,
   generateFile,
-  saveToFile,
+  ivrName,
+  showSaveFileDialog,
 }) => {
   function getBgColor() {
     if (isConnecting > 0) return '#e0f2f1';
@@ -57,9 +47,7 @@ const CanvasAppbar = ({
                 borderRadius: 2,
                 backgroundColor: isConnecting == 0 ? '#03a9f4' : '#dcdcdc',
               }}
-              onClick={() => {
-                setIsConnecting(0);
-              }}
+              onClick={() => setIsConnecting(0)}
             />
           </Tooltip>
           <Tooltip title='connect'>
@@ -71,9 +59,7 @@ const CanvasAppbar = ({
                 borderRadius: 2,
                 backgroundColor: isConnecting > 0 ? '#00897b' : '#dcdcdc',
               }}
-              onClick={() => {
-                setIsConnecting(1);
-              }}
+              onClick={() => setIsConnecting(1)}
             />
           </Tooltip>
         </Box>
@@ -91,7 +77,16 @@ const CanvasAppbar = ({
 
           {isConnecting == 0 && 'Draw mode'}
         </Typography>
-        <Box sx={{ ml: 'auto' }}>
+
+        <Box
+          sx={{
+            ml: 'auto',
+            display: 'flex',
+          }}
+        >
+          <Typography sx={{ mr: 3, fontWeight: 'bold' }} variant='subtitle1'>
+            {ivrName}
+          </Typography>
           <Tooltip title='SAVE TO FILE'>
             <Button
               sx={{
@@ -103,7 +98,7 @@ const CanvasAppbar = ({
               variant='contained'
               size='small'
               color='secondary'
-              onClick={saveToFile}
+              onClick={showSaveFileDialog}
             >
               <SaveAsIcon sx={{ fontSize: '1.2rem' }} />
             </Button>
@@ -125,7 +120,7 @@ const CanvasAppbar = ({
             </Button>
           </Tooltip>
 
-          <Tooltip title='GENERATE CONFIG'>
+          <Tooltip title='GENERATE SCRIPT'>
             <Button
               sx={{
                 zIndex: 6,
