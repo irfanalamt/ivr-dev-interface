@@ -84,7 +84,7 @@ const CanvasAppbar = ({
             display: 'flex',
           }}
         >
-          <Typography sx={{ mr: 3, fontWeight: 'bold' }} variant='subtitle1'>
+          <Typography sx={{ mr: 3 }} variant='subtitle1'>
             {ivrName}
           </Typography>
           <Tooltip title='SAVE TO FILE'>

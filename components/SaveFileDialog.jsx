@@ -37,9 +37,10 @@ const SaveFileDialog = ({ open, handleClose, saveToFile }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xs'>
       <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-        <SaveAsIcon sx={{ mr: 0.5, fontSize: 20 }} /> Save IVR
+        <SaveAsIcon sx={{ mr: 0.5 }} />
+        <Typography variant='h6'>Save IVR</Typography>
       </DialogTitle>
       <Typography
         sx={{
