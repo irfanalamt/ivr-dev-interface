@@ -136,9 +136,7 @@ const PlayConfirm = ({
           <Tabs
             sx={{ marginX: 'auto' }}
             value={tabValue}
-            onChange={(e, newVal) => {
-              setTabValue(newVal);
-            }}
+            onChange={(e, newVal) => setTabValue(newVal)}
           >
             <Tab label='Message List' />
             <Tab label='Parameters' />
@@ -167,17 +165,15 @@ const PlayConfirm = ({
       </Box>
       <Box id='tabPanel2' sx={{ display: tabValue === 1 ? 'block' : 'none' }}>
         <ListItem sx={{ marginTop: 2 }}>
-          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+          <Typography sx={{ width: '35%' }} variant='subtitle2'>
             confirmOption:
           </Typography>
           <Select
             size='small'
-            sx={{ marginX: 1 }}
             value={confirmOption}
-            onChange={(e) => {
-              setConfirmOption(e.target.value);
-            }}
+            onChange={(e) => setConfirmOption(e.target.value)}
           >
+            <MenuItem value=''> </MenuItem>
             <MenuItem value='X'>X</MenuItem>
             <MenuItem value={0}>0</MenuItem>
             <MenuItem value={1}>1</MenuItem>
@@ -192,17 +188,15 @@ const PlayConfirm = ({
           </Select>
         </ListItem>
         <ListItem sx={{ marginTop: 1 }}>
-          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+          <Typography sx={{ width: '35%' }} variant='subtitle2'>
             cancelOption:
           </Typography>
           <Select
             size='small'
-            sx={{ marginX: 1 }}
             value={cancelOption}
-            onChange={(e) => {
-              setCancelOption(e.target.value);
-            }}
+            onChange={(e) => setCancelOption(e.target.value)}
           >
+            <MenuItem value=''> </MenuItem>
             <MenuItem value='X'>X</MenuItem>
             <MenuItem value={0}>0</MenuItem>
             <MenuItem value={1}>1</MenuItem>
@@ -217,27 +211,25 @@ const PlayConfirm = ({
           </Select>
         </ListItem>
         <ListItem sx={{ marginTop: 1 }}>
-          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+          <Typography sx={{ width: '35%' }} variant='subtitle2'>
             confirmPrompt:
           </Typography>
           <TextField
             size='small'
+            sx={{ width: 180 }}
             value={confirmPrompt}
-            onChange={(e) => {
-              setConfirmPrompt(e.target.value);
-            }}
+            onChange={(e) => setConfirmPrompt(e.target.value)}
           />
         </ListItem>
         <ListItem sx={{ marginTop: 1 }}>
-          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+          <Typography sx={{ width: '35%' }} variant='subtitle2'>
             cancelPrompt:
           </Typography>
           <TextField
+            sx={{ width: 180 }}
             size='small'
             value={cancelPrompt}
-            onChange={(e) => {
-              setCancelPrompt(e.target.value);
-            }}
+            onChange={(e) => setCancelPrompt(e.target.value)}
           />
         </ListItem>
       </Box>

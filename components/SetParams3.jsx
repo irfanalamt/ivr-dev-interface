@@ -39,11 +39,6 @@ const SetParams = ({
 
   const drawerNameRef = useRef({});
 
-  useEffect(() => {
-    console.log('setParams:', selectedParameter);
-    console.log('modifiedParameters:', modifiedParameters);
-  }, [selectedParameter, modifiedParameters]);
-
   const saveUserValues = () => {
     // validate current shapeName user entered with th validation function in a child component
     const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
@@ -89,7 +84,7 @@ const SetParams = ({
       shapeName || `setParams${shape.id}`
     }= async function(){
       let newParams = ${JSON.stringify(codeParamArray)};
-      IVR.params = {...IVR.params,...newParams};
+      await IVR.setCallParams(newParams);
     };`;
 
     shape.setFunctionString(codeString);

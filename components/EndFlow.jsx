@@ -33,10 +33,6 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
     shape.userValues?.transferPoint ?? ''
   );
 
-  useEffect(() => {
-    generateJS();
-  }, []);
-
   function saveUserValues() {
     if (type === 'disconnect') {
       shape.setUserValues({ type, transferPoint: null });
@@ -45,7 +41,7 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
     }
 
     shape.setUserValues({ type, transferPoint });
-    generateJS();
+    // generateJS();
   }
 
   function generateJS() {

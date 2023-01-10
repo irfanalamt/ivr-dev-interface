@@ -66,9 +66,9 @@ const CanvasComponent = () => {
   const tooltipRef = useRef(null);
   const stageTooltipRef = useRef(null);
   const lineTooltipRef = useRef(null);
+  const isDragging = useRef(false);
 
-  let isDragging = false,
-    isPalletShape = false;
+  let isPalletShape = false;
   let startX, startY;
   let startX1, startY1;
 
@@ -77,7 +77,7 @@ const CanvasComponent = () => {
     const handleScroll = () => {
       // draw palette dynamically on window scrollY
       scrollOffsetY.current = window.scrollY;
-      console.log('innerHeight', window.innerHeight);
+
       initializePallette();
       clearAndDraw();
     };
@@ -122,8 +122,6 @@ const CanvasComponent = () => {
     context1.lineWidth = 3;
 
     if (projectData) {
-      //console.log('YES projectData:' + projectData);
-
       const currentProject = JSON.parse(projectData);
       const userVariablesCurrent = currentProject.userVariables;
       const stageGroupCurrent = currentProject.stageGroup;
@@ -320,7 +318,7 @@ const CanvasComponent = () => {
       80
     );
 
-    if (isDragging) {
+    if (isDragging.current && !isPalletShape) {
       const img = new Image();
       img.src = '/icons/delete.png';
 
@@ -370,7 +368,7 @@ const CanvasComponent = () => {
         setShowInfoMessage(false);
 
         currentShape.current = element;
-        isDragging = true;
+        isDragging.current = true;
         isPalletShape = true;
         startX = realX;
         startY = realY;
@@ -395,6 +393,7 @@ const CanvasComponent = () => {
             element.setSelected(true);
             clearAndDraw();
             setIsConnecting(2);
+
             //if shape1 is switch, if on exit point set ref to exit point name
             if (element.type === 'switch') {
               const isNearExitPoint = element.isNearExitPointSwitch(
@@ -410,19 +409,11 @@ const CanvasComponent = () => {
 
               isMenuExitPoint.current = isNearExitPoint;
             }
-            return;
-          }
-          if (isConnecting === 2) {
-            connectShape2.current = element;
-            element.setSelected(true);
-            clearAndDraw();
-            setIsConnecting(1);
-            connectShapes();
-            return;
+            // return;
           }
 
           currentShape.current = element;
-          isDragging = true;
+          isDragging.current = true;
           isPalletShape = false;
           startX = realX;
           startY = realY;
@@ -438,23 +429,24 @@ const CanvasComponent = () => {
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
 
-    // console.log('realX:', realX, window.innerWidth, 'realY:', realY);
     // reset cursor if not connecting
     if (isConnecting === 0) canvasRef.current.style.cursor = 'default';
 
-    if (isDragging) {
-      // drag shape - mousemove
-      const dx = realX - startX;
-      const dy = realY - startY;
-      const current_shape = currentShape.current;
+    if (isDragging.current) {
+      if (isConnecting === 0) {
+        // drag shape - mousemove
+        const dx = realX - startX;
+        const dy = realY - startY;
+        const current_shape = currentShape.current;
 
-      current_shape.x += dx;
-      current_shape.y += dy;
+        current_shape.x += dx;
+        current_shape.y += dy;
 
-      clearAndDraw();
-      startX = realX;
-      startY = realY;
-      return;
+        clearAndDraw();
+        startX = realX;
+        startY = realY;
+        return;
+      }
     }
 
     // reset tooltip; place tooltip on mouse pallet shape
@@ -535,7 +527,6 @@ const CanvasComponent = () => {
         currentShape.current.x + currentShape.current.width / 2 >
           window.innerWidth - 60
       ) {
-        console.log('deletee☄️');
         stageGroup.current[pageNumber.current - 1].removeShape(
           currentShape.current.id
         );
@@ -545,8 +536,22 @@ const CanvasComponent = () => {
       }
     }
 
+    if (isDragging.current && isConnecting === 2) {
+      stageGroup.current[pageNumber.current - 1]
+        .getShapesEntries()
+        .forEach(([key, element]) => {
+          if (element.isMouseInShape(realX, realY)) {
+            connectShape2.current = element;
+            element.setSelected(true);
+            clearAndDraw();
+            setIsConnecting(1);
+            connectShapes();
+            return;
+          }
+        });
+    }
     // reset dragging mode
-    isDragging = false;
+    isDragging.current = false;
 
     if (isPalletShape) {
       isPalletShape = false;
@@ -649,8 +654,6 @@ const CanvasComponent = () => {
     if (connectShape1.current.type === 'switch') {
       // if it is an exit point
       if (isSwitchExitPoint.current) {
-        console.log('connect exit point../🟢', isSwitchExitPoint.current);
-
         let position = connectShape1.current.userValues.switchArray.findIndex(
           (row) => row.exitPoint == isSwitchExitPoint.current
         );
@@ -677,7 +680,6 @@ const CanvasComponent = () => {
     // if shape1 playMenu
     if (connectShape1.current.type === 'playMenu') {
       if (isMenuExitPoint.current) {
-        console.log('yes menu exit', isMenuExitPoint);
         const index = connectShape1.current.userValues.items.findIndex(
           (row) => row.action === isMenuExitPoint.current
         );
@@ -705,7 +707,6 @@ const CanvasComponent = () => {
   }
 
   function handlePageChange(e, pageNum) {
-    console.log('pageNum:📄 ' + pageNum);
     pageNumber.current = pageNum;
     clearAndDraw();
   }
@@ -824,8 +825,6 @@ const CanvasComponent = () => {
     const tempString4 =
       stageGroup.current[pageNumber.current - 1].traverseShapes(idOfStartShape);
 
-    console.log('tempString4:😊', tempString4);
-
     //const tempString4 = generateMainJS();
 
     // if (!tempString4) {
@@ -857,7 +856,6 @@ const CanvasComponent = () => {
       .map((el) => `this.${el.name}${el.value ? `=${el.value};` : ';'}`)
       .join('');
 
-    console.log('🚀 ~ generateJS ~ codeString', codeString);
     return codeString;
   }
 

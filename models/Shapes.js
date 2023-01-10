@@ -70,8 +70,8 @@ class Shapes {
         stageFigure = new Shape(x, y, 135, 30, 'playConfirm', '#7cb342', true);
         stageFigure.setUserValues({
           params: {
-            confirmOption: 'X',
-            cancelOption: 'X',
+            confirmOption: '',
+            cancelOption: '',
             confirmPrompt: '',
             cancelPrompt: '',
           },
@@ -106,10 +106,18 @@ class Shapes {
 
     const id = this.generateID(stageFigure.type, pageNumber, count);
 
-    //append shapeCount to shape text
-    stageFigure.text += count;
-    stageFigure.id = id;
+    if (
+      stageFigure.type === 'setParams' &&
+      !Object.keys(this.shapes).some((key) => key.startsWith('A'))
+    ) {
+      // if this is the first setParams; set it to be the start
+      stageFigure.text = 'start';
+    } else {
+      //append shapeCount to shape text
+      stageFigure.text += count;
+    }
 
+    stageFigure.id = id;
     //add shape to group
     this.shapes[id] = stageFigure;
   }
