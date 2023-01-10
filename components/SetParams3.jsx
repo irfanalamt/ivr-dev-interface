@@ -39,6 +39,10 @@ const SetParams = ({
 
   const drawerNameRef = useRef({});
 
+  useEffect(() => {
+    generateJS();
+  }, []);
+
   const saveUserValues = () => {
     // validate current shapeName user entered with th validation function in a child component
     const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
@@ -66,11 +70,6 @@ const SetParams = ({
   };
 
   function generateJS() {
-    if (Object.keys(modifiedParameters).length === 0) {
-      shape.setFunctionString('');
-      return;
-    }
-
     const codeParamArray = [];
     for (const prop in modifiedParameters) {
       const newObject = {

@@ -36,25 +36,23 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
   function saveUserValues() {
     if (type === 'disconnect') {
       shape.setUserValues({ type, transferPoint: null });
-      generateJS();
       return;
     }
 
     shape.setUserValues({ type, transferPoint });
-    // generateJS();
   }
 
-  function generateJS() {
-    const codeString = `this.${
-      shape.text || `EndFlow${shape.id}`
-    }=async function(){${
-      type === 'disconnect'
-        ? `IVR.doDisconnect();`
-        : `IVR.doTransfer('${transferPoint}');`
-    }};`;
+  // function generateJS() {
+  //   const codeString = `this.${
+  //     shape.text || `EndFlow${shape.id}`
+  //   }=async function(){${
+  //     type === 'disconnect'
+  //       ? `IVR.doDisconnect();`
+  //       : `IVR.doTransfer('${transferPoint}');`
+  //   }};`;
 
-    shape.setFunctionString(codeString);
-  }
+  //   shape.setFunctionString(codeString);
+  // }
 
   function handleTypeChange(e) {
     setType(e.target.value);

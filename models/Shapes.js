@@ -184,7 +184,6 @@ class Shapes {
 
       // Print the properties of the current shape
       console.log('▶️', currentShape.text);
-      if (currentShape.type === 'endFlow') break;
 
       if (currentShape.type === 'playMenu') {
         tempString += this.generateMenuCode(currentShape.id);
@@ -205,6 +204,17 @@ class Shapes {
           }
         });
       }
+      if (currentShape.type === 'switch') {
+        currentShape.userValues.switchArray.forEach((item) => {
+          if (item.nextId) {
+            shapeStack.push(this.shapes[item.nextId]);
+          }
+        });
+
+        if (currentShape.userValues.default.nextId) {
+          shapeStack.push(this.shapes[currentShape.userValues.default.nextId]);
+        }
+      }
     }
     return tempString;
   }
@@ -214,7 +224,17 @@ class Shapes {
     const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(id);
 
     const mainMenuString = `this.ivrMain=async function(){${arrayShapesTillMenuSwitch
-      .map((el) => `await this.${el}();`)
+      .map((el) => {
+        if (el.type === 'endFlow') {
+          if (el.userValues.type === 'disconnect') {
+            return 'IVR.doDisconnect();';
+          } else if (el.userValues.transferPoint) {
+            return `IVR.doTransfer('${el.userValues.transferPoint}');`;
+          }
+        } else {
+          return `await this.${el.text}();`;
+        }
+      })
       .join('')}};`;
 
     return mainMenuString;
@@ -231,15 +251,36 @@ class Shapes {
           const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
             el.nextId
           );
+
           code += !code
             ? `if(${el.condition}){
             ${arrayShapesTillMenuSwitch
-              .map((el) => `await this.${el}();`)
+              .map((el) => {
+                if (el.type === 'endFlow') {
+                  if (el.userValues.type === 'disconnect') {
+                    return 'IVR.doDisconnect();';
+                  } else if (el.userValues.transferPoint) {
+                    return `IVR.doTransfer('${el.userValues.transferPoint}');`;
+                  }
+                } else {
+                  return `await this.${el.text}();`;
+                }
+              })
               .join('')}
           }`
             : `else if(${el.condition}){
             ${arrayShapesTillMenuSwitch
-              .map((el) => `await this.${el}();`)
+              .map((el) => {
+                if (el.type === 'endFlow') {
+                  if (el.userValues.type === 'disconnect') {
+                    return 'IVR.doDisconnect();';
+                  } else if (el.userValues.transferPoint) {
+                    return `IVR.doTransfer('${el.userValues.transferPoint}');`;
+                  }
+                } else {
+                  return `await this.${el.text}();`;
+                }
+              })
               .join('')}
           }`;
         }
@@ -250,7 +291,17 @@ class Shapes {
           switchShape.userValues.default.nextId
         );
         code += `else{${arrayShapesTillMenuSwitch
-          .map((el) => `await this.${el}();`)
+          .map((el) => {
+            if (el.type === 'endFlow') {
+              if (el.userValues.type === 'disconnect') {
+                return 'IVR.doDisconnect();';
+              } else if (el.userValues.transferPoint) {
+                return `IVR.doTransfer('${el.userValues.transferPoint}');`;
+              }
+            } else {
+              return `await this.${el.text}();`;
+            }
+          })
           .join('')}}`;
       }
 
@@ -270,7 +321,17 @@ class Shapes {
       let code = `this.${
         switchShape.text
       }=async function(){${arrayShapesTillMenuSwitch
-        .map((el) => `await this.${el}();`)
+        .map((el) => {
+          if (el.type === 'endFlow') {
+            if (el.userValues.type === 'disconnect') {
+              return 'IVR.doDisconnect();';
+            } else if (el.userValues.transferPoint) {
+              return `IVR.doTransfer('${el.userValues.transferPoint}');`;
+            }
+          } else {
+            return `await this.${el.text}();`;
+          }
+        })
         .join('')}};`;
 
       return code;
@@ -296,7 +357,17 @@ class Shapes {
         let code = `this.${menuShape.text}_${
           item.action
         }=async function(){${arrayShapesTillMenuSwitch
-          .map((el) => `await this.${el}();`)
+          .map((el) => {
+            if (el.type === 'endFlow') {
+              if (el.userValues.type === 'disconnect') {
+                return 'IVR.doDisconnect();';
+              } else if (el.userValues.transferPoint) {
+                return `IVR.doTransfer('${el.userValues.transferPoint}');`;
+              }
+            } else {
+              return `await this.${el.text}();`;
+            }
+          })
           .join('')}};`;
         finalCode += code;
       }
@@ -313,7 +384,7 @@ class Shapes {
     let currentShape = this.shapes[id];
     if (!currentShape) return null;
 
-    if (currentShape.type !== 'connector') tempArray.push(currentShape.text);
+    if (currentShape.type !== 'connector') tempArray.push(currentShape);
 
     let id1 = id;
 
@@ -325,7 +396,7 @@ class Shapes {
       if (!nextShape) break;
 
       // if not connector; add to array
-      if (nextShape.type !== 'connector') tempArray.push(nextShape.text);
+      if (nextShape.type !== 'connector') tempArray.push(nextShape);
 
       id1 = nextShapeId;
     }
@@ -534,7 +605,7 @@ class Shapes {
     // else return first shapeText without one
     for (let shape of this.getShapesAsArray()) {
       if (
-        !['connector', 'tinyCircle', 'jumper', 'switch', 'setParams'].includes(
+        !['connector', 'tinyCircle', 'jumper', 'switch', 'endFlow'].includes(
           shape.type
         )
       ) {
