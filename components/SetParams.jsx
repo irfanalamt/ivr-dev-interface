@@ -1,998 +1,256 @@
-import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
   Button,
-  Chip,
-  IconButton,
+  Divider,
+  InputLabel,
   List,
   ListItem,
   MenuItem,
-  Paper,
   Select,
   Switch,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { checkValidity } from '../src/helpers';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useRef, useState } from 'react';
+import defaultParams from '../src/defaultParams';
+import DrawerName from './DrawerName';
+import DrawerTop from './DrawerTop';
+import SaveIcon from '@mui/icons-material/Save';
+import { useEffect } from 'react';
 
-const SetParams = ({ shape, handleCloseDrawer, stageGroup, clearAndDraw }) => {
-  const [shapeName, setShapeName] = useState(
-    shape.text || `setParams${shape.id}`
+const SetParams = ({
+  shape,
+  handleCloseDrawer,
+  stageGroup,
+  clearAndDraw,
+  childRef,
+}) => {
+  const [shapeName, setShapeName] = useState(shape.text);
+  const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
+
+  const [selectedParameterIndex, setSelectedParameterIndex] = useState(0);
+  const [selectedParameter, setSelectedParameter] = useState(defaultParams[0]);
+  const [modifiedParameters, setModifiedParameters] = useState(
+    shape.userValues?.params ?? {}
   );
-  const [menuObj, setMenuObj] = useState(shape.userValues?.params || {});
-  const [paramSelectedList, setParamSelectedList] = useState(
-    shape.userValues?.paramSelectedList || []
-  );
-  const [paramSelected, setParamSelected] = useState('');
-  const [errorObj, setErrorObj] = useState({});
 
-  const optionalParamsList = [
-    'language',
-    'terminator',
-    'maxRetries',
-    'maxRepeats',
-    'firstTimeout',
-    'interTimeout',
-    'menuTimeout',
-    'invalidAction',
-    'timeoutAction',
-    'currency',
-    'invalidPrompt',
-    'timeoutPrompt',
-    'hotkeyMainMenu',
-    'hotkeyTransfer',
-    'logDb',
-  ];
+  const drawerNameRef = useRef({});
 
-  function saveUserValues() {
-    shape.setText(shapeName || `setParams${shape.id}`);
-    clearAndDraw();
-    shape.setUserValues({
-      params: menuObj,
-      paramSelectedList,
-    });
+  useEffect(() => {
     generateJS();
-  }
+  }, []);
 
-  function generateJS() {
-    if (Object.keys(menuObj).length === 0) {
-      shape.setFunctionString('');
+  const saveUserValues = () => {
+    // validate current shapeName user entered with th validation function in a child component
+    const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
+
+    if (isNameError) {
+      setErrorText(isNameError);
       return;
     }
 
-    let codeString = `this.${shapeName || `setParams${shape.id}`}=function(){
-      let newParams = ${JSON.stringify(menuObj)};
-      IVR.params = {...IVR.params,...newParams};
+    if (errorText !== '') {
+      setErrorText('Save failed');
+      return;
+    }
+
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
+
+    shape.setText(shapeName || `setParams${shape.id}`);
+    clearAndDraw();
+    shape.setUserValues({
+      params: modifiedParameters,
+    });
+
+    generateJS();
+  };
+
+  function generateJS() {
+    const codeParamArray = [];
+    for (const prop in modifiedParameters) {
+      const newObject = {
+        name: modifiedParameters[prop].name,
+        value: modifiedParameters[prop].value,
+      };
+      codeParamArray.push(newObject);
+    }
+
+    let codeString = `this.${
+      shapeName || `setParams${shape.id}`
+    }= async function(){
+      let newParams = ${JSON.stringify(codeParamArray)};
+      await IVR.setCallParams(newParams);
     };`;
 
     shape.setFunctionString(codeString);
     console.log('🕺🏻setParams code:', codeString);
   }
 
-  function handleValidation(e, name, type) {
-    let errorMessage = checkValidity(type, e);
-    if (errorMessage !== -1) {
-      e.target.style.backgroundColor = '#ffebee';
-      setErrorObj((s) => {
-        return { ...s, [name]: errorMessage };
-      });
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: { params: modifiedParameters },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
+
+  const handleSelectedParameterChange = (e) => {
+    const { value } = e.target;
+
+    setSelectedParameterIndex(value);
+
+    if (modifiedParameters[defaultParams[value].name]) {
+      // if parameter is present in the modifiedParameters, use that value
+      const modifiedParam = { ...defaultParams[value] };
+      modifiedParam.value = modifiedParameters[defaultParams[value].name].value;
+      setSelectedParameter(modifiedParam);
       return;
     }
-    // check name unique
-    if (
-      stageGroup.getShapesAsArray().some((el) => el.text === e.target.value)
-    ) {
-      e.target.style.backgroundColor = '#ffebee';
-      setErrorObj((s) => {
-        return { ...s, [name]: 'name NOT unique' };
-      });
-      return;
-    }
-    // no error condition
-    setErrorObj((s) => {
-      const newObj = { ...s };
-      delete newObj[name];
-      return newObj;
+    setSelectedParameter(defaultParams[value]);
+  };
+
+  const handleFieldChange = (e) => {
+    setSelectedParameter({ ...selectedParameter, value: e.target.value });
+  };
+
+  const handleSwitchChange = (e) => {
+    setSelectedParameter({ ...selectedParameter, value: e.target.checked });
+  };
+
+  const handleUpdateParameter = () => {
+    const newModifiedParameters = { ...modifiedParameters };
+    newModifiedParameters[selectedParameter.name] = selectedParameter;
+    setModifiedParameters(newModifiedParameters);
+    shape.setUserValues({
+      params: newModifiedParameters,
     });
-    e.target.style.backgroundColor = '#f1f8e9';
-  }
-  function handleMenuObjChange(value, name) {
-    setMenuObj((s) => {
-      const newArr = { ...s };
-      newArr[name] = value;
-      return newArr;
+    setSuccessText('parameter updated');
+    setTimeout(() => {
+      setSuccessText('');
+    }, 2000);
+  };
+
+  const handleDeleteParameter = (parameterName) => {
+    setModifiedParameters((p) => {
+      const temp = { ...p };
+      delete temp[parameterName];
+      return temp;
     });
-  }
+  };
 
-  function handleAddParameter() {
-    if (paramSelected === '') return;
-    setParamSelectedList((s) => {
-      return [...s, `${paramSelected}`];
-    });
-    setParamSelected('');
-  }
-  function handleRemoveParameter(name) {
-    let index = paramSelectedList.findIndex((el) => el === name);
-    if (index === -1) return;
-
-    setParamSelectedList((s) => {
-      const newArr = [...s];
-      newArr.splice(index, 1);
-      return newArr;
-    });
-
-    setMenuObj((s) => {
-      const newObj = { ...s };
-      delete newObj[name];
-      return newObj;
-    });
-  }
-
-  function addParamsElements(type, key) {
-    switch (type) {
-      case 'invalidAction':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                borderRadius: 0.5,
-                fontWeight: 405,
-                width: '35%',
-              }}
-            >
-              invalidAction:
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                mr: 'auto',
-                minWidth: '35%',
-              }}
-            >
-              <Select
-                value={menuObj.invalidAction || ''}
-                onChange={(e) => {
-                  handleMenuObjChange(e.target.value, 'invalidAction');
-                }}
-                size='small'
-              >
-                <MenuItem value='disconnect'>Disconnect</MenuItem>
-                <MenuItem value='transfer'>Transfer</MenuItem>
-                <MenuItem value='function'>Function</MenuItem>
-              </Select>
-              {menuObj.invalidAction === 'transfer' && (
-                <TextField
-                  placeholder='transferPoint'
-                  sx={{ my: 0.5, width: 150 }}
-                  size='small'
-                  value={menuObj.invalidTransferPoint || ''}
-                  onChange={(e) => {
-                    handleMenuObjChange(e.target.value, 'invalidTransferPoint');
-                  }}
-                />
-              )}
-              {menuObj.invalidAction === 'function' && (
-                <TextField
-                  placeholder='functionName'
-                  sx={{ my: 0.5, width: 150 }}
-                  size='small'
-                  value={menuObj.invalidActionFunction || ''}
-                  onChange={(e) => {
-                    handleMenuObjChange(
-                      e.target.value,
-                      'invalidActionFunction'
-                    );
-                  }}
-                />
-              )}
-            </Box>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('invalidAction');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-
-      case 'timeoutAction':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-
-                borderRadius: 0.5,
-                fontWeight: 405,
-                width: '35%',
-              }}
-            >
-              timeoutAction:
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                mr: 'auto',
-                minWidth: '35%',
-              }}
-            >
-              <Select
-                value={menuObj.timeoutAction || ''}
-                onChange={(e) => {
-                  handleMenuObjChange(e.target.value, 'timeoutAction');
-                }}
-                size='small'
-              >
-                <MenuItem value='disconnect'>Disconnect</MenuItem>
-                <MenuItem value='transfer'>Transfer</MenuItem>
-                <MenuItem value='function'>Function</MenuItem>
-              </Select>
-              {menuObj.timeoutAction === 'transfer' && (
-                <TextField
-                  placeholder='transferPoint'
-                  sx={{ my: 0.5, width: 150 }}
-                  size='small'
-                  value={menuObj.timeoutTransferPoint || ''}
-                  onChange={(e) => {
-                    handleMenuObjChange(e.target.value, 'timeoutTransferPoint');
-                  }}
-                />
-              )}
-              {menuObj.timeoutAction === 'function' && (
-                <TextField
-                  placeholder='functionName'
-                  sx={{ my: 0.5, width: 150 }}
-                  size='small'
-                  value={menuObj.timeoutActionFunction || ''}
-                  onChange={(e) => {
-                    handleMenuObjChange(
-                      e.target.value,
-                      'timeoutActionFunction'
-                    );
-                  }}
-                />
-              )}
-            </Box>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('timeoutAction');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'timeoutPrompt':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              timeoutPrompt:
-            </Typography>
-            <TextField
-              value={menuObj.timeoutPrompt || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'timeoutPrompt');
-                handleValidation(e, 'timeoutPrompt', 'prompt');
-              }}
-              helperText={errorObj.timeoutPrompt}
-              sx={{ width: '50%', mr: 'auto' }}
-              size='small'
-            />
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('timeoutPrompt');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'invalidPrompt':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              invalidPrompt:
-            </Typography>
-            <TextField
-              value={menuObj.invalidPrompt || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'invalidPrompt');
-                handleValidation(e, 'invalidPrompt', 'prompt');
-              }}
-              sx={{ width: '50%', mr: 'auto' }}
-              size='small'
-              helperText={errorObj.invalidPrompt}
-            />
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('invalidPrompt');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'maxRetries':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              maxRetries:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.maxRetries || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'maxRetries');
-              }}
-            >
-              {
-                // Array of 1..10
-                [...Array(11).keys()].slice(1).map((el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                ))
-              }
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('maxRetries');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'maxRepeats':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              maxRepeats:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.maxRepeats || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'maxRepeats');
-              }}
-            >
-              {
-                // Array of 1..10
-                [...Array(11).keys()].slice(1).map((el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                ))
-              }
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('maxRepeats');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'firstTimeout':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              firstTimeout:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.firstTimeout || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'firstTimeout');
-              }}
-            >
-              {
-                // Array of 1..15
-                [...Array(16).keys()].slice(1).map((el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                ))
-              }
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('firstTimeout');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'interTimeout':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              interTimeout:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.interTimeout || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'interTimeout');
-              }}
-            >
-              {
-                // Array of 1..15
-                [...Array(16).keys()].slice(1).map((el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                ))
-              }
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('interTimeout');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'menuTimeout':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              menuTimeout:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.menuTimeout || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'menuTimeout');
-              }}
-            >
-              {
-                // Array of 1..15
-                [...Array(16).keys()].slice(1).map((el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                ))
-              }
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('menuTimeout');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'currency':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              currency:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.currency || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'currency');
-              }}
-            >
-              {['SAR', 'EUR', 'GBP', 'USD', 'CNY', 'RUB', 'JPY'].map(
-                (el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                )
-              )}
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('currency');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'language':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              language:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.language || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'language');
-              }}
-            >
-              {['English', 'Arabic', 'French', 'Hindi', 'German'].map(
-                (el, i) => (
-                  <MenuItem key={i} value={el.toLowerCase()}>
-                    {el}
-                  </MenuItem>
-                )
-              )}
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('language');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'terminator':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              terminator:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.terminator || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'terminator');
-              }}
-            >
-              {['#', '*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
-                (el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                )
-              )}
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('terminator');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'hotkeyMainMenu':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              hotkeyMainMenu:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.hotkeyMainMenu || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'hotkeyMainMenu');
-              }}
-            >
-              {['#', '*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
-                (el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                )
-              )}
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('hotkeyMainMenu');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'hotkeyTransfer':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              hotkeyTransfer:
-            </Typography>
-            <Select
-              size='small'
-              sx={{ mr: 'auto', minWidth: '35%' }}
-              value={menuObj.hotkeyTransfer || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'hotkeyTransfer');
-              }}
-            >
-              {['#', '*', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'].map(
-                (el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                )
-              )}
-            </Select>
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('hotkeyTransfer');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-      case 'logDb':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                fontSize: 16,
-                marginX: 1,
-                width: '35%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}
-            >
-              logDb:
-            </Typography>
-            <Switch
-              sx={{ mx: 0.5 }}
-              checked={menuObj.logDb}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.checked, 'logDb');
-              }}
-            />
-
-            <Tooltip title='Remove parameter' placement='top-start'>
-              <RemoveCircleOutlineRoundedIcon
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  boxShadow: 1,
-                  width: 22,
-                  height: 22,
-                }}
-                color='error'
-                onClick={() => {
-                  handleRemoveParameter('logDb');
-                }}
-              />
-            </Tooltip>
-          </ListItem>
-        );
-    }
-  }
   return (
     <List sx={{ minWidth: 350 }}>
-      <ListItem>
-        <Tooltip title='CLOSE'>
-          <Button
-            size='small'
-            variant='outlined'
-            color='error'
-            sx={{ height: 30 }}
-            onClick={() => {
-              shape.setSelected(false);
-              handleCloseDrawer();
-            }}
-          >
-            <CloseRoundedIcon sx={{ fontSize: 21 }} />
-          </Button>
-        </Tooltip>
-        <Tooltip title='SAVE'>
-          <Button
-            sx={{ height: 30, marginLeft: 1, marginRight: 'auto' }}
-            size='small'
-            variant='outlined'
-            color='success'
-            onClick={saveUserValues}
-          >
-            <SaveRoundedIcon sx={{ fontSize: 20 }} />
-          </Button>
-        </Tooltip>
-      </ListItem>
-      <ListItem>
-        <Chip
-          sx={{ backgroundColor: '#e91e63', mx: 'auto', px: 2, py: 3 }}
-          label={<Typography variant='h6'>Set Params</Typography>}
-        />
-      </ListItem>
-      <ListItem sx={{ mt: 1 }}>
-        <Typography sx={{ width: '35%' }} variant='h6'>
-          Name:
-        </Typography>
-        <TextField
-          sx={{ width: '50%', mr: 'auto' }}
-          value={shapeName}
-          onChange={(e) => {
-            setShapeName(e.target.value);
-            handleValidation(e, 'menuId', 'object');
-          }}
-          helperText={errorObj.menuId}
-          error={errorObj.menuId}
+      <DrawerTop
+        saveUserValues={saveUserValues}
+        shape={shape}
+        handleCloseDrawer={handleCloseDrawer}
+        backgroundColor='#f8bbd0'
+        blockName='Set Params'
+      />
+      <DrawerName
+        shapeName={shapeName}
+        setShapeName={setShapeName}
+        stageGroup={stageGroup}
+        errorText={errorText}
+        setErrorText={setErrorText}
+        successText={successText}
+        drawerNameRef={drawerNameRef}
+        shapeId={shape.id}
+      />
+      <Divider />
+      <ListItem sx={{ mt: 2 }}>
+        <InputLabel id='select-label'>parameter list</InputLabel>
+        <Select
+          sx={{ ml: 2 }}
+          labelId='select-label'
           size='small'
-        />
+          value={selectedParameterIndex}
+          onChange={handleSelectedParameterChange}
+        >
+          {defaultParams.map((p, i) => (
+            <MenuItem value={i} key={i}>
+              {p.name}
+            </MenuItem>
+          ))}
+        </Select>
       </ListItem>
-
-      <ListItem sx={{ my: 2 }}>
-        <Paper sx={{ width: '100%', px: 2, py: 1, backgroundColor: '#f9fbe7' }}>
+      <ListItem
+        sx={{ mt: 2, justifyContent: 'center' }}
+        id='paramter-view-area'
+      >
+        <Typography variant='body1'>{selectedParameter.name}:</Typography>
+        {selectedParameter.type === 'select' && (
           <Select
-            sx={{ minWidth: '35%' }}
-            value={paramSelected}
-            onChange={(e) => {
-              setParamSelected(e.target.value);
-            }}
+            sx={{ ml: 2 }}
             size='small'
+            value={selectedParameter.value}
+            onChange={handleFieldChange}
           >
-            {paramSelectedList.length > 0
-              ? optionalParamsList
-                  .filter((el) => !paramSelectedList.includes(el))
-                  .map((el, i) => (
-                    <MenuItem key={i} value={el}>
-                      {el}
-                    </MenuItem>
-                  ))
-              : optionalParamsList.map((el, i) => (
-                  <MenuItem key={i} value={el}>
-                    {el}
-                  </MenuItem>
-                ))}
+            {selectedParameter.optionList?.map((p, i) => (
+              <MenuItem value={p} key={i}>
+                {p}
+              </MenuItem>
+            ))}
           </Select>
-
-          <Tooltip title='Add parameter'>
-            <IconButton
-              sx={{ mx: 1 }}
-              size='large'
-              color='success'
-              onClick={handleAddParameter}
-            >
-              <AddCircleOutlineRoundedIcon />
-            </IconButton>
-          </Tooltip>
-        </Paper>
+        )}
+        {!selectedParameter.type && (
+          <TextField
+            sx={{ ml: 2, width: 150 }}
+            size='small'
+            name='name'
+            value={selectedParameter.value}
+            onChange={handleFieldChange}
+          />
+        )}
+        {selectedParameter.type === 'switch' && (
+          <Switch
+            sx={{ ml: 2 }}
+            checked={selectedParameter.value}
+            onChange={handleSwitchChange}
+          />
+        )}
+        <Tooltip title='update parameter' placement='top-end'>
+          <Button sx={{ ml: 2 }} onClick={handleUpdateParameter}>
+            <SaveIcon sx={{ fontSize: '1.3rem', color: '#424242' }} />
+          </Button>
+        </Tooltip>
       </ListItem>
-      {/* <pre>{JSON.stringify(paramSelectedList, null, 2)}</pre>
-        <pre>{JSON.stringify(menuObj, null, 2)}</pre> */}
-      {paramSelectedList.map((el, i) => addParamsElements(el, i))}
+      <Divider sx={{ my: 1 }} />
+      <List>
+        {Object.values(modifiedParameters).map((p, i) => (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              my: 0.5,
+              backgroundColor: '#f5f5f5',
+              pr: 4,
+              alignItems: 'center',
+            }}
+            key={i}
+          >
+            <Typography sx={{ ml: 4, fontSize: '1rem' }} variant='subtitle2'>
+              {p.name}:
+            </Typography>
+            <Typography sx={{ ml: 1, fontSize: '1rem' }}>
+              {p.value}
+              {typeof p.value === 'boolean' && `${p.value}`}
+            </Typography>
+            <Button
+              sx={{ ml: 'auto', mr: -3 }}
+              onClick={() => {
+                handleDeleteParameter(p.name);
+              }}
+            >
+              <DeleteIcon sx={{ fontSize: '1.3rem', color: '#424242' }} />
+            </Button>
+          </Box>
+        ))}
+      </List>
     </List>
   );
 };

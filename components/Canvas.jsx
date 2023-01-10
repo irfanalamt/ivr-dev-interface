@@ -1,6 +1,5 @@
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import InfoIcon from '@mui/icons-material/Info';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 const prettier = require('prettier');
 const babelParser = require('@babel/parser');
 
