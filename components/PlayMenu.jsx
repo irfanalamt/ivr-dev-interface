@@ -243,7 +243,7 @@ const PlayMenu = ({
             action:
           </Typography>
           <Select
-            sx={{ display: itemsObj[key].isDefault ? 'block' : 'none' }}
+            sx={{ display: itemsObj[key].isDefault ? 'block' : 'none', mx: 1 }}
             size='small'
             value={itemsObj[key].isDefault ? itemsObj[key].action : ''}
             onChange={(e) => {
@@ -261,6 +261,7 @@ const PlayMenu = ({
             <MenuItem value='PreviousMenu'>PreviousMenu</MenuItem>
             <MenuItem value='Disconnect'>Disconnect</MenuItem>
             <MenuItem value='Transfer'>Transfer</MenuItem>
+            <MenuItem value='Message'>Message</MenuItem>
           </Select>
           <TextField
             sx={{ display: !itemsObj[key].isDefault ? 'block' : 'none', mx: 1 }}
@@ -292,6 +293,27 @@ const PlayMenu = ({
               handleItemsObjChange(e.target.value, key, 'transferPoint');
             }}
             helperText={errorObj[`transferPoint${key}`]}
+            sx={{ mx: 1 }}
+            size='small'
+          />
+        </ListItem>
+        <ListItem
+          sx={{
+            display: itemsObj[key].action === 'Message' ? 'flex' : 'none',
+          }}
+        >
+          <Typography
+            sx={{ width: '35%', fontWeight: 405 }}
+            variant='subtitle1'
+          >
+            messagePrompt:
+          </Typography>
+          <TextField
+            value={itemsObj[key].messagePrompt || ''}
+            onChange={(e) => {
+              handleItemsObjChange(e.target.value, key, 'messagePrompt');
+            }}
+            helperText={errorObj[`messagePrompt${key}`]}
             sx={{ mx: 1 }}
             size='small'
           />
