@@ -1,12 +1,16 @@
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import InfoIcon from '@mui/icons-material/Info';
+import AddBoxIcon from '@mui/icons-material/AddBox';
+import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 const prettier = require('prettier');
 const babelParser = require('@babel/parser');
 
 import {
   Alert,
   Box,
+  Button,
   Drawer,
+  IconButton,
   Pagination,
   Snackbar,
   Tooltip,
@@ -34,7 +38,7 @@ const CanvasComponent = () => {
   const [showCanvasResetDialog, setShowCanvasResetDialog] = useState(false);
   const [showSaveFileDialog, setShowSaveFileDialog] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
-
+  const [pageCount, setPageCount] = useState(1);
   const [ivrName, setIvrName] = useState('');
 
   const canvasRef = useRef(null);
@@ -129,9 +133,11 @@ const CanvasComponent = () => {
       const userVariablesCurrent = currentProject.userVariables;
       const stageGroupCurrent = currentProject.stageGroup;
       const shapeCountCurrent = currentProject.shapeCount;
+      const pageCountCurrent = currentProject.pageCount;
 
       userVariables.current = userVariablesCurrent;
       shapeCount.current = shapeCountCurrent;
+      setPageCount(pageCountCurrent);
 
       stageGroup.current = [];
       stageGroupCurrent.forEach((stage) => {
@@ -156,7 +162,7 @@ const CanvasComponent = () => {
     // clear out all shapes on stage; reset shapecount
 
     stageGroup.current = [];
-    for (let i = 1; i <= 4; i++) {
+    for (let i = 1; i <= pageCount; i++) {
       stageGroup.current.push(new Shapes(`p${i}`, {}));
     }
 
@@ -336,7 +342,9 @@ const CanvasComponent = () => {
 
     // palette and stage drawn on canvas
     palletGroup.current.drawAllShapes(contextRef.current);
-    stageGroup.current[pageNumber.current - 1].drawAllShapes(
+    console.log('stageGroup.current.length: ' + stageGroup.current.length);
+    console.log('pageNumber.current: ' + pageNumber.current);
+    stageGroup.current[pageNumber.current - 1]?.drawAllShapes(
       contextRef.current
     );
 
@@ -709,6 +717,31 @@ const CanvasComponent = () => {
     clearAndDraw();
   }
 
+  function handleAddPage() {
+    setPageCount(pageCount + 1);
+    stageGroup.current.push(new Shapes(`p${pageNumber}`, {}));
+  }
+
+  function handleRemovePage() {
+    if (pageCount < 2) return;
+
+    if (
+      stageGroup.current[stageGroup.current.length - 1].getShapesAsArray()
+        .length > 0
+    ) {
+      snackbarMessage.current = `cannot remove page${stageGroup.current.length}. Shapes found on stage.`;
+      setOpenSnackbar(true);
+      return;
+    }
+
+    const newPage = Math.min(pageCount - 1, pageNumber.current);
+    if (newPage !== pageNumber.current) {
+      handlePageChange(null, newPage);
+    }
+    setPageCount(pageCount - 1);
+    stageGroup.current.pop();
+  }
+
   function handlePageChange(e, pageNum) {
     pageNumber.current = pageNum;
     clearAndDraw();
@@ -725,6 +758,7 @@ const CanvasComponent = () => {
       stageGroup: stageGroup.current,
       userVariables: userVariables.current,
       shapeCount: shapeCount.current,
+      pageCount: pageCount,
     };
 
     const file = new Blob([JSON.stringify(data)], { type: 'text/json' });
@@ -755,6 +789,10 @@ const CanvasComponent = () => {
     // clean up "a" element & remove ObjectURL
     document.body.removeChild(link);
     URL.revokeObjectURL(href);
+  }
+
+  function generateJsAllPages() {
+    stageGroup.current.forEach((page) => {});
   }
 
   function generateJS() {
@@ -919,16 +957,25 @@ const CanvasComponent = () => {
 
         <Pagination
           sx={{
-            position: 'fixed',
-            right: '5vw',
             mr: 1,
+            ml: 'auto',
           }}
-          count={4}
+          count={pageCount}
           shape='rounded'
           onChange={handlePageChange}
           hideNextButton={true}
           hidePrevButton={true}
         />
+        <Tooltip title='Add Page'>
+          <IconButton onClick={handleAddPage} size='large'>
+            <AddBoxIcon sx={{ fontSize: 'large' }} />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title='Remove Page'>
+          <IconButton onClick={handleRemovePage} size='large'>
+            <IndeterminateCheckBoxIcon sx={{ fontSize: 'large' }} />
+          </IconButton>
+        </Tooltip>
       </Box>
       <Drawer
         anchor='left'
