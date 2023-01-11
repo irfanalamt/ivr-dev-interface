@@ -37,11 +37,7 @@ const SaveFileDialog = ({ open, handleClose, saveToFile }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='xs'>
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center' }}>
-        <SaveAsIcon sx={{ mr: 0.5 }} />
-        <Typography variant='h6'>Save IVR</Typography>
-      </DialogTitle>
+    <Dialog open={open} onClose={handleClose} maxWidth='xs'>
       <Typography
         sx={{
           backgroundColor: '#FFE4E1',
@@ -60,7 +56,7 @@ const SaveFileDialog = ({ open, handleClose, saveToFile }) => {
             IVR name:
           </Typography>
           <TextField
-            sx={{ width: 150 }}
+            sx={{ width: 200 }}
             value={ivrName}
             onChange={(e) => {
               handleNameValidation(e.target.value);

@@ -38,18 +38,7 @@ const CanvasAppbar = ({
           <ArchitectureIcon sx={{ fontSize: '2rem', color: 'black' }} />
         </Avatar>
 
-        <Box sx={{ ml: 4, display: 'flex', alignItems: 'center' }}>
-          <Tooltip title='draw'>
-            <ModeIcon
-              sx={{
-                fontSize: isConnecting == 0 ? '2.3rem' : '1.8rem',
-                boxShadow: 1,
-                borderRadius: 2,
-                backgroundColor: isConnecting == 0 ? '#03a9f4' : '#dcdcdc',
-              }}
-              onClick={() => setIsConnecting(0)}
-            />
-          </Tooltip>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Tooltip title='connect'>
             <ArrowRightAltIcon
               sx={{
@@ -63,20 +52,6 @@ const CanvasAppbar = ({
             />
           </Tooltip>
         </Box>
-        <Typography
-          sx={{
-            ml: 4,
-            backgroundColor: getBgColor(),
-            px: 1,
-            fontWeight: 'bold',
-            boxShadow: 1,
-          }}
-          variant='body1'
-        >
-          {isConnecting > 0 && 'Connect mode'}
-
-          {isConnecting == 0 && 'Draw mode'}
-        </Typography>
 
         <Box
           sx={{

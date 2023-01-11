@@ -8,7 +8,6 @@ const babelParser = require('@babel/parser');
 import {
   Alert,
   Box,
-  Button,
   Drawer,
   IconButton,
   Pagination,
@@ -108,11 +107,7 @@ const CanvasComponent = () => {
   useEffect(() => {
     if (isConnecting == 1) {
       canvasRef.current.style.cursor = 'crosshair';
-      infoMessage.current = 'Choose 1st element.';
-      setShowInfoMessage(true);
     } else if (isConnecting == 2) {
-      infoMessage.current = 'Choose 2nd element.';
-      setShowInfoMessage(true);
     } else if (isConnecting == 0) {
       connectShape1.current?.setSelected(false);
       connectShape2.current?.setSelected(false);
@@ -182,7 +177,7 @@ const CanvasComponent = () => {
   }
 
   function initializePallette() {
-    const paletteHeight = window.innerHeight - 110;
+    const paletteHeight = window.innerHeight - 95;
 
     // Calculate the vertical space that each shape should occupy
     const NUMBER_OF_SHAPES = 12;
@@ -309,13 +304,13 @@ const CanvasComponent = () => {
       5,
       55 + scrollOffsetY.current,
       70,
-      window.innerHeight - 110
+      window.innerHeight - 95
     );
     contextRef.current.fillRect(
       5,
       55 + scrollOffsetY.current,
       70,
-      window.innerHeight - 110
+      window.innerHeight - 95
     );
     contextRef.current.fillStyle = '#616161';
     contextRef.current.font = '20px Arial';
@@ -334,7 +329,7 @@ const CanvasComponent = () => {
       contextRef.current.drawImage(
         img,
         window.innerWidth - 80,
-        window.innerHeight - 110 + scrollOffsetY.current,
+        window.innerHeight - 95 + scrollOffsetY.current,
         50,
         50
       );
@@ -342,8 +337,7 @@ const CanvasComponent = () => {
 
     // palette and stage drawn on canvas
     palletGroup.current.drawAllShapes(contextRef.current);
-    console.log('stageGroup.current.length: ' + stageGroup.current.length);
-    console.log('pageNumber.current: ' + pageNumber.current);
+
     stageGroup.current[pageNumber.current - 1]?.drawAllShapes(
       contextRef.current
     );
@@ -388,12 +382,14 @@ const CanvasComponent = () => {
       }
     });
 
+    let clickedInShape = false;
     //Check mouse in stage shape
     stageGroup.current[pageNumber.current - 1]
       .getShapesEntries()
       .forEach(([key, element]) => {
         if (element.isMouseInShape(realX, realY)) {
           console.log(`✨YES in stage shape ${element.type}`);
+          clickedInShape = true;
           console.log(key, element);
 
           // reset infoMsg on stage shape click
@@ -432,6 +428,10 @@ const CanvasComponent = () => {
           startY1 = realY;
         }
       });
+
+    if (!clickedInShape) {
+      setIsConnecting(0);
+    }
   }
   function handleMouseMove(e) {
     e.preventDefault();
@@ -609,6 +609,10 @@ const CanvasComponent = () => {
           }
         });
     }
+  }
+
+  function handleRightClick(e) {
+    e.preventDefault();
   }
 
   function connectShapes() {
@@ -913,6 +917,7 @@ const CanvasComponent = () => {
         onMouseMove={handleMouseMove}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
+        onContextMenu={handleRightClick}
       ></canvas>
       <Box
         sx={{
@@ -922,7 +927,7 @@ const CanvasComponent = () => {
           bottom: 0,
           backgroundColor: '#eeeeee',
           px: 2,
-          height: 50,
+          height: 35,
           width: '100vw',
         }}
         id='bottomBar'
@@ -930,7 +935,7 @@ const CanvasComponent = () => {
         <Box sx={{ mt: 1, ml: 1 }}>
           <Tooltip title='setVariables' placement='right-start'>
             <SettingsApplicationsIcon
-              sx={{ fontSize: '2rem' }}
+              sx={{ height: 30 }}
               onClick={() => setIsOpenVars(true)}
             />
           </Tooltip>
@@ -942,7 +947,7 @@ const CanvasComponent = () => {
             mt: 1,
             display: showInfoMessage ? 'flex' : 'none',
             alignItems: 'center',
-            boxShadow: 1,
+
             px: 2,
             mb: 0.5,
             backgroundColor: '#b3e5fc',
@@ -954,28 +959,26 @@ const CanvasComponent = () => {
           <InfoIcon sx={{ mr: 0.5, color: '#ef5350' }} />
           {infoMessage.current}
         </Typography>
-
-        <Pagination
-          sx={{
-            mr: 1,
-            ml: 'auto',
-          }}
-          count={pageCount}
-          shape='rounded'
-          onChange={handlePageChange}
-          hideNextButton={true}
-          hidePrevButton={true}
-        />
-        <Tooltip title='Add Page'>
-          <IconButton onClick={handleAddPage} size='large'>
-            <AddBoxIcon sx={{ fontSize: 'large' }} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title='Remove Page'>
-          <IconButton onClick={handleRemovePage} size='large'>
-            <IndeterminateCheckBoxIcon sx={{ fontSize: 'large' }} />
-          </IconButton>
-        </Tooltip>
+        <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+          <Pagination
+            sx={{ height: 30 }}
+            count={pageCount}
+            shape='rounded'
+            onChange={handlePageChange}
+            hideNextButton={true}
+            hidePrevButton={true}
+          />
+          <Tooltip title='Add Page'>
+            <IconButton onClick={handleAddPage}>
+              <AddBoxIcon sx={{ fontSize: 'large' }} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Remove Page'>
+            <IconButton onClick={handleRemovePage}>
+              <IndeterminateCheckBoxIcon sx={{ fontSize: 'large' }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
       <Drawer
         anchor='left'
