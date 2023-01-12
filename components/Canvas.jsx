@@ -108,6 +108,7 @@ const CanvasComponent = () => {
     if (isConnecting == 1) {
       canvasRef.current.style.cursor = 'crosshair';
     } else if (isConnecting == 0) {
+      deleteTempShape();
       canvasRef.current.style.cursor = 'default';
       connectShape1.current?.setSelected(false);
       connectShape2.current?.setSelected(false);
@@ -398,6 +399,13 @@ const CanvasComponent = () => {
           if (isConnecting === 1) {
             connectShape1.current = element;
             element.setSelected(true);
+            if (element.type !== 'switch' && element.type !== 'playMenu') {
+              stageGroup.current[pageNumber.current - 1].addTempShape(
+                realX,
+                realY
+              );
+              element.setNextItem('temp');
+            }
             clearAndDraw();
             setIsConnecting(2);
 
@@ -407,12 +415,26 @@ const CanvasComponent = () => {
                 realX,
                 realY
               );
+              if (isNearExitPoint) {
+                stageGroup.current[pageNumber.current - 1].addTempShape(
+                  realX,
+                  realY
+                );
+                element.setNextItem('temp');
+              }
 
               isSwitchExitPoint.current = isNearExitPoint;
             }
 
             if (element.type === 'playMenu') {
               const isNearExitPoint = element.isNearExitPointMenu(realX, realY);
+              if (isNearExitPoint) {
+                stageGroup.current[pageNumber.current - 1].addTempShape(
+                  realX,
+                  realY
+                );
+                element.setNextItem('temp');
+              }
 
               isMenuExitPoint.current = isNearExitPoint;
             }
@@ -548,7 +570,7 @@ const CanvasComponent = () => {
       stageGroup.current[pageNumber.current - 1]
         .getShapesEntries()
         .forEach(([key, element]) => {
-          if (element.isMouseInShape(realX, realY)) {
+          if (element.isMouseInShape(realX, realY) && element.id !== 'temp') {
             connectShape2.current = element;
             element.setSelected(true);
             clearAndDraw();
@@ -593,7 +615,8 @@ const CanvasComponent = () => {
         .forEach((element) => {
           if (
             element.isMouseInShape(realX, realY) &&
-            element.type !== 'connector'
+            element.type !== 'connector' &&
+            element.type !== 'tinyCircle'
           ) {
             console.log(
               `YES in pallet shape mouseUp ${JSON.stringify(element, null, 2)}`
@@ -613,12 +636,32 @@ const CanvasComponent = () => {
     setIsConnecting(1);
   }
 
+  function moveTempShape(e) {
+    const { clientX, clientY } = e;
+    const boundingRect = canvasRef.current.getBoundingClientRect();
+    const realX = clientX - boundingRect.left;
+    const realY = clientY - boundingRect.top;
+
+    const tempShape =
+      stageGroup.current[pageNumber.current - 1].getShapes().temp;
+    if (tempShape) {
+      tempShape.x = realX;
+      tempShape.y = realY;
+      clearAndDraw();
+    }
+  }
+
+  function deleteTempShape() {
+    delete stageGroup.current[pageNumber.current - 1].getShapes().temp;
+  }
+
   function connectShapes() {
     console.log('🚀 ~ connectShapes ~ connectShape1', connectShape1.current);
     console.log('🚀 ~ connectShapes ~ connectShape2', connectShape2.current);
 
     connectShape1.current.setSelected(false);
     connectShape2.current.setSelected(false);
+    deleteTempShape();
     clearAndDraw();
 
     // return if connecting shapes same
@@ -922,7 +965,10 @@ const CanvasComponent = () => {
         width={window.innerWidth - 20}
         height={window.innerHeight * 2}
         ref={canvasRef}
-        onMouseMove={handleMouseMove}
+        onMouseMove={(e) => {
+          handleMouseMove(e);
+          isConnecting > 0 && moveTempShape(e);
+        }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onContextMenu={handleRightClick}

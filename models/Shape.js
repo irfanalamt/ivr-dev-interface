@@ -233,6 +233,9 @@ class Shape {
       case 'exitPoint':
         this.drawTinyCircle(ctx);
         break;
+
+      case 'tinyCircle':
+        this.drawTinyCircle(ctx);
     }
   }
 

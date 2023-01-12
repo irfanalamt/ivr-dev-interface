@@ -17,7 +17,6 @@ class Shapes {
   }
 
   addShape(type, x, y, count, pageNumber) {
-    console.log(type, x, y, 'ha');
     let stageFigure;
     switch (type) {
       case 'setParams':
@@ -120,6 +119,12 @@ class Shapes {
     stageFigure.id = id;
     //add shape to group
     this.shapes[id] = stageFigure;
+  }
+
+  addTempShape(x, y) {
+    let stageFigure = new Shape(x, y, 5, 5, 'tinyCircle', 'black', true);
+    stageFigure.id = 'temp';
+    this.shapes.temp = stageFigure;
   }
 
   generateID(type, pageNumber, count) {
@@ -439,6 +444,7 @@ class Shapes {
         let shape2 = this.shapes[el.nextItem];
         if (shape2) {
           let shape1 = el;
+
           let lineColor =
             this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#37474f';
           console.log('shape1🟢', shape1, 'shape2', shape2);
@@ -450,7 +456,7 @@ class Shapes {
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
-            lineColor: lineColor,
+            lineColor: shape2.id === 'temp' ? '#757575' : lineColor,
           });
         }
       }
