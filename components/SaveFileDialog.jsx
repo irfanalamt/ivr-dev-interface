@@ -37,7 +37,7 @@ const SaveFileDialog = ({ open, handleClose, saveToFile }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth='xs'>
+    <Dialog open={open} onClose={handleClose}>
       <Typography
         sx={{
           backgroundColor: '#FFE4E1',

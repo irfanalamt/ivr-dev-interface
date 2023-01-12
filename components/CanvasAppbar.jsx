@@ -37,21 +37,12 @@ const CanvasAppbar = ({
         <Avatar sx={{ backgroundColor: '#bbdefb', mr: 2 }}>
           <ArchitectureIcon sx={{ fontSize: '2rem', color: 'black' }} />
         </Avatar>
-
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Tooltip title='connect'>
-            <ArrowRightAltIcon
-              sx={{
-                fontSize: isConnecting > 0 ? '2.3rem' : '1.8rem',
-                ml: 2,
-                boxShadow: 1,
-                borderRadius: 2,
-                backgroundColor: isConnecting > 0 ? '#00897b' : '#dcdcdc',
-              }}
-              onClick={() => setIsConnecting(1)}
-            />
-          </Tooltip>
-        </Box>
+        <Typography
+          sx={{ backgroundColor: '#c5e1a5', px: 1, boxShadow: 1, ml: 1 }}
+          variant='subtitle2'
+        >
+          {isConnecting > 0 ? 'Connect Mode' : ''}
+        </Typography>
 
         <Box
           sx={{

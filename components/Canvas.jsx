@@ -107,8 +107,8 @@ const CanvasComponent = () => {
   useEffect(() => {
     if (isConnecting == 1) {
       canvasRef.current.style.cursor = 'crosshair';
-    } else if (isConnecting == 2) {
     } else if (isConnecting == 0) {
+      canvasRef.current.style.cursor = 'default';
       connectShape1.current?.setSelected(false);
       connectShape2.current?.setSelected(false);
       clearAndDraw();
@@ -319,7 +319,7 @@ const CanvasComponent = () => {
     contextRef.current.fillText(
       `P${pageNumber.current}`,
       window.innerWidth * 0.9 - 35,
-      80
+      80 + scrollOffsetY.current
     );
 
     if (isDragging.current && !isPalletShape) {
@@ -439,9 +439,6 @@ const CanvasComponent = () => {
     const boundingRect = canvasRef.current.getBoundingClientRect();
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
-
-    // reset cursor if not connecting
-    if (isConnecting === 0) canvasRef.current.style.cursor = 'default';
 
     if (isDragging.current) {
       if (isConnecting === 0) {
@@ -613,6 +610,7 @@ const CanvasComponent = () => {
 
   function handleRightClick(e) {
     e.preventDefault();
+    setIsConnecting(1);
   }
 
   function connectShapes() {
@@ -722,6 +720,15 @@ const CanvasComponent = () => {
   }
 
   function handleAddPage() {
+    if (
+      stageGroup.current[stageGroup.current.length - 1].getShapesAsArray()
+        .length === 0
+    ) {
+      snackbarMessage.current = `Last page empty. New page cannot be added.`;
+      setOpenSnackbar(true);
+      return;
+    }
+
     setPageCount(pageCount + 1);
     stageGroup.current.push(new Shapes(`p${pageNumber}`, {}));
   }
@@ -733,7 +740,8 @@ const CanvasComponent = () => {
       stageGroup.current[stageGroup.current.length - 1].getShapesAsArray()
         .length > 0
     ) {
-      snackbarMessage.current = `cannot remove page${stageGroup.current.length}. Shapes found on stage.`;
+      snackbarMessage.current = `Cannot remove, page${stageGroup.current.length} is not empty.`;
+
       setOpenSnackbar(true);
       return;
     }
@@ -768,7 +776,7 @@ const CanvasComponent = () => {
     const file = new Blob([JSON.stringify(data)], { type: 'text/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(file);
-    link.download = `${ivrName}.ivrf`;
+    link.download = `${ivrName}_${version}.ivrf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
