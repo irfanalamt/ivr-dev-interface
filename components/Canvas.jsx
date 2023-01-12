@@ -361,17 +361,22 @@ const CanvasComponent = () => {
     clearAndDraw();
   }
 
+  function getRealCoordinates(clientX, clientY) {
+    const boundingRect = canvasRef.current.getBoundingClientRect();
+    const realX = clientX - boundingRect.left;
+    const realY = clientY - boundingRect.top;
+    return { realX, realY };
+  }
+
   function handleMouseDown(e) {
     e.preventDefault();
     const { clientX, clientY, button } = e;
+    const { realX, realY } = getRealCoordinates(clientX, clientY);
+
     if (button === 2) {
       setIsConnecting(1);
       return;
     }
-
-    const boundingRect = canvasRef.current.getBoundingClientRect();
-    const realX = clientX - boundingRect.left;
-    const realY = clientY - boundingRect.top;
 
     // check mouse in palette shape
     palletGroup.current.getShapesEntries().forEach(([, element]) => {
@@ -465,9 +470,7 @@ const CanvasComponent = () => {
   function handleMouseMove(e) {
     e.preventDefault();
     const { clientX, clientY } = e;
-    const boundingRect = canvasRef.current.getBoundingClientRect();
-    const realX = clientX - boundingRect.left;
-    const realY = clientY - boundingRect.top;
+    const { realX, realY } = getRealCoordinates(clientX, clientY);
 
     if (isDragging.current) {
       if (isConnecting === 0) {
@@ -553,10 +556,9 @@ const CanvasComponent = () => {
   function handleMouseUp(e) {
     e.preventDefault();
     const { clientX, clientY, button } = e;
+    const { realX, realY } = getRealCoordinates(clientX, clientY);
+
     if (button !== 0) return;
-    const boundingRect = canvasRef.current.getBoundingClientRect();
-    const realX = clientX - boundingRect.left;
-    const realY = clientY - boundingRect.top;
 
     if (currentShape.current && !isPalletShape) {
       if (
