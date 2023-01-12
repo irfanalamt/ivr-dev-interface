@@ -109,6 +109,8 @@ const CanvasComponent = () => {
       canvasRef.current.style.cursor = 'crosshair';
     } else if (isConnecting == 0) {
       deleteTempShape();
+      if (connectShape1.current?.nextItem === 'temp')
+        connectShape1.current?.setNextItem(null);
       canvasRef.current.style.cursor = 'default';
       connectShape1.current?.setSelected(false);
       connectShape2.current?.setSelected(false);
@@ -361,7 +363,12 @@ const CanvasComponent = () => {
 
   function handleMouseDown(e) {
     e.preventDefault();
-    const { clientX, clientY } = e;
+    const { clientX, clientY, button } = e;
+    if (button === 2) {
+      setIsConnecting(1);
+      return;
+    }
+
     const boundingRect = canvasRef.current.getBoundingClientRect();
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
@@ -388,7 +395,7 @@ const CanvasComponent = () => {
     stageGroup.current[pageNumber.current - 1]
       .getShapesEntries()
       .forEach(([key, element]) => {
-        if (element.isMouseInShape(realX, realY)) {
+        if (element.isMouseInShape(realX, realY) && element.id !== 'temp') {
           console.log(`✨YES in stage shape ${element.type}`);
           clickedInShape = true;
           console.log(key, element);
@@ -545,7 +552,8 @@ const CanvasComponent = () => {
   }
   function handleMouseUp(e) {
     e.preventDefault();
-    const { clientX, clientY } = e;
+    const { clientX, clientY, button } = e;
+    if (button !== 0) return;
     const boundingRect = canvasRef.current.getBoundingClientRect();
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
@@ -633,7 +641,6 @@ const CanvasComponent = () => {
 
   function handleRightClick(e) {
     e.preventDefault();
-    setIsConnecting(1);
   }
 
   function moveTempShape(e) {
