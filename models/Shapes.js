@@ -449,8 +449,8 @@ class Shapes {
             this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#37474f';
           console.log('shape1🟢', shape1, 'shape2', shape2);
           tempArray.push({
-            x1: shape1.getRelativePosition(shape2)[0],
-            y1: shape1.getRelativePosition(shape2)[1],
+            x1: shape1.getRelativePosition(shape2, 1)[0],
+            y1: shape1.getRelativePosition(shape2, 1)[1],
             x2: shape2.getRelativePosition(shape1)[0],
             y2: shape2.getRelativePosition(shape1)[1],
             startItem: shape1.id,

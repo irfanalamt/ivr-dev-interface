@@ -27,7 +27,10 @@ class Shape {
     return [this.x, this.y - this.height / 2];
   }
 
-  getRelativePosition(shape2) {
+  getRelativePosition(shape2, position = 2) {
+    // position 1 is the from shape
+    // 2 is the to shape
+
     if (
       this.x < shape2.x &&
       this.isBetween(shape2.y, this.y - this.height, this.y + this.height)
@@ -38,9 +41,9 @@ class Shape {
       this.isBetween(shape2.y, this.y - this.height, this.y + this.height)
     ) {
       return this.getLeftCordinates();
-    } else if (this.y < shape2.y) {
-      return this.getBottomCordinates();
-    } else return this.getTopCordinates();
+    } else if (position === 2) {
+      return this.getTopCordinates();
+    } else return this.getBottomCordinates();
   }
 
   getBottomCordinates() {

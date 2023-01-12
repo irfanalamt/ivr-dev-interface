@@ -670,6 +670,9 @@ const CanvasComponent = () => {
 
     connectShape1.current.setSelected(false);
     connectShape2.current.setSelected(false);
+    if (connectShape1.current.nextItem === 'temp') {
+      connectShape1.current.setNextItem(null);
+    }
     deleteTempShape();
     clearAndDraw();
 
