@@ -228,7 +228,7 @@ class Shapes {
 
     const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(id);
 
-    const mainMenuString = `this.ivrMain=async function(){${arrayShapesTillMenuSwitch
+    const mainMenuString = `this.ivrMain=async function(){try{${arrayShapesTillMenuSwitch
       .map((el) => {
         if (el.type === 'endFlow') {
           if (el.userValues.type === 'disconnect') {
@@ -240,7 +240,7 @@ class Shapes {
           return `await this.${el.text}();`;
         }
       })
-      .join('')}};`;
+      .join('')}}catch(err){IVR.error('Error in ivrMain',err);}};`;
 
     return mainMenuString;
   }
@@ -310,7 +310,7 @@ class Shapes {
           .join('')}}`;
       }
 
-      let finalCode = `this.${switchShape.text}=async function(){${code}};`;
+      let finalCode = `this.${switchShape.text}=async function(){try{${code}}catch(err){IVR.error('Error in${switchShape.text}',err);}};`;
       if (code) return finalCode;
     }
 
@@ -325,7 +325,7 @@ class Shapes {
       );
       let code = `this.${
         switchShape.text
-      }=async function(){${arrayShapesTillMenuSwitch
+      }=async function(){ try{${arrayShapesTillMenuSwitch
         .map((el) => {
           if (el.type === 'endFlow') {
             if (el.userValues.type === 'disconnect') {
@@ -337,7 +337,9 @@ class Shapes {
             return `await this.${el.text}();`;
           }
         })
-        .join('')}};`;
+        .join('')}} catch(err){
+          IVR.error('Error in ${switchShape.text}',err);
+        }};`;
 
       return code;
     }
@@ -361,7 +363,7 @@ class Shapes {
 
         let code = `this.${menuShape.text}_${
           item.action
-        }=async function(){${arrayShapesTillMenuSwitch
+        }=async function(){try{${arrayShapesTillMenuSwitch
           .map((el) => {
             if (el.type === 'endFlow') {
               if (el.userValues.type === 'disconnect') {
@@ -373,7 +375,9 @@ class Shapes {
               return `await this.${el.text}();`;
             }
           })
-          .join('')}};`;
+          .join('')}}catch(err){
+            IVR.error('Error in ${menuShape.text}_${item.action}',err);
+          }};`;
         finalCode += code;
       }
     });
