@@ -77,6 +77,7 @@ const CanvasComponent = () => {
   let isPalletShape = false;
   let startX, startY;
   let startX1, startY1;
+  let clickedInShape = false;
 
   useEffect(() => {
     initializeCanvas();
@@ -120,50 +121,43 @@ const CanvasComponent = () => {
   }, [isConnecting]);
 
   function initializeCanvas() {
-    const context1 = canvasRef.current.getContext('2d');
-
-    context1.lineCap = 'round';
-    context1.strokeStyle = 'black';
-    context1.lineWidth = 3;
+    const context = canvasRef.current.getContext('2d');
+    context.lineCap = 'round';
+    context.strokeStyle = 'black';
+    context.lineWidth = 3;
 
     if (projectData) {
-      const currentProject = JSON.parse(projectData);
-      const userVariablesCurrent = currentProject.userVariables;
-      const stageGroupCurrent = currentProject.stageGroup;
-      const shapeCountCurrent = currentProject.shapeCount;
-      const pageCountCurrent = currentProject.pageCount;
-      const ivrNameCurrent = currentProject.ivrName;
-
+      const {
+        userVariables: userVariablesCurrent,
+        stageGroup: stageGroupCurrent,
+        shapeCount: shapeCountCurrent,
+        pageCount: pageCountCurrent,
+        ivrName: ivrNameCurrent,
+      } = JSON.parse(projectData);
       userVariables.current = userVariablesCurrent;
       shapeCount.current = shapeCountCurrent;
       setPageCount(pageCountCurrent);
       setIvrName(ivrNameCurrent);
 
-      stageGroup.current = [];
-      stageGroupCurrent.forEach((stage) => {
+      stageGroup.current = stageGroupCurrent.map((stage) => {
         Object.setPrototypeOf(stage, Shapes.prototype);
-
         Object.values(stage.shapes).forEach((shape) => {
           Object.setPrototypeOf(shape, Shape.prototype);
         });
-        stageGroup.current.push(stage);
+        return stage;
       });
     } else {
       resetStage();
     }
 
     initializePallette();
-
-    contextRef.current = context1;
+    contextRef.current = context;
     clearAndDraw();
   }
 
   function resetStage() {
-    // clear out all shapes on stage; reset shapecount
+    router.push({ pathname: '/stageCanvas3' });
 
-    router.push({
-      pathname: '/stageCanvas3',
-    });
     stageGroup.current = [];
     for (let i = 1; i <= pageCount; i++) {
       stageGroup.current.push(new Shapes(`p${i}`, {}));
@@ -372,18 +366,28 @@ const CanvasComponent = () => {
     const realY = clientY - boundingRect.top;
     return { realX, realY };
   }
-
   function handleMouseDown(e) {
     e.preventDefault();
     const { clientX, clientY, button } = e;
     const { realX, realY } = getRealCoordinates(clientX, clientY);
+    clickedInShape = false;
 
+    // check if right click
     if (button === 2) {
       setIsConnecting(1);
       return;
     }
 
-    // check mouse in palette shape
+    // check if mouse in palette shape
+    checkMouseInPaletteShape(realX, realY);
+
+    // check if mouse in stage shape
+    checkMouseInStageShape(realX, realY);
+
+    if (!clickedInShape) setIsConnecting(0);
+  }
+
+  function checkMouseInPaletteShape(realX, realY) {
     palletGroup.current.getShapesEntries().forEach(([, element]) => {
       if (element.isMouseInShape(realX, realY)) {
         console.log(`✨YES in pallette shape ${element.type}`);
@@ -395,13 +399,11 @@ const CanvasComponent = () => {
         isPalletShape = true;
         startX = realX;
         startY = realY;
-
-        return;
       }
     });
+  }
 
-    let clickedInShape = false;
-    //Check mouse in stage shape
+  function checkMouseInStageShape(realX, realY) {
     stageGroup.current[pageNumber.current - 1]
       .getShapesEntries()
       .forEach(([key, element]) => {
@@ -452,12 +454,9 @@ const CanvasComponent = () => {
                 );
                 element.setNextItem('temp');
               }
-
               isMenuExitPoint.current = isNearExitPoint;
             }
-            // return;
           }
-
           currentShape.current = element;
           isDragging.current = true;
           isPalletShape = false;
@@ -467,9 +466,8 @@ const CanvasComponent = () => {
           startY1 = realY;
         }
       });
-
-    if (!clickedInShape) setIsConnecting(0);
   }
+
   function handleMouseMove(e) {
     e.preventDefault();
     const { clientX, clientY } = e;
@@ -492,70 +490,62 @@ const CanvasComponent = () => {
       }
     }
 
-    // reset tooltip; place tooltip on mouse pallet shape
-    tooltipRef.current.style.display = 'none';
-    palletGroup.current.getShapesAsArray().forEach((element) => {
-      if (element.isMouseInShape(realX, realY)) {
-        console.log(`💃🏻YES in pallet shape ${element.type}`);
+    // reset tooltip
+    const tooltipRefs = [tooltipRef, stageTooltipRef, lineTooltipRef];
+    tooltipRefs.forEach((ref) => (ref.current.style.display = 'none'));
+
+    // place tooltip on mouse pallet shape
+    palletGroup.current.getShapesAsArray().forEach((shape) => {
+      if (shape.isMouseInShape(realX, realY)) {
         tooltipRef.current.style.display = 'block';
         tooltipRef.current.style.top = realY - 5 + 'px';
         tooltipRef.current.style.left = realX + 50 + 'px';
-        tooltipRef.current.textContent = element.text;
-
+        tooltipRef.current.textContent = shape.text;
         return;
       }
     });
 
-    stageTooltipRef.current.style.display = 'none';
+    // check mouse on stage shapes
     stageGroup.current[pageNumber.current - 1]
       .getShapesAsArray()
-      .forEach((el) => {
-        if (el.isMouseInShape(realX, realY)) {
-          // mouse on current stageShape
-          console.log(`💃🏻YES in stage shape ${el.type}${el.text}`);
-
-          if (el.type === 'switch') {
-            // if not false returned; else exitpoint returned
-            const isNearExitPoint = el.isNearExitPointSwitch(realX, realY);
-            if (isNearExitPoint) {
+      .forEach((shape) => {
+        if (shape.isMouseInShape(realX, realY)) {
+          if (shape.type === 'switch') {
+            const exitPoint = shape.isNearExitPointSwitch(realX, realY);
+            if (exitPoint) {
               stageTooltipRef.current.style.display = 'block';
               stageTooltipRef.current.style.top = realY + 10 + 'px';
               stageTooltipRef.current.style.left = realX + 30 + 'px';
-              stageTooltipRef.current.textContent = isNearExitPoint;
+              stageTooltipRef.current.textContent = exitPoint;
             }
           }
-          if (el.type === 'playMenu') {
-            const isNearExitPoint = el.isNearExitPointMenu(realX, realY);
-            if (isNearExitPoint) {
+          if (shape.type === 'playMenu') {
+            const exitPoint = shape.isNearExitPointMenu(realX, realY);
+            if (exitPoint) {
               stageTooltipRef.current.style.display = 'block';
               stageTooltipRef.current.style.top = realY + 10 + 'px';
               stageTooltipRef.current.style.left = realX + 30 + 'px';
-              stageTooltipRef.current.textContent = isNearExitPoint;
+              stageTooltipRef.current.textContent = exitPoint;
             }
           }
-
           return;
         }
       });
 
     // place and display line tooltip
-
-    lineTooltipRef.current.style.display = 'none';
-    // check mouse on line
-    lineGroup.current.getLines().forEach((el) => {
-      // if exitPoint present; check distance to place tooltip
-      if (el.lineData?.exitPoint) {
-        const isNearLine = el.isPointNearLine(realX, realY);
+    lineGroup.current.getLines().forEach((line) => {
+      if (line.lineData?.exitPoint) {
+        const isNearLine = line.isPointNearLine(realX, realY);
         if (isNearLine) {
-          // mouse on line el
           lineTooltipRef.current.style.display = 'block';
           lineTooltipRef.current.style.top = realY + 10 + 'px';
           lineTooltipRef.current.style.left = realX + 30 + 'px';
-          lineTooltipRef.current.textContent = el.lineData.exitPoint;
+          lineTooltipRef.current.textContent = line.lineData.exitPoint;
         }
       }
     });
   }
+
   function handleMouseUp(e) {
     e.preventDefault();
     const { clientX, clientY, button } = e;
@@ -621,7 +611,7 @@ const CanvasComponent = () => {
       clearAndDraw();
     }
 
-    if (realX == startX1 && realY == startY1) {
+    if (realX === startX1 && realY === startY1) {
       // mouse clicked, released same spot in stage shape, check mouse in stage shape
       stageGroup.current[pageNumber.current - 1]
         .getShapesAsArray()
@@ -677,76 +667,57 @@ const CanvasComponent = () => {
     deleteTempShape();
     clearAndDraw();
 
-    // return if connecting shapes same
     if (connectShape1.current === connectShape2.current) {
-      infoMessage.current = 'connecting shapes are the same.';
-      setShowInfoMessage(true);
-      setTimeout(() => setShowInfoMessage(false), 3000);
+      displayInfoMessage('connecting shapes are the same.');
       return;
     }
 
     if (connectShape2.current.nextItem === connectShape1.current.id) {
-      infoMessage.current = 'invalid connection.';
-      setShowInfoMessage(true);
-      setTimeout(() => setShowInfoMessage(false), 3000);
+      displayInfoMessage('invalid connection.');
       return;
     }
 
     if (connectShape1.current.type === 'endFlow') {
-      infoMessage.current = 'cannot connect from endFlow.';
-      setShowInfoMessage(true);
-
+      displayInfoMessage('cannot connect from endFlow.');
       return;
     }
 
-    // return if 1st shape is an exit jumper
     if (
       connectShape1.current.type === 'jumper' &&
       connectShape1.current.userValues?.type === 'exit'
     ) {
-      infoMessage.current = 'cannot connect exit jumper.';
-      setShowInfoMessage(true);
-
+      displayInfoMessage('cannot connect exit jumper.');
       return;
     }
 
-    // return if 2nd shape is an entry jumper
     if (
       connectShape2.current.type === 'jumper' &&
       connectShape2.current.userValues?.type === 'entry'
     ) {
-      infoMessage.current = 'cannot connect to entry jumper.';
-      setShowInfoMessage(true);
+      displayInfoMessage('cannot connect to entry jumper.');
       return;
     }
 
     if (connectShape1.current.type === 'switch') {
-      // if it is an exit point
       if (isSwitchExitPoint.current) {
         let position = connectShape1.current.userValues.switchArray.findIndex(
           (row) => row.exitPoint == isSwitchExitPoint.current
         );
         if (position !== -1) {
-          // update switchArray to add id of second shape
-
           connectShape1.current.userValues.switchArray[position].nextId =
             connectShape2.current.id;
           clearAndDraw();
           return;
         }
-
-        // update defaultExitNextId to add id of 2nd shape
         connectShape1.current.userValues.default.nextId =
           connectShape2.current.id;
         clearAndDraw();
         return;
       }
-      infoMessage.current = 'Choose a switch action to connect.';
-      setShowInfoMessage(true);
+      displayInfoMessage('Choose a switch action to connect.');
       return;
     }
 
-    // if shape1 playMenu
     if (connectShape1.current.type === 'playMenu') {
       if (isMenuExitPoint.current) {
         const index = connectShape1.current.userValues.items.findIndex(
@@ -759,20 +730,22 @@ const CanvasComponent = () => {
         }
         return;
       }
-
-      infoMessage.current =
+      displayInfoMessage(
         connectShape1.current.userValues.items.length === 0
           ? 'Add a menu action to connect.'
-          : 'Choose a menu action to connect.';
-      setShowInfoMessage(true);
+          : 'Choose a menu action to connect.'
+      );
       return;
     }
 
-    // set nextItem for shape1; create new line to connect shapes
     connectShape1.current.setNextItem(connectShape2.current.id);
-    connectShape1.current.setSelected(false);
-    connectShape2.current.setSelected(false);
     clearAndDraw();
+  }
+
+  function displayInfoMessage(message) {
+    infoMessage.current = message;
+    setShowInfoMessage(true);
+    setTimeout(() => setShowInfoMessage(false), 3000);
   }
 
   function handleAddPage() {
