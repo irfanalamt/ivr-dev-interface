@@ -132,10 +132,12 @@ const CanvasComponent = () => {
       const stageGroupCurrent = currentProject.stageGroup;
       const shapeCountCurrent = currentProject.shapeCount;
       const pageCountCurrent = currentProject.pageCount;
+      const ivrNameCurrent = currentProject.ivrName;
 
       userVariables.current = userVariablesCurrent;
       shapeCount.current = shapeCountCurrent;
       setPageCount(pageCountCurrent);
+      setIvrName(ivrNameCurrent);
 
       stageGroup.current = [];
       stageGroupCurrent.forEach((stage) => {
@@ -159,6 +161,9 @@ const CanvasComponent = () => {
   function resetStage() {
     // clear out all shapes on stage; reset shapecount
 
+    router.push({
+      pathname: '/stageCanvas3',
+    });
     stageGroup.current = [];
     for (let i = 1; i <= pageCount; i++) {
       stageGroup.current.push(new Shapes(`p${i}`, {}));
@@ -818,20 +823,19 @@ const CanvasComponent = () => {
     userVariables.current = arr;
   }
 
-  function saveToFile(ivrName, version) {
-    setIvrName(`${ivrName}_${version}`);
-
+  function saveToFile() {
     const data = {
       stageGroup: stageGroup.current,
       userVariables: userVariables.current,
       shapeCount: shapeCount.current,
       pageCount: pageCount,
+      ivrName: ivrName,
     };
 
     const file = new Blob([JSON.stringify(data)], { type: 'text/json' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(file);
-    link.download = `${ivrName}_${version}.ivrf`;
+    link.download = `${ivrName}.ivrf`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1085,6 +1089,7 @@ const CanvasComponent = () => {
           setShowSaveFileDialog(false);
           clearAndDraw();
         }}
+        setIvrName={setIvrName}
         saveToFile={saveToFile}
       />
       <Typography

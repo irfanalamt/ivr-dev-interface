@@ -4,24 +4,21 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
-  DialogTitle,
   TextField,
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
 import { checkValidity } from '../src/helpers';
-import SaveAsIcon from '@mui/icons-material/SaveAs';
 
-const SaveFileDialog = ({ open, handleClose, saveToFile }) => {
+const SaveFileDialog = ({ open, handleClose, saveToFile, setIvrName }) => {
   const [ivrName, setIVRName] = useState('');
   const [version, setVersion] = useState(1);
   const [errorText, setErrorText] = useState('');
 
   function handleSaveFile() {
     if (ivrName === '' || errorText !== '') return;
-
-    saveToFile(ivrName, version);
+    setIvrName(`${ivrName}_${version}`);
+    saveToFile();
     handleClose();
   }
 
