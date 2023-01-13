@@ -468,9 +468,7 @@ const CanvasComponent = () => {
         }
       });
 
-    if (!clickedInShape) {
-      setIsConnecting(0);
-    }
+    if (!clickedInShape) setIsConnecting(0);
   }
   function handleMouseMove(e) {
     e.preventDefault();
@@ -652,9 +650,7 @@ const CanvasComponent = () => {
 
   function moveTempShape(e) {
     const { clientX, clientY } = e;
-    const boundingRect = canvasRef.current.getBoundingClientRect();
-    const realX = clientX - boundingRect.left;
-    const realY = clientY - boundingRect.top;
+    const { realX, realY } = getRealCoordinates(clientX, clientY);
 
     const tempShape =
       stageGroup.current[pageNumber.current - 1].getShapes().temp;

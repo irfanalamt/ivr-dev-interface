@@ -71,6 +71,7 @@ const SaveFileDialog = ({ open, handleClose, saveToFile, setIvrName }) => {
             value={version}
             onChange={(e) => setVersion(e.target.value)}
             size='small'
+            type='number'
           />
         </Box>
       </DialogContent>
