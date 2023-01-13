@@ -18,8 +18,8 @@ const SaveFileDialog = ({ open, handleClose, saveToFile, setIvrName }) => {
   function handleSaveFile() {
     if (ivrName === '' || errorText !== '') return;
     setIvrName(`${ivrName}_${version}`);
-    saveToFile();
     handleClose();
+    saveToFile(`${ivrName}_${version}`);
   }
 
   function handleNameValidation(value) {
