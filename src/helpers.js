@@ -749,7 +749,31 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
     });
   }
 
+  function handleParamsObjChangeSwitch(e, index) {
+    const { checked } = e.target;
+    setParamsObj((s) => {
+      const newArr = [...s];
+      newArr[index].value = checked;
+      return newArr;
+    });
+  }
+
   switch (type) {
+    case 'interruptible':
+      const interruptibleCode = (
+        <ListItem sx={{ marginTop: 1 }} key={key}>
+          <Typography sx={{ marginX: 2 }} variant='body1'>
+            interruptible:
+          </Typography>
+          <Switch
+            name='interruptible'
+            checked={paramsObj[key]?.value ?? true}
+            onChange={(e) => handleParamsObjChangeSwitch(e, key)}
+          ></Switch>
+        </ListItem>
+      );
+      return interruptibleCode;
+
     case 'terminator':
       const terminatorCode = (
         <ListItem sx={{ marginTop: 1 }} key={key}>

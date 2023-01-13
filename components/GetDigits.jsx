@@ -50,6 +50,7 @@ const GetDigits = ({
     'invalidAction',
     'timeoutAction',
     'invalidPrompt',
+    'interruptible',
   ];
 
   function saveUserValues() {
@@ -78,11 +79,11 @@ const GetDigits = ({
 
     // remove null values; SAVE
     const filteredMsgObj = msgObj.filter((n) => n.value);
-    const filteredParamsObj = paramsObj.filter((n) => n.value);
+    // const filteredParamsObj = paramsObj.filter((n) => n.value);
     const entireParamsObj = {
       minDigits,
       maxDigits,
-      paramsList: filteredParamsObj,
+      paramsList: paramsObj,
     };
 
     shape.setText(shapeName);
@@ -131,8 +132,10 @@ const GetDigits = ({
   }
 
   function addParamsInput() {
+    const value = paramsObjType === 'interruptible' ? true : '';
+
     setParamsObj((s) => {
-      return [...s, { type: paramsObjType, value: '' }];
+      return [...s, { type: paramsObjType, value }];
     });
     setParamsObjType('');
   }
@@ -281,7 +284,7 @@ const GetDigits = ({
             <Typography
               sx={{
                 fontWeight: 410,
-                marginTop: 4,
+                marginTop: 2,
                 borderBottom: 1,
               }}
               variant='subtitle1'
@@ -302,9 +305,7 @@ const GetDigits = ({
                 // remove params already added
                 paramsObj.length > 0
                   ? paramsObjOptions
-                      .filter((el) => {
-                        return !paramsObj.some((e) => e.type == el);
-                      })
+                      .filter((el) => !paramsObj.some((e) => e.type == el))
                       .map((el, i) => (
                         <MenuItem key={i} value={el}>
                           {el}
