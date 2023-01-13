@@ -1,10 +1,7 @@
 import {
   List,
   ListItem,
-  Tooltip,
   Typography,
-  Button,
-  Chip,
   TextField,
   RadioGroup,
   FormControlLabel,
@@ -12,8 +9,6 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import { useRef, useState } from 'react';
 import { checkValidity } from '../src/helpers';
 import DrawerTop from './DrawerTop';
@@ -67,31 +62,41 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
   }
 
   function handleNameValidation(e) {
-    let errorBox = nameErrorRef.current;
-    let errorMessage = checkValidity('object', e);
-    if (errorMessage !== -1) {
-      errorBox.style.display = 'block';
+    const { value } = e.target;
+
+    const nameErrorBox = nameErrorRef.current;
+    const nameErrorMessage = checkValidity('object', value);
+    if (nameErrorMessage !== -1) {
+      nameErrorBox.style.display = 'block';
       e.target.style.backgroundColor = '#ffebee';
-      errorBox.innerText = errorMessage;
+      nameErrorBox.innerText = nameErrorMessage;
       return;
     }
 
     // check name unique in all pages
-    for (const page of entireStageGroup) {
-      for (const el of page.getShapesAsArray()) {
-        if (el.text === e.target.value) {
-          errorBox.style.display = 'block';
-          e.target.style.backgroundColor = '#ffebee';
-          errorBox.innerText = 'name NOT unique';
-          return;
-        }
-      }
+    const isUniqueName = checkUniqueName(value, entireStageGroup);
+    if (!isUniqueName) {
+      nameErrorBox.style.display = 'block';
+      e.target.style.backgroundColor = '#ffebee';
+      nameErrorBox.innerText = 'Name is not unique';
+      return;
     }
 
     // no error condition
-    errorBox.style.display = 'none';
+    nameErrorBox.style.display = 'none';
     e.target.style.backgroundColor = '#f1f8e9';
-    errorBox.innerText = '';
+    nameErrorBox.innerText = '';
+  }
+
+  function checkUniqueName(name, pageGroup) {
+    for (const page of pageGroup) {
+      for (const pageElement of page.getShapesAsArray()) {
+        if (pageElement.text === name) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   return (

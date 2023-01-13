@@ -865,9 +865,15 @@ const CanvasComponent = () => {
   function generateJS() {
     // return a JS config code as string
 
-    if (
-      stageGroup.current[pageNumber.current - 1].getShapesAsArray().length === 0
-    ) {
+    let entirestageGroup = new Shapes('entireStageGroup');
+    for (const page of stageGroup.current) {
+      entirestageGroup.shapes = {
+        ...entirestageGroup.shapes,
+        ...page.shapes,
+      };
+    }
+
+    if (entirestageGroup.getShapesAsArray().length === 0) {
       snackbarMessage.current = `No shapes added to stage.`;
       setOpenSnackbar(true);
       return false;
@@ -880,15 +886,14 @@ const CanvasComponent = () => {
     }
 
     // function that loops through all shapes except connector, switch or jumper; and check if they have fn string. if no return that shape name else false
-    const isFunctionStringPresent =
-      stageGroup.current[pageNumber.current - 1].isFunctionStringPresent();
+    const isFunctionStringPresent = entirestageGroup.isFunctionStringPresent();
     if (isFunctionStringPresent) {
       snackbarMessage.current = `Please update ${isFunctionStringPresent}. Default values detected.`;
       setOpenSnackbar(true);
       return false;
     }
 
-    const tempString1 = `function ${ivrName}(IVR){
+    const globalParamsString = `function ${ivrName}(IVR){
       IVR.params = {
         maxRetries: 3,
         maxRepeats: 3,
@@ -919,15 +924,15 @@ const CanvasComponent = () => {
         };
      `;
 
-    const tempString2 = generateInitVariablesJS();
-    const tempString3 = stageGroup.current[pageNumber.current - 1]
+    const allVariablesString = generateInitVariablesJS();
+
+    const allFunctionsString = entirestageGroup
       .getShapesAsArray()
       .filter((el) => el.functionString)
       .map((el) => el.functionString)
       .join(' ');
 
-    const idOfStartShape =
-      stageGroup.current[pageNumber.current - 1].getIdOfFirstShape();
+    const idOfStartShape = entirestageGroup.getIdOfFirstShape();
 
     if (idOfStartShape === null) {
       snackbarMessage.current =
@@ -936,13 +941,17 @@ const CanvasComponent = () => {
       return false;
     }
 
-    const tempString4 =
-      stageGroup.current[pageNumber.current - 1].traverseShapes(idOfStartShape);
+    const allDriverFunctionsString =
+      entirestageGroup.traverseShapes(idOfStartShape);
 
-    const tempStringEnd = `} module.exports = ${ivrName} ;`;
+    const EndExportString = `} module.exports = ${ivrName} ;`;
 
     const finalCodeString =
-      tempString1 + tempString2 + tempString3 + tempString4 + tempStringEnd;
+      globalParamsString +
+      allVariablesString +
+      allFunctionsString +
+      allDriverFunctionsString +
+      EndExportString;
 
     const formattedCode = prettier.format(finalCodeString, {
       parser: 'babel',
