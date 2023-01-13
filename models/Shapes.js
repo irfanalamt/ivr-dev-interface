@@ -198,7 +198,7 @@ class Shapes {
       }
 
       // If the current shape has a nextItem property, push the shape with the corresponding id onto the stack
-      if (currentShape.nextItem) {
+      if (currentShape.nextItem && currentShape.type !== 'jumper') {
         shapeStack.push(this.shapes[currentShape.nextItem]);
       }
 
@@ -220,8 +220,23 @@ class Shapes {
           shapeStack.push(this.shapes[currentShape.userValues.default.nextId]);
         }
       }
+      if (currentShape.type === 'jumper') {
+        const entryJumperNextShapeId = this.findEntryJumperNextShape(
+          currentShape.text
+        );
+        if (entryJumperNextShapeId)
+          shapeStack.push(this.shapes[entryJumperNextShapeId]);
+      }
     }
     return tempString;
+  }
+
+  findEntryJumperNextShape(name) {
+    const entryJumper = this.getShapesAsArray().find(
+      (shape) => shape.type === 'jumper' && shape.userValues.exitPoint === name
+    );
+
+    return entryJumper.nextItem;
   }
   generateMainMenuCode(id) {
     if (!this.shapes[id]) return '';
@@ -386,49 +401,36 @@ class Shapes {
   }
 
   getShapesTillMenuOrSwitch(id) {
-    // return an array of connected shapes till a multi-exit shape has reached
-
-    // return array of shape names till a menu
     let tempArray = [];
     let currentShape = this.shapes[id];
     if (!currentShape) return null;
 
-    if (currentShape.type !== 'connector') tempArray.push(currentShape);
+    if (currentShape.type !== 'connector' && currentShape.type !== 'jumper')
+      tempArray.push(currentShape);
 
     let id1 = id;
 
     while (1) {
-      let nextShapeId = this.shapes[id1].nextItem;
+      let nextShapeId;
+      if (currentShape.type === 'jumper') {
+        nextShapeId = this.findEntryJumperNextShape(currentShape.text);
+      } else {
+        nextShapeId = this.shapes[id1].nextItem;
+      }
       if (!nextShapeId) break;
 
       let nextShape = this.shapes[nextShapeId];
       if (!nextShape) break;
 
       // if not connector; add to array
-      if (nextShape.type !== 'connector') tempArray.push(nextShape);
+      if (nextShape.type !== 'connector' && nextShape.type !== 'jumper')
+        tempArray.push(nextShape);
 
       id1 = nextShapeId;
+      currentShape = nextShape;
     }
 
     return tempArray;
-  }
-  getValidNextItem(id) {
-    // return null if no valid next shape found(not connector)
-    // if valid next shape found, return its id
-    const currentShape = this.shapes[id];
-    if (currentShape.type !== 'connector') return currentShape.id;
-
-    while (true) {
-      let nextShapeId = this.shapes[id].nextItem;
-      if (!nextShapeId) return null;
-
-      let nextShape = this.shapes[nextShapeId];
-      if (!nextShape) return null;
-
-      if (nextShape.type !== 'connector') return nextShape.id;
-
-      id = nextShapeId;
-    }
   }
 
   getConnectionsArray() {
@@ -449,8 +451,7 @@ class Shapes {
         if (shape2) {
           let shape1 = el;
 
-          let lineColor =
-            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#37474f';
+          let lineColor = '#37474f';
           console.log('shape1🟢', shape1, 'shape2', shape2);
           tempArray.push({
             x1: shape1.getRelativePosition(shape2, 1)[0],
@@ -475,8 +476,7 @@ class Shapes {
       // only default condition
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
-        let lineColor =
-          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+        let lineColor = '#4a148c';
         tempArray.push({
           x1: shape1.getExitPoint()[0],
           y1: shape1.getExitPoint()[1],
@@ -503,8 +503,7 @@ class Shapes {
             el.userValues.switchArray.length + 1,
             i + 1
           );
-          let lineColor =
-            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+          let lineColor = '#4a148c';
           tempArray.push({
             x1: exitCordinate[0],
             y1: exitCordinate[1],
@@ -532,8 +531,7 @@ class Shapes {
           el.userValues.switchArray.length + 1,
           el.userValues.switchArray.length + 1
         );
-        let lineColor =
-          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+        let lineColor = '#4a148c';
         tempArray.push({
           x1: exitCordinate[0],
           y1: exitCordinate[1],
@@ -563,8 +561,7 @@ class Shapes {
       // default condition; 1 exit middle bottom
       let shape2 = this.shapes[itemsWithoutDefaults[0].nextId];
       if (shape2) {
-        let lineColor =
-          this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+        let lineColor = '#4a148c';
         tempArray.push({
           x1: shape1.getExitPoint()[0],
           y1: shape1.getExitPoint()[1],
@@ -589,8 +586,7 @@ class Shapes {
         let shape2 = this.shapes[row.nextId];
         if (shape2) {
           let exitCordinate = shape1.getBottomPointForExit(itemsLength, i + 1);
-          let lineColor =
-            this.getValidNextItem(shape2.id) === null ? '#AA2E25' : '#4a148c';
+          let lineColor = '#4a148c';
           tempArray.push({
             x1: exitCordinate[0],
             y1: exitCordinate[1],
