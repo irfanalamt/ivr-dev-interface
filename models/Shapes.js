@@ -142,7 +142,7 @@ class Shapes {
       jumper: 'K',
     };
 
-    const startCharacter = shapeTypeLetterMap[type] ?? 'X';
+    const startCharacter = shapeTypeLetterMap[type] || 'X';
     const pageCharacter = pageNumber < 10 ? `0${pageNumber}` : `${pageNumber}`;
 
     return `${startCharacter}${pageCharacter}${count}`;
@@ -160,14 +160,11 @@ class Shapes {
   getIdOfFirstShape() {
     // start shape is setParams
     // if  found, return id; else return null`
+    const firstShape = this.getShapesAsArray().find(
+      (shape) => shape.type === 'setParams'
+    );
 
-    for (let shape of this.getShapesAsArray()) {
-      if (shape.type === 'setParams') {
-        return shape.id;
-      }
-    }
-
-    return null;
+    return firstShape ? firstShape.id : null;
   }
 
   traverseShapes(id) {
@@ -435,7 +432,6 @@ class Shapes {
   }
 
   getConnection(shape1, shape2) {
-    let lineColor = '#37474f';
     return {
       x1: shape1.getRelativePosition(shape2, 1)[0],
       y1: shape1.getRelativePosition(shape2, 1)[1],
@@ -444,7 +440,7 @@ class Shapes {
       startItem: shape1.id,
       endItem: shape2.id,
       lineCap: null,
-      lineColor: shape2.id === 'temp' ? '#757575' : lineColor,
+      lineColor: shape2.id === 'temp' ? '#757575' : '#37474f',
     };
   }
 
@@ -453,7 +449,6 @@ class Shapes {
     if (!el.userValues.switchArray.length) {
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
-        let lineColor = '#4a148c';
         tempArray.push({
           x1: shape1.getExitPoint()[0],
           y1: shape1.getExitPoint()[1],
@@ -462,7 +457,7 @@ class Shapes {
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
-          lineColor: lineColor,
+          lineColor: '#4a148c',
           lineData: {
             exitPoint: el.userValues.default.exitPoint,
             position: 1,
@@ -478,7 +473,7 @@ class Shapes {
             el.userValues.switchArray.length + 1,
             i + 1
           );
-          let lineColor = '#4a148c';
+
           tempArray.push({
             x1: exitCordinate[0],
             y1: exitCordinate[1],
@@ -487,7 +482,7 @@ class Shapes {
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
-            lineColor: lineColor,
+            lineColor: '#4a148c',
             lineData: {
               exitPoint: row.exitPoint,
               position: i + 1,
@@ -502,7 +497,7 @@ class Shapes {
           el.userValues.switchArray.length + 1,
           el.userValues.switchArray.length + 1
         );
-        let lineColor = '#4a148c';
+
         tempArray.push({
           x1: exitCordinate[0],
           y1: exitCordinate[1],
@@ -511,7 +506,7 @@ class Shapes {
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
-          lineColor: lineColor,
+          lineColor: '#4a148c',
           lineData: {
             exitPoint: el.userValues.default.exitPoint,
             position: el.userValues.switchArray.length + 1,
@@ -531,7 +526,6 @@ class Shapes {
     if (itemsLength === 1 && itemsWithoutDefaults[0].nextId) {
       const shape2 = this.shapes[itemsWithoutDefaults[0].nextId];
       if (shape2) {
-        const lineColor = '#4a148c';
         tempArray.push({
           x1: shape1.getExitPoint()[0],
           y1: shape1.getExitPoint()[1],
@@ -539,7 +533,7 @@ class Shapes {
           y2: shape2.getRelativePosition(shape1)[1],
           startItem: shape1.id,
           endItem: shape2.id,
-          lineColor,
+          lineColor: '#4a148c',
           lineData: {
             exitPoint: itemsWithoutDefaults[0].action,
             position: 1,
@@ -577,13 +571,18 @@ class Shapes {
   isFunctionStringPresent() {
     // check if all shapes have a fn string,return false;
     // else return first shapeText without one
-    for (let shape of this.getShapesAsArray()) {
-      if (
-        !['connector', 'tinyCircle', 'jumper', 'switch', 'endFlow'].includes(
-          shape.type
-        )
-      ) {
-        if (!shape.functionString) return shape.text;
+    const shapes = this.getShapesAsArray();
+
+    for (let shape of shapes) {
+      const typesToIgnore = [
+        'connector',
+        'tinyCircle',
+        'jumper',
+        'switch',
+        'endFlow',
+      ];
+      if (!typesToIgnore.includes(shape.type) && !shape.functionString) {
+        return shape.text;
       }
     }
     return false;
@@ -628,27 +627,37 @@ class Shapes {
       }
     }
   }
+
   checkVariableInUse(varName) {
-    for (const shape of this.getShapesAsArray()) {
-      for (const message of shape.userValues?.messageList) {
-        if (message.value === `$${varName}`) return true;
+    const shapes = this.getShapesAsArray();
+    for (let i = 0; i < shapes.length; i++) {
+      const messages = shapes[i].userValues?.messageList;
+      if (messages) {
+        for (let j = 0; j < messages.length; j++) {
+          if (messages[j].value === `$${varName}`) return true;
+        }
       }
     }
     return false;
   }
+
   modifyVariable(varName, newVarName) {
     // checks if any of the shapes have used this variable name, if so modify it.
+    const shapes = this.getShapesAsArray();
 
-    this.getShapesAsArray().forEach((shape) => {
-      shape.userValues.messageList?.forEach((message) => {
-        if (message.value === `$${varName}`) {
-          message.value = `$${newVarName}`;
+    for (let i = 0; i < shapes.length; i++) {
+      const messages = shapes[i].userValues?.messageList;
+      if (messages) {
+        for (let j = 0; j < messages.length; j++) {
+          if (messages[j].value === `$${varName}`) {
+            messages[j].value = `$${newVarName}`;
+          }
         }
-      });
-      if (shape.userValues.variableName === varName) {
-        shape.userValues.variableName = newVarName;
       }
-    });
+      if (shapes[i].userValues.variableName === varName) {
+        shapes[i].userValues.variableName = newVarName;
+      }
+    }
   }
 }
 

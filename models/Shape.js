@@ -1,5 +1,3 @@
-import { shape } from '@mui/system';
-
 class Shape {
   constructor(x, y, width, height, type, style = 'black', stroke = false) {
     this.x = x;
@@ -31,15 +29,9 @@ class Shape {
     // position 1 is the from shape
     // 2 is the to shape
 
-    if (
-      this.x < shape2.x &&
-      this.isBetween(shape2.y, this.y - this.height, this.y + this.height)
-    ) {
+    if (this.x + this.width / 2 + 20 < shape2.x) {
       return this.getRightCordinates();
-    } else if (
-      shape2.x < this.x &&
-      this.isBetween(shape2.y, this.y - this.height, this.y + this.height)
-    ) {
+    } else if (shape2.x < this.x - (this.width / 2 + 20)) {
       return this.getLeftCordinates();
     } else if (position === 2) {
       return this.getTopCordinates();
@@ -96,10 +88,11 @@ class Shape {
   }
 
   isNearExitPointSwitch(x, y) {
-    const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
+    const numExitPoints = 1 + (this.userValues?.switchArray.length || 0);
+    let bottomPoint;
 
-    if (numberOfExitPoints === 1) {
-      const bottomPoint = this.getExitPoint();
+    if (numExitPoints === 1) {
+      bottomPoint = this.getExitPoint();
 
       if (
         this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
@@ -111,15 +104,14 @@ class Shape {
       return false;
     }
 
-    for (let i = 1; i <= numberOfExitPoints; i++) {
-      const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
+    for (let i = 1; i <= numExitPoints; i++) {
+      bottomPoint = this.getBottomPointForExit(numExitPoints, i);
 
       if (
         this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
         this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
       ) {
-        if (i == numberOfExitPoints) {
-          // last exit point is the default exit point
+        if (i == numExitPoints) {
           return this.userValues.default.exitPoint;
         }
         return this.userValues.switchArray[i - 1].exitPoint;
@@ -136,6 +128,7 @@ class Shape {
 
     if (numberOfExitPoints === 0) return false;
 
+    // If one exit point
     if (numberOfExitPoints === 1) {
       const bottomPoint = this.getExitPoint();
 
@@ -149,8 +142,7 @@ class Shape {
       return false;
     }
 
-    // items >1
-
+    // If multiple exit points
     for (let i = 1; i <= numberOfExitPoints; i++) {
       const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
 
@@ -165,13 +157,10 @@ class Shape {
   }
 
   isMouseInShape(x, y) {
-    // returns true if mouse is in shape; else false
-    let shapeLeft, shapeRight, shapeTop, shapeBottom;
-
-    shapeLeft = this.x - this.width / 2;
-    shapeRight = this.x + this.width / 2;
-    shapeTop = this.y - this.height / 2;
-    shapeBottom = this.y + this.height / 2;
+    const shapeLeft = this.x - this.width / 2;
+    const shapeRight = this.x + this.width / 2;
+    const shapeTop = this.y - this.height / 2;
+    const shapeBottom = this.y + this.height / 2;
 
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
   }
