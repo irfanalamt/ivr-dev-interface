@@ -290,36 +290,29 @@ const CanvasComponent = () => {
   }
 
   function clearAndDraw() {
+    const canvas = contextRef.current;
     // clear canvas
-    contextRef.current.clearRect(
-      0,
-      0,
-      window.innerWidth,
-      window.innerHeight * 2
-    );
-    contextRef.current.lineCap = 'round';
-    contextRef.current.strokeStyle = '#062350';
-    contextRef.current.lineWidth = 2.5;
-    contextRef.current.fillStyle = 'white';
+    canvas.clearRect(0, 0, window.innerWidth, window.innerHeight * 2);
 
-    // draw bg palette rectangle
-    contextRef.current.strokeRect(
+    canvas.lineCap = 'round';
+    canvas.strokeStyle = '#062350';
+    canvas.lineWidth = 2.5;
+    canvas.fillStyle = 'white';
+
+    // draw background palette rectangle
+    canvas.strokeRect(
       5,
       55 + scrollOffsetY.current,
       70,
       window.innerHeight - 95
     );
-    contextRef.current.fillRect(
-      5,
-      55 + scrollOffsetY.current,
-      70,
-      window.innerHeight - 95
-    );
-    contextRef.current.fillStyle = '#616161';
-    contextRef.current.font = '20px Arial';
+    canvas.fillRect(5, 55 + scrollOffsetY.current, 70, window.innerHeight - 95);
 
-    // display page number canvas top right
-    contextRef.current.fillText(
+    canvas.fillStyle = '#616161';
+    canvas.font = '20px Arial';
+
+    // display page number in top right corner
+    canvas.fillText(
       `P${pageNumber.current}`,
       window.innerWidth * 0.9 - 35,
       80 + scrollOffsetY.current
@@ -329,7 +322,7 @@ const CanvasComponent = () => {
       const img = new Image();
       img.src = '/icons/delete.png';
 
-      contextRef.current.drawImage(
+      canvas.drawImage(
         img,
         window.innerWidth - 80,
         window.innerHeight - 95 + scrollOffsetY.current,
@@ -338,21 +331,16 @@ const CanvasComponent = () => {
       );
     }
 
-    // palette and stage drawn on canvas
-    palletGroup.current.drawAllShapes(contextRef.current);
+    // draw palette and stage on canvas
+    palletGroup.current.drawAllShapes(canvas);
+    stageGroup.current[pageNumber.current - 1]?.drawAllShapes(canvas);
 
-    stageGroup.current[pageNumber.current - 1]?.drawAllShapes(
-      contextRef.current
-    );
-
-    // Calculate all connecting lines return array of connections
+    // calculate connections between shapes and draw them
     const connectionsArray =
       stageGroup.current[pageNumber.current - 1].getConnectionsArray();
-
-    // initialize lineGroup,draw connections
     lineGroup.current = new Lines([]);
     lineGroup.current.setConnections(connectionsArray);
-    lineGroup.current.connectAllPoints(contextRef.current);
+    lineGroup.current.connectAllPoints(canvas);
   }
 
   function handleCloseDrawer() {
@@ -392,7 +380,11 @@ const CanvasComponent = () => {
           if (isConnecting === 1) {
             connectShape1.current = element;
             element.setSelected(true);
-            if (element.type !== 'switch' && element.type !== 'playMenu') {
+            if (
+              element.type !== 'switch' &&
+              element.type !== 'playMenu' &&
+              element.userValues.type !== 'exit'
+            ) {
               stageGroup.current[pageNumber.current - 1].addTempShape(
                 realX,
                 realY
@@ -448,6 +440,7 @@ const CanvasComponent = () => {
     const realY = clientY - boundingRect.top;
     return { realX, realY };
   }
+
   function handleMouseDown(e) {
     e.preventDefault();
     const { clientX, clientY, button } = e;
@@ -762,28 +755,27 @@ const CanvasComponent = () => {
   }
 
   function handleAddPage() {
-    if (
-      stageGroup.current[stageGroup.current.length - 1].getShapesAsArray()
-        .length === 0
-    ) {
-      snackbarMessage.current = `Last page empty. New page cannot be added.`;
+    const lastPageShapes =
+      stageGroup.current[stageGroup.current.length - 1].getShapesAsArray();
+
+    if (lastPageShapes.length === 0) {
       setOpenSnackbar(true);
+      snackbarMessage.current = 'Last page is empty. New page cannot be added.';
       return;
     }
 
-    setPageCount(pageCount + 1);
+    setPageCount((prevCount) => prevCount + 1);
     stageGroup.current.push(new Shapes(`p${pageNumber}`, {}));
   }
 
   function handleRemovePage() {
     if (pageCount < 2) return;
 
-    if (
-      stageGroup.current[stageGroup.current.length - 1].getShapesAsArray()
-        .length > 0
-    ) {
-      snackbarMessage.current = `Cannot remove, page${stageGroup.current.length} is not empty.`;
+    const currentStageGroup = stageGroup.current;
+    const lastPage = currentStageGroup[currentStageGroup.length - 1];
 
+    if (lastPage.getShapesAsArray().length > 0) {
+      snackbarMessage.current = `Cannot remove, page ${currentStageGroup.length} is not empty.`;
       setOpenSnackbar(true);
       return;
     }
@@ -792,8 +784,8 @@ const CanvasComponent = () => {
     if (newPage !== pageNumber.current) {
       handlePageChange(null, newPage);
     }
-    setPageCount(pageCount - 1);
-    stageGroup.current.pop();
+    setPageCount((prevCount) => prevCount - 1);
+    currentStageGroup.pop();
   }
 
   function handlePageChange(e, pageNum) {
