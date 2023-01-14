@@ -25,17 +25,59 @@ class Shape {
     return [this.x, this.y - this.height / 2];
   }
 
-  getRelativePosition(shape2, position = 2) {
-    // position 1 is the from shape
-    // 2 is the to shape
+  getRelativeExitPoint(shape2) {
+    let [x, y] = this.getBottomCordinates();
 
-    if (this.x + this.width / 2 + 20 < shape2.x) {
-      return this.getRightCordinates();
-    } else if (shape2.x < this.x - (this.width / 2 + 20)) {
-      return this.getLeftCordinates();
-    } else if (position === 2) {
-      return this.getTopCordinates();
-    } else return this.getBottomCordinates();
+    if (this.y < shape2.y) {
+      let [bottomX1, bottomY1] = this.getBottomCordinates();
+      let [topX2, topY2] = shape2.getTopCordinates();
+
+      if (topY2 > bottomY1) {
+        [x, y] = this.getBottomCordinates();
+      } else {
+        if (this.x < shape2.x) {
+          [x, y] = this.getRightCordinates();
+        } else {
+          [x, y] = this.getLeftCordinates();
+        }
+      }
+    } else {
+      if (this.x < shape2.x) {
+        [x, y] = this.getRightCordinates();
+      } else {
+        [x, y] = this.getLeftCordinates();
+      }
+    }
+
+    return [x, y];
+  }
+
+  getRelativeEntryPoint(shape1, exitPoint) {
+    let [x, y] = this.getLeftCordinates();
+    let slope = (y - exitPoint.y) / (x - exitPoint.x);
+
+    if (this.y >= shape1.y) {
+      if (shape1.x < this.x) {
+        if (!(Math.abs(slope) < 0.5)) {
+          [x, y] = this.getTopCordinates();
+        }
+      } else {
+        [x, y] = this.getRightCordinates();
+        slope = (y - exitPoint.y) / (x - exitPoint.x);
+
+        if (!(Math.abs(slope) < 0.5)) {
+          [x, y] = this.getTopCordinates();
+        }
+      }
+    } else {
+      if (exitPoint.x > this.x) {
+        [x, y] = this.getRightCordinates();
+      } else {
+        [x, y] = this.getLeftCordinates();
+      }
+    }
+
+    return [x, y];
   }
 
   getBottomCordinates() {
@@ -55,9 +97,9 @@ class Shape {
     return [this.x, this.y + this.height / 2];
   }
 
-  getBottomPointForExit(number, position) {
-    const xPoint = (this.width / (number + 1)) * position;
-    return [this.x - this.width * 0.5 + xPoint, this.y + this.height * 0.5];
+  getBottomPointForExit(numExits, exitIndex) {
+    const xCoord = (this.width / (numExits + 1)) * (exitIndex + 1);
+    return [this.x - this.width / 2 + xCoord, this.y + this.height / 2];
   }
 
   setUserValues(userValues) {

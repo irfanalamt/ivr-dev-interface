@@ -87,7 +87,6 @@ const SetParams = ({
     };`;
 
     shape.setFunctionString(codeString);
-    console.log('🕺🏻setParams code:', codeString);
   }
 
   const getCurrentUserValues = () => {
@@ -100,17 +99,15 @@ const SetParams = ({
 
   const handleSelectedParameterChange = (e) => {
     const { value } = e.target;
-
     setSelectedParameterIndex(value);
 
-    if (modifiedParameters[defaultParams[value].name]) {
-      // if parameter is present in the modifiedParameters, use that value
-      const modifiedParam = { ...defaultParams[value] };
-      modifiedParam.value = modifiedParameters[defaultParams[value].name].value;
-      setSelectedParameter(modifiedParam);
-      return;
-    }
-    setSelectedParameter(defaultParams[value]);
+    const param = modifiedParameters[defaultParams[value].name]
+      ? {
+          ...defaultParams[value],
+          value: modifiedParameters[defaultParams[value].name].value,
+        }
+      : defaultParams[value];
+    setSelectedParameter(param);
   };
 
   const handleFieldChange = (e) => {
@@ -122,12 +119,11 @@ const SetParams = ({
   };
 
   const handleUpdateParameter = () => {
-    const newModifiedParameters = { ...modifiedParameters };
-    newModifiedParameters[selectedParameter.name] = selectedParameter;
-    setModifiedParameters(newModifiedParameters);
-    shape.setUserValues({
-      params: newModifiedParameters,
+    setModifiedParameters({
+      ...modifiedParameters,
+      [selectedParameter.name]: selectedParameter,
     });
+    shape.setUserValues({ params: modifiedParameters });
     setSuccessText('parameter updated');
     setTimeout(() => {
       setSuccessText('');
@@ -141,7 +137,6 @@ const SetParams = ({
       return temp;
     });
   };
-
   return (
     <List sx={{ minWidth: 350 }}>
       <DrawerTop

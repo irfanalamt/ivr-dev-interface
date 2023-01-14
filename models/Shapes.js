@@ -432,11 +432,14 @@ class Shapes {
   }
 
   getConnection(shape1, shape2) {
+    const [x1, y1] = shape1.getRelativeExitPoint(shape2);
+    const [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
+
     return {
-      x1: shape1.getRelativePosition(shape2, 1)[0],
-      y1: shape1.getRelativePosition(shape2, 1)[1],
-      x2: shape2.getRelativePosition(shape1)[0],
-      y2: shape2.getRelativePosition(shape1)[1],
+      x1,
+      y1,
+      x2,
+      y2,
       startItem: shape1.id,
       endItem: shape2.id,
       lineCap: null,
@@ -449,11 +452,14 @@ class Shapes {
     if (!el.userValues.switchArray.length) {
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
+        let [x1, y1] = shape1.getExitPoint();
+        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
+
         tempArray.push({
-          x1: shape1.getExitPoint()[0],
-          y1: shape1.getExitPoint()[1],
-          x2: shape2.getRelativePosition(shape1)[0],
-          y2: shape2.getRelativePosition(shape1)[1],
+          x1,
+          y1,
+          x2,
+          y2,
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
@@ -469,16 +475,17 @@ class Shapes {
       el.userValues.switchArray.forEach((row, i) => {
         let shape2 = this.shapes[row.nextId];
         if (shape2) {
-          let exitCordinate = shape1.getBottomPointForExit(
+          let [x1, y1] = shape1.getBottomPointForExit(
             el.userValues.switchArray.length + 1,
             i + 1
           );
+          let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
 
           tempArray.push({
-            x1: exitCordinate[0],
-            y1: exitCordinate[1],
-            x2: shape2.getRelativePosition(shape1)[0],
-            y2: shape2.getRelativePosition(shape1)[1],
+            x1,
+            y1,
+            x2,
+            y2,
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
@@ -493,16 +500,17 @@ class Shapes {
       });
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
-        let exitCordinate = shape1.getBottomPointForExit(
+        let [x1, y1] = shape1.getBottomPointForExit(
           el.userValues.switchArray.length + 1,
           el.userValues.switchArray.length + 1
         );
+        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
 
         tempArray.push({
-          x1: exitCordinate[0],
-          y1: exitCordinate[1],
-          x2: shape2.getRelativePosition(shape1)[0],
-          y2: shape2.getRelativePosition(shape1)[1],
+          x1,
+          y1,
+          x2,
+          y2,
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
@@ -526,11 +534,13 @@ class Shapes {
     if (itemsLength === 1 && itemsWithoutDefaults[0].nextId) {
       const shape2 = this.shapes[itemsWithoutDefaults[0].nextId];
       if (shape2) {
+        let [x1, y1] = shape1.getExitPoint();
+        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
         tempArray.push({
-          x1: shape1.getExitPoint()[0],
-          y1: shape1.getExitPoint()[1],
-          x2: shape2.getRelativePosition(shape1)[0],
-          y2: shape2.getRelativePosition(shape1)[1],
+          x1,
+          y1,
+          x2,
+          y2,
           startItem: shape1.id,
           endItem: shape2.id,
           lineColor: '#4a148c',
@@ -545,15 +555,13 @@ class Shapes {
       itemsWithoutDefaults.forEach((item, i) => {
         const shape2 = this.shapes[item.nextId];
         if (shape2) {
-          const exitCordinate = shape1.getBottomPointForExit(
-            itemsLength,
-            i + 1
-          );
+          const [x1, y1] = shape1.getBottomPointForExit(itemsLength, i + 1);
+          let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
           tempArray.push({
-            x1: exitCordinate[0],
-            y1: exitCordinate[1],
-            x2: shape2.getRelativePosition(shape1)[0],
-            y2: shape2.getRelativePosition(shape1)[1],
+            x1,
+            y1,
+            x2,
+            y2,
             startItem: shape1.id,
             endItem: shape2.id,
             lineColor: '#4a148c',
