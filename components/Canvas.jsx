@@ -533,8 +533,8 @@ const CanvasComponent = () => {
             const jumperType = shape.userValues.type;
             const textContent =
               jumperType === 'exit'
-                ? `${shape.text}`
-                : `${shape.userValues.exitPoint}`;
+                ? `${shape.text}: EXIT`
+                : `${shape.userValues.exitPoint}: ENTRY`;
             stageTooltipRef.current.style.display = 'block';
             stageTooltipRef.current.style.top = realY + 10 + 'px';
             stageTooltipRef.current.style.left = realX + 30 + 'px';
@@ -1083,6 +1083,7 @@ const CanvasComponent = () => {
           display: 'none',
           position: 'absolute',
           backgroundColor: '#e1f5fe',
+          fontSize: 'small',
           px: 1,
           boxShadow: 1,
         }}
@@ -1095,7 +1096,8 @@ const CanvasComponent = () => {
         sx={{
           display: 'none',
           position: 'absolute',
-          backgroundColor: '#fce4ec',
+          backgroundColor: '#dcedc8',
+          fontSize: 'small',
           px: 1,
           boxShadow: 1,
           borderRadius: 1,

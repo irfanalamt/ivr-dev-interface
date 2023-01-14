@@ -235,7 +235,7 @@ class Shapes {
       (shape) => shape.type === 'jumper' && shape.userValues.exitPoint === name
     );
 
-    return entryJumper.nextItem;
+    return entryJumper?.nextItem;
   }
   generateMainMenuCode(id) {
     if (!this.shapes[id]) return '';
