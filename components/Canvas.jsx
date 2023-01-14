@@ -134,6 +134,7 @@ const CanvasComponent = () => {
         pageCount: pageCountCurrent,
         ivrName: ivrNameCurrent,
       } = JSON.parse(projectData);
+
       userVariables.current = userVariablesCurrent;
       shapeCount.current = shapeCountCurrent;
       setPageCount(pageCountCurrent);
@@ -360,33 +361,6 @@ const CanvasComponent = () => {
     clearAndDraw();
   }
 
-  function getRealCoordinates(clientX, clientY) {
-    const boundingRect = canvasRef.current.getBoundingClientRect();
-    const realX = clientX - boundingRect.left;
-    const realY = clientY - boundingRect.top;
-    return { realX, realY };
-  }
-  function handleMouseDown(e) {
-    e.preventDefault();
-    const { clientX, clientY, button } = e;
-    const { realX, realY } = getRealCoordinates(clientX, clientY);
-    clickedInShape = false;
-
-    // check if right click
-    if (button === 2) {
-      setIsConnecting(1);
-      return;
-    }
-
-    // check if mouse in palette shape
-    checkMouseInPaletteShape(realX, realY);
-
-    // check if mouse in stage shape
-    checkMouseInStageShape(realX, realY);
-
-    if (!clickedInShape) setIsConnecting(0);
-  }
-
   function checkMouseInPaletteShape(realX, realY) {
     palletGroup.current.getShapesEntries().forEach(([, element]) => {
       if (element.isMouseInShape(realX, realY)) {
@@ -468,6 +442,33 @@ const CanvasComponent = () => {
       });
   }
 
+  function getRealCoordinates(clientX, clientY) {
+    const boundingRect = canvasRef.current.getBoundingClientRect();
+    const realX = clientX - boundingRect.left;
+    const realY = clientY - boundingRect.top;
+    return { realX, realY };
+  }
+  function handleMouseDown(e) {
+    e.preventDefault();
+    const { clientX, clientY, button } = e;
+    const { realX, realY } = getRealCoordinates(clientX, clientY);
+    clickedInShape = false;
+
+    // check if right click
+    if (button === 2) {
+      setIsConnecting(1);
+      return;
+    }
+
+    // check if mouse in palette shape
+    checkMouseInPaletteShape(realX, realY);
+
+    // check if mouse in stage shape
+    checkMouseInStageShape(realX, realY);
+
+    if (!clickedInShape) setIsConnecting(0);
+  }
+
   function handleMouseMove(e) {
     e.preventDefault();
     const { clientX, clientY } = e;
@@ -528,6 +529,18 @@ const CanvasComponent = () => {
               stageTooltipRef.current.textContent = exitPoint;
             }
           }
+          if (shape.type === 'jumper') {
+            const jumperType = shape.userValues.type;
+            const textContent =
+              jumperType === 'exit'
+                ? `${shape.text}`
+                : `${shape.userValues.exitPoint}`;
+            stageTooltipRef.current.style.display = 'block';
+            stageTooltipRef.current.style.top = realY + 10 + 'px';
+            stageTooltipRef.current.style.left = realX + 30 + 'px';
+            stageTooltipRef.current.textContent = textContent;
+          }
+
           return;
         }
       });
@@ -831,14 +844,10 @@ const CanvasComponent = () => {
     URL.revokeObjectURL(href);
   }
 
-  function generateJsAllPages() {
-    stageGroup.current.forEach((page) => {});
-  }
-
   function generateJS() {
-    // return a JS config code as string
+    // Return a JS config code as string
+    const entirestageGroup = new Shapes('entireStageGroup');
 
-    let entirestageGroup = new Shapes('entireStageGroup');
     for (const page of stageGroup.current) {
       entirestageGroup.shapes = {
         ...entirestageGroup.shapes,
@@ -936,11 +945,10 @@ const CanvasComponent = () => {
   }
 
   function generateInitVariablesJS() {
-    // global variables declared in InitVariables to config JS
-    let codeString = userVariables.current
-      .map((el) => `this.${el.name}${el.value ? `=${el.value};` : ';'}`)
-      .join('');
-
+    let codeString = '';
+    userVariables.current.forEach((el) => {
+      codeString += `this.${el.name}${el.value ? `=${el.value};` : ';'}`;
+    });
     return codeString;
   }
 

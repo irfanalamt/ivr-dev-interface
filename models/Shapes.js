@@ -159,7 +159,7 @@ class Shapes {
 
   getIdOfFirstShape() {
     // start shape is setParams
-    // if  found, return id; else return null
+    // if  found, return id; else return null`
 
     for (let shape of this.getShapesAsArray()) {
       if (shape.type === 'setParams') {
@@ -172,16 +172,15 @@ class Shapes {
 
   traverseShapes(id) {
     // Create an array to store the shapes that we have visited
-    let visitedShapes = [];
+    const visitedShapes = [];
     let tempString = this.generateMainMenuCode(id);
     // Create a stack to store the shapes that we need to visit
-    let shapeStack = [this.shapes[id]];
+    const shapeStack = [this.shapes[id]];
 
     // Traverse the shapes array until all shapes have been visited
     while (shapeStack.length > 0) {
       // Pop the top shape from the stack
-      let currentShape = shapeStack.pop();
-
+      const currentShape = shapeStack.pop();
       if (visitedShapes.includes(currentShape.id)) break;
 
       // adding to visited array
@@ -241,192 +240,171 @@ class Shapes {
   generateMainMenuCode(id) {
     if (!this.shapes[id]) return '';
 
-    const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(id);
+    const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(id);
 
-    const mainMenuString = `this.ivrMain=async function(){try{${arrayShapesTillMenuSwitch
-      .map((el) => {
-        if (el.type === 'endFlow') {
-          if (el.userValues.type === 'disconnect') {
-            return 'IVR.doDisconnect();';
-          } else if (el.userValues.transferPoint) {
-            return `IVR.doTransfer('${el.userValues.transferPoint}');`;
-          }
-        } else {
-          return `await this.${el.text}();`;
+    let mainMenuString = 'this.ivrMain = async function() { try { ';
+    arrayShapesTillMenuOrSwitch.forEach((el) => {
+      if (el.type === 'endFlow') {
+        if (el.userValues.type === 'disconnect') {
+          mainMenuString += 'IVR.doDisconnect();';
+        } else if (el.userValues.transferPoint) {
+          mainMenuString += `IVR.doTransfer('${el.userValues.transferPoint}');`;
         }
-      })
-      .join('')}}catch(err){IVR.error('Error in ivrMain',err);}};`;
+      } else {
+        mainMenuString += `await this.${el.text}();`;
+      }
+    });
+    mainMenuString += "} catch(err) { IVR.error('Error in ivrMain', err); } };";
 
     return mainMenuString;
   }
 
   generateSwitchCode(id) {
     const switchShape = this.shapes[id];
-    if (!switchShape) return '';
+    if (!switchShape) {
+      return '';
+    }
 
     let code = '';
     if (switchShape.userValues.switchArray.length > 0) {
       switchShape.userValues.switchArray.forEach((el) => {
         if (el.nextId) {
-          const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+          const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(
             el.nextId
           );
-
-          code += !code
-            ? `if(${el.condition}){
-            ${arrayShapesTillMenuSwitch
-              .map((el) => {
-                if (el.type === 'endFlow') {
-                  if (el.userValues.type === 'disconnect') {
-                    return 'IVR.doDisconnect();';
-                  } else if (el.userValues.transferPoint) {
-                    return `IVR.doTransfer('${el.userValues.transferPoint}');`;
-                  }
-                } else {
-                  return `await this.${el.text}();`;
-                }
-              })
-              .join('')}
-          }`
-            : `else if(${el.condition}){
-            ${arrayShapesTillMenuSwitch
-              .map((el) => {
-                if (el.type === 'endFlow') {
-                  if (el.userValues.type === 'disconnect') {
-                    return 'IVR.doDisconnect();';
-                  } else if (el.userValues.transferPoint) {
-                    return `IVR.doTransfer('${el.userValues.transferPoint}');`;
-                  }
-                } else {
-                  return `await this.${el.text}();`;
-                }
-              })
-              .join('')}
-          }`;
+          let ifCode = `if (${el.condition}) {`;
+          arrayShapesTillMenuOrSwitch.forEach((el) => {
+            if (el.type === 'endFlow') {
+              if (el.userValues.type === 'disconnect') {
+                ifCode += 'IVR.doDisconnect();';
+              } else if (el.userValues.transferPoint) {
+                ifCode += `IVR.doTransfer('${el.userValues.transferPoint}');`;
+              }
+            } else {
+              ifCode += `await this.${el.text}();`;
+            }
+          });
+          ifCode += '}';
+          code += ifCode;
         }
       });
 
-      if (code && switchShape.userValues.default.nextId) {
-        const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+      if (switchShape.userValues.default.nextId) {
+        const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(
           switchShape.userValues.default.nextId
         );
-        code += `else{${arrayShapesTillMenuSwitch
-          .map((el) => {
-            if (el.type === 'endFlow') {
-              if (el.userValues.type === 'disconnect') {
-                return 'IVR.doDisconnect();';
-              } else if (el.userValues.transferPoint) {
-                return `IVR.doTransfer('${el.userValues.transferPoint}');`;
-              }
-            } else {
-              return `await this.${el.text}();`;
-            }
-          })
-          .join('')}}`;
-      }
-
-      let finalCode = `this.${switchShape.text}=async function(){try{${code}}catch(err){IVR.error('Error in${switchShape.text}',err);}};`;
-      if (code) return finalCode;
-    }
-
-    if (
-      (switchShape.userValues.switchArray.length === 0 &&
-        switchShape.userValues.default.nextId) ||
-      !code
-    ) {
-      // default only condition
-      const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
-        switchShape.userValues.default.nextId
-      );
-      let code = `this.${
-        switchShape.text
-      }=async function(){ try{${arrayShapesTillMenuSwitch
-        .map((el) => {
+        let elseCode = `else {`;
+        arrayShapesTillMenuOrSwitch.forEach((el) => {
           if (el.type === 'endFlow') {
             if (el.userValues.type === 'disconnect') {
-              return 'IVR.doDisconnect();';
+              elseCode += 'IVR.doDisconnect();';
             } else if (el.userValues.transferPoint) {
-              return `IVR.doTransfer('${el.userValues.transferPoint}');`;
+              elseCode += `IVR.doTransfer('${el.userValues.transferPoint}');`;
             }
           } else {
-            return `await this.${el.text}();`;
+            elseCode += `await this.${el.text}();`;
           }
-        })
-        .join('')}} catch(err){
-          IVR.error('Error in ${switchShape.text}',err);
-        }};`;
+        });
+        elseCode += '}';
+        code += elseCode;
+      }
 
+      if (code) {
+        let finalCode = `this.${switchShape.text} = async function() { try {${code}} catch(err) { IVR.error('Error in ${switchShape.text}',err); } };`;
+        return finalCode;
+      }
+    }
+
+    if (switchShape.userValues.default.nextId) {
+      const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(
+        switchShape.userValues.default.nextId
+      );
+      let code = `this.${switchShape.text} = async function() { try {`;
+      arrayShapesTillMenuOrSwitch.forEach((el) => {
+        if (el.type === 'endFlow') {
+          if (el.userValues.type === 'disconnect') {
+            code += 'IVR.doDisconnect();';
+          } else if (el.userValues.transferPoint) {
+            code += `IVR.doTransfer('${el.userValues.transferPoint}');`;
+          }
+        } else {
+          code += `await this.${el.text}();`;
+        }
+      });
+      code += `} catch(err) { IVR.error('Error in ${switchShape.text}',err); } };`;
       return code;
     }
+    return '';
   }
 
   generateMenuCode(id) {
     const menuShape = this.shapes[id];
     const items = menuShape.userValues.items;
 
-    if (items.length === 0) return '';
+    if (items.length === 0) {
+      return '';
+    }
 
     let finalCode = '';
 
-    // denerate driver fn for each item
-
+    // generate driver fn for each item
     items.forEach((item) => {
       if (item.nextId) {
-        const arrayShapesTillMenuSwitch = this.getShapesTillMenuOrSwitch(
+        const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(
           item.nextId
         );
-
-        let code = `this.${menuShape.text}_${
-          item.action
-        }=async function(){try{${arrayShapesTillMenuSwitch
-          .map((el) => {
-            if (el.type === 'endFlow') {
-              if (el.userValues.type === 'disconnect') {
-                return 'IVR.doDisconnect();';
-              } else if (el.userValues.transferPoint) {
-                return `IVR.doTransfer('${el.userValues.transferPoint}');`;
-              }
-            } else {
-              return `await this.${el.text}();`;
+        let code = `this.${menuShape.text}_${item.action} = async function() { try {`;
+        arrayShapesTillMenuOrSwitch.forEach((el) => {
+          if (el.type === 'endFlow') {
+            if (el.userValues.type === 'disconnect') {
+              code += 'IVR.doDisconnect();';
+            } else if (el.userValues.transferPoint) {
+              code += `IVR.doTransfer('${el.userValues.transferPoint}');`;
             }
-          })
-          .join('')}}catch(err){
-            IVR.error('Error in ${menuShape.text}_${item.action}',err);
-          }};`;
+          } else {
+            code += `await this.${el.text}();`;
+          }
+        });
+        code += `} catch(err) { IVR.error('Error in ${menuShape.text}_${item.action}', err); } };`;
         finalCode += code;
       }
     });
-
     return finalCode;
   }
 
   getShapesTillMenuOrSwitch(id) {
     let tempArray = [];
     let currentShape = this.shapes[id];
-    if (!currentShape) return null;
+    if (!currentShape) {
+      return null;
+    }
 
-    if (currentShape.type !== 'connector' && currentShape.type !== 'jumper')
+    if (currentShape.type !== 'connector' && currentShape.type !== 'jumper') {
       tempArray.push(currentShape);
+    }
 
-    let id1 = id;
-
-    while (1) {
+    while (currentShape) {
       let nextShapeId;
       if (currentShape.type === 'jumper') {
         nextShapeId = this.findEntryJumperNextShape(currentShape.text);
       } else {
-        nextShapeId = this.shapes[id1].nextItem;
+        nextShapeId = currentShape.nextItem;
       }
-      if (!nextShapeId) break;
+
+      if (!nextShapeId) {
+        break;
+      }
 
       let nextShape = this.shapes[nextShapeId];
-      if (!nextShape) break;
+      if (!nextShape) {
+        break;
+      }
 
-      // if not connector; add to array
-      if (nextShape.type !== 'connector' && nextShape.type !== 'jumper')
+      // if not connector or jumper; add to array
+      if (nextShape.type !== 'connector' && nextShape.type !== 'jumper') {
         tempArray.push(nextShape);
+      }
 
-      id1 = nextShapeId;
       currentShape = nextShape;
     }
 
@@ -438,6 +416,13 @@ class Shapes {
 
     const tempArray = [];
     this.getShapesAsArray().forEach((el) => {
+      if (el.nextItem !== null) {
+        let shape2 = this.shapes[el.nextItem];
+        if (shape2) {
+          tempArray.push(this.getConnection(el, shape2));
+        }
+      }
+
       if (el.type === 'switch') {
         this.getSwitchConnections(tempArray, el);
       }
@@ -445,35 +430,27 @@ class Shapes {
       if (el.type === 'playMenu') {
         this.getMenuConnections(tempArray, el);
       }
-
-      if (el.nextItem !== null) {
-        let shape2 = this.shapes[el.nextItem];
-        if (shape2) {
-          let shape1 = el;
-
-          let lineColor = '#37474f';
-          console.log('shape1🟢', shape1, 'shape2', shape2);
-          tempArray.push({
-            x1: shape1.getRelativePosition(shape2, 1)[0],
-            y1: shape1.getRelativePosition(shape2, 1)[1],
-            x2: shape2.getRelativePosition(shape1)[0],
-            y2: shape2.getRelativePosition(shape1)[1],
-            startItem: shape1.id,
-            endItem: shape2.id,
-            lineCap: null,
-            lineColor: shape2.id === 'temp' ? '#757575' : lineColor,
-          });
-        }
-      }
     });
     return tempArray;
   }
 
+  getConnection(shape1, shape2) {
+    let lineColor = '#37474f';
+    return {
+      x1: shape1.getRelativePosition(shape2, 1)[0],
+      y1: shape1.getRelativePosition(shape2, 1)[1],
+      x2: shape2.getRelativePosition(shape1)[0],
+      y2: shape2.getRelativePosition(shape1)[1],
+      startItem: shape1.id,
+      endItem: shape2.id,
+      lineCap: null,
+      lineColor: shape2.id === 'temp' ? '#757575' : lineColor,
+    };
+  }
+
   getSwitchConnections(tempArray, el) {
-    // draw connecting lines for switch
     let shape1 = el;
-    if (el.userValues.switchArray.length === 0) {
-      // only default condition
+    if (!el.userValues.switchArray.length) {
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
         let lineColor = '#4a148c';
@@ -494,8 +471,6 @@ class Shapes {
         });
       }
     } else {
-      // switchArray has atleast one element
-
       el.userValues.switchArray.forEach((row, i) => {
         let shape2 = this.shapes[row.nextId];
         if (shape2) {
@@ -521,11 +496,7 @@ class Shapes {
           });
         }
       });
-
-      // default condition right end of switch
-
       let shape2 = this.shapes[el.userValues.default.nextId];
-
       if (shape2) {
         let exitCordinate = shape1.getBottomPointForExit(
           el.userValues.switchArray.length + 1,
@@ -551,17 +522,16 @@ class Shapes {
     }
   }
 
-  getMenuConnections(tempArray, el) {
-    let shape1 = el;
+  getMenuConnections(tempArray, shape1) {
     const itemsWithoutDefaults = shape1.userValues.items.filter(
-      (item) => !(item.isDefault === true)
+      (item) => !item.isDefault
     );
     const itemsLength = itemsWithoutDefaults.length;
+
     if (itemsLength === 1 && itemsWithoutDefaults[0].nextId) {
-      // default condition; 1 exit middle bottom
-      let shape2 = this.shapes[itemsWithoutDefaults[0].nextId];
+      const shape2 = this.shapes[itemsWithoutDefaults[0].nextId];
       if (shape2) {
-        let lineColor = '#4a148c';
+        const lineColor = '#4a148c';
         tempArray.push({
           x1: shape1.getExitPoint()[0],
           y1: shape1.getExitPoint()[1],
@@ -569,8 +539,7 @@ class Shapes {
           y2: shape2.getRelativePosition(shape1)[1],
           startItem: shape1.id,
           endItem: shape2.id,
-          lineCap: null,
-          lineColor: lineColor,
+          lineColor,
           lineData: {
             exitPoint: itemsWithoutDefaults[0].action,
             position: 1,
@@ -578,15 +547,14 @@ class Shapes {
           },
         });
       }
-    }
-
-    if (itemsLength > 1) {
-      // connectors>1; spread out bottom evenly
-      itemsWithoutDefaults.forEach((row, i) => {
-        let shape2 = this.shapes[row.nextId];
+    } else if (itemsLength > 1) {
+      itemsWithoutDefaults.forEach((item, i) => {
+        const shape2 = this.shapes[item.nextId];
         if (shape2) {
-          let exitCordinate = shape1.getBottomPointForExit(itemsLength, i + 1);
-          let lineColor = '#4a148c';
+          const exitCordinate = shape1.getBottomPointForExit(
+            itemsLength,
+            i + 1
+          );
           tempArray.push({
             x1: exitCordinate[0],
             y1: exitCordinate[1],
@@ -594,10 +562,9 @@ class Shapes {
             y2: shape2.getRelativePosition(shape1)[1],
             startItem: shape1.id,
             endItem: shape2.id,
-            lineCap: null,
-            lineColor: lineColor,
+            lineColor: '#4a148c',
             lineData: {
-              exitPoint: row.action,
+              exitPoint: item.action,
               position: i + 1,
               totalExitPoints: itemsLength,
             },
@@ -606,6 +573,7 @@ class Shapes {
       });
     }
   }
+
   isFunctionStringPresent() {
     // check if all shapes have a fn string,return false;
     // else return first shapeText without one
