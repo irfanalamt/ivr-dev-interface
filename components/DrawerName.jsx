@@ -13,26 +13,23 @@ const DrawerName = ({
   shapeId = null,
 }) => {
   const handleNameValidation = (value) => {
-    // Get all shapes in the stage group, excluding the current shape
     const otherShapes = stageGroup
       ?.getShapesAsArray()
       .filter((el) => el.id !== shapeId);
 
-    // Check if the value is already in use by another shape in the stage group
     if (otherShapes.some((el) => el.text === value)) {
-      setErrorText('name NOT unique');
-      return 'name NOT unique';
+      setErrorText('Name already in use');
+      return 'Name already in use';
     }
 
-    const errorM = checkValidity('object', value);
-    if (errorM === -1) {
-      // No error condition
+    const error = checkValidity('object', value);
+    if (error === -1) {
       setErrorText('');
       return false;
     }
 
-    setErrorText(errorM);
-    return errorM;
+    setErrorText(error);
+    return error;
   };
 
   if (drawerNameRef) {

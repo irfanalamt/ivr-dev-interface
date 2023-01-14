@@ -75,18 +75,12 @@ const SetVariables = ({
 
   const handleDelete = () => {
     // check if var in use. if so prevent delete
-
     for (const stage of entireStageGroup) {
-      let isVariableInUse = stage.checkVariableInUse(
-        varList[selectedVarIndex].name
-      );
-
-      if (isVariableInUse) {
+      if (stage.checkVariableInUse(varList[selectedVarIndex].name)) {
         setErrorText('Variable in use. Cannot delete.');
         return;
       }
     }
-
     setVarList((v) => {
       const temp = [...v];
       temp.splice(selectedVarIndex, 1);
@@ -125,35 +119,27 @@ const SetVariables = ({
 
   const handleSave = () => {
     if (!currVariable.name || !currVariable.value || errorText !== '') {
-      // prevent save if required values absent
       return;
     }
 
-    // filter out the current element from list
     const newVarList = varList.filter((v, i) => i !== selectedVarIndex);
-
     if (newVarList.some((v) => v.name === currVariable.name)) {
-      // name not unique
       setErrorText('variable name NOT unique');
       return;
     }
 
     if (selectedVarIndex === '') {
-      // save new variable
       setVarList((v) => {
         const temp = [...v];
-        temp[varList.length] = currVariable;
+        temp.push(currVariable);
         setUserVariables(temp);
         return temp;
       });
       setSelectedVarIndex(varList.length);
     } else {
-      // modify existing variable
-
       entireStageGroup.forEach((stage) => {
         stage.modifyVariable(varList[selectedVarIndex].name, currVariable.name);
       });
-
       setVarList((v) => {
         const temp = [...v];
         temp[selectedVarIndex] = currVariable;
@@ -161,6 +147,7 @@ const SetVariables = ({
         return temp;
       });
     }
+
     setIsViewMode(true);
   };
 
