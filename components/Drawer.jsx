@@ -15,7 +15,7 @@ import SwitchBlock from './SwitchBlock';
 const DrawerComponent = ({
   isOpen,
   handleCloseDrawer,
-  shape = null,
+  shape,
   userVariables,
   stageGroup,
   entireStageGroup,
@@ -26,7 +26,6 @@ const DrawerComponent = ({
   const handleClosing = () => {
     shape.setSelected(false);
     if (!childRef.getCurrentUserValues) {
-      // if function not present in child, close the drawer
       handleCloseDrawer();
       return;
     }
@@ -35,144 +34,134 @@ const DrawerComponent = ({
       name: shape.text,
       userValues: shape.userValues,
     });
-    console.log('childRef.current', childRef);
-    console.log('current:', currentValues);
-    console.log('existing values:', existingValues);
 
-    // allow closing only if values unchanged
     if (currentValues === existingValues) handleCloseDrawer();
   };
 
-  const myList = () => {
-    if (!shape) return;
+  if (!shape) return null;
 
+  const renderShape = () => {
     switch (shape.type) {
       case 'playMessage':
         return (
           <PlayMessage
-            childRef={childRef}
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            userVariables={userVariables}
-            stageGroup={stageGroup}
-            clearAndDraw={clearAndDraw}
+            {...{
+              childRef,
+              shape,
+              handleCloseDrawer,
+              userVariables,
+              stageGroup,
+              clearAndDraw,
+            }}
           />
         );
-
       case 'playConfirm':
         return (
           <PlayConfirm
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            userVariables={userVariables}
-            stageGroup={stageGroup}
-            clearAndDraw={clearAndDraw}
-            childRef={childRef}
+            {...{
+              shape,
+              handleCloseDrawer,
+              userVariables,
+              stageGroup,
+              clearAndDraw,
+              childRef,
+            }}
           />
         );
-
       case 'callAPI':
         return (
           <CallApi
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            userVariables={userVariables}
-            clearAndDraw={clearAndDraw}
-            stageGroup={stageGroup}
-            childRef={childRef}
+            {...{
+              shape,
+              handleCloseDrawer,
+              userVariables,
+              clearAndDraw,
+              stageGroup,
+              childRef,
+            }}
           />
         );
       case 'getDigits':
         return (
           <GetDigits
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            userVariables={userVariables}
-            stageGroup={stageGroup}
-            clearAndDraw={clearAndDraw}
-            childRef={childRef}
+            {...{
+              shape,
+              handleCloseDrawer,
+              userVariables,
+              stageGroup,
+              clearAndDraw,
+              childRef,
+            }}
           />
         );
       case 'playMenu':
         return (
           <PlayMenu
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            stageGroup={stageGroup}
-            clearAndDraw={clearAndDraw}
-            childRef={childRef}
+            {...{
+              shape,
+              handleCloseDrawer,
+              stageGroup,
+              clearAndDraw,
+              childRef,
+            }}
           />
         );
       case 'setParams':
         return (
           <SetParams
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            stageGroup={stageGroup}
-            clearAndDraw={clearAndDraw}
-            childRef={childRef}
+            {...{
+              shape,
+              handleCloseDrawer,
+              stageGroup,
+              clearAndDraw,
+              childRef,
+            }}
           />
         );
       case 'runScript':
         return (
           <FunctionBlock
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            stageGroup={stageGroup}
-            clearAndDraw={clearAndDraw}
-            childRef={childRef}
-            userVariables={userVariables}
+            {...{
+              shape,
+              handleCloseDrawer,
+              stageGroup,
+              clearAndDraw,
+              childRef,
+              userVariables,
+            }}
           />
         );
       case 'jumper':
         return (
-          <GoToBlock
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            entireStageGroup={entireStageGroup}
-          />
+          <GoToBlock {...{ shape, handleCloseDrawer, entireStageGroup }} />
         );
       case 'switch':
         return (
           <SwitchBlock
-            shape={shape}
-            handleCloseDrawer={handleCloseDrawer}
-            userVariables={userVariables}
-            stageGroup={stageGroup}
-            clearAndDraw={clearAndDraw}
-            childRef={childRef}
+            {...{
+              shape,
+              handleCloseDrawer,
+              userVariables,
+              stageGroup,
+              clearAndDraw,
+              childRef,
+            }}
           />
         );
-
       case 'endFlow':
-        return <EndFlow shape={shape} handleCloseDrawer={handleCloseDrawer} />;
-
+        return <EndFlow {...{ shape, handleCloseDrawer }} />;
       default:
         return (
-          <>
-            <Typography sx={{ marginY: 3 }} variant='h5'>
-              Under Construction 🏗️
-            </Typography>
-            <Button
-              variant='contained'
-              sx={{
-                width: 200,
-                position: 'relative',
-                top: 200,
-                marginX: 'auto',
-              }}
-              onClick={handleCloseDrawer}
-            >
-              Close
-            </Button>
-          </>
+          <Typography sx={{ marginY: 3 }} variant='h5'>
+            Under Construction 🏗️
+          </Typography>
         );
     }
   };
 
   return (
     <Drawer anchor='right' open={isOpen} onClose={handleClosing}>
-      {myList()}
+      {renderShape()}
     </Drawer>
   );
 };
