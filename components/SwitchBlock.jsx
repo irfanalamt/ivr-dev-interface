@@ -40,7 +40,14 @@ const SwitchBlock = ({
 
     shape.setText(shapeName);
     clearAndDraw();
-    // filter our rows with either fields blank or has an error in either fields
+
+    shape.setUserValues({
+      switchArray: getFilteredUserValues(),
+      default: { ...shape.userValues?.default, exitPoint: defaultExitPoint },
+    });
+  }
+
+  function getFilteredUserValues() {
     const filteredUserValues = userValues
       .filter(
         (row) =>
@@ -51,26 +58,20 @@ const SwitchBlock = ({
             row.exitError
           )
       )
-      .map((row) => {
-        return {
-          condition: row.condition,
-          exitPoint: row.exitPoint,
-          nextId: row.nextId,
-        };
-      });
+      .map((row) => ({
+        condition: row.condition,
+        exitPoint: row.exitPoint,
+        nextId: row.nextId,
+      }));
 
-    // save only valid user values
-    shape.setUserValues({
-      switchArray: filteredUserValues,
-      default: { ...shape.userValues?.default, exitPoint: defaultExitPoint },
-    });
+    return filteredUserValues;
   }
 
   const getCurrentUserValues = () => {
     return JSON.stringify({
       name: shapeName,
       userValues: {
-        switchArray: userValues,
+        switchArray: getFilteredUserValues(),
         default: { ...shape.userValues?.default, exitPoint: defaultExitPoint },
       },
     });
@@ -144,8 +145,6 @@ const SwitchBlock = ({
         return newArr;
       });
     }
-
-    console.log('name,value🕺🏻', name, value, index);
   }
 
   function handleRemoveCondition() {

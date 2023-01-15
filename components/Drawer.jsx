@@ -30,10 +30,12 @@ const DrawerComponent = ({
       return;
     }
     const currentValues = childRef.getCurrentUserValues();
+    console.log('🚀currentValues', currentValues);
     const existingValues = JSON.stringify({
       name: shape.text,
       userValues: shape.userValues,
     });
+    console.log(' existingValues', existingValues);
 
     if (currentValues === existingValues) handleCloseDrawer();
   };

@@ -491,7 +491,7 @@ const CanvasComponent = () => {
       if (shape.isMouseInShape(realX, realY)) {
         tooltipRef.current.style.display = 'block';
         tooltipRef.current.style.top = realY - 5 + 'px';
-        tooltipRef.current.style.left = realX + 50 + 'px';
+        tooltipRef.current.style.left = realX + 30 + 'px';
         tooltipRef.current.textContent = shape.text;
         return;
       }

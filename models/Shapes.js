@@ -82,7 +82,10 @@ class Shapes {
         stageFigure = new Shape(x, y, 130, 35, 'switch', '#795548', true);
         stageFigure.setUserValues({
           switchArray: [
-            { condition: '', exitPoint: '', conditionError: '', exitError: '' },
+            {
+              condition: 'condition1',
+              exitPoint: 'action1',
+            },
           ],
           default: { exitPoint: 'default' },
         });
