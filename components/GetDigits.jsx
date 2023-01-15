@@ -54,32 +54,32 @@ const GetDigits = ({
   ];
 
   function saveUserValues() {
-    // validate current shapeName user entered with th validation function in a child component
-    const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
-
-    if (isNameError) {
-      setErrorText(isNameError);
+    // validate shapeName with validation function in child component
+    const nameError = drawerNameRef.current.handleNameValidation(shapeName);
+    if (nameError) {
+      setErrorText(nameError);
       return;
     }
 
+    // check for errors in msgObj
     const index = msgObj.findIndex((m) => m.isError);
     if (index !== -1) {
       setErrorText(`Error found in messageList object ${index + 1}`);
       return;
     }
-    console.log('drawerRef', drawerNameRef.current.handleNameValidation);
 
+    // handle save failure
     if (errorText !== '') {
       setErrorText('Save failed');
       return;
     }
 
+    // handle save success
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
 
-    // remove null values; SAVE
+    // remove null values and save
     const filteredMsgObj = msgObj.filter((n) => n.value);
-    // const filteredParamsObj = paramsObj.filter((n) => n.value);
     const entireParamsObj = {
       minDigits,
       maxDigits,
@@ -97,6 +97,42 @@ const GetDigits = ({
     if (filteredMsgObj.length > 0) generateJS(filteredMsgObj, entireParamsObj);
   }
 
+  function generateJS(filteredMsgObj, entireParamsObj) {
+    // create codeMessageObject
+    const codeMessageObject = filteredMsgObj.map((obj) => {
+      const { isError, useVariable, ...rest } = obj;
+      return rest;
+    });
+
+    // create codeString
+    let codeString = `this.${
+      shapeName || `getDigits${shape.id}`
+    }= async function(){let msgList = ${JSON.stringify(
+      codeMessageObject
+    )};let params = ${JSON.stringify(entireParamsObj)};this.${
+      resultName || 'default'
+    } = await IVR.getDigits(msgList,params);};`;
+    shape.setFunctionString(codeString);
+    console.log('🕺🏻getDigits code:', codeString);
+  }
+
+  function addParamsInput() {
+    // handle adding a new input to paramsObj
+    const value = paramsObjType === 'interruptible' ? true : '';
+    setParamsObj((s) => [...s, { type: paramsObjType, value }]);
+    setParamsObjType('');
+  }
+
+  function removeParamsInput() {
+    // handle removing last input from paramsObj
+    if (paramsObj === null || paramsObj === undefined) return;
+    setParamsObj((s) => {
+      const newArr = [...s];
+      newArr.pop();
+      return newArr;
+    });
+  }
+
   const getCurrentUserValues = () => {
     return JSON.stringify({
       name: shapeName,
@@ -112,41 +148,6 @@ const GetDigits = ({
     });
   };
   childRef.getCurrentUserValues = getCurrentUserValues;
-
-  function generateJS(filteredMsgObj, entireParamsObj) {
-    const codeMessageObject = filteredMsgObj.map((obj) => {
-      const { isError, useVariable, ...rest } = obj;
-      return rest;
-    });
-
-    let codeString = `this.${
-      shapeName || `getDigits${shape.id}`
-    }= async function(){let msgList = ${JSON.stringify(
-      codeMessageObject
-    )};let params = ${JSON.stringify(entireParamsObj)};this.${
-      resultName || 'default'
-    } = await IVR.getDigits(msgList,params); 
-};`;
-    shape.setFunctionString(codeString);
-    console.log('🕺🏻getDigits code:', codeString);
-  }
-
-  function addParamsInput() {
-    const value = paramsObjType === 'interruptible' ? true : '';
-
-    setParamsObj((s) => {
-      return [...s, { type: paramsObjType, value }];
-    });
-    setParamsObjType('');
-  }
-  function removeParamsInput() {
-    if (paramsObj === null || paramsObj === undefined) return;
-    setParamsObj((s) => {
-      const newArr = [...s];
-      newArr.pop();
-      return newArr;
-    });
-  }
 
   return (
     <>

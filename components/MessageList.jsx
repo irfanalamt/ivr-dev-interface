@@ -61,57 +61,44 @@ const MessageList = ({
     '12 December',
   ];
 
-  // useEffect(() => {
-  //   console.log(JSON.stringify(messageList, null, 2));
-  // }, [messageList]);
-
   const handleAdd = () => {
     const objType = messageListObjects[selectIndex];
-
-    setMessageList((m) => [...m, { type: objType, value: '' }]);
+    setMessageList((prevList) => [...prevList, { type: objType, value: '' }]);
   };
 
   const handleRemove = () => {
-    setMessageList((m) => {
-      const temp = [...m];
-      temp.splice(-1, 1);
-      return temp;
-    });
+    setMessageList((prevList) => prevList.slice(0, -1));
   };
 
   const handleChange = (e, index, type = null) => {
     const { value, name } = e.target;
-
     let isError = false;
 
     if (type) {
       const errorM = checkValidity(type, value);
       if (errorM === -1) {
-        // no validation error
         setErrorText('');
       } else {
         isError = true;
-        console.log('error: ' + errorM);
         setErrorText(errorM);
       }
     }
 
-    setMessageList((m) => {
-      const temp = [...m];
-      temp[index][name] = value;
-      if (type) temp[index].isError = isError;
-      return temp;
+    setMessageList((prevList) => {
+      const newList = [...prevList];
+      newList[index][name] = value;
+      if (type) newList[index].isError = isError;
+      return newList;
     });
   };
 
   const handleChangeSwitch = (e, index) => {
     const { checked, name } = e.target;
-
-    setMessageList((m) => {
-      const temp = [...m];
-      temp[index][name] = checked;
-      temp[index].value = '';
-      return temp;
+    setMessageList((prevList) => {
+      const newList = [...prevList];
+      newList[index][name] = checked;
+      newList[index].value = '';
+      return newList;
     });
   };
 
