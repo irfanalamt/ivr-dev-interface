@@ -98,7 +98,7 @@ class Shape {
   }
 
   getBottomPointForExit(numExits, exitIndex) {
-    const xCoord = (this.width / (numExits + 1)) * (exitIndex + 1);
+    const xCoord = (this.width / (numExits + 1)) * exitIndex;
     return [this.x - this.width / 2 + xCoord, this.y + this.height / 2];
   }
 
