@@ -299,10 +299,10 @@ const CanvasComponent = () => {
     canvas.fillStyle = 'white';
 
     // draw background palette rectangle
-    canvas.shadowColor = '#cfd8dc';
+    canvas.shadowColor = '#757575';
     canvas.shadowBlur = 4;
     canvas.shadowOffsetX = 0;
-    canvas.shadowOffsetY = 3;
+    canvas.shadowOffsetY = 2;
 
     canvas.fillRect(5, 55 + scrollOffsetY.current, 70, window.innerHeight - 95);
 
