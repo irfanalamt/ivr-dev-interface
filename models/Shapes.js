@@ -449,7 +449,10 @@ class Shapes {
 
   getSwitchConnections(tempArray, el) {
     let shape1 = el;
-    if (!el.userValues.switchArray.length) {
+    let switchArrayLength = shape1.userValues?.switchArray.filter(
+      (object) => object.condition && object.exitPoint
+    ).length;
+    if (!switchArrayLength) {
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
         let [x1, y1] = shape1.getExitPoint();
@@ -476,7 +479,7 @@ class Shapes {
         let shape2 = this.shapes[row.nextId];
         if (shape2) {
           let [x1, y1] = shape1.getBottomPointForExit(
-            el.userValues.switchArray.length + 1,
+            switchArrayLength + 1,
             i + 1
           );
           let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
@@ -493,7 +496,7 @@ class Shapes {
             lineData: {
               exitPoint: row.exitPoint,
               position: i + 1,
-              totalExitPoints: el.userValues.switchArray.length + 1,
+              totalExitPoints: switchArrayLength + 1,
             },
           });
         }
@@ -501,8 +504,8 @@ class Shapes {
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
         let [x1, y1] = shape1.getBottomPointForExit(
-          el.userValues.switchArray.length + 1,
-          el.userValues.switchArray.length + 1
+          switchArrayLength + 1,
+          switchArrayLength + 1
         );
         let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
 
@@ -517,8 +520,8 @@ class Shapes {
           lineColor: '#4a148c',
           lineData: {
             exitPoint: el.userValues.default.exitPoint,
-            position: el.userValues.switchArray.length + 1,
-            totalExitPoints: el.userValues.switchArray.length + 1,
+            position: switchArrayLength + 1,
+            totalExitPoints: switchArrayLength + 1,
           },
         });
       }

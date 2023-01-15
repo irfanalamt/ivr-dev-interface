@@ -130,7 +130,11 @@ class Shape {
   }
 
   isNearExitPointSwitch(x, y) {
-    const numExitPoints = 1 + (this.userValues?.switchArray.length || 0);
+    const numExitPoints =
+      1 +
+      this.userValues?.switchArray.filter(
+        (object) => object.condition && object.exitPoint
+      ).length;
     let bottomPoint;
 
     if (numExitPoints === 1) {
@@ -211,7 +215,7 @@ class Shape {
     const width = ctx.measureText(this.text).width;
 
     if (this.type === 'playMenu' || this.type === 'switch') {
-      this.width = width + 25 > 125 ? width + 30 : 125;
+      this.width = width + 25 > 120 ? width + 30 : 120;
       return;
     }
 
@@ -665,7 +669,11 @@ class Shape {
   }
 
   drawExitPointsSwitch(ctx) {
-    const numberOfExitPoints = 1 + this.userValues?.switchArray.length;
+    const numberOfExitPoints =
+      1 +
+      this.userValues?.switchArray.filter(
+        (object) => object.condition && object.exitPoint
+      ).length;
 
     if (numberOfExitPoints === 1) {
       this.drawTinyCircle(ctx, ...this.getExitPoint(), '#43a047');

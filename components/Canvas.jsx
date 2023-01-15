@@ -507,7 +507,7 @@ const CanvasComponent = () => {
             if (exitPoint) {
               stageTooltipRef.current.style.display = 'block';
               stageTooltipRef.current.style.top = realY + 10 + 'px';
-              stageTooltipRef.current.style.left = realX + 30 + 'px';
+              stageTooltipRef.current.style.left = realX + 10 + 'px';
               stageTooltipRef.current.textContent = exitPoint;
             }
           }
@@ -640,6 +640,9 @@ const CanvasComponent = () => {
             element.type !== 'tinyCircle'
           ) {
             currentShape.current = element;
+            console.log(
+              'Current shape: ' + JSON.stringify(currentShape.current, null, 2)
+            );
             currentShape.current.setSelected(true);
             clearAndDraw();
             setIsOpenDrawer(true);
