@@ -307,9 +307,9 @@ class Shape {
       return;
     }
 
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
-    ctx.fill();
+    ctx.stroke();
   }
 
   drawEndCircle(ctx) {
@@ -332,12 +332,12 @@ class Shape {
       return;
     }
 
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-    ctx.fill();
+    ctx.stroke();
     ctx.lineWidth = 1;
-    ctx.font = '20px sans-serif';
+    ctx.font = '18px sans-serif';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -364,10 +364,10 @@ class Shape {
       return;
     }
 
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-    ctx.fill();
+    ctx.stroke();
     ctx.lineWidth = 1;
     ctx.font = '25px sans-serif';
     ctx.fillStyle = 'black';
@@ -402,11 +402,11 @@ class Shape {
         this.height
       );
     } else {
-      ctx.fillStyle = this.style;
+      ctx.strokeStyle = this.style;
 
       ctx.lineWidth = 2;
 
-      ctx.fillRect(
+      ctx.strokeRect(
         this.x - this.width / 2,
         this.y - this.height / 2,
         this.width,
@@ -444,19 +444,29 @@ class Shape {
       return;
     }
 
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
-    ctx.fill();
+    ctx.stroke();
   }
 
   drawParallelogram(ctx) {
+    // ctx.beginPath();
+    // ctx.translate(this.x, this.y);
+    // this.stroke && this.setWidthFromText(ctx);
+    // ctx.lineTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
+    // ctx.lineTo(-this.width * 0.5 - this.height * 0.5, this.height * 0.5);
+    // ctx.lineTo(-this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
+    // ctx.lineTo(this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
+    // ctx.closePath();
+    // ctx.setTransform(1, 0, 0, 1, 0, 0);
+
     ctx.beginPath();
     ctx.translate(this.x, this.y);
     this.stroke && this.setWidthFromText(ctx);
-    ctx.lineTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
-    ctx.lineTo(-this.width * 0.5 - this.height * 0.5, this.height * 0.5);
-    ctx.lineTo(-this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
-    ctx.lineTo(this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
+    ctx.moveTo(-this.width / 2, -this.height / 2);
+    ctx.lineTo(this.width / 2, -this.height / 2);
+    ctx.lineTo(this.width / 2 - this.width / 4, this.height / 2);
+    ctx.lineTo(-this.width / 2 - this.width / 4, this.height / 2);
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -464,19 +474,21 @@ class Shape {
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
-      ctx.font = '19px sans-serif';
+      ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(this.text, this.x, this.y);
+      const textWidth = ctx.measureText(this.text).width;
+      const x = this.x - this.width / 2 + (this.width - textWidth * 1.4) / 2;
+      ctx.textAlign = 'left';
+      ctx.fillText(this.text, x, this.y);
+
       ctx.strokeStyle = '#9c27b0';
       ctx.stroke();
       return;
     }
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
-    ctx.fill();
+    ctx.stroke();
   }
 
   drawHexagon(ctx) {
@@ -509,9 +521,9 @@ class Shape {
       return;
     }
 
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
-    ctx.fill();
+    ctx.stroke();
   }
 
   drawRoundedRectangle(ctx) {
@@ -553,9 +565,9 @@ class Shape {
       ctx.stroke();
       return;
     }
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
-    ctx.fill();
+    ctx.stroke();
   }
 
   drawRoundedRectangle2(ctx) {
@@ -597,9 +609,9 @@ class Shape {
       ctx.stroke();
       return;
     }
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
-    ctx.fill();
+    ctx.stroke();
   }
   drawTriangle(ctx) {
     ctx.beginPath();
@@ -620,12 +632,12 @@ class Shape {
       return;
     }
 
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-    ctx.fill();
+    ctx.stroke();
     ctx.lineWidth = 1;
-    ctx.font = '20px sans-serif';
+    ctx.font = '18px sans-serif';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -663,9 +675,9 @@ class Shape {
       return;
     }
 
-    ctx.fillStyle = this.style;
+    ctx.strokeStyle = this.style;
     ctx.lineWidth = 2;
-    ctx.fill();
+    ctx.stroke();
   }
 
   drawExitPointsSwitch(ctx) {

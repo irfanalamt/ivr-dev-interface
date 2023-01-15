@@ -205,7 +205,7 @@ const CanvasComponent = () => {
     const callAPI = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 3,
-      35,
+      30,
       25,
       'callAPI',
       '#0d47a1'
@@ -213,23 +213,23 @@ const CanvasComponent = () => {
     const playMenu = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 4,
-      40,
+      30,
       25,
       'playMenu',
       '#004d40'
     );
     const getDigits = new Shape(
-      40,
+      42,
       55 + scrollOffsetY.current + shapeHeight * 5,
-      26,
-      17,
+      25,
+      25,
       'getDigits',
       '#4a148c'
     );
     const playMessage = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 6,
-      40,
+      35,
       25,
       'playMessage',
       '#827717'
@@ -237,7 +237,7 @@ const CanvasComponent = () => {
     const playConfirm = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 7,
-      40,
+      35,
       25,
       'playConfirm',
       '#33691e'
@@ -245,7 +245,7 @@ const CanvasComponent = () => {
     const switchShape = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 8,
-      40,
+      30,
       25,
       'switch',
       '#3e2723'
@@ -253,24 +253,24 @@ const CanvasComponent = () => {
     const endFlow = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 9,
-      30,
-      30,
+      25,
+      25,
       'endFlow',
       '#f8bbd0'
     );
     const connector = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 10,
-      22,
-      22,
+      25,
+      25,
       'connector',
       '#b2dfdb'
     );
     const jumper = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 11,
-      30,
-      30,
+      25,
+      25,
       'jumper',
       '#ffe0b2'
     );
@@ -295,19 +295,21 @@ const CanvasComponent = () => {
     canvas.clearRect(0, 0, window.innerWidth, window.innerHeight * 2);
 
     canvas.lineCap = 'round';
-    canvas.strokeStyle = '#062350';
-    canvas.lineWidth = 2.5;
+    canvas.lineWidth = 1;
     canvas.fillStyle = 'white';
 
     // draw background palette rectangle
-    canvas.strokeRect(
-      5,
-      55 + scrollOffsetY.current,
-      70,
-      window.innerHeight - 95
-    );
+    canvas.shadowColor = '#cfd8dc';
+    canvas.shadowBlur = 4;
+    canvas.shadowOffsetX = 0;
+    canvas.shadowOffsetY = 3;
+
     canvas.fillRect(5, 55 + scrollOffsetY.current, 70, window.innerHeight - 95);
 
+    canvas.shadowColor = 'transparent';
+    canvas.shadowBlur = 0;
+    canvas.shadowOffsetX = 0;
+    canvas.shadowOffsetY = 0;
     canvas.fillStyle = '#616161';
     canvas.font = '20px Arial';
 
@@ -644,8 +646,8 @@ const CanvasComponent = () => {
               'Current shape: ' + JSON.stringify(currentShape.current, null, 2)
             );
             currentShape.current.setSelected(true);
-            clearAndDraw();
             setIsOpenDrawer(true);
+            clearAndDraw();
             return;
           }
         });
