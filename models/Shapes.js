@@ -171,63 +171,68 @@ class Shapes {
   }
 
   traverseShapes(id) {
-    // Create an array to store the shapes that we have visited
-    const visitedShapes = [];
     let tempString = this.generateMainMenuCode(id);
-    // Create a stack to store the shapes that we need to visit
+    const visitedShapes = new Set();
     const shapeStack = [this.shapes[id]];
 
-    // Traverse the shapes array until all shapes have been visited
     while (shapeStack.length > 0) {
-      // Pop the top shape from the stack
       const currentShape = shapeStack.pop();
-      if (visitedShapes.includes(currentShape.id)) break;
+      if (visitedShapes.has(currentShape.id)) continue;
 
-      // adding to visited array
-      visitedShapes.push(currentShape.id);
-
-      // Print the properties of the current shape
+      visitedShapes.add(currentShape.id);
       console.log('▶️', currentShape.text);
 
-      if (currentShape.type === 'playMenu') {
-        tempString += this.generateMenuCode(currentShape.id);
-      }
-      if (currentShape.type === 'switch') {
-        tempString += this.generateSwitchCode(currentShape.id);
-      }
+      tempString += this.generateCode(currentShape);
+      const nextShapes = this.getNextShapes(currentShape);
 
-      // If the current shape has a nextItem property, push the shape with the corresponding id onto the stack
-      if (currentShape.nextItem && currentShape.type !== 'jumper') {
-        shapeStack.push(this.shapes[currentShape.nextItem]);
-      }
+      nextShapes.forEach((shape) => {
+        shapeStack.push(shape);
+      });
+    }
 
-      if (currentShape.type === 'playMenu') {
-        currentShape.userValues.items.forEach((item) => {
-          if (item.nextId) {
-            shapeStack.push(this.shapes[item.nextId]);
-          }
-        });
-      }
-      if (currentShape.type === 'switch') {
-        currentShape.userValues.switchArray.forEach((item) => {
-          if (item.nextId) {
-            shapeStack.push(this.shapes[item.nextId]);
-          }
-        });
+    return tempString;
+  }
 
-        if (currentShape.userValues.default.nextId) {
-          shapeStack.push(this.shapes[currentShape.userValues.default.nextId]);
+  generateCode(shape) {
+    if (shape.type === 'playMenu') {
+      return this.generateMenuCode(shape.id);
+    } else if (shape.type === 'switch') {
+      return this.generateSwitchCode(shape.id);
+    } else {
+      return '';
+    }
+  }
+
+  getNextShapes(shape) {
+    let nextShapes = [];
+
+    if (shape.nextItem && shape.type !== 'jumper') {
+      nextShapes.push(this.shapes[shape.nextItem]);
+    }
+
+    if (shape.type === 'playMenu') {
+      shape.userValues.items.forEach((item) => {
+        if (item.nextId) {
+          nextShapes.push(this.shapes[item.nextId]);
         }
+      });
+    } else if (shape.type === 'switch') {
+      shape.userValues.switchArray.forEach((item) => {
+        if (item.nextId) {
+          nextShapes.push(this.shapes[item.nextId]);
+        }
+      });
+
+      if (shape.userValues.default.nextId) {
+        nextShapes.push(this.shapes[shape.userValues.default.nextId]);
       }
-      if (currentShape.type === 'jumper') {
-        const entryJumperNextShapeId = this.findEntryJumperNextShape(
-          currentShape.text
-        );
-        if (entryJumperNextShapeId)
-          shapeStack.push(this.shapes[entryJumperNextShapeId]);
+    } else if (shape.type === 'jumper') {
+      const entryJumperNextShapeId = this.findEntryJumperNextShape(shape.text);
+      if (entryJumperNextShapeId) {
+        nextShapes.push(this.shapes[entryJumperNextShapeId]);
       }
     }
-    return tempString;
+    return nextShapes;
   }
 
   findEntryJumperNextShape(name) {
@@ -373,39 +378,31 @@ class Shapes {
   }
 
   getShapesTillMenuOrSwitch(id) {
-    let tempArray = [];
+    const tempArray = [];
+    const visitedShapes = new Set();
     let currentShape = this.shapes[id];
+
     if (!currentShape) {
       return null;
     }
 
-    if (currentShape.type !== 'connector' && currentShape.type !== 'jumper') {
-      tempArray.push(currentShape);
-    }
-
     while (currentShape) {
-      let nextShapeId;
+      if (visitedShapes.has(currentShape.id)) {
+        break;
+      }
+
+      if (currentShape.type !== 'connector' && currentShape.type !== 'jumper') {
+        tempArray.push(currentShape);
+      }
+
+      visitedShapes.add(currentShape.id);
+
       if (currentShape.type === 'jumper') {
-        nextShapeId = this.findEntryJumperNextShape(currentShape.text);
+        currentShape =
+          this.shapes[this.findEntryJumperNextShape(currentShape.text)];
       } else {
-        nextShapeId = currentShape.nextItem;
+        currentShape = this.shapes[currentShape.nextItem];
       }
-
-      if (!nextShapeId) {
-        break;
-      }
-
-      let nextShape = this.shapes[nextShapeId];
-      if (!nextShape) {
-        break;
-      }
-
-      // if not connector or jumper; add to array
-      if (nextShape.type !== 'connector' && nextShape.type !== 'jumper') {
-        tempArray.push(nextShape);
-      }
-
-      currentShape = nextShape;
     }
 
     return tempArray;
