@@ -73,8 +73,8 @@ const CanvasComponent = () => {
   const stageTooltipRef = useRef(null);
   const lineTooltipRef = useRef(null);
   const isDragging = useRef(false);
+  const isPalletShape = useRef(false);
 
-  let isPalletShape = false;
   let startX, startY;
   let startX1, startY1;
   let clickedInShape = false;
@@ -318,7 +318,7 @@ const CanvasComponent = () => {
       80 + scrollOffsetY.current
     );
 
-    if (isDragging.current && !isPalletShape) {
+    if (isDragging.current && !isPalletShape.current) {
       const img = new Image();
       img.src = '/icons/delete.png';
 
@@ -350,15 +350,16 @@ const CanvasComponent = () => {
   }
 
   function checkMouseInPaletteShape(realX, realY) {
-    palletGroup.current.getShapesEntries().forEach(([, element]) => {
+    const shapeEntries = palletGroup.current.getShapesEntries();
+
+    shapeEntries.forEach(([, element]) => {
       if (element.isMouseInShape(realX, realY)) {
-        console.log(`✨YES in pallette shape ${element.type}`);
         setIsConnecting(0);
         setShowInfoMessage(false);
 
         currentShape.current = element;
         isDragging.current = true;
-        isPalletShape = true;
+        isPalletShape.current = true;
         startX = realX;
         startY = realY;
       }
@@ -366,72 +367,66 @@ const CanvasComponent = () => {
   }
 
   function checkMouseInStageShape(realX, realY) {
-    stageGroup.current[pageNumber.current - 1]
-      .getShapesEntries()
-      .forEach(([key, element]) => {
-        if (element.isMouseInShape(realX, realY) && element.id !== 'temp') {
-          console.log(`✨YES in stage shape ${element.type}`);
-          clickedInShape = true;
-          console.log(key, element);
+    const shapeEntries =
+      stageGroup.current[pageNumber.current - 1].getShapesEntries();
 
-          // reset infoMsg on stage shape click
-          setShowInfoMessage(false);
+    shapeEntries.forEach(([key, element]) => {
+      if (element.isMouseInShape(realX, realY) && element.id !== 'temp') {
+        clickedInShape = true;
 
-          if (isConnecting === 1) {
-            connectShape1.current = element;
-            element.setSelected(true);
-            if (
-              element.type !== 'switch' &&
-              element.type !== 'playMenu' &&
-              element.userValues.type !== 'exit'
-            ) {
+        setShowInfoMessage(false);
+
+        if (isConnecting === 1) {
+          connectShape1.current = element;
+          element.setSelected(true);
+
+          if (
+            element.type !== 'switch' &&
+            element.type !== 'playMenu' &&
+            element.type !== 'endFlow' &&
+            element.userValues?.type !== 'exit'
+          ) {
+            stageGroup.current[pageNumber.current - 1].addTempShape(
+              realX,
+              realY
+            );
+            element.setNextItem('temp');
+          }
+          clearAndDraw();
+          setIsConnecting(2);
+
+          if (element.type === 'switch') {
+            const isNearExitPoint = element.isNearExitPointSwitch(realX, realY);
+            if (isNearExitPoint) {
               stageGroup.current[pageNumber.current - 1].addTempShape(
                 realX,
                 realY
               );
               element.setNextItem('temp');
             }
-            clearAndDraw();
-            setIsConnecting(2);
-
-            //if shape1 is switch, if on exit point set ref to exit point name
-            if (element.type === 'switch') {
-              const isNearExitPoint = element.isNearExitPointSwitch(
+            isSwitchExitPoint.current = isNearExitPoint;
+          }
+          if (element.type === 'playMenu') {
+            const isNearExitPoint = element.isNearExitPointMenu(realX, realY);
+            if (isNearExitPoint) {
+              stageGroup.current[pageNumber.current - 1].addTempShape(
                 realX,
                 realY
               );
-              if (isNearExitPoint) {
-                stageGroup.current[pageNumber.current - 1].addTempShape(
-                  realX,
-                  realY
-                );
-                element.setNextItem('temp');
-              }
-
-              isSwitchExitPoint.current = isNearExitPoint;
+              element.setNextItem('temp');
             }
-
-            if (element.type === 'playMenu') {
-              const isNearExitPoint = element.isNearExitPointMenu(realX, realY);
-              if (isNearExitPoint) {
-                stageGroup.current[pageNumber.current - 1].addTempShape(
-                  realX,
-                  realY
-                );
-                element.setNextItem('temp');
-              }
-              isMenuExitPoint.current = isNearExitPoint;
-            }
+            isMenuExitPoint.current = isNearExitPoint;
           }
-          currentShape.current = element;
-          isDragging.current = true;
-          isPalletShape = false;
-          startX = realX;
-          startY = realY;
-          startX1 = realX;
-          startY1 = realY;
         }
-      });
+        currentShape.current = element;
+        isDragging.current = true;
+        isPalletShape.current = false;
+        startX = realX;
+        startY = realY;
+        startX1 = realX;
+        startY1 = realY;
+      }
+    });
   }
 
   function getRealCoordinates(clientX, clientY) {
@@ -439,6 +434,10 @@ const CanvasComponent = () => {
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
     return { realX, realY };
+  }
+  function resetTooltips() {
+    const tooltipRefs = [tooltipRef, stageTooltipRef, lineTooltipRef];
+    tooltipRefs.forEach((ref) => (ref.current.style.display = 'none'));
   }
 
   function handleMouseDown(e) {
@@ -480,13 +479,12 @@ const CanvasComponent = () => {
         clearAndDraw();
         startX = realX;
         startY = realY;
-        return;
       }
+      resetTooltips();
+      return;
     }
 
-    // reset tooltip
-    const tooltipRefs = [tooltipRef, stageTooltipRef, lineTooltipRef];
-    tooltipRefs.forEach((ref) => (ref.current.style.display = 'none'));
+    resetTooltips();
 
     // place tooltip on mouse pallet shape
     palletGroup.current.getShapesAsArray().forEach((shape) => {
@@ -559,7 +557,34 @@ const CanvasComponent = () => {
 
     if (button !== 0) return;
 
-    if (currentShape.current && !isPalletShape) {
+    // Handle pallet shape
+    if (isPalletShape.current) {
+      isPalletShape.current = false;
+      isDragging.current = false;
+
+      const palletFigureDragged = currentShape.current;
+      // reset shape to palette
+      [palletFigureDragged.x, palletFigureDragged.y] =
+        palletFigureDragged.getInitPos();
+
+      if (realX < 120) {
+        clearAndDraw();
+        return;
+      }
+
+      const count = shapeCount.current[palletFigureDragged.type]++;
+      stageGroup.current[pageNumber.current - 1].addShape(
+        palletFigureDragged.type,
+        realX,
+        realY,
+        count,
+        pageNumber.current
+      );
+      clearAndDraw();
+    }
+
+    // Handle deleting shapes
+    if (currentShape.current && !isPalletShape.current) {
       if (
         currentShape.current.y >
           window.innerHeight - 100 + scrollOffsetY.current &&
@@ -570,11 +595,22 @@ const CanvasComponent = () => {
           currentShape.current.id
         );
         clearAndDraw();
-        snackbarMessage.current = `${currentShape.current.text} deleted.`;
+
+        if (
+          currentShape.current.type === 'connector' ||
+          currentShape.current.type === 'endFlow'
+        ) {
+          snackbarMessage.current = `${currentShape.current.type} deleted.`;
+        } else {
+          snackbarMessage.current = `${currentShape.current.text} deleted.`;
+        }
+
         setOpenSnackbar(true);
+        return;
       }
     }
 
+    // Handle connecting shapes
     if (isDragging.current && isConnecting === 2) {
       stageGroup.current[pageNumber.current - 1]
         .getShapesEntries()
@@ -589,36 +625,12 @@ const CanvasComponent = () => {
           }
         });
     }
-    // reset dragging mode
+
+    // Reset dragging mode
     isDragging.current = false;
 
-    if (isPalletShape) {
-      isPalletShape = false;
-      // reset pallet figure to pallet
-      const palletFigureDragged = currentShape.current;
-      palletFigureDragged.x = palletFigureDragged.getInitPos()[0];
-      palletFigureDragged.y = palletFigureDragged.getInitPos()[1];
-      // do nothing if palette drop too close to palette
-      if (realX < 120) {
-        clearAndDraw();
-        return;
-      }
-
-      const count = shapeCount.current[palletFigureDragged.type]++;
-
-      // id = value|pageNumber|count
-      stageGroup.current[pageNumber.current - 1].addShape(
-        palletFigureDragged.type,
-        realX,
-        realY,
-        count,
-        pageNumber.current
-      );
-      clearAndDraw();
-    }
-
+    // Handle clicking on stage shape
     if (realX === startX1 && realY === startY1) {
-      // mouse clicked, released same spot in stage shape, check mouse in stage shape
       stageGroup.current[pageNumber.current - 1]
         .getShapesAsArray()
         .forEach((element) => {
@@ -627,9 +639,6 @@ const CanvasComponent = () => {
             element.type !== 'connector' &&
             element.type !== 'tinyCircle'
           ) {
-            console.log(
-              `YES in pallet shape mouseUp ${JSON.stringify(element, null, 2)}`
-            );
             currentShape.current = element;
             currentShape.current.setSelected(true);
             clearAndDraw();
@@ -662,9 +671,6 @@ const CanvasComponent = () => {
   }
 
   function connectShapes() {
-    console.log('🚀 ~ connectShapes ~ connectShape1', connectShape1.current);
-    console.log('🚀 ~ connectShapes ~ connectShape2', connectShape2.current);
-
     connectShape1.current.setSelected(false);
     connectShape2.current.setSelected(false);
     if (connectShape1.current.nextItem === 'temp') {
@@ -674,7 +680,6 @@ const CanvasComponent = () => {
     clearAndDraw();
 
     if (connectShape1.current === connectShape2.current) {
-      displayInfoMessage('connecting shapes are the same.');
       return;
     }
 
@@ -816,7 +821,6 @@ const CanvasComponent = () => {
   }
 
   function generateConfigFile() {
-    // setOpenSnackbar(true);
     const str = generateJS();
     // if str false; prevent config generation
     if (!str) return;
@@ -837,9 +841,9 @@ const CanvasComponent = () => {
   }
 
   function generateJS() {
-    // Return a JS config code as string
     const entirestageGroup = new Shapes('entireStageGroup');
 
+    // Combine all shapes from current pages
     for (const page of stageGroup.current) {
       entirestageGroup.shapes = {
         ...entirestageGroup.shapes,
@@ -847,19 +851,21 @@ const CanvasComponent = () => {
       };
     }
 
-    if (entirestageGroup.getShapesAsArray().length === 0) {
+    // Check if there are any shapes added to the stage
+    if (!entirestageGroup.getShapesAsArray().length) {
       snackbarMessage.current = `No shapes added to stage.`;
       setOpenSnackbar(true);
       return false;
     }
 
+    // Check if the IVR name is set
     if (!ivrName) {
       snackbarMessage.current = `Please save first to generate script.`;
       setOpenSnackbar(true);
       return false;
     }
 
-    // function that loops through all shapes except connector, switch or jumper; and check if they have fn string. if no return that shape name else false
+    // Check if all shapes have function strings
     const isFunctionStringPresent = entirestageGroup.isFunctionStringPresent();
     if (isFunctionStringPresent) {
       snackbarMessage.current = `Please update ${isFunctionStringPresent}. Default values detected.`;
@@ -867,6 +873,7 @@ const CanvasComponent = () => {
       return false;
     }
 
+    // Global params for the IVR
     const globalParamsString = `function ${ivrName}(IVR){
       IVR.params = {
         maxRetries: 3,
@@ -895,31 +902,36 @@ const CanvasComponent = () => {
         invalidTransferPoint: '',
         timeoutTransferPoint: '',
         logDB: false
-        };
-     `;
+      };
+      `;
 
+    // Initialize variables
     const allVariablesString = generateInitVariablesJS();
 
+    // Get all function strings from shapes
     const allFunctionsString = entirestageGroup
       .getShapesAsArray()
       .filter((el) => el.functionString)
       .map((el) => el.functionString)
       .join(' ');
 
+    // Get the ID of the first shape
     const idOfStartShape = entirestageGroup.getIdOfFirstShape();
-
-    if (idOfStartShape === null) {
+    if (!idOfStartShape) {
       snackbarMessage.current =
         'Please add a setParams block to start control flow.';
       setOpenSnackbar(true);
       return false;
     }
 
+    // Get driver functions for all shapes
     const allDriverFunctionsString =
       entirestageGroup.traverseShapes(idOfStartShape);
 
+    // End of export statement
     const EndExportString = `} module.exports = ${ivrName} ;`;
 
+    // Combine all strings to create final code
     const finalCodeString =
       globalParamsString +
       allVariablesString +
@@ -927,6 +939,7 @@ const CanvasComponent = () => {
       allDriverFunctionsString +
       EndExportString;
 
+    // Format the code using prettier
     const formattedCode = prettier.format(finalCodeString, {
       parser: 'babel',
       parser: (text, options) => babelParser.parse(text, options),
