@@ -26,6 +26,10 @@ class Shape {
   }
 
   getRelativeExitPoint(shape2) {
+    if (this.type === 'connector') {
+      return this.getConnectorCordinates(shape2.x, shape2.y);
+    }
+
     let [x, y] = this.getBottomCordinates();
 
     if (this.y < shape2.y) {
@@ -53,6 +57,10 @@ class Shape {
   }
 
   getRelativeEntryPoint(shape1, exitPoint) {
+    if (this.type === 'connector') {
+      return this.getConnectorCordinates(exitPoint.x, exitPoint.y);
+    }
+
     let [x, y] = this.getLeftCordinates();
     let slope = (y - exitPoint.y) / (x - exitPoint.x);
 
@@ -91,6 +99,15 @@ class Shape {
   }
   getRightCordinates() {
     return [this.x + this.width / 2, this.y];
+  }
+
+  getConnectorCordinates(pointX, pointY) {
+    const angle = Math.atan2(pointY - this.y, pointX - this.x);
+    const radius = this.width / 2;
+    const x = this.x + radius * Math.cos(angle);
+    const y = this.y + radius * Math.sin(angle);
+
+    return [x, y];
   }
 
   getExitPoint() {
@@ -463,10 +480,10 @@ class Shape {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
     this.stroke && this.setWidthFromText(ctx);
-    ctx.moveTo(-this.width / 2, -this.height / 2);
-    ctx.lineTo(this.width / 2, -this.height / 2);
-    ctx.lineTo(this.width / 2 - this.width / 4, this.height / 2);
-    ctx.lineTo(-this.width / 2 - this.width / 4, this.height / 2);
+    ctx.moveTo(-this.width * (3 / 8), -this.height / 2);
+    ctx.lineTo(this.width * (5 / 8), -this.height / 2);
+    ctx.lineTo(this.width * (3 / 8), this.height / 2);
+    ctx.lineTo(-this.width * (5 / 8), this.height / 2);
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -477,10 +494,9 @@ class Shape {
       ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
-      const textWidth = ctx.measureText(this.text).width;
-      const x = this.x - this.width / 2 + (this.width - textWidth * 1.4) / 2;
-      ctx.textAlign = 'left';
-      ctx.fillText(this.text, x, this.y);
+
+      ctx.textAlign = 'center';
+      ctx.fillText(this.text, this.x, this.y);
 
       ctx.strokeStyle = '#9c27b0';
       ctx.stroke();

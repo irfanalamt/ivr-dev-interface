@@ -190,7 +190,7 @@ const CanvasComponent = () => {
       40,
       55 + scrollOffsetY.current + shapeHeight * 1,
       30,
-      25,
+      20,
       'setParams',
       '#880e4f'
     );
@@ -198,7 +198,7 @@ const CanvasComponent = () => {
       40,
       55 + scrollOffsetY.current + shapeHeight * 2,
       30,
-      25,
+      20,
       'runScript',
       '#bf360c'
     );
@@ -206,7 +206,7 @@ const CanvasComponent = () => {
       40,
       55 + scrollOffsetY.current + shapeHeight * 3,
       30,
-      25,
+      20,
       'callAPI',
       '#0d47a1'
     );
@@ -214,15 +214,15 @@ const CanvasComponent = () => {
       40,
       55 + scrollOffsetY.current + shapeHeight * 4,
       30,
-      25,
+      20,
       'playMenu',
       '#004d40'
     );
     const getDigits = new Shape(
-      42,
+      40,
       55 + scrollOffsetY.current + shapeHeight * 5,
       25,
-      25,
+      20,
       'getDigits',
       '#4a148c'
     );
@@ -230,7 +230,7 @@ const CanvasComponent = () => {
       40,
       55 + scrollOffsetY.current + shapeHeight * 6,
       35,
-      25,
+      20,
       'playMessage',
       '#827717'
     );
@@ -238,7 +238,7 @@ const CanvasComponent = () => {
       40,
       55 + scrollOffsetY.current + shapeHeight * 7,
       35,
-      25,
+      20,
       'playConfirm',
       '#33691e'
     );
@@ -246,7 +246,7 @@ const CanvasComponent = () => {
       40,
       55 + scrollOffsetY.current + shapeHeight * 8,
       30,
-      25,
+      20,
       'switch',
       '#3e2723'
     );
@@ -544,8 +544,8 @@ const CanvasComponent = () => {
         const isNearLine = line.isPointNearLine(realX, realY);
         if (isNearLine) {
           lineTooltipRef.current.style.display = 'block';
-          lineTooltipRef.current.style.top = realY + 10 + 'px';
-          lineTooltipRef.current.style.left = realX + 30 + 'px';
+          lineTooltipRef.current.style.top = realY - 10 + 'px';
+          lineTooltipRef.current.style.left = realX + 15 + 'px';
           lineTooltipRef.current.textContent = line.lineData.exitPoint;
         }
       }
@@ -583,6 +583,7 @@ const CanvasComponent = () => {
         pageNumber.current
       );
       clearAndDraw();
+      return;
     }
 
     // Handle deleting shapes
@@ -596,7 +597,6 @@ const CanvasComponent = () => {
         stageGroup.current[pageNumber.current - 1].removeShape(
           currentShape.current.id
         );
-        clearAndDraw();
 
         if (
           currentShape.current.type === 'connector' ||
@@ -606,8 +606,10 @@ const CanvasComponent = () => {
         } else {
           snackbarMessage.current = `${currentShape.current.text} deleted.`;
         }
-
+        isDragging.current = false;
         setOpenSnackbar(true);
+        clearAndDraw();
+
         return;
       }
     }
@@ -630,6 +632,7 @@ const CanvasComponent = () => {
 
     // Reset dragging mode
     isDragging.current = false;
+    clearAndDraw();
 
     // Handle clicking on stage shape
     if (realX === startX1 && realY === startY1) {
@@ -826,23 +829,26 @@ const CanvasComponent = () => {
   }
 
   function generateConfigFile() {
-    const str = generateJS();
-    // if str false; prevent config generation
-    if (!str) return;
+    const jsString = generateJS();
 
-    const blob = new Blob([str]);
-    const href = URL.createObjectURL(blob);
+    // Exit if generateJS() returns a falsy value
+    if (!jsString) return;
 
-    // create "a" HTML element with href to file & click
-    const link = document.createElement('a');
-    link.href = href;
-    link.setAttribute('download', `${ivrName}.js`); //or any other extension
-    document.body.appendChild(link);
-    link.click();
+    // Create a Blob object from the JS string
+    const configFile = new Blob([jsString], { type: 'application/javascript' });
 
-    // clean up "a" element & remove ObjectURL
-    document.body.removeChild(link);
-    URL.revokeObjectURL(href);
+    // Create a download link for the config file
+    const downloadLink = document.createElement('a');
+    downloadLink.href = URL.createObjectURL(configFile);
+    downloadLink.download = `${ivrName}.js`;
+    document.body.appendChild(downloadLink);
+
+    // Trigger the download
+    downloadLink.click();
+
+    // Clean up by removing the link and revoking the ObjectURL
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(downloadLink.href);
   }
 
   function generateJS() {
@@ -1092,7 +1098,7 @@ const CanvasComponent = () => {
         sx={{
           display: 'none',
           position: 'absolute',
-          backgroundColor: '#e1f5fe',
+          backgroundColor: '#fdf5ef',
           fontSize: 'small',
           px: 1,
           boxShadow: 1,
