@@ -23,40 +23,6 @@ const FunctionBlock = ({
 
   const drawerNameRef = useRef({});
 
-  function saveUserValues() {
-    // validate current shapeName user entered with validation function in a child component
-    const isNameError = drawerNameRef.current.handleNameValidation(shapeName);
-
-    if (isNameError) {
-      setErrorText(isNameError);
-      return;
-    }
-
-    if (errorText !== '') {
-      setErrorText('Save failed');
-      return;
-    }
-
-    setSuccessText('Save successful');
-    setTimeout(() => setSuccessText(''), 3000);
-
-    shape.setText(shapeName || `runScript${shape.id}`);
-    shape.setUserValues({ script: functionString });
-    clearAndDraw();
-    let isValid = isValidJs();
-    if (isValid) {
-      generateJS();
-    }
-  }
-
-  const getCurrentUserValues = () => {
-    return JSON.stringify({
-      name: shapeName,
-      userValues: { script: functionString },
-    });
-  };
-  childRef.getCurrentUserValues = getCurrentUserValues;
-
   function generateJS() {
     if (functionString.length < 2) {
       shape.setFunctionString('');
@@ -71,52 +37,56 @@ const FunctionBlock = ({
     console.log('🕺🏻runScript code:', codeString);
   }
 
-  function validateString() {
-    // First, check if the string is a valid JavaScript expression
+  function saveUserValues() {
+    const nameError = drawerNameRef.current.handleNameValidation(shapeName);
+    if (nameError) {
+      setErrorText(nameError);
+      return;
+    }
+
+    if (errorText !== '') {
+      setErrorText('Save failed');
+      return;
+    }
+
+    shape.setText(shapeName || `runScript${shape.id}`);
+    shape.setUserValues({ script: functionString });
+    clearAndDraw();
+    if (validateFunctionString()) {
+      generateJS();
+      setSuccessText('Save successful');
+      setTimeout(() => setSuccessText(''), 3000);
+    } else {
+      setErrorText('Invalid function');
+    }
+  }
+
+  function validateFunctionString() {
     try {
       eval(functionString);
     } catch (error) {
+      setIsFunctionError(true);
       return false;
     }
+    setIsFunctionError(false);
 
-    // If the string is a valid expression, check if it uses 'this.variableName'
     if (functionString.includes('this.')) {
-      // Extract the variable name from the string
       const variableName = functionString.match(/this\.(.*)/)[1];
-
-      // Check if the variable name is present in the userVariables array
       if (!userVariables.some((variable) => variable.name === variableName)) {
         return false;
       }
     }
 
-    // If the string passes both checks, it is valid
     return true;
   }
 
-  function handleFunctionValidation() {
-    console.log('Function text', functionString);
-    let isValid = validateString();
-    if (isValid) {
-      console.log('its valid! ✅');
-      setIsFunctionError(false);
-      return;
-    }
-
-    console.log('its NOT valid!❌');
-    setIsFunctionError(true);
-  }
-
-  function isValidJs() {
-    let isValid = true;
-    let esprima = require('esprima');
-    try {
-      esprima.parseScript(functionString);
-    } catch (e) {
-      isValid = false;
-    }
-    return isValid;
-  }
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: { script: functionString },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   return (
     <List sx={{ minWidth: 350 }}>
@@ -143,9 +113,9 @@ const FunctionBlock = ({
         <TextField
           sx={{
             mx: 'auto',
-            backgroundColor: isFunctionError && '#ffebee',
+            backgroundColor: isFunctionError ? '#ffebee' : '#f1f8e9',
           }}
-          label={isFunctionError ? 'code invalid' : 'Function code'}
+          label={isFunctionError ? 'code invalid' : 'code valid'}
           value={functionString}
           onChange={(e) => {
             setFunctionString(e.target.value);
@@ -164,7 +134,7 @@ const FunctionBlock = ({
             '&:hover': { backgroundColor: '#b0b0b0' },
           }}
           variant='contained'
-          onClick={handleFunctionValidation}
+          onClick={validateFunctionString}
         >
           Validate
         </Button>

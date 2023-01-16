@@ -95,17 +95,6 @@ const PlayMenu = ({
     // only generate if atleast 1 valid item
     if (filteredItems.length > 0) generateJS();
   }
-  const getCurrentUserValues = () => {
-    return JSON.stringify({
-      name: shapeName,
-      userValues: {
-        params: menuObj,
-        paramSelectedList,
-        items: itemsObj,
-      },
-    });
-  };
-  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS() {
     let menuString = JSON.stringify({ ...menuObj, items: itemsObj });
@@ -131,28 +120,21 @@ const PlayMenu = ({
   ];
 
   function handleAddParameter() {
-    console.log('handleaddparameter');
-    setParamSelectedList((s) => {
-      return [...s, `${paramSelected}`];
-    });
+    setParamSelectedList((prevList) => [...prevList, paramSelected]);
     setParamSelected('');
   }
-  function handleRemoveParameter() {
-    if (paramSelectedList.length < 1) return;
 
-    setParamSelectedList((s) => {
-      const newArr = [...s];
-      newArr.pop();
-      return newArr;
-    });
+  function handleRemoveParameter() {
+    if (!paramSelectedList.length) return;
+    setParamSelectedList((prevList) => prevList.slice(0, -1));
   }
+
   function handleAddItem() {
-    if (itemSelected === '') return;
-    setItemsObj((s) => {
-      return [...s, { digit: itemSelected }];
-    });
+    if (!itemSelected) return;
+    setItemsObj((prevItems) => [...prevItems, { digit: itemSelected }]);
     setItemSelected('');
   }
+
   function handleRemoveItem(e, key) {
     setItemsObj((s) => {
       const newArr = [...s];
@@ -161,14 +143,13 @@ const PlayMenu = ({
     });
   }
 
-  function handleItemsObjChange(value, key, name) {
-    setItemsObj((s) => {
-      const newArr = [...s];
-      newArr[key][name] = value;
-      return newArr;
+  function handleItemsObjChange(value, index, name) {
+    setItemsObj((prevItems) => {
+      const newItems = [...prevItems];
+      newItems[index] = { ...newItems[index], [name]: value };
+      return newItems;
     });
   }
-
   function deleteItemObj(key, name) {
     setItemsObj((s) => {
       const newArr = [...s];
@@ -179,31 +160,49 @@ const PlayMenu = ({
 
   function handleValidation(e, name, type) {
     let errorMessage = checkValidity(type, e.target.value);
+
     if (errorMessage !== -1) {
-      e.target.style.backgroundColor = '#ffebee';
-      setErrorObj((s) => {
-        return { ...s, [name]: errorMessage };
-      });
+      updateError(e, name, errorMessage);
       return;
     }
-    // check name unique
-    if (
-      stageGroup.getShapesAsArray().some((el) => el.text === e.target.value)
-    ) {
-      e.target.style.backgroundColor = '#ffebee';
-      setErrorObj((s) => {
-        return { ...s, [name]: 'name NOT unique' };
-      });
+
+    if (isNameUnique(e.target.value)) {
+      updateError(e, name, 'name NOT unique');
       return;
     }
-    // no error condition
+
+    clearError(e, name);
+  }
+
+  function updateError(e, name, errorMessage) {
+    e.target.style.backgroundColor = '#ffebee';
+    setErrorObj((s) => ({ ...s, [name]: errorMessage }));
+  }
+
+  function isNameUnique(name) {
+    return stageGroup.getShapesAsArray().some((el) => el.text === name);
+  }
+
+  function clearError(e, name) {
+    e.target.style.backgroundColor = '#f1f8e9';
     setErrorObj((s) => {
       const newObj = { ...s };
       delete newObj[name];
       return newObj;
     });
-    e.target.style.backgroundColor = '#f1f8e9';
   }
+
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: {
+        params: menuObj,
+        paramSelectedList,
+        items: itemsObj,
+      },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function addItemElements(digit, key) {
     return (
