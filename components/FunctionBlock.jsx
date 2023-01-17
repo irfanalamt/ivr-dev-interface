@@ -52,6 +52,7 @@ const FunctionBlock = ({
     shape.setText(shapeName || `runScript${shape.id}`);
     shape.setUserValues({ script: functionString });
     clearAndDraw();
+
     if (validateFunctionString()) {
       generateJS();
       setSuccessText('Save successful');
@@ -69,6 +70,7 @@ const FunctionBlock = ({
       return false;
     }
     setIsFunctionError(false);
+    setErrorText('');
 
     if (functionString.includes('this.')) {
       const variableName = functionString.match(/this\.(.*)/)[1];
@@ -113,7 +115,9 @@ const FunctionBlock = ({
         <TextField
           sx={{
             mx: 'auto',
-            backgroundColor: isFunctionError ? '#ffebee' : '#f1f8e9',
+            backgroundColor: isFunctionError
+              ? '#ffebee'
+              : functionString.length > 2 && '#f1f8e9',
           }}
           label={isFunctionError ? 'code invalid' : 'code valid'}
           value={functionString}

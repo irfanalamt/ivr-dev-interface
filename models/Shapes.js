@@ -58,7 +58,7 @@ class Shapes {
         break;
 
       case 'playMessage':
-        stageFigure = new Shape(x, y, 145, 30, 'playMessage', '#c0ca33', true);
+        stageFigure = new Shape(x, y, 125, 30, 'playMessage', '#c0ca33', true);
         stageFigure.setUserValues({
           params: { interruptible: true, repeatOption: 'X' },
           messageList: [],
@@ -66,7 +66,7 @@ class Shapes {
         break;
 
       case 'playConfirm':
-        stageFigure = new Shape(x, y, 135, 30, 'playConfirm', '#7cb342', true);
+        stageFigure = new Shape(x, y, 125, 30, 'playConfirm', '#7cb342', true);
         stageFigure.setUserValues({
           params: {
             confirmOption: '',
