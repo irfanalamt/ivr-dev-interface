@@ -1,10 +1,18 @@
-import { Avatar, Box, Typography, Button, Tooltip } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Typography,
+  Button,
+  Tooltip,
+  IconButton,
+} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
-import ModeIcon from '@mui/icons-material/Mode';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import HelpCenterIcon from '@mui/icons-material/HelpCenter';
+import UserGuideDialog from './UserGuideDialog';
+import { useState } from 'react';
 
 const CanvasAppbar = ({
   isConnecting,
@@ -14,11 +22,7 @@ const CanvasAppbar = ({
   ivrName,
   showSaveFileDialog,
 }) => {
-  function getBgColor() {
-    if (isConnecting > 0) return '#e0f2f1';
-
-    return '#e1f5fe';
-  }
+  const [openUserGuideDialog, setOpenUserGuideDialog] = useState(false);
 
   return (
     <Box sx={{ position: 'fixed', top: 0 }}>
@@ -37,6 +41,20 @@ const CanvasAppbar = ({
         <Avatar sx={{ backgroundColor: '#bbdefb', mr: 2 }}>
           <ArchitectureIcon sx={{ fontSize: '2rem', color: 'black' }} />
         </Avatar>
+        <Tooltip title='user guide'>
+          <IconButton
+            sx={{
+              mr: 2,
+              backgroundColor: '#dcdcdc',
+              '&:hover': { backgroundColor: '#80cbc4' },
+            }}
+            aria-label='user-guide'
+            size='small'
+            onClick={() => setOpenUserGuideDialog(true)}
+          >
+            <HelpCenterIcon sx={{ color: 'black', fontSize: 'large' }} />
+          </IconButton>
+        </Tooltip>
         <Typography
           sx={{ backgroundColor: '#c5e1a5', px: 1, boxShadow: 1, ml: 1 }}
           variant='subtitle2'
@@ -48,6 +66,7 @@ const CanvasAppbar = ({
           sx={{
             ml: 'auto',
             display: 'flex',
+            alignItems: 'center',
           }}
         >
           <Typography sx={{ mr: 3 }} variant='subtitle1'>
@@ -85,7 +104,6 @@ const CanvasAppbar = ({
               <RestartAltIcon sx={{ fontSize: '1.2rem' }} />
             </Button>
           </Tooltip>
-
           <Tooltip title='GENERATE SCRIPT'>
             <Button
               sx={{
@@ -105,6 +123,10 @@ const CanvasAppbar = ({
           </Tooltip>
         </Box>
       </Box>
+      <UserGuideDialog
+        open={openUserGuideDialog}
+        handleClose={() => setOpenUserGuideDialog(false)}
+      />
     </Box>
   );
 };
