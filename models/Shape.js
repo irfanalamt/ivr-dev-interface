@@ -313,7 +313,7 @@ class Shape {
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
-      ctx.font = '19px sans-serif';
+      ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
@@ -405,7 +405,7 @@ class Shape {
           this.height
         );
       }
-      ctx.font = '19px sans-serif';
+      ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
@@ -450,7 +450,7 @@ class Shape {
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
-      ctx.font = '19px sans-serif';
+      ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
@@ -467,16 +467,6 @@ class Shape {
   }
 
   drawParallelogram(ctx) {
-    // ctx.beginPath();
-    // ctx.translate(this.x, this.y);
-    // this.stroke && this.setWidthFromText(ctx);
-    // ctx.lineTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
-    // ctx.lineTo(-this.width * 0.5 - this.height * 0.5, this.height * 0.5);
-    // ctx.lineTo(-this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
-    // ctx.lineTo(this.width * 0.5 + this.height * 0.5, -this.height * 0.5);
-    // ctx.closePath();
-    // ctx.setTransform(1, 0, 0, 1, 0, 0);
-
     ctx.beginPath();
     ctx.translate(this.x, this.y);
     this.stroke && this.setWidthFromText(ctx);
@@ -525,7 +515,7 @@ class Shape {
       // fill color when selected
       this.selected && this.fillSelected(ctx);
 
-      ctx.font = '19px sans-serif';
+      ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
@@ -571,7 +561,7 @@ class Shape {
       // fill color if selected
       this.selected && this.fillSelected(ctx);
 
-      ctx.font = '19px sans-serif';
+      ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
@@ -615,7 +605,7 @@ class Shape {
       // fill color if selected
       this.selected && this.fillSelected(ctx);
 
-      ctx.font = '19px sans-serif';
+      ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
@@ -679,7 +669,7 @@ class Shape {
       // fill color if selected
       this.selected && this.fillSelected(ctx);
 
-      ctx.font = '19px sans-serif';
+      ctx.font = '18px sans-serif';
       ctx.fillStyle = 'black';
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
