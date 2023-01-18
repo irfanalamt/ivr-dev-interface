@@ -19,11 +19,11 @@ const UserGuideDialog = ({ open, handleClose }) => {
       <DialogContent>
         <Stack spacing={1}>
           <Typography>
-            -Draw: drag and drop shapes from the palette located on the left
+            -Draw: drag and drop elements from the palette located on the left
             side of the screen.
           </Typography>
           <Typography>
-            -Delete: drag the shapes to the bottom right delete icon.
+            -Delete: drag the elements to the bottom right delete icon.
           </Typography>
           <Typography>
             -Connect: right-click to switch to connect mode. To switch back to

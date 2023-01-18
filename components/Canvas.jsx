@@ -2,15 +2,19 @@ import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import InfoIcon from '@mui/icons-material/Info';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 const prettier = require('prettier');
 const babelParser = require('@babel/parser');
 
 import {
   Alert,
+  Backdrop,
   Box,
   Drawer,
   IconButton,
+  Modal,
   Pagination,
+  Paper,
   Snackbar,
   Tooltip,
   Typography,
@@ -25,6 +29,7 @@ import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
 import { useRouter } from 'next/router';
 import SaveFileDialog from './SaveFileDialog';
+import PromptList from './PromptList';
 
 const CanvasComponent = () => {
   const router = useRouter();
@@ -32,6 +37,7 @@ const CanvasComponent = () => {
 
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isOpenVars, setIsOpenVars] = useState(false);
+  const [isOpenParamList, setIsOpenParamList] = useState(false);
   const [isConnecting, setIsConnecting] = useState(0);
   const [showInfoMessage, setShowInfoMessage] = useState(false);
   const [showCanvasResetDialog, setShowCanvasResetDialog] = useState(false);
@@ -1004,14 +1010,18 @@ const CanvasComponent = () => {
         }}
         id='bottomBar'
       >
-        <Box sx={{ mt: 1, ml: 1 }}>
-          <Tooltip title='setVariables' placement='right-start'>
-            <SettingsApplicationsIcon
-              sx={{ height: 30 }}
-              onClick={() => setIsOpenVars(true)}
-            />
-          </Tooltip>
-        </Box>
+        <Tooltip title='setVariables' arrow>
+          <SettingsApplicationsIcon
+            sx={{ height: 30 }}
+            onClick={() => setIsOpenVars(true)}
+          />
+        </Tooltip>
+        <Tooltip title='prompt list' placement='right-start' arrow>
+          <ListAltIcon
+            sx={{ height: 28, ml: 4 }}
+            onClick={() => setIsOpenParamList(true)}
+          />
+        </Tooltip>
 
         <Typography
           sx={{
@@ -1019,7 +1029,6 @@ const CanvasComponent = () => {
             mt: 1,
             display: showInfoMessage ? 'flex' : 'none',
             alignItems: 'center',
-
             px: 2,
             mb: 0.5,
             backgroundColor: '#b3e5fc',
@@ -1068,6 +1077,14 @@ const CanvasComponent = () => {
           entireStageGroup={stageGroup.current}
         />
       </Drawer>
+      {isOpenParamList && (
+        <PromptList
+          open={isOpenParamList}
+          handleClose={() => setIsOpenParamList(false)}
+          stageGroup={stageGroup.current}
+        />
+      )}
+
       <DrawerComponent
         isOpen={isOpenDrawer}
         handleCloseDrawer={handleCloseDrawer}
