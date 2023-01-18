@@ -18,23 +18,21 @@ import {
 
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
-import { useEffect, useState } from 'react';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import {useEffect, useState} from 'react';
+const {parse} = require('json2csv');
 
-const PromptList = ({
-  open,
-  handleClose,
-  stageGroup,
-  promptDescriptionObj,
-}) => {
+const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
   const [promptArray, setPromptArray] = useState(null);
   const [showUsedIn, setShowUsedIn] = useState(false);
+  const [errorText, setErrorText] = useState('');
 
   useEffect(() => {
     getPromptArray();
   }, []);
 
   function handleDescriptionChange(e, index) {
-    const { value } = e.target;
+    const {value} = e.target;
 
     setPromptArray((p) => {
       const temp = [...p];
@@ -86,7 +84,7 @@ const PromptList = ({
     if (promptObject) {
       promptObject.usedIn.push(usedIn);
     } else {
-      allPrompts.push({ prompt, usedIn: [usedIn] });
+      allPrompts.push({prompt, usedIn: [usedIn]});
     }
   }
 
@@ -98,6 +96,32 @@ const PromptList = ({
       prompt.description = savedPrompt.description;
     }
     return prompt;
+  }
+
+  function generateCSV(headings, data) {
+    const csv = parse(data, {fields: headings});
+    const csvFilename = 'promptList.csv';
+    const csvBlob = new Blob([csv], {type: 'text/csv'});
+
+    // Generate download of generated csv file
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(csvBlob);
+    link.download = csvFilename;
+    link.click();
+  }
+
+  function handleDownloadCSV() {
+    if (promptArray?.length === 0) {
+      setErrorText('Cannot generate CSV.');
+      return;
+    }
+    setErrorText('');
+
+    const allPrompts = promptArray.map((prompt) => ({
+      PromptName: prompt.prompt,
+      Description: prompt.description,
+    }));
+    generateCSV(['PromptName', 'Description'], allPrompts);
   }
 
   return (
@@ -123,6 +147,23 @@ const PromptList = ({
           Prompt List
         </Typography>
         <Box>
+          <Tooltip title='Export CSV'>
+            <Button
+              variant='contained'
+              onClick={handleDownloadCSV}
+              sx={{
+                height: 30,
+                mr: 1,
+                color: 'black',
+                backgroundColor: '#dcdcdc',
+                '&:hover': {backgroundColor: '#dce775'},
+              }}
+              size='small'
+            >
+              <FileDownloadIcon />
+            </Button>
+          </Tooltip>
+
           <Tooltip title='SAVE'>
             <Button
               size='small'
@@ -133,7 +174,7 @@ const PromptList = ({
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': { backgroundColor: '#81c784' },
+                '&:hover': {backgroundColor: '#81c784'},
               }}
             >
               <SaveRoundedIcon />
@@ -149,20 +190,22 @@ const PromptList = ({
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': { backgroundColor: '#e57373' },
+                '&:hover': {backgroundColor: '#e57373'},
               }}
               onClick={handleClose}
             >
-              <CloseRoundedIcon sx={{ fontSize: 21 }} />
+              <CloseRoundedIcon sx={{fontSize: 21}} />
             </Button>
           </Tooltip>
         </Box>
       </Box>
-
+      <Typography sx={{mx: 'auto', mt: 2, color: 'red'}}>
+        {errorText}
+      </Typography>
       {promptArray?.length > 0 ? (
         <>
           <FormControlLabel
-            sx={{ ml: 'auto', mt: 2, mr: 2, mb: 1 }}
+            sx={{ml: 'auto', mt: 2, mr: 2, mb: 1}}
             control={
               <Switch
                 checked={showUsedIn}
@@ -171,15 +214,15 @@ const PromptList = ({
               />
             }
             label={showUsedIn ? 'Hide UsedIn' : 'Show UsedIn'}
-          />{' '}
-          <TableContainer sx={{ backgroundColor: '#fafafa' }} component={Paper}>
-            <Table sx={{ minWidth: 600 }} aria-label='promptList-table'>
+          />
+          <TableContainer sx={{backgroundColor: '#fafafa'}} component={Paper}>
+            <Table sx={{minWidth: 600}} aria-label='promptList-table'>
               <TableHead>
                 <TableRow>
-                  <TableCell align='center' sx={{ width: '20%' }}>
+                  <TableCell align='center' sx={{width: '20%'}}>
                     PromptName
                   </TableCell>
-                  <TableCell sx={{ width: '40%' }}>Description</TableCell>
+                  <TableCell sx={{width: '40%'}}>Description</TableCell>
                   {showUsedIn && <TableCell>UsedIn</TableCell>}
                 </TableRow>
               </TableHead>
@@ -191,7 +234,7 @@ const PromptList = ({
                       <TextField
                         value={row.description}
                         onChange={(e) => handleDescriptionChange(e, i)}
-                        sx={{ width: 200 }}
+                        sx={{width: 200}}
                         size='small'
                         multiline
                       />
@@ -206,54 +249,10 @@ const PromptList = ({
           </TableContainer>
         </>
       ) : (
-        <Typography sx={{ mx: 'auto', my: 4 }} variant='body1'>
+        <Typography sx={{mx: 'auto', my: 4}} variant='body1'>
           No prompts added
         </Typography>
       )}
-
-      {/* {promptArray?.length > 0 ? (
-        <Stack sx={{ my: 2, pl: 2 }} spacing={1}>
-          <Box sx={{ display: 'flex', mb: 2 }}>
-            <Box sx={{ width: '40%' }}>
-              <Typography
-                sx={{
-                  width: 'max-content',
-                  px: 1,
-                  fontSize: 'medium',
-                  backgroundColor: '#eceff1',
-                }}
-                variant='h6'
-              >
-                prompt name
-              </Typography>
-            </Box>
-
-            <Typography
-              sx={{
-                fontSize: 'medium',
-                width: 'max-content',
-                px: 1,
-                backgroundColor: '#eceff1',
-              }}
-              variant='h6'
-            >
-              description
-            </Typography>
-          </Box>
-          {promptArray?.map((p, i) => (
-            <Box key={i} sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography sx={{ width: '40%', ml: 1 }} variant='body1'>
-                {p.prompt}
-              </Typography>
-              <TextField sx={{ width: 200 }} size='small' multiline />
-            </Box>
-          ))}
-        </Stack>
-      ) : (
-        <Typography sx={{ mx: 'auto', my: 4 }} variant='body1'>
-          No prompts added
-        </Typography>
-      )} */}
     </Dialog>
   );
 };
