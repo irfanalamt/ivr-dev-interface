@@ -80,6 +80,7 @@ const CanvasComponent = () => {
   const lineTooltipRef = useRef(null);
   const isDragging = useRef(false);
   const isPalletShape = useRef(false);
+  const promptDescriptionObj = useRef(null);
 
   let startX, startY;
   let startX1, startY1;
@@ -1082,6 +1083,7 @@ const CanvasComponent = () => {
           open={isOpenParamList}
           handleClose={() => setIsOpenParamList(false)}
           stageGroup={stageGroup.current}
+          promptDescriptionObj={promptDescriptionObj}
         />
       )}
 
