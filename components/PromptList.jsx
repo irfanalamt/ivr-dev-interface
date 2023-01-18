@@ -215,26 +215,54 @@ const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
             }
             label={showUsedIn ? 'Hide UsedIn' : 'Show UsedIn'}
           />
-          <TableContainer sx={{backgroundColor: '#fafafa'}} component={Paper}>
-            <Table sx={{minWidth: 600}} aria-label='promptList-table'>
+          <TableContainer
+            sx={{backgroundColor: '#fafafa', mb: 2}}
+            component={Paper}
+          >
+            <Table
+              sx={{minWidth: 600}}
+              size='small'
+              aria-label='promptList-table'
+            >
               <TableHead>
                 <TableRow>
-                  <TableCell align='center' sx={{width: '20%'}}>
+                  <TableCell
+                    align='center'
+                    sx={{
+                      width: '20%',
+                      borderRight: '0.5px solid #bdbdbd',
+                      fontSize: 'medium',
+                    }}
+                  >
                     PromptName
                   </TableCell>
-                  <TableCell sx={{width: '40%'}}>Description</TableCell>
-                  {showUsedIn && <TableCell>UsedIn</TableCell>}
+                  <TableCell
+                    sx={{
+                      width: '40%',
+                      borderRight: '0.5px solid #bdbdbd',
+                      fontSize: 'medium',
+                    }}
+                  >
+                    Description
+                  </TableCell>
+                  {showUsedIn && (
+                    <TableCell sx={{fontSize: 'medium'}}>UsedIn</TableCell>
+                  )}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {promptArray?.map((row, i) => (
                   <TableRow key={i}>
-                    <TableCell align='center'>{row.prompt}</TableCell>
-                    <TableCell>
+                    <TableCell
+                      sx={{borderRight: '0.5px solid #bdbdbd'}}
+                      align='center'
+                    >
+                      <Typography variant='subtitle2'>{row.prompt}</Typography>
+                    </TableCell>
+                    <TableCell sx={{borderRight: '0.5px solid #bdbdbd'}}>
                       <TextField
                         value={row.description}
                         onChange={(e) => handleDescriptionChange(e, i)}
-                        sx={{width: 200}}
                         size='small'
                         multiline
                       />
