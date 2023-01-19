@@ -482,8 +482,8 @@ const CanvasComponent = () => {
         const dy = realY - startY;
         const current_shape = currentShape.current;
 
-        current_shape.x += dx || 5;
-        current_shape.y += dy || 5;
+        current_shape.x += dx || 0;
+        current_shape.y += dy || 0;
 
         clearAndDraw();
         startX = realX;

@@ -8,12 +8,10 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Switch,
-  FormControlLabel,
+  FormControlLabel
 } from '@mui/material';
 
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
@@ -117,11 +115,12 @@ const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
     }
     setErrorText('');
 
-    const allPrompts = promptArray.map((prompt) => ({
+    const allPrompts = promptArray.map((prompt, i) => ({
+      SlNo: i + 1,
       PromptName: prompt.prompt,
-      Description: prompt.description,
+      Description: prompt.description
     }));
-    generateCSV(['PromptName', 'Description'], allPrompts);
+    generateCSV(['SlNo', 'PromptName', 'Description'], allPrompts);
   }
 
   return (
@@ -132,7 +131,7 @@ const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
           alignItems: 'center',
           justifyContent: 'space-between',
           minWidth: 400,
-          mt: 1,
+          mt: 1
         }}
       >
         <Typography
@@ -140,7 +139,7 @@ const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
             backgroundColor: '#b0bec5',
             px: 2,
             boxShadow: 1,
-            width: 'max-content',
+            width: 'max-content'
           }}
           variant='h6'
         >
@@ -156,7 +155,7 @@ const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#dce775'},
+                '&:hover': {backgroundColor: '#dce775'}
               }}
               size='small'
             >
@@ -174,7 +173,7 @@ const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#81c784'},
+                '&:hover': {backgroundColor: '#81c784'}
               }}
             >
               <SaveRoundedIcon />
@@ -190,7 +189,7 @@ const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#e57373'},
+                '&:hover': {backgroundColor: '#e57373'}
               }}
               onClick={handleClose}
             >
@@ -215,66 +214,68 @@ const PromptList = ({open, handleClose, stageGroup, promptDescriptionObj}) => {
             }
             label={showUsedIn ? 'Hide UsedIn' : 'Show UsedIn'}
           />
-          <TableContainer
-            sx={{backgroundColor: '#fafafa', mb: 2}}
-            component={Paper}
+
+          <Table
+            sx={{minWidth: 600, mb: 2, backgroundColor: '#fafafa'}}
+            size='small'
+            aria-label='promptList-table'
           >
-            <Table
-              sx={{minWidth: 600}}
-              size='small'
-              aria-label='promptList-table'
-            >
-              <TableHead>
-                <TableRow>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  align='center'
+                  sx={{
+                    width: '20%',
+                    border: '0.5px solid #bdbdbd',
+                    fontSize: 'medium'
+                  }}
+                >
+                  PromptName
+                </TableCell>
+                <TableCell
+                  sx={{
+                    width: '40%',
+                    border: '0.5px solid #bdbdbd',
+                    fontSize: 'medium'
+                  }}
+                >
+                  Description
+                </TableCell>
+                {showUsedIn && (
                   <TableCell
+                    sx={{fontSize: 'medium', border: '0.5px solid #bdbdbd'}}
+                  >
+                    UsedIn
+                  </TableCell>
+                )}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {promptArray?.map((row, i) => (
+                <TableRow key={i}>
+                  <TableCell
+                    sx={{borderRight: '0.5px solid #bdbdbd'}}
                     align='center'
-                    sx={{
-                      width: '20%',
-                      borderRight: '0.5px solid #bdbdbd',
-                      fontSize: 'medium',
-                    }}
                   >
-                    PromptName
+                    <Typography variant='subtitle2'>{row.prompt}</Typography>
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      width: '40%',
-                      borderRight: '0.5px solid #bdbdbd',
-                      fontSize: 'medium',
-                    }}
-                  >
-                    Description
+                  <TableCell sx={{borderRight: '0.5px solid #bdbdbd'}}>
+                    <TextField
+                      value={row.description}
+                      onChange={(e) => handleDescriptionChange(e, i)}
+                      size='small'
+                      multiline
+                      variant='standard'
+                      InputProps={{
+                        disableUnderline: true
+                      }}
+                    />
                   </TableCell>
-                  {showUsedIn && (
-                    <TableCell sx={{fontSize: 'medium'}}>UsedIn</TableCell>
-                  )}
+                  {showUsedIn && <TableCell>{row.usedIn.join(', ')}</TableCell>}
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {promptArray?.map((row, i) => (
-                  <TableRow key={i}>
-                    <TableCell
-                      sx={{borderRight: '0.5px solid #bdbdbd'}}
-                      align='center'
-                    >
-                      <Typography variant='subtitle2'>{row.prompt}</Typography>
-                    </TableCell>
-                    <TableCell sx={{borderRight: '0.5px solid #bdbdbd'}}>
-                      <TextField
-                        value={row.description}
-                        onChange={(e) => handleDescriptionChange(e, i)}
-                        size='small'
-                        multiline
-                      />
-                    </TableCell>
-                    {showUsedIn && (
-                      <TableCell>{row.usedIn.join(', ')}</TableCell>
-                    )}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              ))}
+            </TableBody>
+          </Table>
         </>
       ) : (
         <Typography sx={{mx: 'auto', my: 4}} variant='body1'>
