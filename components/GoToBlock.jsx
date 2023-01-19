@@ -108,15 +108,14 @@ const GoToBlock = ({shape, handleCloseDrawer, entireStageGroup}) => {
         backgroundColor='#ffcc80'
         blockName='Jumper'
       />
-      <ListItem sx={{marginTop: 4}}>
+      <ListItem sx={{marginTop: 2}}>
         <Typography variant='button' sx={{fontSize: 16, width: '40%'}}>
           Type:
         </Typography>
         <RadioGroup
           name='controlled-radio-buttons-group'
           value={gotoType}
-          onChange={(e) => setGotoType(e.target.value)}
-        >
+          onChange={(e) => setGotoType(e.target.value)}>
           <FormControlLabel value='exit' control={<Radio />} label='EXIT' />
           <FormControlLabel value='entry' control={<Radio />} label='ENTRY' />
         </RadioGroup>
@@ -133,15 +132,13 @@ const GoToBlock = ({shape, handleCloseDrawer, entireStageGroup}) => {
             onChange={(e) => {
               handleNameValidation(e);
               setShapeName(e.target.value);
-            }}
-          ></TextField>
+            }}></TextField>
         ) : (
           <Select
             sx={{width: 180, marginX: 1}}
             size='small'
             value={exitShapeName}
-            onChange={(e) => setExitShapeName(e.target.value)}
-          >
+            onChange={(e) => setExitShapeName(e.target.value)}>
             {calculateAllExitPoints().map((el, i) => (
               <MenuItem key={i} value={el || ''}>
                 {el}
@@ -160,8 +157,7 @@ const GoToBlock = ({shape, handleCloseDrawer, entireStageGroup}) => {
             display: 'none'
           }}
           variant='subtitle2'
-          ref={nameErrorRef}
-        ></Typography>
+          ref={nameErrorRef}></Typography>
       </ListItem>
     </List>
   );

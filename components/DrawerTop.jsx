@@ -22,8 +22,7 @@ const DrawerTop = ({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
-        }}
-      >
+        }}>
         <Typography
           sx={{
             backgroundColor: backgroundColor,
@@ -33,12 +32,26 @@ const DrawerTop = ({
             fontSize: '1.5rem',
             width: 'max-content'
           }}
-          variant='h6'
-        >
+          variant='h6'>
           {blockName}
         </Typography>
 
         <Box>
+          <Tooltip placement='right' title='guide' arrow>
+            <IconButton
+              sx={{
+                ml: 4,
+                mr: 2,
+                backgroundColor: '#dcdcdc',
+                '&:hover': {backgroundColor: '#80cbc4'},
+                width: 'max-content'
+              }}
+              aria-label='user-guide'
+              size='small'
+              onClick={() => setOpenGuideDialog(true)}>
+              <HelpCenterIcon sx={{color: 'black', fontSize: 'medium'}} />
+            </IconButton>
+          </Tooltip>
           <Tooltip title='SAVE'>
             <Button
               sx={{
@@ -50,8 +63,7 @@ const DrawerTop = ({
               }}
               size='small'
               variant='contained'
-              onClick={saveUserValues}
-            >
+              onClick={saveUserValues}>
               <SaveRoundedIcon sx={{fontSize: 21}} />
             </Button>
           </Tooltip>
@@ -69,30 +81,13 @@ const DrawerTop = ({
               onClick={() => {
                 shape.setSelected(false);
                 handleCloseDrawer();
-              }}
-            >
+              }}>
               <CloseRoundedIcon sx={{fontSize: 21}} />
             </Button>
           </Tooltip>
         </Box>
       </Box>
-      <Tooltip placement='right' title='guide' arrow>
-        <IconButton
-          sx={{
-            mt: 1,
-            ml: 1,
-            backgroundColor: '#dcdcdc',
-            '&:hover': {backgroundColor: '#80cbc4'},
-            width: 'max-content',
-            position: 'absolute'
-          }}
-          aria-label='user-guide'
-          size='small'
-          onClick={() => setOpenGuideDialog(true)}
-        >
-          <HelpCenterIcon sx={{color: 'black', fontSize: 'medium'}} />
-        </IconButton>
-      </Tooltip>
+
       {openGuideDialog && (
         <DrawerUserGuideDialog
           open={openGuideDialog}
