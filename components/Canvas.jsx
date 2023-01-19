@@ -17,9 +17,9 @@ import {
   Paper,
   Snackbar,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
 import Lines from '../models/Lines';
@@ -27,13 +27,13 @@ import DrawerComponent from './Drawer';
 import SetVariables from './SetVariables';
 import CanvasAppbar from './CanvasAppbar';
 import ResetCanvasDialog from './ResetCanvasDialog';
-import { useRouter } from 'next/router';
+import {useRouter} from 'next/router';
 import SaveFileDialog from './SaveFileDialog';
 import PromptList from './PromptList';
 
 const CanvasComponent = () => {
   const router = useRouter();
-  const { projectData } = router.query;
+  const {projectData} = router.query;
 
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isOpenVars, setIsOpenVars] = useState(false);
@@ -69,7 +69,7 @@ const CanvasComponent = () => {
     switch: 1,
     endFlow: 1,
     connector: 1,
-    jumper: 1,
+    jumper: 1
   });
   const userVariables = useRef([]);
   const infoMessage = useRef('');
@@ -139,7 +139,7 @@ const CanvasComponent = () => {
         stageGroup: stageGroupCurrent,
         shapeCount: shapeCountCurrent,
         pageCount: pageCountCurrent,
-        ivrName: ivrNameCurrent,
+        ivrName: ivrNameCurrent
       } = JSON.parse(projectData);
 
       userVariables.current = userVariablesCurrent;
@@ -164,7 +164,7 @@ const CanvasComponent = () => {
   }
 
   function resetStage() {
-    router.push({ pathname: '/stageCanvas3' });
+    router.push({pathname: '/stageCanvas3'});
 
     stageGroup.current = [];
     for (let i = 1; i <= pageCount; i++) {
@@ -182,7 +182,7 @@ const CanvasComponent = () => {
       switch: 1,
       endFlow: 1,
       connector: 1,
-      jumper: 1,
+      jumper: 1
     };
   }
 
@@ -292,7 +292,7 @@ const CanvasComponent = () => {
       8: switchShape,
       9: endFlow,
       10: connector,
-      11: jumper,
+      11: jumper
     });
   }
 
@@ -442,7 +442,7 @@ const CanvasComponent = () => {
     const boundingRect = canvasRef.current.getBoundingClientRect();
     const realX = clientX - boundingRect.left;
     const realY = clientY - boundingRect.top;
-    return { realX, realY };
+    return {realX, realY};
   }
   function resetTooltips() {
     const tooltipRefs = [tooltipRef, stageTooltipRef, lineTooltipRef];
@@ -451,8 +451,8 @@ const CanvasComponent = () => {
 
   function handleMouseDown(e) {
     e.preventDefault();
-    const { clientX, clientY, button } = e;
-    const { realX, realY } = getRealCoordinates(clientX, clientY);
+    const {clientX, clientY, button} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
     clickedInShape = false;
 
     // check if right click
@@ -472,8 +472,8 @@ const CanvasComponent = () => {
 
   function handleMouseMove(e) {
     e.preventDefault();
-    const { clientX, clientY } = e;
-    const { realX, realY } = getRealCoordinates(clientX, clientY);
+    const {clientX, clientY} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
 
     if (isDragging.current) {
       if (isConnecting === 0) {
@@ -482,8 +482,8 @@ const CanvasComponent = () => {
         const dy = realY - startY;
         const current_shape = currentShape.current;
 
-        current_shape.x += dx;
-        current_shape.y += dy;
+        current_shape.x += dx || 5;
+        current_shape.y += dy || 5;
 
         clearAndDraw();
         startX = realX;
@@ -561,8 +561,8 @@ const CanvasComponent = () => {
 
   function handleMouseUp(e) {
     e.preventDefault();
-    const { clientX, clientY, button } = e;
-    const { realX, realY } = getRealCoordinates(clientX, clientY);
+    const {clientX, clientY, button} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
 
     if (button !== 0) return;
 
@@ -669,8 +669,8 @@ const CanvasComponent = () => {
   }
 
   function moveTempShape(e) {
-    const { clientX, clientY } = e;
-    const { realX, realY } = getRealCoordinates(clientX, clientY);
+    const {clientX, clientY} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
 
     const tempShape =
       stageGroup.current[pageNumber.current - 1].getShapes().temp;
@@ -823,10 +823,10 @@ const CanvasComponent = () => {
       userVariables: userVariables.current,
       shapeCount: shapeCount.current,
       pageCount: pageCount,
-      ivrName: ivrName,
+      ivrName: ivrName
     };
 
-    const file = new Blob([JSON.stringify(data)], { type: 'text/json' });
+    const file = new Blob([JSON.stringify(data)], {type: 'text/json'});
     const link = document.createElement('a');
     link.href = URL.createObjectURL(file);
     link.download = `${name}.ivrf`;
@@ -842,7 +842,7 @@ const CanvasComponent = () => {
     if (!jsString) return;
 
     // Create a Blob object from the JS string
-    const configFile = new Blob([jsString], { type: 'application/javascript' });
+    const configFile = new Blob([jsString], {type: 'application/javascript'});
 
     // Create a download link for the config file
     const downloadLink = document.createElement('a');
@@ -865,7 +865,7 @@ const CanvasComponent = () => {
     for (const page of stageGroup.current) {
       entirestageGroup.shapes = {
         ...entirestageGroup.shapes,
-        ...page.shapes,
+        ...page.shapes
       };
     }
 
@@ -961,7 +961,7 @@ const CanvasComponent = () => {
     const formattedCode = prettier.format(finalCodeString, {
       parser: 'babel',
       parser: (text, options) => babelParser.parse(text, options),
-      singleQuote: true,
+      singleQuote: true
     });
 
     return formattedCode;
@@ -986,7 +986,7 @@ const CanvasComponent = () => {
         ivrName={ivrName}
       />
       <canvas
-        style={{ backgroundColor: '#EFF7FD' }}
+        style={{backgroundColor: '#EFF7FD'}}
         width={window.innerWidth - 20}
         height={window.innerHeight * 2}
         ref={canvasRef}
@@ -1007,19 +1007,19 @@ const CanvasComponent = () => {
           backgroundColor: '#eeeeee',
           px: 2,
           height: 35,
-          width: '100vw',
+          width: '100vw'
         }}
         id='bottomBar'
       >
         <Tooltip title='setVariables' arrow>
           <SettingsApplicationsIcon
-            sx={{ height: 30 }}
+            sx={{height: 30}}
             onClick={() => setIsOpenVars(true)}
           />
         </Tooltip>
         <Tooltip title='prompt list' placement='right-start' arrow>
           <ListAltIcon
-            sx={{ height: 28, ml: 4 }}
+            sx={{height: 28, ml: 4}}
             onClick={() => setIsOpenParamList(true)}
           />
         </Tooltip>
@@ -1034,16 +1034,16 @@ const CanvasComponent = () => {
             mb: 0.5,
             backgroundColor: '#b3e5fc',
             fontSize: '1rem',
-            borderRadius: 2,
+            borderRadius: 2
           }}
           variant='subtitle2'
         >
-          <InfoIcon sx={{ mr: 0.5, color: '#ef5350' }} />
+          <InfoIcon sx={{mr: 0.5, color: '#ef5350'}} />
           {infoMessage.current}
         </Typography>
-        <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ml: 'auto', display: 'flex', alignItems: 'center'}}>
           <Pagination
-            sx={{ height: 30 }}
+            sx={{height: 30}}
             count={pageCount}
             shape='rounded'
             onChange={handlePageChange}
@@ -1052,12 +1052,12 @@ const CanvasComponent = () => {
           />
           <Tooltip title='Add Page'>
             <IconButton onClick={handleAddPage}>
-              <AddBoxIcon sx={{ fontSize: 'large' }} />
+              <AddBoxIcon sx={{fontSize: 'large'}} />
             </IconButton>
           </Tooltip>
           <Tooltip title='Remove Page'>
             <IconButton onClick={handleRemovePage}>
-              <IndeterminateCheckBoxIcon sx={{ fontSize: 'large' }} />
+              <IndeterminateCheckBoxIcon sx={{fontSize: 'large'}} />
             </IconButton>
           </Tooltip>
         </Box>
@@ -1120,7 +1120,7 @@ const CanvasComponent = () => {
           backgroundColor: '#fdf5ef',
           fontSize: 'small',
           px: 1,
-          boxShadow: 1,
+          boxShadow: 1
         }}
         ref={tooltipRef}
         variant='subtitle2'
@@ -1135,7 +1135,7 @@ const CanvasComponent = () => {
           fontSize: 'small',
           px: 1,
           boxShadow: 1,
-          borderRadius: 1,
+          borderRadius: 1
         }}
         ref={stageTooltipRef}
         variant='subtitle2'
@@ -1149,7 +1149,7 @@ const CanvasComponent = () => {
           backgroundColor: '#e0f7fa',
           px: 1,
           boxShadow: 1,
-          borderRadius: 1,
+          borderRadius: 1
         }}
         ref={lineTooltipRef}
         variant='subtitle2'
@@ -1157,8 +1157,8 @@ const CanvasComponent = () => {
         Im a lineTooltip
       </Typography>
       <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        sx={{ mt: 5, mr: 1 }}
+        anchorOrigin={{vertical: 'top', horizontal: 'right'}}
+        sx={{mt: 5, mr: 1}}
         open={openSnackbar}
         autoHideDuration={2500}
         onClose={() => setOpenSnackbar(false)}
@@ -1166,7 +1166,7 @@ const CanvasComponent = () => {
         <Alert
           onClose={() => setOpenSnackbar(false)}
           severity='warning'
-          sx={{ width: '100%' }}
+          sx={{width: '100%'}}
         >
           {snackbarMessage.current}
         </Alert>
