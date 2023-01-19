@@ -7,13 +7,13 @@ import {
   FormControlLabel,
   Radio,
   Select,
-  MenuItem,
+  MenuItem
 } from '@mui/material';
-import { useRef, useState } from 'react';
-import { checkValidity } from '../src/helpers';
+import {useRef, useState} from 'react';
+import {checkValidity} from '../src/helpers';
 import DrawerTop from './DrawerTop';
 
-const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
+const GoToBlock = ({shape, handleCloseDrawer, entireStageGroup}) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [gotoType, setGotoType] = useState(shape.userValues?.type ?? 'exit');
   const [exitShapeName, setExitShapeName] = useState(
@@ -44,7 +44,7 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
       shape.setFillStyle('#388e3c');
       shape.setUserValues({
         type: gotoType,
-        exitPoint: exitShapeName,
+        exitPoint: exitShapeName
       });
       return;
     }
@@ -55,14 +55,14 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
     if (nameErrorRef.current.innerText === '') shape.setText(shapeName);
 
     shape.setUserValues({
-      type: gotoType,
+      type: gotoType
     });
 
     console.log('all exit points', calculateAllExitPoints());
   }
 
   function handleNameValidation(e) {
-    const { value } = e.target;
+    const {value} = e.target;
 
     const nameErrorBox = nameErrorRef.current;
     const nameErrorMessage = checkValidity('object', value);
@@ -100,7 +100,7 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
   }
 
   return (
-    <List sx={{ minWidth: 300 }}>
+    <List sx={{minWidth: 300}}>
       <DrawerTop
         saveUserValues={saveUserValues}
         shape={shape}
@@ -108,8 +108,8 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
         backgroundColor='#ffcc80'
         blockName='Jumper'
       />
-      <ListItem sx={{ marginTop: 1 }}>
-        <Typography variant='button' sx={{ fontSize: 16, width: '40%' }}>
+      <ListItem sx={{marginTop: 4}}>
+        <Typography variant='button' sx={{fontSize: 16, width: '40%'}}>
           Type:
         </Typography>
         <RadioGroup
@@ -121,13 +121,13 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
           <FormControlLabel value='entry' control={<Radio />} label='ENTRY' />
         </RadioGroup>
       </ListItem>{' '}
-      <ListItem sx={{ marginTop: 1 }}>
-        <Typography variant='button' sx={{ fontSize: 16, width: '40%' }}>
+      <ListItem sx={{marginTop: 1}}>
+        <Typography variant='button' sx={{fontSize: 16, width: '40%'}}>
           Name:
         </Typography>
         {gotoType === 'exit' ? (
           <TextField
-            sx={{ width: 180, marginX: 1 }}
+            sx={{width: 180, marginX: 1}}
             size='small'
             value={shapeName}
             onChange={(e) => {
@@ -137,7 +137,7 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
           ></TextField>
         ) : (
           <Select
-            sx={{ width: 180, marginX: 1 }}
+            sx={{width: 180, marginX: 1}}
             size='small'
             value={exitShapeName}
             onChange={(e) => setExitShapeName(e.target.value)}
@@ -157,7 +157,7 @@ const GoToBlock = ({ shape, handleCloseDrawer, entireStageGroup }) => {
             boxShadow: 1,
             paddingX: 1,
             backgroundColor: '#ffcdd2',
-            display: 'none',
+            display: 'none'
           }}
           variant='subtitle2'
           ref={nameErrorRef}
