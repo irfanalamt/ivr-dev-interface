@@ -27,12 +27,11 @@ const UserGuideDialog = ({open, handleClose}) => {
             </Typography>
             <List>
               <ListItem disablePadding>
-                • To add elements to the workspace, drag and drop them from the
-                toolbar to the desired location.
+                • Drag and drop elements from the toolbar to the desired
+                location on the workspace.
               </ListItem>
               <ListItem disablePadding>
-                • Once an element is added, left click on it to open its
-                settings panel.
+                • Left click on the added element to open its settings panel.
               </ListItem>
             </List>
           </Box>
@@ -42,16 +41,16 @@ const UserGuideDialog = ({open, handleClose}) => {
             </Typography>
             <List>
               <ListItem disablePadding>
-                • Switch to connect mode by right-clicking anywhere on the
-                workspace.
+                • Right-click anywhere on the workspace to switch to connect
+                mode.
               </ListItem>
               <ListItem disablePadding>
-                • To connect two elements, left-click and hold down the mouse on
-                the first element and release it on the second element.
+                • Left-click and hold down the mouse on the first element, then
+                release it on the second element to connect them.
               </ListItem>
               <ListItem disablePadding>
-                • To switch back to drawing mode, left-click anywhere on the
-                workspace.
+                • Left-click anywhere on the workspace to switch back to drawing
+                mode.
               </ListItem>
             </List>
           </Box>
@@ -61,7 +60,8 @@ const UserGuideDialog = ({open, handleClose}) => {
             </Typography>
             <List>
               <ListItem disablePadding>
-                • To delete elements, drag them to the bottom right delete icon.
+                • Drag the element you wish to delete to the bottom right delete
+                icon.
               </ListItem>
             </List>
           </Box>
