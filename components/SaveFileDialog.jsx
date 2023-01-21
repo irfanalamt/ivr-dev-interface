@@ -5,12 +5,12 @@ import {
   DialogActions,
   DialogContent,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material';
-import { useState } from 'react';
-import { checkValidity } from '../src/helpers';
+import {useState} from 'react';
+import {checkValidity} from '../src/helpers';
 
-const SaveFileDialog = ({ open, handleClose, saveToFile, setIvrName }) => {
+const SaveFileDialog = ({open, handleClose, saveToFile, setIvrName}) => {
   const [ivrName, setIVRName] = useState('');
   const [version, setVersion] = useState(1);
   const [errorText, setErrorText] = useState('');
@@ -19,7 +19,7 @@ const SaveFileDialog = ({ open, handleClose, saveToFile, setIvrName }) => {
     if (ivrName === '' || errorText !== '') return;
     setIvrName(`${ivrName}_${version}`);
     handleClose();
-    saveToFile(`${ivrName}_${version}`);
+    saveToFile(`${ivrName}_${version}`, `${ivrName}_${version}`);
   }
 
   function handleNameValidation(value) {
@@ -41,19 +41,18 @@ const SaveFileDialog = ({ open, handleClose, saveToFile, setIvrName }) => {
           color: '#FF0000',
           width: 'max-content',
           mx: 'auto',
-          fontSize: '0.75rem',
+          fontSize: '0.75rem'
         }}
-        variant='subtitle1'
-      >
+        variant='subtitle1'>
         {errorText}
       </Typography>
       <DialogContent>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography sx={{ width: '35%' }} variant='subtitle2'>
+        <Box sx={{display: 'flex', alignItems: 'center'}}>
+          <Typography sx={{width: '35%'}} variant='subtitle2'>
             IVR name:
           </Typography>
           <TextField
-            sx={{ width: 200 }}
+            sx={{width: 200}}
             value={ivrName}
             onChange={(e) => {
               handleNameValidation(e.target.value);
@@ -62,12 +61,12 @@ const SaveFileDialog = ({ open, handleClose, saveToFile, setIvrName }) => {
             size='small'
           />
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-          <Typography sx={{ width: '35%' }} variant='subtitle2'>
+        <Box sx={{display: 'flex', alignItems: 'center', mt: 1}}>
+          <Typography sx={{width: '35%'}} variant='subtitle2'>
             version:
           </Typography>
           <TextField
-            sx={{ width: 80 }}
+            sx={{width: 80}}
             value={version}
             onChange={(e) => setVersion(e.target.value)}
             size='small'
@@ -80,16 +79,14 @@ const SaveFileDialog = ({ open, handleClose, saveToFile, setIvrName }) => {
           onClick={handleClose}
           color='primary'
           variant='outlined'
-          size='small'
-        >
+          size='small'>
           Cancel
         </Button>
         <Button
           onClick={handleSaveFile}
           color='secondary'
           variant='contained'
-          size='small'
-        >
+          size='small'>
           Save File
         </Button>
       </DialogActions>

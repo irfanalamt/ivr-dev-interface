@@ -3,6 +3,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 const prettier = require('prettier');
 const babelParser = require('@babel/parser');
 
@@ -27,6 +28,7 @@ import ResetCanvasDialog from './ResetCanvasDialog';
 import {useRouter} from 'next/router';
 import SaveFileDialog from './SaveFileDialog';
 import PromptList from './PromptList';
+import ModuleManager from './ModuleManager';
 
 const CanvasComponent = ({isModule = false}) => {
   const router = useRouter();
@@ -34,6 +36,8 @@ const CanvasComponent = ({isModule = false}) => {
 
   const [isOpenDrawer, setIsOpenDrawer] = useState(false);
   const [isOpenVars, setIsOpenVars] = useState(false);
+  const [isOpenModules, setIsOpenModules] = useState(false);
+
   const [isOpenParamList, setIsOpenParamList] = useState(false);
   const [isConnecting, setIsConnecting] = useState(0);
   const [showInfoMessage, setShowInfoMessage] = useState(false);
@@ -815,7 +819,7 @@ const CanvasComponent = ({isModule = false}) => {
     userVariables.current = arr;
   }
 
-  function saveToFile(name) {
+  function saveToFile(name, ivrName) {
     const data = {
       stageGroup: stageGroup.current,
       userVariables: userVariables.current,
@@ -1013,10 +1017,17 @@ const CanvasComponent = ({isModule = false}) => {
             onClick={() => setIsOpenVars(true)}
           />
         </Tooltip>
-        <Tooltip title='prompt list' placement='right-start' arrow>
+        <Tooltip title='prompt list' arrow>
           <ListAltIcon
-            sx={{height: 28, ml: 4}}
+            sx={{height: 28, ml: 2}}
             onClick={() => setIsOpenParamList(true)}
+          />
+        </Tooltip>
+
+        <Tooltip title='module manager' arrow>
+          <ViewModuleIcon
+            onClick={() => setIsOpenModules(true)}
+            sx={{height: 30, ml: 2}}
           />
         </Tooltip>
 
@@ -1070,6 +1081,18 @@ const CanvasComponent = ({isModule = false}) => {
           userVariables={userVariables.current}
           setUserVariables={setUserVariables}
           entireStageGroup={stageGroup.current}
+        />
+      </Drawer>
+      <Drawer
+        anchor='left'
+        open={isOpenModules}
+        onClose={() => setIsOpenModules(false)}>
+        <ModuleManager
+          handleCloseDrawer={() => {
+            setIsOpenModules(false);
+            initializePallette();
+            clearAndDraw();
+          }}
         />
       </Drawer>
       {isOpenParamList && (

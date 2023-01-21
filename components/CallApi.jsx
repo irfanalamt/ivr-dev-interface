@@ -8,12 +8,12 @@ import {
   Select,
   Snackbar,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import { useRef, useState } from 'react';
+import {useRef, useState} from 'react';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
 
@@ -23,21 +23,21 @@ const CallApi = ({
   userVariables,
   clearAndDraw,
   stageGroup,
-  childRef,
+  childRef
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [inputArr, setInputArr] = useState(
     shape.userValues?.inputArr || [
       {
-        value: '',
-      },
+        value: ''
+      }
     ]
   );
   const [outputArr, setOutputArr] = useState(
     shape.userValues?.outputArr || [
       {
-        value: '',
-      },
+        value: ''
+      }
     ]
   );
   const [endpoint, setEndpoint] = useState(shape.userValues?.endpoint || '');
@@ -87,15 +87,15 @@ const CallApi = ({
 
     shape.setText(shapeName || 'callAPI');
     clearAndDraw();
-    shape.setUserValues({ endpoint, inputArr, outputArr });
-    console.log('🌟', { inputArr, outputArr });
+    shape.setUserValues({endpoint, inputArr, outputArr});
+    console.log('🌟', {inputArr, outputArr});
     generateJS();
   }
 
   const getCurrentUserValues = () => {
     return JSON.stringify({
       name: shapeName,
-      userValues: { endpoint, inputArr, outputArr },
+      userValues: {endpoint, inputArr, outputArr}
     });
   };
   childRef.getCurrentUserValues = getCurrentUserValues;
@@ -132,8 +132,8 @@ const CallApi = ({
       return [
         ...s,
         {
-          value: '',
-        },
+          value: ''
+        }
       ];
     });
   }
@@ -142,8 +142,8 @@ const CallApi = ({
       return [
         ...s,
         {
-          value: '',
-        },
+          value: ''
+        }
       ];
     });
   }
@@ -162,18 +162,9 @@ const CallApi = ({
     });
   }
 
-  function handleApiCall() {
-    const inputVarList = inputArr.map((el) => el.value);
-    const outputVarList = outputArr.map((el) => el.value);
-
-    console.log('inputVarList', inputVarList);
-    console.log('outputVarList', outputVarList);
-    console.log('endpoint', endpoint);
-  }
-
   return (
     <>
-      <List sx={{ minWidth: 300 }}>
+      <List sx={{minWidth: 300}}>
         <DrawerTop
           saveUserValues={saveUserValues}
           shape={shape}
@@ -191,9 +182,9 @@ const CallApi = ({
           drawerNameRef={drawerNameRef}
           shapeId={shape.id}
         />
-        <Divider sx={{ mb: 2 }} />
+        <Divider sx={{mb: 2}} />
         <ListItem>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='h6'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='h6'>
             REST endpoint:
           </Typography>
         </ListItem>
@@ -208,48 +199,45 @@ const CallApi = ({
             }}
           />
         </ListItem>
-        <Divider sx={{ mt: 2 }} />
+        <Divider sx={{mt: 2}} />
         <ListItem>
-          <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
+          <Typography sx={{fontSize: '1rem', width: '50%'}} variant='h6'>
             Input Variables:
           </Typography>
           <Button
             sx={{
               ml: 1,
               backgroundColor: '#dcdcdc',
-              '&:hover': { backgroundColor: '#b0b0b0' },
+              '&:hover': {backgroundColor: '#b0b0b0'}
             }}
             size='small'
             variant='contained'
-            onClick={addInput}
-          >
-            <AddRoundedIcon sx={{ color: 'green', fontSize: '1.2rem' }} />
+            onClick={addInput}>
+            <AddRoundedIcon sx={{color: 'green', fontSize: '1.2rem'}} />
           </Button>
           <Button
             sx={{
               ml: 1,
               backgroundColor: '#dcdcdc',
-              '&:hover': { backgroundColor: '#b0b0b0' },
+              '&:hover': {backgroundColor: '#b0b0b0'}
             }}
             size='small'
             variant='contained'
-            onClick={removeInput}
-          >
-            <RemoveRoundedIcon sx={{ color: 'red', fontSize: '1.2rem' }} />
+            onClick={removeInput}>
+            <RemoveRoundedIcon sx={{color: 'red', fontSize: '1.2rem'}} />
           </Button>
         </ListItem>
         <ListItem>
           {inputArr?.map((item, i) => {
             return (
               <Select
-                sx={{ mr: 0.5 }}
+                sx={{mr: 0.5}}
                 onChange={(e) => {
                   handleInputArrChange(e, i);
                 }}
                 value={item.value}
                 key={i}
-                size='small'
-              >
+                size='small'>
                 {userVariables?.map((el, i) => {
                   return (
                     <MenuItem key={i} value={el.name}>
@@ -261,9 +249,9 @@ const CallApi = ({
             );
           })}
         </ListItem>
-        <Divider sx={{ mt: 2 }} />
+        <Divider sx={{mt: 2}} />
         <ListItem>
-          <Typography sx={{ fontSize: '1rem', width: '50%' }} variant='h6'>
+          <Typography sx={{fontSize: '1rem', width: '50%'}} variant='h6'>
             Output Variables:
           </Typography>
 
@@ -271,39 +259,36 @@ const CallApi = ({
             sx={{
               ml: 1,
               backgroundColor: '#dcdcdc',
-              '&:hover': { backgroundColor: '#b0b0b0' },
+              '&:hover': {backgroundColor: '#b0b0b0'}
             }}
             size='small'
             variant='contained'
-            onClick={addOutput}
-          >
-            <AddRoundedIcon sx={{ color: 'green', fontSize: '1.2rem' }} />
+            onClick={addOutput}>
+            <AddRoundedIcon sx={{color: 'green', fontSize: '1.2rem'}} />
           </Button>
           <Button
             sx={{
               ml: 1,
               backgroundColor: '#dcdcdc',
-              '&:hover': { backgroundColor: '#b0b0b0' },
+              '&:hover': {backgroundColor: '#b0b0b0'}
             }}
             size='small'
             variant='contained'
-            onClick={removeOutput}
-          >
-            <RemoveRoundedIcon sx={{ color: 'red', fontSize: '1.2rem' }} />
+            onClick={removeOutput}>
+            <RemoveRoundedIcon sx={{color: 'red', fontSize: '1.2rem'}} />
           </Button>
         </ListItem>
         <ListItem>
           {outputArr?.map((item, i) => {
             return (
               <Select
-                sx={{ mr: 0.5 }}
+                sx={{mr: 0.5}}
                 onChange={(e) => {
                   handleOutputArrChange(e, i);
                 }}
                 value={item.value}
                 key={i}
-                size='small'
-              >
+                size='small'>
                 {userVariables?.map((el, i) => {
                   return (
                     <MenuItem key={i} value={el.name}>
@@ -315,33 +300,15 @@ const CallApi = ({
             );
           })}
         </ListItem>
-
-        <ListItem>
-          <Button
-            onClick={handleApiCall}
-            sx={{
-              mx: 'auto',
-              mt: 2,
-              backgroundColor: '#dcdcdc',
-              '&:hover': { backgroundColor: '#b0b0b0' },
-            }}
-            variant='contained'
-            size='small'
-          >
-            <SendRoundedIcon sx={{ color: '#2196f3' }} />
-          </Button>
-        </ListItem>
       </List>
       <Snackbar
         open={openToast}
         autoHideDuration={6000}
-        onClose={() => setOpenToast(false)}
-      >
+        onClose={() => setOpenToast(false)}>
         <Alert
           onClose={() => setOpenToast(false)}
           severity='warning'
-          sx={{ width: '100%' }}
-        >
+          sx={{width: '100%'}}>
           Please set endpoint, input and output.
         </Alert>
       </Snackbar>
