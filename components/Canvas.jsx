@@ -8,13 +8,10 @@ const babelParser = require('@babel/parser');
 
 import {
   Alert,
-  Backdrop,
   Box,
   Drawer,
   IconButton,
-  Modal,
   Pagination,
-  Paper,
   Snackbar,
   Tooltip,
   Typography
@@ -31,7 +28,7 @@ import {useRouter} from 'next/router';
 import SaveFileDialog from './SaveFileDialog';
 import PromptList from './PromptList';
 
-const CanvasComponent = () => {
+const CanvasComponent = ({isModule = false}) => {
   const router = useRouter();
   const {projectData} = router.query;
 
@@ -164,7 +161,8 @@ const CanvasComponent = () => {
   }
 
   function resetStage() {
-    router.push({pathname: '/stageCanvas3'});
+    if (isModule) router.push('/module');
+    else router.push({pathname: '/project'});
 
     stageGroup.current = [];
     for (let i = 1; i <= pageCount; i++) {
@@ -996,8 +994,7 @@ const CanvasComponent = () => {
         }}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
-        onContextMenu={handleRightClick}
-      ></canvas>
+        onContextMenu={handleRightClick}></canvas>
       <Box
         sx={{
           display: 'flex',
@@ -1009,8 +1006,7 @@ const CanvasComponent = () => {
           height: 35,
           width: '100vw'
         }}
-        id='bottomBar'
-      >
+        id='bottomBar'>
         <Tooltip title='setVariables' arrow>
           <SettingsApplicationsIcon
             sx={{height: 30}}
@@ -1036,8 +1032,7 @@ const CanvasComponent = () => {
             fontSize: '1rem',
             borderRadius: 2
           }}
-          variant='subtitle2'
-        >
+          variant='subtitle2'>
           <InfoIcon sx={{mr: 0.5, color: '#ef5350'}} />
           {infoMessage.current}
         </Typography>
@@ -1065,8 +1060,7 @@ const CanvasComponent = () => {
       <Drawer
         anchor='left'
         open={isOpenVars}
-        onClose={() => setIsOpenVars(false)}
-      >
+        onClose={() => setIsOpenVars(false)}>
         <SetVariables
           handleCloseDrawer={() => {
             setIsOpenVars(false);
@@ -1123,8 +1117,7 @@ const CanvasComponent = () => {
           boxShadow: 1
         }}
         ref={tooltipRef}
-        variant='subtitle2'
-      >
+        variant='subtitle2'>
         Im a tooltip
       </Typography>
       <Typography
@@ -1138,8 +1131,7 @@ const CanvasComponent = () => {
           borderRadius: 1
         }}
         ref={stageTooltipRef}
-        variant='subtitle2'
-      >
+        variant='subtitle2'>
         Im a stageTooltip
       </Typography>
       <Typography
@@ -1152,8 +1144,7 @@ const CanvasComponent = () => {
           borderRadius: 1
         }}
         ref={lineTooltipRef}
-        variant='subtitle2'
-      >
+        variant='subtitle2'>
         Im a lineTooltip
       </Typography>
       <Snackbar
@@ -1161,13 +1152,11 @@ const CanvasComponent = () => {
         sx={{mt: 5, mr: 1}}
         open={openSnackbar}
         autoHideDuration={2500}
-        onClose={() => setOpenSnackbar(false)}
-      >
+        onClose={() => setOpenSnackbar(false)}>
         <Alert
           onClose={() => setOpenSnackbar(false)}
           severity='warning'
-          sx={{width: '100%'}}
-        >
+          sx={{width: '100%'}}>
           {snackbarMessage.current}
         </Alert>
       </Snackbar>
