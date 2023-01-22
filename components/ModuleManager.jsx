@@ -11,13 +11,31 @@ import {
   Select,
   TextField,
   Tooltip,
-  Typography
+  Typography,
 } from '@mui/material';
 import {useState} from 'react';
 
-const ModuleManager = ({handleCloseDrawer}) => {
+const ModuleManager = ({handleCloseDrawer, moduleList, addModule}) => {
+  const [modules, setModules] = useState(Object.keys(moduleList) || []);
+  const [currentModule, setCurrentModule] = useState('');
+
+  async function handleFileSelect(event) {
+    const file = event.target.files[0];
+
+    try {
+      const contents = await readFile(file);
+      const {userVariables, stageGroup, shapeCount, pageCount, ivrName} =
+        JSON.parse(contents);
+
+      setModules((prevModules) => [...prevModules, ivrName]);
+      setCurrentModule(ivrName);
+      moduleList[ivrName] = contents;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   function handleImportFile() {
-    // Prompt user to select a file
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
     fileInput.accept = '.ivrf';
@@ -25,20 +43,44 @@ const ModuleManager = ({handleCloseDrawer}) => {
     fileInput.click();
   }
 
-  function handleFileSelect(event) {
-    const file = event.target.files[0];
-    // Use file to load project data and set it in the component state
+  function readFile(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = (e) => reject(e);
+      reader.readAsText(file);
+    });
+  }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const contents = event.target.result;
-      console.log('File contents: ' + contents);
-      const {userVariables, stageGroup, shapeCount, pageCount, ivrName} =
-        JSON.parse(contents);
+  function handleDelete() {
+    if (!currentModule) return;
 
-      console.log('ivrName: ' + ivrName);
-    };
-    reader.readAsText(file);
+    const index = modules.findIndex((m) => m === currentModule);
+
+    if (index !== -1) {
+      setModules((m) => {
+        const temp = [...m];
+        temp.splice(index, 1);
+        return temp;
+      });
+
+      delete moduleList[currentModule];
+      setCurrentModule('');
+    }
+  }
+
+  function handleView() {
+    if (!currentModule) return;
+
+    const contents = moduleList[currentModule];
+    const encoded = encodeURIComponent(contents);
+
+    window.open('/module?projectData=' + encoded, '_blank');
+  }
+
+  function handleAddToWorkspace() {
+    if (!currentModule) return;
+    addModule(currentModule, {data: moduleList[currentModule]});
   }
 
   return (
@@ -48,7 +90,7 @@ const ModuleManager = ({handleCloseDrawer}) => {
           mt: 1,
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'center',
         }}>
         <Typography
           sx={{
@@ -57,7 +99,7 @@ const ModuleManager = ({handleCloseDrawer}) => {
             py: 1,
             boxShadow: 1,
             fontSize: '1.5rem',
-            width: 'max-content'
+            width: 'max-content',
           }}
           variant='h6'>
           Module Manager
@@ -71,7 +113,7 @@ const ModuleManager = ({handleCloseDrawer}) => {
               mr: 1,
               color: 'black',
               backgroundColor: '#dcdcdc',
-              '&:hover': {backgroundColor: '#e57373'}
+              '&:hover': {backgroundColor: '#e57373'},
             }}
             onClick={handleCloseDrawer}>
             <CloseRoundedIcon sx={{fontSize: 21}} />
@@ -83,7 +125,15 @@ const ModuleManager = ({handleCloseDrawer}) => {
         <Select
           sx={{ml: 2, minWidth: '50%'}}
           labelId='select-label'
-          size='small'></Select>
+          size='small'
+          value={currentModule}
+          onChange={(e) => setCurrentModule(e.target.value)}>
+          {modules.map((m, i) => (
+            <MenuItem value={m} key={i}>
+              {m}
+            </MenuItem>
+          ))}
+        </Select>
       </ListItem>
       <ListItem>
         <Tooltip title='Import module from file'>
@@ -92,7 +142,7 @@ const ModuleManager = ({handleCloseDrawer}) => {
               mr: 1,
               color: 'black',
               backgroundColor: '#dcdcdc',
-              '&:hover': {backgroundColor: '#b0b0b0'}
+              '&:hover': {backgroundColor: '#b0b0b0'},
             }}
             variant='contained'
             onClick={handleImportFile}>
@@ -106,8 +156,9 @@ const ModuleManager = ({handleCloseDrawer}) => {
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#b0b0b0'}
-              }}>
+                '&:hover': {backgroundColor: '#b0b0b0'},
+              }}
+              onClick={handleDelete}>
               Delete
             </Button>
           </Tooltip>
@@ -117,8 +168,9 @@ const ModuleManager = ({handleCloseDrawer}) => {
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#b0b0b0'}
-              }}>
+                '&:hover': {backgroundColor: '#b0b0b0'},
+              }}
+              onClick={handleView}>
               View
             </Button>
           </Tooltip>
@@ -128,8 +180,9 @@ const ModuleManager = ({handleCloseDrawer}) => {
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#b0b0b0'}
-              }}>
+                '&:hover': {backgroundColor: '#b0b0b0'},
+              }}
+              onClick={handleAddToWorkspace}>
               Use
             </Button>
           </Tooltip>

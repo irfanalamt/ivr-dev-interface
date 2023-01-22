@@ -1,11 +1,12 @@
-import { Button, Typography } from '@mui/material';
+import {Button, Typography} from '@mui/material';
 import Drawer from '@mui/material/Drawer';
-import { useRef } from 'react';
+
 import CallApi from './CallApi';
 import EndFlow from './EndFlow';
 import FunctionBlock from './FunctionBlock';
 import GetDigits from './GetDigits';
 import GoToBlock from './GoToBlock';
+import ModuleBlock from './ModuleBlock';
 import PlayConfirm from './PlayConfirm';
 import PlayMenu from './PlayMenu';
 import PlayMessage from './PlayMessage';
@@ -134,9 +135,7 @@ const DrawerComponent = ({
           />
         );
       case 'jumper':
-        return (
-          <GoToBlock {...{ shape, handleCloseDrawer, entireStageGroup }} />
-        );
+        return <GoToBlock {...{shape, handleCloseDrawer, entireStageGroup}} />;
       case 'switch':
         return (
           <SwitchBlock
@@ -151,10 +150,20 @@ const DrawerComponent = ({
           />
         );
       case 'endFlow':
-        return <EndFlow {...{ shape, handleCloseDrawer }} />;
+        return <EndFlow {...{shape, handleCloseDrawer}} />;
+
+      case 'module':
+        return (
+          <ModuleBlock
+            {...{
+              shape,
+              handleCloseDrawer,
+            }}
+          />
+        );
       default:
         return (
-          <Typography sx={{ marginY: 3 }} variant='h5'>
+          <Typography sx={{marginY: 3}} variant='h5'>
             Under Construction 🏗️
           </Typography>
         );

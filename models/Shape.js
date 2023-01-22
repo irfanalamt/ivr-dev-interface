@@ -120,7 +120,7 @@ class Shape {
   }
 
   setUserValues(userValues) {
-    this.userValues = { ...userValues };
+    this.userValues = {...userValues};
   }
 
   setSelected(bool) {
@@ -291,6 +291,11 @@ class Shape {
 
       case 'tinyCircle':
         this.drawTinyCircle(ctx);
+        break;
+
+      case 'module':
+        this.drawModule(ctx);
+        break;
     }
   }
 
@@ -725,6 +730,30 @@ class Shape {
       const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
       this.drawTinyCircle(ctx, ...bottomPoint, '#fb8c00');
     }
+  }
+
+  drawModule(ctx) {
+    this.setWidthFromText(ctx);
+    ctx.fillStyle = this.style;
+    ctx.fillRect(
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height
+    );
+    ctx.strokeStyle = '#eda167';
+    ctx.strokeRect(
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height
+    );
+    ctx.font = '18px sans-serif';
+    ctx.fillStyle = 'black';
+    ctx.lineWidth = 2;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(this.text, this.x, this.y);
   }
 
   drawTinyCircle(ctx, x, y, color = 'black') {

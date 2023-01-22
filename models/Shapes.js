@@ -16,26 +16,37 @@ class Shapes {
     return Object.entries(this.shapes);
   }
 
+  addModule(x, y, count, pageNumber, name, data) {
+    const stageFigure = new Shape(x, y, 50, 50, 'module', '#f5cbab', true);
+    stageFigure.text = name;
+    stageFigure.setUserValues(data);
+
+    const id = this.generateID(stageFigure.type, pageNumber, count);
+    stageFigure.id = id;
+
+    this.shapes[id] = stageFigure;
+  }
+
   addShape(type, x, y, count, pageNumber) {
     let stageFigure;
     switch (type) {
       case 'setParams':
         stageFigure = new Shape(x, y, 120, 30, 'setParams', '#e91e63', true);
-        stageFigure.setUserValues({ params: {} });
+        stageFigure.setUserValues({params: {}});
 
         break;
 
       case 'runScript':
         stageFigure = new Shape(x, y, 105, 30, 'runScript', null, true);
-        stageFigure.setUserValues({ script: '' });
+        stageFigure.setUserValues({script: ''});
         break;
 
       case 'callAPI':
         stageFigure = new Shape(x, y, 90, 30, 'callAPI', null, true);
         stageFigure.setUserValues({
           endpoint: '',
-          inputArr: [{ value: '' }],
-          outputArr: [{ value: '' }],
+          inputArr: [{value: ''}],
+          outputArr: [{value: ''}],
         });
         break;
 
@@ -51,7 +62,7 @@ class Shapes {
       case 'getDigits':
         stageFigure = new Shape(x, y, 110, 30, 'getDigits', '#9c27b0', true);
         stageFigure.setUserValues({
-          params: { minDigits: 1, maxDigits: 1, paramsList: [] },
+          params: {minDigits: 1, maxDigits: 1, paramsList: []},
           messageList: [],
           variableName: '',
         });
@@ -60,7 +71,7 @@ class Shapes {
       case 'playMessage':
         stageFigure = new Shape(x, y, 125, 30, 'playMessage', '#c0ca33', true);
         stageFigure.setUserValues({
-          params: { interruptible: true, repeatOption: 'X' },
+          params: {interruptible: true, repeatOption: 'X'},
           messageList: [],
         });
         break;
@@ -87,13 +98,13 @@ class Shapes {
               exitPoint: 'action1',
             },
           ],
-          default: { exitPoint: 'default' },
+          default: {exitPoint: 'default'},
         });
         break;
 
       case 'endFlow':
         stageFigure = new Shape(x, y, 35, 35, 'endFlow', '#e91e63', true);
-        stageFigure.setUserValues({ type: 'disconnect' });
+        stageFigure.setUserValues({type: 'disconnect'});
         break;
 
       case 'connector':
@@ -102,7 +113,7 @@ class Shapes {
 
       case 'jumper':
         stageFigure = new Shape(x, y, 30, 30, 'jumper', '#f57f17', true);
-        stageFigure.setUserValues({ type: 'exit' });
+        stageFigure.setUserValues({type: 'exit'});
         break;
     }
 
@@ -125,7 +136,7 @@ class Shapes {
   }
 
   addTempShape(x, y) {
-    let stageFigure = new Shape(x, y, 5, 5, 'tinyCircle', 'black', true);
+    let stageFigure = new Shape(x, y, 5, 5, 'tinyCircle', 'white', true);
     stageFigure.id = 'temp';
     this.shapes.temp = stageFigure;
   }
@@ -143,6 +154,7 @@ class Shapes {
       endFlow: 'I',
       connector: 'J',
       jumper: 'K',
+      module: 'M',
     };
 
     const startCharacter = shapeTypeLetterMap[type] || 'X';
@@ -433,7 +445,7 @@ class Shapes {
 
   getConnection(shape1, shape2) {
     const [x1, y1] = shape1.getRelativeExitPoint(shape2);
-    const [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
+    const [x2, y2] = shape2.getRelativeEntryPoint(shape1, {x: x1, y: y1});
 
     return {
       x1,
@@ -456,7 +468,7 @@ class Shapes {
       let shape2 = this.shapes[el.userValues.default.nextId];
       if (shape2) {
         let [x1, y1] = shape1.getExitPoint();
-        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
+        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, {x: x1, y: y1});
 
         tempArray.push({
           x1,
@@ -482,7 +494,7 @@ class Shapes {
             switchArrayLength + 1,
             i + 1
           );
-          let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
+          let [x2, y2] = shape2.getRelativeEntryPoint(shape1, {x: x1, y: y1});
 
           tempArray.push({
             x1,
@@ -507,7 +519,7 @@ class Shapes {
           switchArrayLength + 1,
           switchArrayLength + 1
         );
-        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
+        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, {x: x1, y: y1});
 
         tempArray.push({
           x1,
@@ -538,7 +550,7 @@ class Shapes {
       const shape2 = this.shapes[itemsWithoutDefaults[0].nextId];
       if (shape2) {
         let [x1, y1] = shape1.getExitPoint();
-        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
+        let [x2, y2] = shape2.getRelativeEntryPoint(shape1, {x: x1, y: y1});
         tempArray.push({
           x1,
           y1,
@@ -559,7 +571,7 @@ class Shapes {
         const shape2 = this.shapes[item.nextId];
         if (shape2) {
           const [x1, y1] = shape1.getBottomPointForExit(itemsLength, i + 1);
-          let [x2, y2] = shape2.getRelativeEntryPoint(shape1, { x: x1, y: y1 });
+          let [x2, y2] = shape2.getRelativeEntryPoint(shape1, {x: x1, y: y1});
           tempArray.push({
             x1,
             y1,

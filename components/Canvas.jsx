@@ -15,7 +15,7 @@ import {
   Pagination,
   Snackbar,
   Tooltip,
-  Typography
+  Typography,
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import Shape from '../models/Shape';
@@ -70,7 +70,8 @@ const CanvasComponent = ({isModule = false}) => {
     switch: 1,
     endFlow: 1,
     connector: 1,
-    jumper: 1
+    jumper: 1,
+    module: 1,
   });
   const userVariables = useRef([]);
   const infoMessage = useRef('');
@@ -82,6 +83,7 @@ const CanvasComponent = ({isModule = false}) => {
   const isDragging = useRef(false);
   const isPalletShape = useRef(false);
   const promptDescriptionObj = useRef(null);
+  const moduleList = useRef({});
 
   let startX, startY;
   let startX1, startY1;
@@ -140,7 +142,7 @@ const CanvasComponent = ({isModule = false}) => {
         stageGroup: stageGroupCurrent,
         shapeCount: shapeCountCurrent,
         pageCount: pageCountCurrent,
-        ivrName: ivrNameCurrent
+        ivrName: ivrNameCurrent,
       } = JSON.parse(projectData);
 
       userVariables.current = userVariablesCurrent;
@@ -184,7 +186,8 @@ const CanvasComponent = ({isModule = false}) => {
       switch: 1,
       endFlow: 1,
       connector: 1,
-      jumper: 1
+      jumper: 1,
+      module: 1,
     };
   }
 
@@ -294,7 +297,7 @@ const CanvasComponent = ({isModule = false}) => {
       8: switchShape,
       9: endFlow,
       10: connector,
-      11: jumper
+      11: jumper,
     });
   }
 
@@ -478,7 +481,7 @@ const CanvasComponent = ({isModule = false}) => {
     const {realX, realY} = getRealCoordinates(clientX, clientY);
 
     if (isDragging.current) {
-      if (isConnecting === 0) {
+      if (isConnecting === 0 && currentShape.current) {
         // drag shape - mousemove
         const dx = realX - startX;
         const dy = realY - startY;
@@ -616,6 +619,7 @@ const CanvasComponent = ({isModule = false}) => {
           snackbarMessage.current = `${currentShape.current.text} deleted.`;
         }
         isDragging.current = false;
+        currentShape.current = null;
         setOpenSnackbar(true);
         clearAndDraw();
 
@@ -819,13 +823,27 @@ const CanvasComponent = ({isModule = false}) => {
     userVariables.current = arr;
   }
 
+  function addModule(name, data) {
+    const count = shapeCount.current.module++;
+    console.log('count==', count);
+    stageGroup.current[pageNumber.current - 1].addModule(
+      window.innerWidth - 150,
+      100,
+      count,
+      pageNumber.current,
+      name,
+      data
+    );
+    clearAndDraw();
+  }
+
   function saveToFile(name, ivrName) {
     const data = {
       stageGroup: stageGroup.current,
       userVariables: userVariables.current,
       shapeCount: shapeCount.current,
       pageCount: pageCount,
-      ivrName: ivrName
+      ivrName: ivrName,
     };
 
     const file = new Blob([JSON.stringify(data)], {type: 'text/json'});
@@ -867,7 +885,7 @@ const CanvasComponent = ({isModule = false}) => {
     for (const page of stageGroup.current) {
       entirestageGroup.shapes = {
         ...entirestageGroup.shapes,
-        ...page.shapes
+        ...page.shapes,
       };
     }
 
@@ -963,7 +981,7 @@ const CanvasComponent = ({isModule = false}) => {
     const formattedCode = prettier.format(finalCodeString, {
       parser: 'babel',
       parser: (text, options) => babelParser.parse(text, options),
-      singleQuote: true
+      singleQuote: true,
     });
 
     return formattedCode;
@@ -1008,7 +1026,7 @@ const CanvasComponent = ({isModule = false}) => {
           backgroundColor: '#eeeeee',
           px: 2,
           height: 35,
-          width: '100vw'
+          width: '100vw',
         }}
         id='bottomBar'>
         <Tooltip title='setVariables' arrow>
@@ -1041,7 +1059,7 @@ const CanvasComponent = ({isModule = false}) => {
             mb: 0.5,
             backgroundColor: '#b3e5fc',
             fontSize: '1rem',
-            borderRadius: 2
+            borderRadius: 2,
           }}
           variant='subtitle2'>
           <InfoIcon sx={{mr: 0.5, color: '#ef5350'}} />
@@ -1093,6 +1111,8 @@ const CanvasComponent = ({isModule = false}) => {
             initializePallette();
             clearAndDraw();
           }}
+          moduleList={moduleList.current}
+          addModule={addModule}
         />
       </Drawer>
       {isOpenParamList && (
@@ -1137,7 +1157,7 @@ const CanvasComponent = ({isModule = false}) => {
           backgroundColor: '#fdf5ef',
           fontSize: 'small',
           px: 1,
-          boxShadow: 1
+          boxShadow: 1,
         }}
         ref={tooltipRef}
         variant='subtitle2'>
@@ -1151,7 +1171,7 @@ const CanvasComponent = ({isModule = false}) => {
           fontSize: 'small',
           px: 1,
           boxShadow: 1,
-          borderRadius: 1
+          borderRadius: 1,
         }}
         ref={stageTooltipRef}
         variant='subtitle2'>
@@ -1164,7 +1184,7 @@ const CanvasComponent = ({isModule = false}) => {
           backgroundColor: '#e0f7fa',
           px: 1,
           boxShadow: 1,
-          borderRadius: 1
+          borderRadius: 1,
         }}
         ref={lineTooltipRef}
         variant='subtitle2'>
