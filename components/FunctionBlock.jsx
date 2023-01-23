@@ -1,5 +1,5 @@
-import { Button, List, ListItem, TextField } from '@mui/material';
-import { useRef, useState } from 'react';
+import {Button, List, ListItem, TextField} from '@mui/material';
+import {useRef, useState} from 'react';
 
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
@@ -24,17 +24,15 @@ const FunctionBlock = ({
   const drawerNameRef = useRef({});
 
   function generateJS() {
-    if (functionString.length < 2) {
+    if (!functionString) {
       shape.setFunctionString('');
       return;
     }
 
-    let codeString = `this.${
-      shapeName || `runScript${shape.id}`
-    }=async function(){${functionString}};`;
-
+    const shapeId = shape.id;
+    const shapeFunctionName = shapeName || `runScript${shapeId}`;
+    const codeString = `this.${shapeFunctionName} = async function(){${functionString}};`;
     shape.setFunctionString(codeString);
-    console.log('🕺🏻runScript code:', codeString);
   }
 
   function saveUserValues() {
@@ -50,7 +48,7 @@ const FunctionBlock = ({
     }
 
     shape.setText(shapeName || `runScript${shape.id}`);
-    shape.setUserValues({ script: functionString });
+    shape.setUserValues({script: functionString});
     clearAndDraw();
 
     if (validateFunctionString()) {
@@ -62,22 +60,26 @@ const FunctionBlock = ({
     }
   }
 
+  function getUserVariablesString() {
+    const names = userVariables
+      .map((userVariable) => userVariable.name)
+      .join(', ');
+    return `let ${names};`;
+  }
+
   function validateFunctionString() {
+    const topCode = getUserVariablesString();
+    const bottomCode = functionString;
+
     try {
-      eval(functionString);
+      eval(topCode + bottomCode);
     } catch (error) {
       setIsFunctionError(true);
+      setErrorText(error.message);
       return false;
     }
     setIsFunctionError(false);
     setErrorText('');
-
-    if (functionString.includes('this.')) {
-      const variableName = functionString.match(/this\.(.*)/)[1];
-      if (!userVariables.some((variable) => variable.name === variableName)) {
-        return false;
-      }
-    }
 
     return true;
   }
@@ -85,13 +87,13 @@ const FunctionBlock = ({
   const getCurrentUserValues = () => {
     return JSON.stringify({
       name: shapeName,
-      userValues: { script: functionString },
+      userValues: {script: functionString},
     });
   };
   childRef.getCurrentUserValues = getCurrentUserValues;
 
   return (
-    <List sx={{ minWidth: 350 }}>
+    <List sx={{minWidth: 350}}>
       <DrawerTop
         saveUserValues={saveUserValues}
         shape={shape}
@@ -111,7 +113,7 @@ const FunctionBlock = ({
         shapeId={shape.id}
       />
 
-      <ListItem sx={{ mt: 4 }}>
+      <ListItem sx={{mt: 4}}>
         <TextField
           sx={{
             mx: 'auto',
@@ -135,11 +137,10 @@ const FunctionBlock = ({
             mx: 'auto',
             backgroundColor: '#dcdcdc',
             color: '#1b5e20',
-            '&:hover': { backgroundColor: '#b0b0b0' },
+            '&:hover': {backgroundColor: '#b0b0b0'},
           }}
           variant='contained'
-          onClick={validateFunctionString}
-        >
+          onClick={validateFunctionString}>
           Validate
         </Button>
       </ListItem>

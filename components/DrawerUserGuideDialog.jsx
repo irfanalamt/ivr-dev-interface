@@ -4,14 +4,15 @@ import {
   DialogTitle,
   Typography,
   List,
-  ListItem
+  ListItem,
 } from '@mui/material';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 
 const DrawerUserGuideDialog = ({open, handleClose, name = ''}) => {
   const shapeToGuideMap = {
-    setParams: `The setParams block is used to both set the global parameters and start the IVR flow.-It should be the first block used in the IVR flow.-The parameter list contains all the call parameters with their default values set.-To update any parameters, select them and change the value.-Click the 'save' button beside it to add it to the updated parameter list.`,
-    runScript: `The runScript block is used to execute any script based on IVR variables and modify any IVR variables.-The script must be written in valid Javascript format.-To check for any syntax errors, click the validate button before saving.`,
+    setParams: `The setParams block is used to set global parameters and start the IVR flow.-It should be the first block used in the IVR flow.
+    The parameter list contains all the call parameters with their default values set.-To update a parameter, select it and change the value.-Click the 'save' button beside the updated parameter to add it to the updated parameter list.`,
+    runScript: `Use the runScript block to execute scripts and modify IVR variables.-Variables declared in the setVariables block can be used here.-Declare local variables using 'var', 'let', or 'const' before use.-Script must be written in valid JavaScript format.-Click validate button before saving to ensure no syntax errors.`,
     getDigits: `The getDigits block is used to collect one or more digits from the user, such as a phone number or account number.-The result variable is used to store the value entered by the user. All variables must be defined in the setVariables block before using them in the getDigits block.-In the message list tab, you can add any object by selecting the object type and clicking the add button.-In the parameters tab, there are two parameters: minDigits and maxDigits.-minDigits: is the minimum number of digits required from the user.-maxDigits: is the maximum number of digits required from the user.
    `,
     playMessage: `The playMessage block allows you to play one or more items together.-To add items to the message list, navigate to the message list tab. Here, you can select the object type and click the "add" button to include it in the list.-In the "parameters" tab, there are two options available to customize the playMessage experience.-interruptible: determines whether user input can interrupt the playback of the message. If you want the message to play in full without interruption, set this option to false.-repeatOption: allows you to set a digit that, when entered by the user, will repeat the currently playing message. If you want to disable the repeat option, set this option to "X."`,
@@ -20,9 +21,9 @@ const DrawerUserGuideDialog = ({open, handleClose, name = ''}) => {
     -logDb: This option can be used to trace the actions of the caller and keep track of statistics. If set to true, the menu will be considered for statistics. If set to false (default), the menu will be ignored for statistics.-The items tab is used to add menu items for each digits.-disable: If set to true (default is false), this option will not be played and the digit specified will be considered as invalid input.-silent: If set to true (default is false), this option will not be played (hidden), but if the caller presses the specified digit, the flow will continue with the action specified.
     -skip: This option is set to 0 by default. If set to 1, the first time the menu is played, this option will be hidden. From the second iteration onwards, this item will be played. This option indicates for how many iterations this option should be skipped (hidden). Please note that even though the option is hidden, the digit input is still valid.`,
     endFlow: `The endFlow block is used to end an IVR flow. It offers two options: Disconnect and Transfer.-Disconnect: This option will end the call flow and disconnect the call.-Transfer: This option will transfer the call flow to the preset transfer point.`,
-    jumper: `The jumper block is used to transfer control flow within a program and navigate between pages. It has two types of jumpers: entry and exit.-Exit: This is the default option. It cannot be used as the 'from' shape.-Entry: This jumper cannot be the 'to' shape. It should have the same name as the corresponding exit jumper in order to properly navigate.`,
+    jumper: `The jumper block is used to transfer control flow within a program and navigate between pages. It has two types of jumpers: entry and exit.-Exit: This is the default option. It cannot be used as the 'from' shape while connecting.-Entry: This jumper cannot be the 'to' shape while connecting. It should have the same name as the corresponding exit jumper in order to properly navigate.`,
     switch: `The switch block is used to control the IVR flow based on specific conditions. These conditions can be determined by the value of any defined variables.-To use the switch block, you should have at least two conditions including the default one.-Conditions can be added or removed using the buttons located at the bottom of the block.`,
-    callAPI: `The callAPI block is used to query an API and set the output variables.-To use the callAPI block, all variables used by the block must be defined in the setVariables block.-Once the variables are set, you can use the callAPI block to query the API and set the output variables.`
+    callAPI: `The callAPI block is used to query an API and set the output variables.-To use the callAPI block, all variables used by the block must be defined in the setVariables block.-Once the variables are set, you can use the callAPI block to query the API and set the output variables.`,
   };
 
   const items = shapeToGuideMap[name]?.split('-') || '';
@@ -35,11 +36,11 @@ const DrawerUserGuideDialog = ({open, handleClose, name = ''}) => {
       </DialogTitle>
       <DialogContent>
         {items && (
-          <List>
+          <List dense>
             {items.map((item, i) => (
-              <ListItem sx={{p: 0, pb: 1}} key={i}>
-                <Typography fontSize='large' variant='body2'>
-                  - {item}
+              <ListItem key={i} dense disableGutters>
+                <Typography fontSize='medium' variant='body1'>
+                  • {item}
                 </Typography>
               </ListItem>
             ))}
