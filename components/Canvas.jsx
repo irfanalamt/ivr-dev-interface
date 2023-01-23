@@ -359,7 +359,6 @@ const CanvasComponent = ({isModule = false}) => {
 
   function handleCloseDrawer() {
     setIsOpenDrawer(false);
-    initializePallette();
     clearAndDraw();
   }
 
@@ -1108,7 +1107,6 @@ const CanvasComponent = ({isModule = false}) => {
         <ModuleManager
           handleCloseDrawer={() => {
             setIsOpenModules(false);
-            initializePallette();
             clearAndDraw();
           }}
           moduleList={moduleList.current}
