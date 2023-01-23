@@ -9,7 +9,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { useRef, useState } from 'react';
+import {useRef, useState} from 'react';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 import MessageList from './MessageList';
@@ -69,26 +69,16 @@ const PlayMessage = ({
     clearAndDraw();
 
     shape.setUserValues({
-      params: { interruptible, repeatOption },
+      params: {interruptible, repeatOption},
       messageList: filteredMsgObj,
     });
 
     if (filteredMsgObj.length > 0) generateJS(filteredMsgObj);
   }
-  const getCurrentUserValues = () => {
-    return JSON.stringify({
-      name: shapeName,
-      userValues: {
-        params: { interruptible, repeatOption },
-        messageList: msgObj,
-      },
-    });
-  };
-  childRef.getCurrentUserValues = getCurrentUserValues;
 
   function generateJS(filteredMsgObj) {
     const codeMessageObject = filteredMsgObj.map((obj) => {
-      const { isError, useVariable, ...rest } = obj;
+      const {isError, useVariable, ...rest} = obj;
       return rest;
     });
 
@@ -102,12 +92,22 @@ const PlayMessage = ({
     })};await IVR.playMessage(msgList,params);};`;
 
     shape.setFunctionString(codeString);
-    console.log('🕺🏻playMessage code:', codeString);
   }
+
+  const getCurrentUserValues = () => {
+    return JSON.stringify({
+      name: shapeName,
+      userValues: {
+        params: {interruptible, repeatOption},
+        messageList: msgObj,
+      },
+    });
+  };
+  childRef.getCurrentUserValues = getCurrentUserValues;
 
   return (
     <>
-      <List sx={{ minWidth: 350 }}>
+      <List sx={{minWidth: 350}}>
         <DrawerTop
           saveUserValues={saveUserValues}
           shape={shape}
@@ -127,18 +127,17 @@ const PlayMessage = ({
         />
         <ListItem>
           <Tabs
-            sx={{ marginX: 'auto' }}
+            sx={{marginX: 'auto'}}
             value={tabValue}
             onChange={(e, newVal) => {
               setTabValue(newVal);
-            }}
-          >
+            }}>
             <Tab label='Message List' />
             <Tab label='Parameters' />
           </Tabs>
         </ListItem>
       </List>
-      <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
+      <Box sx={{display: tabValue === 0 ? 'block' : 'none'}} id='tabPanel1'>
         <MessageList
           messageList={msgObj}
           setMessageList={setMsgObj}
@@ -155,35 +154,32 @@ const PlayMessage = ({
               visibility: 'hidden',
             }}
             id='error-box'
-            variant='button'
-          ></Typography>
+            variant='button'></Typography>
         </ListItem>
       </Box>
-      <Box id='tabPanel2' sx={{ display: tabValue === 1 ? 'block' : 'none' }}>
+      <Box id='tabPanel2' sx={{display: tabValue === 1 ? 'block' : 'none'}}>
         <ListItem>
-          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+          <Typography sx={{fontSize: 18, width: '50%'}} variant='h6'>
             interruptible:
           </Typography>
           <Switch
             checked={interruptible}
             onChange={(e) => {
               setInterruptible(e.target.checked);
-            }}
-          ></Switch>
+            }}></Switch>
         </ListItem>
-        <ListItem sx={{ marginTop: 3 }}>
-          <Typography sx={{ fontSize: 18, width: '50%' }} variant='h6'>
+        <ListItem sx={{marginTop: 3}}>
+          <Typography sx={{fontSize: 18, width: '50%'}} variant='h6'>
             repeatOption:
           </Typography>
           <Select
             size='small'
-            sx={{ marginX: 1 }}
+            sx={{marginX: 1}}
             id='repeatOption-select'
             value={repeatOption}
             onChange={(e) => {
               setRepeatOption(e.target.value);
-            }}
-          >
+            }}>
             <MenuItem value='X'>X</MenuItem>
             <MenuItem value={0}>0</MenuItem>
             <MenuItem value={1}>1</MenuItem>

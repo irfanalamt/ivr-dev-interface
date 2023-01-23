@@ -856,6 +856,7 @@ const CanvasComponent = ({isModule = false}) => {
   }
 
   function generateConfigFile() {
+    clearAndDraw();
     const jsString = generateJS();
 
     // Exit if generateJS() returns a falsy value
@@ -1093,7 +1094,6 @@ const CanvasComponent = ({isModule = false}) => {
         <SetVariables
           handleCloseDrawer={() => {
             setIsOpenVars(false);
-            initializePallette();
             clearAndDraw();
           }}
           userVariables={userVariables.current}

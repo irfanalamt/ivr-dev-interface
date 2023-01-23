@@ -13,9 +13,9 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import { checkValidity } from '../src/helpers';
+import {useEffect} from 'react';
+import {useState} from 'react';
+import {checkValidity} from '../src/helpers';
 
 const MessageList = ({
   messageList,
@@ -63,7 +63,7 @@ const MessageList = ({
 
   const handleAdd = () => {
     const objType = messageListObjects[selectIndex];
-    setMessageList((prevList) => [...prevList, { type: objType, value: '' }]);
+    setMessageList((prevList) => [...prevList, {type: objType, value: ''}]);
   };
 
   const handleRemove = () => {
@@ -71,7 +71,7 @@ const MessageList = ({
   };
 
   const handleChange = (e, index, type = null) => {
-    const { value, name } = e.target;
+    const {value, name} = e.target;
     let isError = false;
 
     if (type) {
@@ -93,7 +93,7 @@ const MessageList = ({
   };
 
   const handleChangeSwitch = (e, index) => {
-    const { checked, name } = e.target;
+    const {checked, name} = e.target;
     setMessageList((prevList) => {
       const newList = [...prevList];
       newList[index][name] = checked;
@@ -108,11 +108,10 @@ const MessageList = ({
         <InputLabel id='select-label'>object type:</InputLabel>
         <Select
           labelId='select-label'
-          sx={{ ml: 2 }}
+          sx={{ml: 2}}
           size='small'
           value={selectIndex}
-          onChange={(e) => setSelectIndex(e.target.value)}
-        >
+          onChange={(e) => setSelectIndex(e.target.value)}>
           {messageListObjects.map((el, i) => (
             <MenuItem key={i} value={i}>
               {el}
@@ -121,17 +120,17 @@ const MessageList = ({
         </Select>
 
         <Tooltip title='Add'>
-          <IconButton sx={{ ml: 1 }} size='large' onClick={handleAdd}>
-            <AddBoxRoundedIcon sx={{ '&:hover': { color: '#81c784' } }} />
+          <IconButton sx={{ml: 1}} size='large' onClick={handleAdd}>
+            <AddBoxRoundedIcon sx={{'&:hover': {color: '#81c784'}}} />
           </IconButton>
         </Tooltip>
         <Tooltip title='Remove' onClick={handleRemove}>
           <IconButton size='large'>
-            <RemoveCircleRoundedIcon sx={{ '&:hover': { color: '#e57373' } }} />
+            <RemoveCircleRoundedIcon sx={{'&:hover': {color: '#e57373'}}} />
           </IconButton>
         </Tooltip>
       </ListItem>
-      <Divider sx={{ mt: 1 }} />
+      <Divider sx={{mt: 1}} />
       <List>
         {messageList.map((m, i) => {
           if (['prompt', 'number', 'ordinal', 'digit'].includes(m.type))
@@ -140,13 +139,13 @@ const MessageList = ({
                 <Tooltip title='useVariable' placement='top-start'>
                   <Switch
                     name='useVariable'
-                    sx={{ mr: 2 }}
+                    sx={{mr: 2}}
                     size='small'
                     checked={m.useVariable ?? false}
                     onChange={(e) => handleChangeSwitch(e, i)}
                   />
                 </Tooltip>
-                <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
+                <Typography sx={{mr: 1}}>{m.type}:</Typography>
                 <TextField
                   name='value'
                   sx={{
@@ -155,30 +154,25 @@ const MessageList = ({
                   }}
                   size='small'
                   value={m.value ?? ''}
-                  onChange={(e) => {
-                    handleChange(e, i, m.type);
-                  }}
+                  onChange={(e) => handleChange(e, i, m.type)}
                   error={m.isError}
                 />
                 <Select
-                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  sx={{display: m.useVariable ? 'block' : 'none'}}
                   size='small'
                   name='value'
                   value={m.useVariable ? m.value : ''}
-                  onChange={(e) => handleChange(e, i)}
-                >
+                  onChange={(e) => handleChange(e, i)}>
                   {userVariables
                     .filter(
                       (el) =>
                         el.type === (m.type === 'prompt' ? 'prompt' : 'number')
                     )
-                    .map((el, i) => {
-                      return (
-                        <MenuItem key={i} value={`$${el.name}` ?? ''}>
-                          {el.name}
-                        </MenuItem>
-                      );
-                    })}
+                    .map((el, i) => (
+                      <MenuItem key={i} value={`this.${el.name}` ?? ''}>
+                        {el.name}
+                      </MenuItem>
+                    ))}
                 </Select>
               </ListItem>
             );
@@ -189,30 +183,27 @@ const MessageList = ({
                 <Tooltip title='useVariable' placement='top-start'>
                   <Switch
                     name='useVariable'
-                    sx={{ mr: 2 }}
+                    sx={{mr: 2}}
                     size='small'
                     checked={m.useVariable ?? false}
                     onChange={(e) => handleChangeSwitch(e, i)}
                   />
                 </Tooltip>
-                <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
+                <Typography sx={{mr: 1}}>{m.type}:</Typography>
                 <TextField
                   name='value'
                   size='small'
-                  sx={{ width: 120, display: m.useVariable ? 'none' : 'block' }}
+                  sx={{width: 120, display: m.useVariable ? 'none' : 'block'}}
                   value={m.value ?? ''}
-                  onChange={(e) => {
-                    handleChange(e, i, m.type);
-                  }}
+                  onChange={(e) => handleChange(e, i, m.type)}
                   error={m.isError}
                 />
                 <Select
-                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  sx={{display: m.useVariable ? 'block' : 'none'}}
                   size='small'
                   name='value'
                   value={m.useVariable ? m.value : ''}
-                  onChange={(e) => handleChange(e, i)}
-                >
+                  onChange={(e) => handleChange(e, i)}>
                   {userVariables
                     .filter((el) => el.type === 'number')
                     .map((el, i) => {
@@ -223,14 +214,13 @@ const MessageList = ({
                       );
                     })}
                 </Select>
-                <Typography sx={{ mr: 1, ml: 2 }}>currency:</Typography>
+                <Typography sx={{mr: 1, ml: 2}}>currency:</Typography>
                 <TextField
                   name='currency'
-                  sx={{ width: 90 }}
+                  sx={{width: 90}}
                   size='small'
                   value={m.currency ?? ''}
-                  onChange={(e) => handleChange(e, i)}
-                ></TextField>
+                  onChange={(e) => handleChange(e, i)}></TextField>
               </ListItem>
             );
 
@@ -240,16 +230,16 @@ const MessageList = ({
                 <Tooltip title='useVariable' placement='top-start'>
                   <Switch
                     name='useVariable'
-                    sx={{ mr: 2 }}
+                    sx={{mr: 2}}
                     size='small'
                     checked={m.useVariable ?? false}
                     onChange={(e) => handleChangeSwitch(e, i)}
                   />
                 </Tooltip>
-                <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
+                <Typography sx={{mr: 1}}>{m.type}:</Typography>
                 <TextField
                   name='value'
-                  sx={{ width: 150, display: m.useVariable ? 'none' : 'block' }}
+                  sx={{width: 150, display: m.useVariable ? 'none' : 'block'}}
                   size='small'
                   placeholder='yyyymmdd'
                   value={m.value ?? ''}
@@ -259,12 +249,11 @@ const MessageList = ({
                   error={m.isError}
                 />
                 <Select
-                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  sx={{display: m.useVariable ? 'block' : 'none'}}
                   size='small'
                   name='value'
                   value={m.useVariable ? m.value : ''}
-                  onChange={(e) => handleChange(e, i)}
-                >
+                  onChange={(e) => handleChange(e, i)}>
                   {userVariables
                     .filter((el) => el.type === m.type)
                     .map((el, i) => {
@@ -275,12 +264,11 @@ const MessageList = ({
                       );
                     })}
                 </Select>
-                <Typography sx={{ ml: 2 }}>playYear:</Typography>
+                <Typography sx={{ml: 2}}>playYear:</Typography>
                 <Switch
                   name='playYear'
                   checked={m.playYear ?? false}
-                  onChange={(e) => handleChangeSwitch(e, i)}
-                ></Switch>
+                  onChange={(e) => handleChangeSwitch(e, i)}></Switch>
               </ListItem>
             );
           if (m.type === 'time')
@@ -289,31 +277,28 @@ const MessageList = ({
                 <Tooltip title='useVariable' placement='top-start'>
                   <Switch
                     name='useVariable'
-                    sx={{ mr: 2 }}
+                    sx={{mr: 2}}
                     size='small'
                     checked={m.useVariable ?? false}
                     onChange={(e) => handleChangeSwitch(e, i)}
                   />
                 </Tooltip>
-                <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
+                <Typography sx={{mr: 1}}>{m.type}:</Typography>
                 <TextField
                   name='value'
-                  sx={{ width: 100, display: m.useVariable ? 'none' : 'block' }}
+                  sx={{width: 100, display: m.useVariable ? 'none' : 'block'}}
                   placeholder='hhmm'
                   size='small'
                   value={m.value ?? ''}
-                  onChange={(e) => {
-                    handleChange(e, i, m.type);
-                  }}
+                  onChange={(e) => handleChange(e, i, m.type)}
                   error={m.isError}
                 />
                 <Select
-                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  sx={{display: m.useVariable ? 'block' : 'none'}}
                   size='small'
                   name='value'
                   value={m.useVariable ? m.value : ''}
-                  onChange={(e) => handleChange(e, i)}
-                >
+                  onChange={(e) => handleChange(e, i)}>
                   {userVariables
                     .filter((el) => el.type === m.type)
                     .map((el, i) => {
@@ -324,12 +309,11 @@ const MessageList = ({
                       );
                     })}
                 </Select>
-                <Typography sx={{ ml: 2 }}>is24:</Typography>
+                <Typography sx={{ml: 2}}>is24:</Typography>
                 <Switch
                   name='is24'
                   checked={m.is24 ?? false}
-                  onChange={(e) => handleChangeSwitch(e, i)}
-                ></Switch>
+                  onChange={(e) => handleChangeSwitch(e, i)}></Switch>
               </ListItem>
             );
 
@@ -339,13 +323,13 @@ const MessageList = ({
                 <Tooltip title='useVariable' placement='top-start'>
                   <Switch
                     name='useVariable'
-                    sx={{ mr: 2 }}
+                    sx={{mr: 2}}
                     size='small'
                     checked={m.useVariable ?? false}
                     onChange={(e) => handleChangeSwitch(e, i)}
                   />
                 </Tooltip>
-                <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
+                <Typography sx={{mr: 1}}>{m.type}:</Typography>
                 <Select
                   name='value'
                   sx={{
@@ -355,8 +339,7 @@ const MessageList = ({
                   }}
                   size='small'
                   value={m.value ?? ''}
-                  onChange={(e) => handleChange(e, i)}
-                >
+                  onChange={(e) => handleChange(e, i)}>
                   {dayValues.map((d, i) => (
                     <MenuItem value={i + 1} key={i}>
                       {d}
@@ -364,12 +347,11 @@ const MessageList = ({
                   ))}
                 </Select>
                 <Select
-                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  sx={{display: m.useVariable ? 'block' : 'none'}}
                   size='small'
                   name='value'
                   value={m.useVariable ? m.value : ''}
-                  onChange={(e) => handleChange(e, i)}
-                >
+                  onChange={(e) => handleChange(e, i)}>
                   {userVariables
                     .filter((el) => el.type === m.type)
                     .map((el, i) => {
@@ -389,13 +371,13 @@ const MessageList = ({
                 <Tooltip title='useVariable' placement='top-start'>
                   <Switch
                     name='useVariable'
-                    sx={{ mr: 2 }}
+                    sx={{mr: 2}}
                     size='small'
                     checked={m.useVariable ?? false}
                     onChange={(e) => handleChangeSwitch(e, i)}
                   />
                 </Tooltip>
-                <Typography sx={{ mr: 1 }}>{m.type}:</Typography>
+                <Typography sx={{mr: 1}}>{m.type}:</Typography>
                 <Select
                   name='value'
                   sx={{
@@ -405,8 +387,7 @@ const MessageList = ({
                   }}
                   size='small'
                   value={m.value ?? ''}
-                  onChange={(e) => handleChange(e, i)}
-                >
+                  onChange={(e) => handleChange(e, i)}>
                   {monthValues.map((d, i) => (
                     <MenuItem value={i + 1} key={i}>
                       {d}
@@ -414,12 +395,11 @@ const MessageList = ({
                   ))}
                 </Select>
                 <Select
-                  sx={{ display: m.useVariable ? 'block' : 'none' }}
+                  sx={{display: m.useVariable ? 'block' : 'none'}}
                   size='small'
                   name='value'
                   value={m.useVariable ? m.value : ''}
-                  onChange={(e) => handleChange(e, i)}
-                >
+                  onChange={(e) => handleChange(e, i)}>
                   {userVariables
                     .filter((el) => el.type === m.type)
                     .map((el, i) => {
@@ -430,12 +410,12 @@ const MessageList = ({
                       );
                     })}
                 </Select>
-                <Typography sx={{ ml: 2 }}>isHijri:</Typography>
+                <Typography sx={{ml: 2}}>isHijri:</Typography>
                 <Switch
                   name='isHijri'
                   checked={m.isHijri ?? false}
                   onChange={(e) => handleChangeSwitch(e, i)}
-                ></Switch>
+                />
               </ListItem>
             );
         })}

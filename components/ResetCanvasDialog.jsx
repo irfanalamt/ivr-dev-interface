@@ -7,25 +7,24 @@ import {
   DialogTitle,
 } from '@mui/material';
 
-const ResetCanvasDialog = ({ open, handleClose, resetStage }) => {
+const ResetCanvasDialog = ({open, handleClose, resetStage}) => {
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{'Clear entire canvas?'}</DialogTitle>
+      <DialogTitle>{'Clear entire workspace?'}</DialogTitle>
       <DialogContent>
         <DialogContentText>All unsaved work will be erased.</DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button
-          sx={{ backgroundColor: '#aed581' }}
+          sx={{backgroundColor: '#aed581'}}
           variant='contained'
           size='small'
           color='success'
-          onClick={handleClose}
-        >
+          onClick={handleClose}>
           NO
         </Button>
         <Button
-          sx={{ backgroundColor: '#e57373' }}
+          sx={{backgroundColor: '#e57373'}}
           variant='contained'
           size='small'
           color='error'
@@ -33,8 +32,7 @@ const ResetCanvasDialog = ({ open, handleClose, resetStage }) => {
             resetStage();
             handleClose();
           }}
-          autoFocus
-        >
+          autoFocus>
           YES
         </Button>
       </DialogActions>
