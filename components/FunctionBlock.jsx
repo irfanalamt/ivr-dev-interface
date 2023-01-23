@@ -64,6 +64,9 @@ const FunctionBlock = ({
     const names = userVariables
       .map((userVariable) => userVariable.name)
       .join(', ');
+
+    if (!names) return '';
+
     return `let ${names};`;
   }
 
