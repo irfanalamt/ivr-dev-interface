@@ -13,8 +13,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { checkValidity } from '../src/helpers';
+import {useState} from 'react';
+import {checkValidity} from '../src/helpers';
 
 const SetVariables = ({
   handleCloseDrawer,
@@ -92,13 +92,13 @@ const SetVariables = ({
   };
 
   const handleVarChange = (e) => {
-    const { value, name } = e.target;
+    const {value, name} = e.target;
 
-    setCurrVariable((v) => ({ ...currVariable, [name]: value }));
+    setCurrVariable((v) => ({...currVariable, [name]: value}));
   };
 
   const handleValidation = (e) => {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
 
     let errorM = -1;
 
@@ -152,15 +152,14 @@ const SetVariables = ({
   };
 
   return (
-    <List sx={{ minWidth: 400 }}>
+    <List sx={{minWidth: 400}}>
       <Box
         sx={{
           mt: 1,
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-        }}
-      >
+        }}>
         <Typography
           sx={{
             backgroundColor: '#ffab91',
@@ -170,8 +169,7 @@ const SetVariables = ({
             fontSize: '1.5rem',
             width: 'max-content',
           }}
-          variant='h6'
-        >
+          variant='h6'>
           Set Variables
         </Typography>
         <Tooltip title='CLOSE'>
@@ -183,11 +181,10 @@ const SetVariables = ({
               mr: 1,
               color: 'black',
               backgroundColor: '#dcdcdc',
-              '&:hover': { backgroundColor: '#e57373' },
+              '&:hover': {backgroundColor: '#e57373'},
             }}
-            onClick={handleCloseDrawer}
-          >
-            <CloseRoundedIcon sx={{ fontSize: 21 }} />
+            onClick={handleCloseDrawer}>
+            <CloseRoundedIcon sx={{fontSize: 21}} />
           </Button>
         </Tooltip>
       </Box>
@@ -204,14 +201,13 @@ const SetVariables = ({
           mx: 'auto',
           fontSize: '0.75rem',
         }}
-        variant='subtitle1'
-      >
+        variant='subtitle1'>
         {errorText}
       </Typography>
-      <ListItem sx={{ mt: 4 }}>
+      <ListItem sx={{mt: 4}}>
         <InputLabel id='select-label'>variable list</InputLabel>
         <Select
-          sx={{ ml: 2, minWidth: '50%' }}
+          sx={{ml: 2, minWidth: '50%'}}
           labelId='select-label'
           size='small'
           onChange={(e) => {
@@ -221,8 +217,7 @@ const SetVariables = ({
 
             setIsViewMode(true);
           }}
-          value={selectedVarIndex}
-        >
+          value={selectedVarIndex}>
           {varList.map((v, i) => (
             <MenuItem value={i} key={i}>
               {v.name}
@@ -230,16 +225,15 @@ const SetVariables = ({
           ))}
         </Select>
       </ListItem>
-      <ListItem sx={{ mt: 1 }}>
+      <ListItem sx={{mt: 1}}>
         <Button
           sx={{
             backgroundColor: '#dcdcdc',
             color: '#1b5e20',
-            '&:hover': { backgroundColor: '#b0b0b0' },
+            '&:hover': {backgroundColor: '#b0b0b0'},
           }}
           variant='contained'
-          onClick={handleAdd}
-        >
+          onClick={handleAdd}>
           Add
         </Button>
         <Button
@@ -247,13 +241,12 @@ const SetVariables = ({
             ml: 1,
             backgroundColor: '#dcdcdc',
             color: '#01579b',
-            '&:hover': { backgroundColor: '#b0b0b0' },
+            '&:hover': {backgroundColor: '#b0b0b0'},
           }}
           variant='contained'
           color='secondary'
           onClick={handleModify}
-          disabled={selectedVarIndex === ''}
-        >
+          disabled={selectedVarIndex === ''}>
           Modify
         </Button>
         <Button
@@ -261,34 +254,32 @@ const SetVariables = ({
             ml: 1,
             backgroundColor: '#dcdcdc',
             color: '#b71c1c',
-            '&:hover': { backgroundColor: '#b0b0b0' },
+            '&:hover': {backgroundColor: '#b0b0b0'},
           }}
           variant='contained'
           color='error'
           onClick={handleDelete}
-          disabled={selectedVarIndex === ''}
-        >
+          disabled={selectedVarIndex === ''}>
           Delete
         </Button>
       </ListItem>
-      <List sx={{ mt: 4 }}>
-        <Divider sx={{ mb: 1 }} />
+      <List sx={{mt: 4}}>
+        <Divider sx={{mb: 1}} />
         <ListItem>
-          <Typography sx={{ fontWeight: 'bold', width: '30%' }} variant='body1'>
+          <Typography sx={{fontWeight: 'bold', width: '30%'}} variant='body1'>
             type:
           </Typography>
           <Select
-            sx={{ ml: 1, width: 'max-content' }}
+            sx={{ml: 1, width: 'max-content'}}
             name='type'
             value={currVariable.type ?? 'prompt'}
-            onChange={(e) => {
-              handleVarChange(e);
-            }}
+            onChange={handleVarChange}
             size='small'
-            disabled={isViewMode === true || selectedVarIndex !== ''}
-          >
+            disabled={isViewMode === true || selectedVarIndex !== ''}>
             <MenuItem value='prompt'>Prompt</MenuItem>
             <MenuItem value='number'>Number</MenuItem>
+            <MenuItem value='string'>String</MenuItem>
+            <MenuItem value='boolean'>Boolean</MenuItem>
             <MenuItem value='date'>Date</MenuItem>
             <MenuItem value='day'>Day</MenuItem>
             <MenuItem value='month'>Month</MenuItem>
@@ -296,11 +287,11 @@ const SetVariables = ({
           </Select>
         </ListItem>
         <ListItem>
-          <Typography sx={{ fontWeight: 'bold', width: '30%' }} variant='body1'>
+          <Typography sx={{fontWeight: 'bold', width: '30%'}} variant='body1'>
             name:
           </Typography>
           <TextField
-            sx={{ ml: 1, width: '55%' }}
+            sx={{ml: 1, width: '55%'}}
             size='small'
             name='name'
             placeholder={isViewMode === false ? 'required' : ''}
@@ -313,7 +304,7 @@ const SetVariables = ({
           />
         </ListItem>
         <ListItem>
-          <Typography sx={{ fontWeight: 'bold', width: '30%' }} variant='body1'>
+          <Typography sx={{fontWeight: 'bold', width: '30%'}} variant='body1'>
             defaultValue:
           </Typography>
           <Select
@@ -332,8 +323,7 @@ const SetVariables = ({
                 ? currVariable.value
                 : ''
             }
-            onChange={handleVarChange}
-          >
+            onChange={handleVarChange}>
             {currVariable.type === 'day' &&
               dayValues.map((d, i) => (
                 <MenuItem value={i + 1} key={i}>
@@ -369,11 +359,11 @@ const SetVariables = ({
           />
         </ListItem>
         <ListItem>
-          <Typography sx={{ fontWeight: 'bold', width: '30%' }} variant='body1'>
+          <Typography sx={{fontWeight: 'bold', width: '30%'}} variant='body1'>
             description:
           </Typography>
           <TextField
-            sx={{ mx: 1 }}
+            sx={{mx: 1}}
             size='small'
             name='description'
             multiline
@@ -387,13 +377,13 @@ const SetVariables = ({
                 position: 'relative',
                 left: 10,
                 fontSize: '1.5rem',
-                '&:hover': { color: '#2e7d32', fontSize: '1.6rem' },
+                '&:hover': {color: '#2e7d32', fontSize: '1.6rem'},
               }}
               onClick={handleSave}
             />
           </Tooltip>
         </ListItem>
-        <Divider sx={{ mt: 1 }} />
+        <Divider sx={{mt: 1}} />
       </List>
     </List>
   );

@@ -1,20 +1,14 @@
 import {
-  Box,
   Divider,
-  FormControlLabel,
   List,
   ListItem,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
   Switch,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
-import ReactDOM from 'react-dom';
-import { createRoot } from 'react-dom/client';
 
 function handleInputValidation(name, e) {
   let errorBox = document.getElementById('error-box');
@@ -58,7 +52,7 @@ export function addInputElements(
   }
 
   function handleUseVar(e, index) {
-    let { checked } = e.target;
+    let {checked} = e.target;
     if (checked === true) {
       console.log('checked true');
 
@@ -82,7 +76,7 @@ export function addInputElements(
   }
 
   function handleSwitch(e, index, name) {
-    let { checked } = e.target;
+    let {checked} = e.target;
     setMsgObj((s) => {
       const newArr = [...s];
       newArr[index][name] = checked;
@@ -102,7 +96,7 @@ export function addInputElements(
     case 'prompt':
       const promptCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -110,10 +104,9 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
-          <Typography sx={{ mx: 1 }} variant='body1'>
+          <Typography sx={{mx: 1}} variant='body1'>
             prompt:
           </Typography>
 
@@ -123,8 +116,7 @@ export function addInputElements(
               onChange={(e) => {
                 handleVarSelect(e, key);
               }}
-              size='small'
-            >
+              size='small'>
               {userVariables
                 .filter((el) => el.type === 'prompt')
                 .map((el, i) => {
@@ -138,7 +130,7 @@ export function addInputElements(
           )}
 
           <TextField
-            sx={{ mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee' }}
+            sx={{mx: 0.5, backgroundColor: msgObj[key].useVar && '#eeeeee'}}
             size='small'
             variant='outlined'
             name='prompt'
@@ -156,7 +148,7 @@ export function addInputElements(
     case 'ordinal':
       const ordinalCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -164,10 +156,9 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             ordinal:
           </Typography>
           {msgObj[key].useVar === true && userVariables.length > 0 && (
@@ -175,8 +166,7 @@ export function addInputElements(
               defaultValue={''}
               onChange={(e) => {
                 handleVarSelect(e, key);
-              }}
-            >
+              }}>
               {userVariables
                 .filter((el) => el.type === 'number')
                 .map((el, i) => {
@@ -211,7 +201,7 @@ export function addInputElements(
     case 'number':
       const numberCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -219,11 +209,10 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
 
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             number:
           </Typography>
           {msgObj[key].useVar === true && userVariables.length > 0 && (
@@ -231,8 +220,7 @@ export function addInputElements(
               defaultValue={''}
               onChange={(e) => {
                 handleVarSelect(e, key);
-              }}
-            >
+              }}>
               {userVariables
                 .filter((el) => el.type === 'number')
                 .map((el, i) => {
@@ -267,7 +255,7 @@ export function addInputElements(
     case 'amount':
       const amountCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -275,11 +263,10 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
 
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             amount:
           </Typography>
           {msgObj[key].useVar === true && userVariables.length > 0 && (
@@ -287,8 +274,7 @@ export function addInputElements(
               defaultValue={''}
               onChange={(e) => {
                 handleVarSelect(e, key);
-              }}
-            >
+              }}>
               {userVariables
                 .filter((el) => el.type === 'number')
                 .map((el, i) => {
@@ -316,7 +302,7 @@ export function addInputElements(
             }}
             disabled={msgObj[key].useVar}
           />
-          <Typography sx={{ marginX: 1 }} variant='body1'>
+          <Typography sx={{marginX: 1}} variant='body1'>
             currency:
           </Typography>
           <Select
@@ -325,8 +311,7 @@ export function addInputElements(
             value={msgObj[key]?.currency || 'SAR'}
             onChange={(e) => {
               handleMsgObjChange(e, key, 'currency');
-            }}
-          >
+            }}>
             <MenuItem value='SAR'>SAR</MenuItem>
             <MenuItem value='USD'>USD</MenuItem>
             <MenuItem value='CAD'>CAD</MenuItem>
@@ -341,7 +326,7 @@ export function addInputElements(
     case 'date':
       const dateCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -349,11 +334,10 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
 
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             date:
           </Typography>
           {msgObj[key].useVar === true && userVariables.length > 0 && (
@@ -361,8 +345,7 @@ export function addInputElements(
               defaultValue={''}
               onChange={(e) => {
                 handleVarSelect(e, key);
-              }}
-            >
+              }}>
               {userVariables
                 .filter((el) => el.type === 'date')
                 .map((el, i) => {
@@ -392,7 +375,7 @@ export function addInputElements(
             }}
             disabled={msgObj[key].useVar}
           />
-          <Typography sx={{ marginLeft: 2 }} variant='body1'>
+          <Typography sx={{marginLeft: 2}} variant='body1'>
             playYear:
           </Typography>
           <Switch
@@ -400,8 +383,7 @@ export function addInputElements(
             checked={msgObj[key]?.playYear || false}
             onChange={(e) => {
               handleSwitch(e, key, 'playYear');
-            }}
-          ></Switch>
+            }}></Switch>
         </ListItem>
       );
       return dateCode;
@@ -409,7 +391,7 @@ export function addInputElements(
     case 'day':
       const dayCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -417,11 +399,10 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
 
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             day:
           </Typography>
           {msgObj[key].useVar === true && userVariables.length > 0 && (
@@ -429,8 +410,7 @@ export function addInputElements(
               defaultValue={''}
               onChange={(e) => {
                 handleVarSelect(e, key);
-              }}
-            >
+              }}>
               {userVariables
                 .filter((el) => el.type === 'day')
                 .map((el, i) => {
@@ -444,15 +424,14 @@ export function addInputElements(
           )}
 
           <Select
-            sx={{ mx: 0.5 }}
+            sx={{mx: 0.5}}
             placeholder='day'
             size='small'
             name='day'
             value={msgObj[key]?.value || ''}
             onChange={(e) => {
               handleMsgObjChange(e, key);
-            }}
-          >
+            }}>
             <MenuItem value='sun'>01 &nbsp;Sunday</MenuItem>
             <MenuItem value='mon'>02 &nbsp;Monday</MenuItem>
             <MenuItem value='tue'>03 &nbsp;Tuesday</MenuItem>
@@ -468,7 +447,7 @@ export function addInputElements(
     case 'digit':
       const digitCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -476,11 +455,10 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
 
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             digit:
           </Typography>
           {msgObj[key].useVar === true && userVariables.length > 0 && (
@@ -488,8 +466,7 @@ export function addInputElements(
               defaultValue={''}
               onChange={(e) => {
                 handleVarSelect(e, key);
-              }}
-            >
+              }}>
               {userVariables
                 .filter((el) => el.type === 'number')
                 .map((el, i) => {
@@ -526,7 +503,7 @@ export function addInputElements(
     case 'month':
       const monthCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -534,11 +511,10 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
 
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             month:
           </Typography>
           {msgObj[key].useVar === true && userVariables.length > 0 && (
@@ -546,8 +522,7 @@ export function addInputElements(
               defaultValue={''}
               onChange={(e) => {
                 handleVarSelect(e, key);
-              }}
-            >
+              }}>
               {userVariables
                 .filter((el) => el.type === 'month')
                 .map((el, i) => {
@@ -561,14 +536,13 @@ export function addInputElements(
           )}
 
           <Select
-            sx={{ mx: 0.5 }}
+            sx={{mx: 0.5}}
             size='small'
             name='month'
             value={msgObj[key]?.value || ''}
             onChange={(e) => {
               handleMsgObjChange(e, key);
-            }}
-          >
+            }}>
             <MenuItem value={1}>01 &nbsp;January</MenuItem>
             <MenuItem value={2}>02 &nbsp;February</MenuItem>
             <MenuItem value={3}>03 &nbsp;March</MenuItem>
@@ -582,7 +556,7 @@ export function addInputElements(
             <MenuItem value={11}>11 &nbsp;November</MenuItem>
             <MenuItem value={12}>12 &nbsp;December</MenuItem>
           </Select>
-          <Typography sx={{ marginLeft: 2 }} variant='body1'>
+          <Typography sx={{marginLeft: 2}} variant='body1'>
             isHijri:
           </Typography>
           <Switch
@@ -590,8 +564,7 @@ export function addInputElements(
             checked={msgObj[key]?.isHijri || false}
             onChange={(e) => {
               handleSwitch(e, key, 'isHijri');
-            }}
-          ></Switch>
+            }}></Switch>
         </ListItem>
       );
       return monthCode;
@@ -599,7 +572,7 @@ export function addInputElements(
     case 'time':
       const timeCode = (
         <ListItem key={key}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='button'>
+          <Typography sx={{fontSize: '1.1rem'}} variant='button'>
             V
           </Typography>
           <Tooltip placement='top-end' title='use variable'>
@@ -607,11 +580,10 @@ export function addInputElements(
               checked={msgObj[key].useVar || false}
               onChange={(e) => {
                 handleUseVar(e, key);
-              }}
-            ></Switch>
+              }}></Switch>
           </Tooltip>
 
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             time:
           </Typography>
           {msgObj[key].useVar === true && userVariables.length > 0 && (
@@ -619,8 +591,7 @@ export function addInputElements(
               defaultValue={''}
               onChange={(e) => {
                 handleVarSelect(e, key);
-              }}
-            >
+              }}>
               {userVariables
                 .filter((el) => el.type === 'time')
                 .map((el, i) => {
@@ -650,7 +621,7 @@ export function addInputElements(
             }}
             disabled={msgObj[key].useVar}
           />
-          <Typography sx={{ marginLeft: 2 }} variant='body1'>
+          <Typography sx={{marginLeft: 2}} variant='body1'>
             is24:
           </Typography>
           <Switch
@@ -658,8 +629,7 @@ export function addInputElements(
             checked={msgObj[key]?.is24 || false}
             onChange={(e) => {
               handleSwitch(e, key, 'is24');
-            }}
-          ></Switch>
+            }}></Switch>
         </ListItem>
       );
       return timeCode;
@@ -667,67 +637,57 @@ export function addInputElements(
 }
 
 export function checkValidity(name, value) {
-  // return error string if invalid; else returns -1
-  switch (name) {
-    case 'object':
-      const objectRegex = /^[a-zA-z_]+[a-zA-z0-9_]*$/;
-      if (value == '' || value == null) return 'name is required';
-      if (!objectRegex.test(value)) return 'name not in valid format';
-      return -1;
+  const types = {
+    object: {
+      regex: /^[a-zA-z_]+[a-zA-z0-9_]*$/,
+      error: 'name not in valid format',
+    },
+    action: {
+      regex: /^[a-zA-Z0-9]+$/,
+      error: 'action not in valid format',
+    },
+    prompt: {
+      regex: /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/,
+      error: 'prompt not in valid format',
+    },
+    number: {
+      regex: /^\d+$/,
+      error: 'number not in valid format',
+    },
+    string: {
+      regex: /^[^'"]*$/,
+      error: 'string not in valid format',
+    },
+    boolean: {
+      regex: /^(true|false)$/,
+      error: 'boolean not in valid format',
+    },
+    amount: {
+      regex: /^\d+\.?\d+$/,
+      error: 'amount not in valid format',
+    },
+    ordinal: {
+      regex: /^\d{1,2}$/,
+      error: 'ordinal not in valid format. (0-99)',
+    },
+    digit: {
+      regex: /^\d+$/,
+      error: 'digit not in valid format',
+    },
+    date: {
+      regex: /^(1[3-4]|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/,
+      error: 'date not in valid format',
+    },
+    time: {
+      regex: /^([0-1]?[0-9]|2[0-3])[0-5][0-9]$/,
+      error: 'time not in valid format',
+    },
+  };
 
-    case 'action':
-      const actionRegex = /^[a-zA-Z0-9]+$/;
-      if (!actionRegex.test(value)) return 'action not in valid format';
-      return -1;
-
-    case 'prompt':
-      const promptRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
-
-      if (value == '' || value == null) return 'Prompt is required';
-      if (!promptRegex.test(value)) return 'prompt not in valid format';
-      return -1;
-
-    case 'number':
-      const numberRegex = /^\d+$/;
-      if (value == '' || value == null) return 'number is required';
-      if (!numberRegex.test(value)) return 'number not in valid format';
-      return -1;
-
-    case 'amount':
-      const amountRegex = /^\d+\.?\d+$/;
-      if (value == '' || value == null) return 'amount is required';
-      if (!amountRegex.test(value)) return 'amount not in valid format';
-      return -1;
-
-    case 'ordinal':
-      const ordinalRegex = /^\d{1,2}$/;
-      if (value == '' || value == null) return 'ordinal is required';
-      if (!ordinalRegex.test(value))
-        return 'ordinal not in valid format. (0-99)';
-      return -1;
-
-    case 'digit':
-      const digitRegex = /^\d+$/;
-      if (value == '' || value == null) return 'digit is required';
-      if (!digitRegex.test(value)) return 'digit not in valid format';
-      return -1;
-
-    case 'date':
-      const dateRegex =
-        /^(1[3-4]|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[1-2][0-9]|3[0-1])$/;
-      if (value == '' || value == null) return 'date is required';
-      if (!dateRegex.test(value)) return 'date not in valid format';
-      return -1;
-
-    case 'time':
-      const timeRegex = /^([0-1]?[0-9]|2[0-3])[0-5][0-9]$/;
-      if (value == '' || value == null) return 'time is required';
-      if (!timeRegex.test(value)) return 'time not in valid format';
-      return -1;
-
-    default:
-      return -1;
-  }
+  if (!types[name]) return -1;
+  if (!value) return `${name} is required`;
+  if (!types[name].regex.test(value)) return types[name].error;
+  return -1;
 }
 
 export function addParamsElements(type, key, paramsObj, setParamsObj) {
@@ -750,7 +710,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
   }
 
   function handleParamsObjChangeSwitch(e, index) {
-    const { checked } = e.target;
+    const {checked} = e.target;
     setParamsObj((s) => {
       const newArr = [...s];
       newArr[index].value = checked;
@@ -761,23 +721,22 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
   switch (type) {
     case 'interruptible':
       const interruptibleCode = (
-        <ListItem sx={{ marginTop: 1 }} key={key}>
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+        <ListItem sx={{marginTop: 1}} key={key}>
+          <Typography sx={{marginX: 2}} variant='body1'>
             interruptible:
           </Typography>
           <Switch
             name='interruptible'
             checked={paramsObj[key]?.value ?? true}
-            onChange={(e) => handleParamsObjChangeSwitch(e, key)}
-          ></Switch>
+            onChange={(e) => handleParamsObjChangeSwitch(e, key)}></Switch>
         </ListItem>
       );
       return interruptibleCode;
 
     case 'terminator':
       const terminatorCode = (
-        <ListItem sx={{ marginTop: 1 }} key={key}>
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+        <ListItem sx={{marginTop: 1}} key={key}>
+          <Typography sx={{marginX: 2}} variant='body1'>
             terminator:
           </Typography>
           <Select
@@ -787,8 +746,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             onChange={(e) => {
               handleParamsObjChange(e, key);
             }}
-            autoFocus
-          >
+            autoFocus>
             <MenuItem value='#'>#</MenuItem>
             <MenuItem value='*'>*</MenuItem>
             <MenuItem value='1'>1</MenuItem>
@@ -808,7 +766,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
     case 'maxRetries':
       const maxRetriesCode = (
         <ListItem key={key}>
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             maxRetries:
           </Typography>
           <Select
@@ -818,8 +776,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             onChange={(e) => {
               handleParamsObjChange(e, key);
             }}
-            autoFocus
-          >
+            autoFocus>
             <MenuItem value='0'>0</MenuItem>
             <MenuItem value='1'>1</MenuItem>
             <MenuItem value='2'>2</MenuItem>
@@ -838,7 +795,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
     case 'invalidAction':
       const invalidActionCode = (
         <ListItem key={key}>
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             invalidAction:
           </Typography>
           <Select
@@ -848,8 +805,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             onChange={(e) => {
               handleParamsObjChange(e, key);
             }}
-            autoFocus
-          >
+            autoFocus>
             <MenuItem value='disconnect'>disconnect</MenuItem>
             <MenuItem value='transfer'>transfer</MenuItem>
             <MenuItem value='function'>function</MenuItem>
@@ -857,7 +813,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
 
           {paramsObj[key]?.value === 'transfer' && (
             <TextField
-              sx={{ mx: 0.5, width: 150 }}
+              sx={{mx: 0.5, width: 150}}
               size='small'
               placeholder='transferPoint'
               value={paramsObj[key]?.transferPoint || ''}
@@ -868,7 +824,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
           )}
           {paramsObj[key]?.value === 'function' && (
             <TextField
-              sx={{ mx: 0.5, width: 150 }}
+              sx={{mx: 0.5, width: 150}}
               size='small'
               placeholder='functionName'
               value={paramsObj[key]?.functionName || ''}
@@ -884,7 +840,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
     case 'timeoutAction':
       const timeoutActionCode = (
         <ListItem key={key}>
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             timeoutAction:
           </Typography>
           <Select
@@ -894,8 +850,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
             onChange={(e) => {
               handleParamsObjChange(e, key);
             }}
-            autoFocus
-          >
+            autoFocus>
             <MenuItem value='disconnect'>disconnect</MenuItem>
             <MenuItem value='transfer'>transfer</MenuItem>
             <MenuItem value='function'>function</MenuItem>
@@ -903,7 +858,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
 
           {paramsObj[key]?.value === 'transfer' && (
             <TextField
-              sx={{ mx: 0.5, width: 150 }}
+              sx={{mx: 0.5, width: 150}}
               size='small'
               placeholder='transferPoint'
               value={paramsObj[key]?.transferPoint || ''}
@@ -914,7 +869,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
           )}
           {paramsObj[key]?.value === 'function' && (
             <TextField
-              sx={{ mx: 0.5, width: 150 }}
+              sx={{mx: 0.5, width: 150}}
               size='small'
               placeholder='functionName'
               value={paramsObj[key]?.functionName || ''}
@@ -930,7 +885,7 @@ export function addParamsElements(type, key, paramsObj, setParamsObj) {
     case 'invalidPrompt':
       const invalidPromptCode = (
         <ListItem key={key}>
-          <Typography sx={{ marginX: 2 }} variant='body1'>
+          <Typography sx={{marginX: 2}} variant='body1'>
             invalidPrompt:
           </Typography>
           <TextField
@@ -977,13 +932,12 @@ export function addVariableElements(type, key, varObj, setVarObj) {
     <List key={key}>
       <ListItem>
         <Typography
-          sx={{ marginRight: 2, marginLeft: 1, fontWeight: 500 }}
-          variant='body1'
-        >
+          sx={{marginRight: 2, marginLeft: 1, fontWeight: 500}}
+          variant='body1'>
           {type}
         </Typography>
         <TextField
-          sx={{ width: 130 }}
+          sx={{width: 130}}
           size='small'
           variant='outlined'
           helperText='variable name'
@@ -994,7 +948,7 @@ export function addVariableElements(type, key, varObj, setVarObj) {
           }}
         />
         <TextField
-          sx={{ width: 130, mx: 1 }}
+          sx={{width: 130, mx: 1}}
           size='small'
           variant='outlined'
           name='default'
@@ -1008,7 +962,7 @@ export function addVariableElements(type, key, varObj, setVarObj) {
       </ListItem>
       <ListItem>
         <TextField
-          sx={{ mx: 1, mb: 2 }}
+          sx={{mx: 1, mb: 2}}
           size='small'
           variant='outlined'
           name='description'
