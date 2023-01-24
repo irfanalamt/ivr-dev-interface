@@ -33,24 +33,17 @@ class Shape {
     let [x, y] = this.getBottomCordinates();
 
     if (this.y < shape2.y) {
-      let [bottomX1, bottomY1] = this.getBottomCordinates();
-      let [topX2, topY2] = shape2.getTopCordinates();
-
-      if (topY2 > bottomY1) {
-        [x, y] = this.getBottomCordinates();
-      } else {
-        if (this.x < shape2.x) {
-          [x, y] = this.getRightCordinates();
-        } else {
-          [x, y] = this.getLeftCordinates();
-        }
+      if (shape2.getTopCordinates()[1] < this.getBottomCordinates()[1]) {
+        [x, y] =
+          this.x < shape2.x
+            ? this.getRightCordinates()
+            : this.getLeftCordinates();
       }
     } else {
-      if (this.x < shape2.x) {
-        [x, y] = this.getRightCordinates();
-      } else {
-        [x, y] = this.getLeftCordinates();
-      }
+      [x, y] =
+        this.x < shape2.x
+          ? this.getRightCordinates()
+          : this.getLeftCordinates();
     }
 
     return [x, y];
@@ -61,28 +54,14 @@ class Shape {
       return this.getConnectorCordinates(exitPoint.x, exitPoint.y);
     }
 
-    let [x, y] = this.getLeftCordinates();
-    let slope = (exitPoint.y - y) / (exitPoint.x - x);
+    let [x, y] = this.getTopCordinates();
 
-    if (shape1.y <= this.y) {
-      if (shape1.x < this.x) {
-        if (Math.abs(slope) > 0.3) {
-          [x, y] = this.getTopCordinates();
-        }
-      } else {
-        [x, y] = this.getRightCordinates();
-        slope = (exitPoint.y - y) / (exitPoint.x - x);
+    if (this.getTopCordinates()[1] < shape1.getBottomCordinates()[1]) {
+      let dxLeft = Math.abs(this.getLeftCordinates()[0] - exitPoint.x);
+      let dxRight = Math.abs(this.getRightCordinates()[0] - exitPoint.x);
 
-        if (Math.abs(slope) > 0.3) {
-          [x, y] = this.getTopCordinates();
-        }
-      }
-    } else {
-      if (exitPoint.x > this.x) {
-        [x, y] = this.getRightCordinates();
-      } else {
-        [x, y] = this.getLeftCordinates();
-      }
+      [x, y] =
+        dxLeft < dxRight ? this.getLeftCordinates() : this.getRightCordinates();
     }
 
     return [x, y];

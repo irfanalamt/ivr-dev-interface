@@ -934,7 +934,7 @@ const CanvasComponent = ({isModule = false}) => {
         terminateMessage: 'std-terminate',
         repeatInfoPrompt: 'std-repeat-info',
         confirmPrompt: 'std-confirm',
-        hotkeyMainMenu: 'X',
+        hotkeyMainMenu: 'X', hotkeyPreviousMenu: 'X',
         hotkeyTransfer: 'X',
         transferPoint: '',
         invalidTransferPoint: '',
