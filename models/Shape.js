@@ -62,18 +62,18 @@ class Shape {
     }
 
     let [x, y] = this.getLeftCordinates();
-    let slope = (y - exitPoint.y) / (x - exitPoint.x);
+    let slope = (exitPoint.y - y) / (exitPoint.x - x);
 
-    if (this.y >= shape1.y) {
+    if (shape1.y <= this.y) {
       if (shape1.x < this.x) {
-        if (!(Math.abs(slope) < 0.5)) {
+        if (Math.abs(slope) > 0.3) {
           [x, y] = this.getTopCordinates();
         }
       } else {
         [x, y] = this.getRightCordinates();
-        slope = (y - exitPoint.y) / (x - exitPoint.x);
+        slope = (exitPoint.y - y) / (exitPoint.x - x);
 
-        if (!(Math.abs(slope) < 0.5)) {
+        if (Math.abs(slope) > 0.3) {
           [x, y] = this.getTopCordinates();
         }
       }
