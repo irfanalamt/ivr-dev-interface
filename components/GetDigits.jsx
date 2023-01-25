@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import AddBoxRoundedIcon from '@mui/icons-material/AddBoxRounded';
 import RemoveCircleRoundedIcon from '@mui/icons-material/RemoveCircleRounded';
-import { useRef, useState } from 'react';
-import { addParamsElements } from '../src/helpers';
+import {useRef, useState} from 'react';
+import {addParamsElements} from '../src/helpers';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
 import MessageList from './MessageList';
@@ -54,7 +54,7 @@ const GetDigits = ({
   ];
 
   function saveUserValues() {
-    // validate shapeName with validation function in child component
+    // validate shapeName
     const nameError = drawerNameRef.current.handleNameValidation(shapeName);
     if (nameError) {
       setErrorText(nameError);
@@ -74,16 +74,12 @@ const GetDigits = ({
       return;
     }
 
-    // handle save success
-    setSuccessText('Save successful');
-    setTimeout(() => setSuccessText(''), 3000);
-
     // remove null values and save
     const filteredMsgObj = msgObj.filter((n) => n.value);
     const entireParamsObj = {
       minDigits,
       maxDigits,
-      paramsList: paramsObj,
+      paramsList: paramsObj.length > 0 ? paramsObj : undefined,
     };
 
     shape.setText(shapeName);
@@ -95,23 +91,27 @@ const GetDigits = ({
     });
 
     if (filteredMsgObj.length > 0) generateJS(filteredMsgObj, entireParamsObj);
+
+    // handle save success
+    setSuccessText('Save successful');
+    setTimeout(() => setSuccessText(''), 3000);
   }
 
   function generateJS(filteredMsgObj, entireParamsObj) {
     // create codeMessageObject
     const codeMessageObject = filteredMsgObj.map((obj) => {
-      const { isError, useVariable, ...rest } = obj;
+      const {isError, useVariable, ...rest} = obj;
       return rest;
     });
 
     // create codeString
     let codeString = `this.${
       shapeName || `getDigits${shape.id}`
-    }= async function(){let msgList = ${JSON.stringify(
-      codeMessageObject
-    )};let params = ${JSON.stringify(entireParamsObj)};this.${
-      resultName || 'default'
-    } = await IVR.getDigits(msgList,params);};`;
+    } = async function(){
+      let msgList = ${JSON.stringify(codeMessageObject)};
+      let params = ${JSON.stringify(entireParamsObj)};
+      this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
+    };`;
     shape.setFunctionString(codeString);
     console.log('🕺🏻getDigits code:', codeString);
   }
@@ -119,18 +119,14 @@ const GetDigits = ({
   function addParamsInput() {
     // handle adding a new input to paramsObj
     const value = paramsObjType === 'interruptible' ? true : '';
-    setParamsObj((s) => [...s, { type: paramsObjType, value }]);
+    setParamsObj((s) => [...s, {type: paramsObjType, value}]);
     setParamsObjType('');
   }
 
   function removeParamsInput() {
     // handle removing last input from paramsObj
-    if (paramsObj === null || paramsObj === undefined) return;
-    setParamsObj((s) => {
-      const newArr = [...s];
-      newArr.pop();
-      return newArr;
-    });
+    if (!paramsObj) return;
+    setParamsObj((s) => s.slice(0, -1));
   }
 
   const getCurrentUserValues = () => {
@@ -151,7 +147,7 @@ const GetDigits = ({
 
   return (
     <>
-      <List sx={{ minWidth: 370 }}>
+      <List sx={{minWidth: 370}}>
         <DrawerTop
           saveUserValues={saveUserValues}
           shape={shape}
@@ -170,7 +166,7 @@ const GetDigits = ({
           shapeId={shape.id}
         />
         <ListItem>
-          <Typography variant='body1' sx={{ width: '40%', fontWeight: 'bold' }}>
+          <Typography variant='body1' sx={{width: '40%', fontWeight: 'bold'}}>
             Result Variable:
           </Typography>
 
@@ -180,8 +176,7 @@ const GetDigits = ({
               onChange={(e) => {
                 setResultName(e.target.value);
               }}
-              size='small'
-            >
+              size='small'>
               {userVariables
                 ?.filter((el) => el.type == 'number')
                 .map((el, i) => {
@@ -193,25 +188,22 @@ const GetDigits = ({
                 })}
             </Select>
           ) : (
-            <Typography sx={{ color: '#616161' }}>
-              No variables added
-            </Typography>
+            <Typography sx={{color: '#616161'}}>No variables added</Typography>
           )}
         </ListItem>
         <ListItem>
           <Tabs
-            sx={{ marginX: 'auto' }}
+            sx={{marginX: 'auto'}}
             value={tabValue}
             onChange={(e, newVal) => {
               setTabValue(newVal);
               console.log('tabVA', tabValue, typeof tabValue);
-            }}
-          >
+            }}>
             <Tab label='Message List' />
             <Tab label='Parameters' />
           </Tabs>
         </ListItem>
-        <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
+        <Box sx={{display: tabValue === 0 ? 'block' : 'none'}} id='tabPanel1'>
           <MessageList
             messageList={msgObj}
             setMessageList={setMsgObj}
@@ -228,24 +220,22 @@ const GetDigits = ({
                 visibility: 'hidden',
               }}
               id='error-box'
-              variant='button'
-            ></Typography>
+              variant='button'></Typography>
           </ListItem>
         </Box>
-        <Box sx={{ display: tabValue === 1 ? 'block' : 'none' }} id='tabPanel2'>
-          <ListItem sx={{ marginTop: 2 }}>
-            <Typography sx={{ fontSize: 18, width: '30%' }} variant='h6'>
+        <Box sx={{display: tabValue === 1 ? 'block' : 'none'}} id='tabPanel2'>
+          <ListItem sx={{marginTop: 2}}>
+            <Typography sx={{fontSize: 18, width: '30%'}} variant='h6'>
               minDigits:
             </Typography>
             <Select
               size='small'
-              sx={{ marginX: 2 }}
+              sx={{marginX: 2}}
               id='minDigits-select'
               value={minDigits}
               onChange={(e) => {
                 setMinDigits(e.target.value);
-              }}
-            >
+              }}>
               {
                 // Array of 1..20
                 [...Array(21).keys()].slice(1).map((el, i) => {
@@ -258,19 +248,18 @@ const GetDigits = ({
               }
             </Select>
           </ListItem>
-          <ListItem sx={{ marginTop: 2 }}>
-            <Typography sx={{ fontSize: 18, width: '30%' }} variant='h6'>
+          <ListItem sx={{marginTop: 2}}>
+            <Typography sx={{fontSize: 18, width: '30%'}} variant='h6'>
               maxDigits:
             </Typography>
             <Select
               size='small'
-              sx={{ marginX: 2 }}
+              sx={{marginX: 2}}
               id='maxDigits-select'
               value={maxDigits}
               onChange={(e) => {
                 setMaxDigits(e.target.value);
-              }}
-            >
+              }}>
               {[...Array(21).keys()].slice(1).map((el, i) => {
                 return (
                   <MenuItem key={i} value={el}>
@@ -288,20 +277,18 @@ const GetDigits = ({
                 marginTop: 2,
                 borderBottom: 1,
               }}
-              variant='subtitle1'
-            >
+              variant='subtitle1'>
               Optional Params
             </Typography>
           </ListItem>
           <ListItem>
             <Select
               size='small'
-              sx={{ minWidth: '40%' }}
+              sx={{minWidth: '40%'}}
               value={paramsObjType}
               onChange={(e) => {
                 setParamsObjType(e.target.value);
-              }}
-            >
+              }}>
               {
                 // remove params already added
                 paramsObj.length > 0
@@ -325,16 +312,13 @@ const GetDigits = ({
                   ml: 2,
                 }}
                 size='large'
-                onClick={addParamsInput}
-              >
-                <AddBoxRoundedIcon sx={{ '&:hover': { color: '#81c784' } }} />
+                onClick={addParamsInput}>
+                <AddBoxRoundedIcon sx={{'&:hover': {color: '#81c784'}}} />
               </IconButton>
             </Tooltip>
             <Tooltip title='Remove'>
               <IconButton size='large' onClick={removeParamsInput}>
-                <RemoveCircleRoundedIcon
-                  sx={{ '&:hover': { color: '#e57373' } }}
-                />
+                <RemoveCircleRoundedIcon sx={{'&:hover': {color: '#e57373'}}} />
               </IconButton>
             </Tooltip>
           </ListItem>

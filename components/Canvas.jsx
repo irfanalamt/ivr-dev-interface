@@ -358,8 +358,8 @@ const CanvasComponent = ({isModule = false}) => {
   }
 
   function handleCloseDrawer() {
-    setIsOpenDrawer(false);
     clearAndDraw();
+    setIsOpenDrawer(false);
   }
 
   function checkMouseInPaletteShape(realX, realY) {
@@ -619,8 +619,8 @@ const CanvasComponent = ({isModule = false}) => {
         }
         isDragging.current = false;
         currentShape.current = null;
-        setOpenSnackbar(true);
         clearAndDraw();
+        setOpenSnackbar(true);
 
         return;
       }
