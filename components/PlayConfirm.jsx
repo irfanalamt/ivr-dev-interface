@@ -9,7 +9,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useRef, useState } from 'react';
+import {useRef, useState} from 'react';
+import {replaceVarNameDollar} from '../src/myFunctions';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 import MessageList from './MessageList';
@@ -73,7 +74,7 @@ const PlayConfirm = ({
     shape.setText(shapeName);
     clearAndDraw();
     shape.setUserValues({
-      params: { confirmOption, cancelOption, confirmPrompt, cancelPrompt },
+      params: {confirmOption, cancelOption, confirmPrompt, cancelPrompt},
       messageList: filteredMsgObj,
     });
 
@@ -84,7 +85,7 @@ const PlayConfirm = ({
     return JSON.stringify({
       name: shapeName,
       userValues: {
-        params: { confirmOption, cancelOption, confirmPrompt, cancelPrompt },
+        params: {confirmOption, cancelOption, confirmPrompt, cancelPrompt},
         messageList: msgObj,
       },
     });
@@ -93,14 +94,14 @@ const PlayConfirm = ({
 
   function generateJS(filteredMsgObj) {
     const codeMessageObject = filteredMsgObj.map((obj) => {
-      const { isError, useVariable, ...rest } = obj;
+      const {isError, useVariable, ...rest} = obj;
       return rest;
     });
 
     let codeString = `this.${
       shapeName || `playConfirm${shape.id}`
-    }= async function(){let msgList = ${JSON.stringify(
-      codeMessageObject
+    }= async function(){let msgList = ${replaceVarNameDollar(
+      JSON.stringify(codeMessageObject)
     )};let params = ${JSON.stringify({
       confirmOption,
       cancelOption,
@@ -114,7 +115,7 @@ const PlayConfirm = ({
 
   return (
     <>
-      <List sx={{ minWidth: 350 }}>
+      <List sx={{minWidth: 350}}>
         <DrawerTop
           saveUserValues={saveUserValues}
           shape={shape}
@@ -134,16 +135,15 @@ const PlayConfirm = ({
         />
         <ListItem>
           <Tabs
-            sx={{ marginX: 'auto' }}
+            sx={{marginX: 'auto'}}
             value={tabValue}
-            onChange={(e, newVal) => setTabValue(newVal)}
-          >
+            onChange={(e, newVal) => setTabValue(newVal)}>
             <Tab label='Message List' />
             <Tab label='Parameters' />
           </Tabs>
         </ListItem>
       </List>
-      <Box sx={{ display: tabValue === 0 ? 'block' : 'none' }} id='tabPanel1'>
+      <Box sx={{display: tabValue === 0 ? 'block' : 'none'}} id='tabPanel1'>
         <MessageList
           messageList={msgObj}
           setMessageList={setMsgObj}
@@ -159,20 +159,18 @@ const PlayConfirm = ({
               visibility: 'hidden',
             }}
             id='error-box'
-            variant='button'
-          ></Typography>
+            variant='button'></Typography>
         </ListItem>
       </Box>
-      <Box id='tabPanel2' sx={{ display: tabValue === 1 ? 'block' : 'none' }}>
-        <ListItem sx={{ marginTop: 2 }}>
-          <Typography sx={{ width: '35%' }} variant='subtitle2'>
+      <Box id='tabPanel2' sx={{display: tabValue === 1 ? 'block' : 'none'}}>
+        <ListItem sx={{marginTop: 2}}>
+          <Typography sx={{width: '35%'}} variant='subtitle2'>
             confirmOption:
           </Typography>
           <Select
             size='small'
             value={confirmOption}
-            onChange={(e) => setConfirmOption(e.target.value)}
-          >
+            onChange={(e) => setConfirmOption(e.target.value)}>
             <MenuItem value=''> </MenuItem>
             <MenuItem value='X'>X</MenuItem>
             <MenuItem value={0}>0</MenuItem>
@@ -187,15 +185,14 @@ const PlayConfirm = ({
             <MenuItem value={9}>9</MenuItem>
           </Select>
         </ListItem>
-        <ListItem sx={{ marginTop: 1 }}>
-          <Typography sx={{ width: '35%' }} variant='subtitle2'>
+        <ListItem sx={{marginTop: 1}}>
+          <Typography sx={{width: '35%'}} variant='subtitle2'>
             cancelOption:
           </Typography>
           <Select
             size='small'
             value={cancelOption}
-            onChange={(e) => setCancelOption(e.target.value)}
-          >
+            onChange={(e) => setCancelOption(e.target.value)}>
             <MenuItem value=''> </MenuItem>
             <MenuItem value='X'>X</MenuItem>
             <MenuItem value={0}>0</MenuItem>
@@ -210,23 +207,23 @@ const PlayConfirm = ({
             <MenuItem value={9}>9</MenuItem>
           </Select>
         </ListItem>
-        <ListItem sx={{ marginTop: 1 }}>
-          <Typography sx={{ width: '35%' }} variant='subtitle2'>
+        <ListItem sx={{marginTop: 1}}>
+          <Typography sx={{width: '35%'}} variant='subtitle2'>
             confirmPrompt:
           </Typography>
           <TextField
             size='small'
-            sx={{ width: 180 }}
+            sx={{width: 180}}
             value={confirmPrompt}
             onChange={(e) => setConfirmPrompt(e.target.value)}
           />
         </ListItem>
-        <ListItem sx={{ marginTop: 1 }}>
-          <Typography sx={{ width: '35%' }} variant='subtitle2'>
+        <ListItem sx={{marginTop: 1}}>
+          <Typography sx={{width: '35%'}} variant='subtitle2'>
             cancelPrompt:
           </Typography>
           <TextField
-            sx={{ width: 180 }}
+            sx={{width: 180}}
             size='small'
             value={cancelPrompt}
             onChange={(e) => setCancelPrompt(e.target.value)}

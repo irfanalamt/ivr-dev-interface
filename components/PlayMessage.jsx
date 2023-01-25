@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import {useRef, useState} from 'react';
+import {replaceVarNameDollar} from '../src/myFunctions';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 import MessageList from './MessageList';
@@ -84,8 +85,8 @@ const PlayMessage = ({
 
     let codeString = `this.${
       shapeName || `playMessage${shape.id}`
-    }= async function(){let msgList = ${JSON.stringify(
-      codeMessageObject
+    }= async function(){let msgList = ${replaceVarNameDollar(
+      JSON.stringify(codeMessageObject)
     )};let params = ${JSON.stringify({
       interruptible,
       repeatOption,

@@ -17,6 +17,7 @@ import {addParamsElements} from '../src/helpers';
 import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
 import MessageList from './MessageList';
+import {replaceVarNameDollar} from '../src/myFunctions';
 
 const GetDigits = ({
   shape,
@@ -108,7 +109,7 @@ const GetDigits = ({
     let codeString = `this.${
       shapeName || `getDigits${shape.id}`
     } = async function(){
-      let msgList = ${JSON.stringify(codeMessageObject)};
+      let msgList = ${replaceVarNameDollar(JSON.stringify(codeMessageObject))};
       let params = ${JSON.stringify(entireParamsObj)};
       this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
     };`;

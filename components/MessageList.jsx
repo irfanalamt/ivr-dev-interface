@@ -169,7 +169,7 @@ const MessageList = ({
                         el.type === (m.type === 'prompt' ? 'prompt' : 'number')
                     )
                     .map((el, i) => (
-                      <MenuItem key={i} value={`this.${el.name}` ?? ''}>
+                      <MenuItem key={i} value={`$${el.name}` ?? ''}>
                         {el.name}
                       </MenuItem>
                     ))}
