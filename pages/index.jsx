@@ -13,15 +13,19 @@ const Home = () => {
     router.push('/module');
   };
 
-  const handleOpen = (type = null) => {
-    // Prompt user to select a file
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.ivrf';
-    if (type) fileInput.onchange = handleFileSelectModule;
-    else fileInput.onchange = handleFileSelectProject;
-    fileInput.click();
+  const handleOpenSavedProjects = () => {
+    router.push('/saved-projects');
   };
+
+  // const handleOpen = (type = null) => {
+  //   // Prompt user to select a file
+  //   const fileInput = document.createElement('input');
+  //   fileInput.type = 'file';
+  //   fileInput.accept = '.ivrf';
+  //   if (type) fileInput.onchange = handleFileSelectModule;
+  //   else fileInput.onchange = handleFileSelectProject;
+  //   fileInput.click();
+  // };
 
   const handleFileSelectProject = (event) => {
     const file = event.target.files[0];
@@ -32,7 +36,7 @@ const Home = () => {
       const contents = event.target.result;
       router.push({
         pathname: '/project',
-        query: {projectData: contents}
+        query: {projectData: contents},
       });
     };
     reader.readAsText(file);
@@ -47,7 +51,7 @@ const Home = () => {
       const contents = event.target.result;
       router.push({
         pathname: '/module',
-        query: {projectData: contents}
+        query: {projectData: contents},
       });
     };
     reader.readAsText(file);
@@ -62,7 +66,7 @@ const Home = () => {
           alignItems: 'center',
           height: 50,
           px: 3,
-          boxShadow: 1
+          boxShadow: 1,
         }}>
         <Typography
           sx={{
@@ -70,7 +74,7 @@ const Home = () => {
             fontFamily: 'monospace',
             display: 'flex',
             alignItems: 'center',
-            color: '#424242'
+            color: '#424242',
           }}
           variant='h4'>
           <Avatar sx={{backgroundColor: '#bbdefb', mx: 1}}>
@@ -105,7 +109,7 @@ const Home = () => {
           <Button
             sx={{textAlign: 'center'}}
             variant='outlined'
-            onClick={() => handleOpen()}>
+            onClick={handleOpenSavedProjects}>
             Open project
           </Button>
         </Stack>
@@ -121,7 +125,7 @@ const Home = () => {
             sx={{textAlign: 'center'}}
             variant='outlined'
             color='secondary'
-            onClick={() => handleOpen('module')}>
+            onClick={handleOpenSavedProjects}>
             Open module
           </Button>
         </Stack>

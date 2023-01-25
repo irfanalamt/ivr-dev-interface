@@ -1,12 +1,9 @@
-import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-import InfoIcon from '@mui/icons-material/Info';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
+import InfoIcon from '@mui/icons-material/Info';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
-const prettier = require('prettier');
-const babelParser = require('@babel/parser');
-
 import {
   Alert,
   Box,
@@ -17,18 +14,21 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import axios from 'axios';
+import {useRouter} from 'next/router';
 import {useEffect, useRef, useState} from 'react';
+import Lines from '../models/Lines';
 import Shape from '../models/Shape';
 import Shapes from '../models/Shapes';
-import Lines from '../models/Lines';
-import DrawerComponent from './Drawer';
-import SetVariables from './SetVariables';
 import CanvasAppbar from './CanvasAppbar';
-import ResetCanvasDialog from './ResetCanvasDialog';
-import {useRouter} from 'next/router';
-import SaveFileDialog from './SaveFileDialog';
-import PromptList from './PromptList';
+import DrawerComponent from './Drawer';
 import ModuleManager from './ModuleManager';
+import PromptList from './PromptList';
+import ResetCanvasDialog from './ResetCanvasDialog';
+import SaveFileDialog from './SaveFileDialog';
+import SetVariables from './SetVariables';
+const prettier = require('prettier');
+const babelParser = require('@babel/parser');
 
 const CanvasComponent = ({isModule = false}) => {
   const router = useRouter();
@@ -836,6 +836,17 @@ const CanvasComponent = ({isModule = false}) => {
     clearAndDraw();
   }
 
+  function saveProjectToServer(data) {
+    axios
+      .post('/api/saveProject', data)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   function saveToFile(name, ivrName) {
     const data = {
       stageGroup: stageGroup.current,
@@ -845,13 +856,15 @@ const CanvasComponent = ({isModule = false}) => {
       ivrName: ivrName,
     };
 
-    const file = new Blob([JSON.stringify(data)], {type: 'text/json'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(file);
-    link.download = `${name}.ivrf`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    saveProjectToServer({filename: ivrName, data: JSON.stringify(data)});
+
+    // const file = new Blob([JSON.stringify(data)], {type: 'text/json'});
+    // const link = document.createElement('a');
+    // link.href = URL.createObjectURL(file);
+    // link.download = `${name}.ivrf`;
+    // document.body.appendChild(link);
+    // link.click();
+    // document.body.removeChild(link);
   }
 
   function generateConfigFile() {
