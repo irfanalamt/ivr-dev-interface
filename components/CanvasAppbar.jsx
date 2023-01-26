@@ -4,9 +4,10 @@ import {
   Typography,
   Button,
   Tooltip,
-  IconButton
+  IconButton,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import SaveIcon from '@mui/icons-material/Save';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
@@ -20,9 +21,19 @@ const CanvasAppbar = ({
   showResetDialog,
   generateFile,
   ivrName,
-  showSaveFileDialog
+  showSaveFileDialog,
+  saveToServer,
 }) => {
   const [openUserGuideDialog, setOpenUserGuideDialog] = useState(false);
+
+  function handleSave() {
+    if (!ivrName) {
+      showSaveFileDialog();
+      return;
+    }
+
+    saveToServer(ivrName);
+  }
 
   return (
     <Box sx={{position: 'fixed', top: 0}}>
@@ -35,7 +46,7 @@ const CanvasAppbar = ({
           px: 3,
           boxShadow: 1,
           width: '100vw',
-          mx: 'auto'
+          mx: 'auto',
         }}>
         <Avatar sx={{backgroundColor: '#bbdefb', mr: 2}}>
           <ArchitectureIcon sx={{fontSize: '2rem', color: 'black'}} />
@@ -45,7 +56,7 @@ const CanvasAppbar = ({
             sx={{
               mr: 2,
               backgroundColor: '#dcdcdc',
-              '&:hover': {backgroundColor: '#80cbc4'}
+              '&:hover': {backgroundColor: '#80cbc4'},
             }}
             aria-label='user-guide'
             size='small'
@@ -63,22 +74,38 @@ const CanvasAppbar = ({
           sx={{
             ml: 'auto',
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
           }}>
           <Typography sx={{mr: 3}} variant='subtitle1'>
             {ivrName}
           </Typography>
-          <Tooltip title='SAVE TO FILE'>
+          <Tooltip title='SAVE'>
             <Button
               sx={{
                 zIndex: 6,
                 mr: 1,
                 backgroundColor: '#dcdcdc',
-                color: 'black'
+                color: 'black',
+                '&:hover': {backgroundColor: '#81c784'},
+              }}
+              onClick={handleSave}
+              variant='contained'
+              size='small'
+              color='success'>
+              <SaveIcon sx={{fontSize: '1.2rem'}} />
+            </Button>
+          </Tooltip>
+          <Tooltip title='SAVE AS'>
+            <Button
+              sx={{
+                zIndex: 6,
+                mr: 1,
+                backgroundColor: '#dcdcdc',
+                color: 'black',
+                '&:hover': {backgroundColor: '#9575cd'},
               }}
               variant='contained'
               size='small'
-              color='secondary'
               onClick={showSaveFileDialog}>
               <SaveAsIcon sx={{fontSize: '1.2rem'}} />
             </Button>
@@ -90,7 +117,7 @@ const CanvasAppbar = ({
                 mr: 1,
                 backgroundColor: '#dcdcdc',
                 color: 'black',
-                '&:hover': {backgroundColor: '#64b5f6'}
+                '&:hover': {backgroundColor: '#64b5f6'},
               }}
               variant='contained'
               size='small'
@@ -105,8 +132,8 @@ const CanvasAppbar = ({
                 backgroundColor: '#66bb6a',
                 color: 'black',
                 '&:hover': {
-                  backgroundColor: '#43a047'
-                }
+                  backgroundColor: '#43a047',
+                },
               }}
               size='small'
               variant='contained'

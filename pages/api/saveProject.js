@@ -13,7 +13,9 @@ async function saveProject(req, res) {
     await client.connect();
 
     const db = client.db('ivr-dev');
-    await db.collection('projects').insertOne({filename, data});
+    await db
+      .collection('projects')
+      .findOneAndUpdate({filename}, {$set: {data}}, {upsert: true});
 
     res.status(200).json({message: `File ${filename} written successfully.`});
   } catch (err) {

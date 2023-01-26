@@ -5,12 +5,12 @@ import {
   DialogActions,
   DialogContent,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import {useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
-const SaveFileDialog = ({open, handleClose, saveToFile, setIvrName}) => {
+const SaveFileDialog = ({open, handleClose, saveToServer, setIvrName}) => {
   const [ivrName, setIVRName] = useState('');
   const [version, setVersion] = useState(1);
   const [errorText, setErrorText] = useState('');
@@ -19,7 +19,7 @@ const SaveFileDialog = ({open, handleClose, saveToFile, setIvrName}) => {
     if (ivrName === '' || errorText !== '') return;
     setIvrName(`${ivrName}_${version}`);
     handleClose();
-    saveToFile(`${ivrName}_${version}`, `${ivrName}_${version}`);
+    saveToServer(`${ivrName}_${version}`);
   }
 
   function handleNameValidation(value) {
@@ -41,7 +41,7 @@ const SaveFileDialog = ({open, handleClose, saveToFile, setIvrName}) => {
           color: '#FF0000',
           width: 'max-content',
           mx: 'auto',
-          fontSize: '0.75rem'
+          fontSize: '0.75rem',
         }}
         variant='subtitle1'>
         {errorText}

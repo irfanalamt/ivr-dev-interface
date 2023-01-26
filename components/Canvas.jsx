@@ -837,7 +837,7 @@ const CanvasComponent = ({isModule = false}) => {
     clearAndDraw();
   }
 
-  function saveProjectToServer(data) {
+  function postToApi(data) {
     axios
       .post('/api/saveProject', data)
       .then((response) => {
@@ -854,7 +854,7 @@ const CanvasComponent = ({isModule = false}) => {
       });
   }
 
-  function saveToFile(name, ivrName) {
+  function saveToServer(ivrName) {
     const data = {
       stageGroup: stageGroup.current,
       userVariables: userVariables.current,
@@ -862,16 +862,7 @@ const CanvasComponent = ({isModule = false}) => {
       pageCount: pageCount,
       ivrName: ivrName,
     };
-
-    saveProjectToServer({filename: ivrName, data: JSON.stringify(data)});
-
-    // const file = new Blob([JSON.stringify(data)], {type: 'text/json'});
-    // const link = document.createElement('a');
-    // link.href = URL.createObjectURL(file);
-    // link.download = `${name}.ivrf`;
-    // document.body.appendChild(link);
-    // link.click();
-    // document.body.removeChild(link);
+    postToApi({filename: ivrName, data: JSON.stringify(data)});
   }
 
   function generateConfigFile() {
@@ -1027,6 +1018,7 @@ const CanvasComponent = ({isModule = false}) => {
         showSaveFileDialog={() => setShowSaveFileDialog(true)}
         generateFile={generateConfigFile}
         ivrName={ivrName}
+        saveToServer={saveToServer}
       />
       <canvas
         style={{backgroundColor: '#EFF7FD'}}
@@ -1169,7 +1161,7 @@ const CanvasComponent = ({isModule = false}) => {
           clearAndDraw();
         }}
         setIvrName={setIvrName}
-        saveToFile={saveToFile}
+        saveToServer={saveToServer}
       />
       <Typography
         sx={{
