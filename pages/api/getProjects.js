@@ -6,16 +6,17 @@ function convertArray(arr) {
 }
 
 async function getProjects(req, res) {
-  if (req.method !== 'GET') return;
+  if (req.method !== 'GET') {
+    return;
+  }
 
   try {
     const db = client.db('ivr-dev');
     const projectNames = await db
       .collection('projects')
-      .find({}, {projection: {_id: 0, filename: 1}})
+      .find({}, {projection: {filename: 1}})
       .toArray();
-
-    const fileNamesArray = convertArray(projectNames);
+    const fileNamesArray = projectNames.map(({filename}) => filename);
 
     res.status(200).json(fileNamesArray);
   } catch (err) {
