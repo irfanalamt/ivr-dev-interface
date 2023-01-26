@@ -77,28 +77,37 @@ const GetDigits = ({
 
     // remove null values and save
     const filteredMsgObj = msgObj.filter((n) => n.value);
-    const entireParamsObj = {
-      minDigits,
-      maxDigits,
-      paramsList: paramsObj.length > 0 ? paramsObj : undefined,
-    };
 
     shape.setText(shapeName);
     clearAndDraw();
     shape.setUserValues({
-      params: entireParamsObj,
+      params: getEntireParamsObj(),
       messageList: filteredMsgObj,
       variableName: resultName,
     });
 
-    if (filteredMsgObj.length > 0) generateJS(filteredMsgObj, entireParamsObj);
+    if (filteredMsgObj.length > 0) generateJS(filteredMsgObj);
 
     // handle save success
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
   }
 
-  function generateJS(filteredMsgObj, entireParamsObj) {
+  function getEntireParamsObj() {
+    const entireParamsObj = {
+      minDigits,
+      maxDigits,
+    };
+    paramsObj.forEach((p) => {
+      const {type: paramName, value: paramValue, ...rest} = p;
+      entireParamsObj[paramName] = paramValue;
+      Object.assign(entireParamsObj, rest);
+    });
+
+    return entireParamsObj;
+  }
+
+  function generateJS(filteredMsgObj) {
     // create codeMessageObject
     const codeMessageObject = filteredMsgObj.map((obj) => {
       const {isError, useVariable, ...rest} = obj;
@@ -110,7 +119,7 @@ const GetDigits = ({
       shapeName || `getDigits${shape.id}`
     } = async function(){
       let msgList = ${replaceVarNameDollar(JSON.stringify(codeMessageObject))};
-      let params = ${JSON.stringify(entireParamsObj)};
+      let params = ${JSON.stringify(getEntireParamsObj())};
       this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
     };`;
     shape.setFunctionString(codeString);
@@ -134,11 +143,7 @@ const GetDigits = ({
     return JSON.stringify({
       name: shapeName,
       userValues: {
-        params: {
-          minDigits,
-          maxDigits,
-          paramsList: paramsObj,
-        },
+        params: getEntireParamsObj(),
         messageList: msgObj,
         variableName: resultName,
       },
