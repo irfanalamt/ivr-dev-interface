@@ -49,16 +49,6 @@ const SavedProjects = () => {
       });
   }
 
-  if (isLoading)
-    return (
-      <Typography
-        sx={{py: 10, fontSize: 'large'}}
-        variant='subtitle1'
-        textAlign='center'>
-        Loading...
-      </Typography>
-    );
-
   return (
     <Container>
       <Box
@@ -77,7 +67,14 @@ const SavedProjects = () => {
           saved projects
         </Typography>
       </Box>
-      {filenames?.length > 0 ? (
+      {isLoading ? (
+        <Typography
+          sx={{py: 10, fontSize: 'large'}}
+          variant='subtitle1'
+          textAlign='center'>
+          Loading...
+        </Typography>
+      ) : filenames?.length > 0 ? (
         <Box sx={{maxWidth: 360, backgroundColor: '#eceff1', mt: 2}}>
           <List>
             {filenames.map((projectName, i) => (
