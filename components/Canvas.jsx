@@ -84,6 +84,7 @@ const CanvasComponent = ({isModule = false}) => {
   const isPalletShape = useRef(false);
   const promptDescriptionObj = useRef(null);
   const moduleList = useRef({});
+  const isSuccessToast = useRef(false);
 
   let startX, startY;
   let startX1, startY1;
@@ -841,6 +842,12 @@ const CanvasComponent = ({isModule = false}) => {
       .post('/api/saveProject', data)
       .then((response) => {
         console.log(response.data);
+        isSuccessToast.current = true;
+        snackbarMessage.current = `Project saved successfully.`;
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          isSuccessToast.current = false;
+        }, 1500);
       })
       .catch((error) => {
         console.log(error);
@@ -1004,7 +1011,9 @@ const CanvasComponent = ({isModule = false}) => {
   function generateInitVariablesJS() {
     let codeString = '';
     userVariables.current.forEach((el) => {
-      codeString += `this.${el.name}${el.value ? `=${el.value};` : ';'}`;
+      if (el.type === 'string' || el.type === 'prompt') {
+        codeString += `this.${el.name}${el.value ? `='${el.value}';` : ';'}`;
+      } else codeString += `this.${el.name}${el.value ? `=${el.value};` : ';'}`;
     });
     return codeString;
   }
@@ -1210,7 +1219,7 @@ const CanvasComponent = ({isModule = false}) => {
         onClose={() => setOpenSnackbar(false)}>
         <Alert
           onClose={() => setOpenSnackbar(false)}
-          severity='warning'
+          severity={isSuccessToast.current ? 'success' : 'warning'}
           sx={{width: '100%'}}>
           {snackbarMessage.current}
         </Alert>
