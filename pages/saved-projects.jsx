@@ -19,12 +19,16 @@ import {useEffect, useState} from 'react';
 const SavedProjects = () => {
   const router = useRouter();
   const [filenames, setFilenames] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
+
     axios
       .get('/api/getProjects')
       .then((response) => {
         setFilenames(response.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error.message);
@@ -44,6 +48,16 @@ const SavedProjects = () => {
         console.log(error);
       });
   }
+
+  if (isLoading)
+    return (
+      <Typography
+        sx={{py: 10, fontSize: 'large'}}
+        variant='subtitle1'
+        textAlign='center'>
+        Loading...
+      </Typography>
+    );
 
   return (
     <Container>
