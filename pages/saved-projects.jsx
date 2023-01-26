@@ -24,10 +24,7 @@ const SavedProjects = () => {
     axios
       .get('/api/getProjects')
       .then((response) => {
-        const fileExtensionsTrimmed = response.data.map((el) =>
-          el.slice(0, -5)
-        );
-        setFilenames(fileExtensionsTrimmed);
+        setFilenames(response.data);
       })
       .catch((error) => {
         console.error(error);
