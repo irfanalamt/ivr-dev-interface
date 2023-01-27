@@ -29,10 +29,15 @@ const FunctionBlock = ({
       return;
     }
 
+    const newReplacedString = replaceDollarString(functionString);
     const shapeId = shape.id;
     const shapeFunctionName = shapeName || `runScript${shapeId}`;
-    const codeString = `this.${shapeFunctionName} = async function(){${functionString}};`;
+    const codeString = `this.${shapeFunctionName} = async function(){${newReplacedString}};`;
     shape.setFunctionString(codeString);
+  }
+
+  function replaceDollarString(str) {
+    return str.replace(/\$([a-zA-Z])/g, 'this.$1');
   }
 
   function saveUserValues() {
@@ -61,13 +66,18 @@ const FunctionBlock = ({
   }
 
   function getUserVariablesString() {
-    const names = userVariables
-      .map((userVariable) => userVariable.name)
-      .join(', ');
+    const variables = userVariables
+      .map((userVariable) => {
+        if (userVariable.type == 'string' || userVariable.type == 'prompt')
+          return `let $${userVariable.name} = '${userVariable.value}';`;
 
-    if (!names) return '';
+        return `let $${userVariable.name} = ${userVariable.value};`;
+      })
+      .join(' ');
 
-    return `let ${names};`;
+    if (!variables) return '';
+
+    return variables;
   }
 
   function validateFunctionString() {
@@ -83,6 +93,8 @@ const FunctionBlock = ({
     }
     setIsFunctionError(false);
     setErrorText('');
+    setSuccessText('script valid');
+    setTimeout(() => setSuccessText(''), 3000);
 
     return true;
   }
