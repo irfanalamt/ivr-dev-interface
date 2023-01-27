@@ -67,12 +67,9 @@ const FunctionBlock = ({
 
   function getUserVariablesString() {
     const variables = userVariables
-      .map((userVariable) => {
-        if (userVariable.type == 'string' || userVariable.type == 'prompt')
-          return `let $${userVariable.name} = '${userVariable.value}';`;
-
-        return `let $${userVariable.name} = ${userVariable.value};`;
-      })
+      .map(
+        (userVariable) => `let $${userVariable.name} = '${userVariable.value}';`
+      )
       .join(' ');
 
     if (!variables) return '';
