@@ -179,7 +179,7 @@ const CallApi = ({
       (variable) => '$' + variable.name
     );
 
-    if (str.indexOf('$') === -1) {
+    if (str.indexOf('$') === -1 || str.length < 2) {
       setErrorText('');
       return;
     }
