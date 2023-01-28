@@ -1,3 +1,5 @@
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 import {
   Alert,
   Button,
@@ -8,14 +10,11 @@ import {
   Select,
   Snackbar,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
-import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import {useRef, useState} from 'react';
-import DrawerTop from './DrawerTop';
 import DrawerName from './DrawerName';
+import DrawerTop from './DrawerTop';
 
 const CallApi = ({
   shape,
@@ -23,21 +22,21 @@ const CallApi = ({
   userVariables,
   clearAndDraw,
   stageGroup,
-  childRef
+  childRef,
 }) => {
   const [shapeName, setShapeName] = useState(shape.text);
   const [inputArr, setInputArr] = useState(
     shape.userValues?.inputArr || [
       {
-        value: ''
-      }
+        value: '',
+      },
     ]
   );
   const [outputArr, setOutputArr] = useState(
     shape.userValues?.outputArr || [
       {
-        value: ''
-      }
+        value: '',
+      },
     ]
   );
   const [endpoint, setEndpoint] = useState(shape.userValues?.endpoint || '');
@@ -48,9 +47,8 @@ const CallApi = ({
   const drawerNameRef = useRef({});
 
   function handleInputArrChange(e, index) {
-    console.log('🚀 ~ handleInputArrChange ~ e', e);
     e.preventDefault();
-    console.log('🚀 ~ handleInputArrChange ~ index', index);
+
     setInputArr((s) => {
       const newArr = [...s];
       newArr[index].value = e.target.value;
@@ -58,9 +56,8 @@ const CallApi = ({
     });
   }
   function handleOutputArrChange(e, index) {
-    console.log('🚀 ~ handleOutputArrChange ~ e', e);
     e.preventDefault();
-    console.log('🚀 ~ handleOutputArrChange ~ index', index);
+
     setOutputArr((s) => {
       const newArr = [...s];
       newArr[index].value = e.target.value;
@@ -95,7 +92,7 @@ const CallApi = ({
   const getCurrentUserValues = () => {
     return JSON.stringify({
       name: shapeName,
-      userValues: {endpoint, inputArr, outputArr}
+      userValues: {endpoint, inputArr, outputArr},
     });
   };
   childRef.getCurrentUserValues = getCurrentUserValues;
@@ -109,19 +106,34 @@ const CallApi = ({
     }
 
     // genarate function only if all 3 parameters are filled
+    const inputVars = inputArr.filter((el) => el.value);
+    const outputVars = outputArr.filter((el) => el.value);
 
-    let inputVarsString =
-      '{' + inputArr.map((el) => `${el.value}:this.${el.value}`) + '}';
-
-    let outputVarsString = outputArr
-      .filter((el) => el.value)
+    const inputVarsString = `{${inputVars
+      .map((el) => `${el.value}:this.${el.value}`)
+      .join(',')}}`;
+    const outputVarsString = outputVars
       .map((el) => `this.${el.value}=outputVars.${el.value};`)
       .join('');
 
-    let codeString = `this.${
-      shapeName || `callAPI${shape.id}`
-    }=async function(){let endpoint = '${endpoint}';let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI(endpoint,inputVars);${outputVarsString}
-};`;
+    let endpointString = endpoint;
+    if (endpoint.indexOf('$') !== -1) {
+      const index = endpoint.indexOf('/');
+      let result;
+      if (index === -1) {
+        // '/' not found, return the entire str
+        result = endpoint;
+        endpointString = `this.${result.substring(1)}`;
+      } else {
+        // '/' found, return the characters before it
+        result = endpoint.substring(0, index);
+        let rest = endpoint.substring(index);
+        endpointString = `this.${result.substring(1)}` + '+' + `'${rest}'`;
+      }
+    }
+
+    const shapeNameToUse = shapeName || `callAPI${shape.id}`;
+    const codeString = `this.${shapeNameToUse}=async function(){let endpoint = ${endpointString};let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI(endpoint,inputVars);${outputVarsString}};`;
 
     shape.setFunctionString(codeString);
     console.log('🕺🏻callAPI code:', codeString);
@@ -132,8 +144,8 @@ const CallApi = ({
       return [
         ...s,
         {
-          value: ''
-        }
+          value: '',
+        },
       ];
     });
   }
@@ -142,8 +154,8 @@ const CallApi = ({
       return [
         ...s,
         {
-          value: ''
-        }
+          value: '',
+        },
       ];
     });
   }
@@ -160,6 +172,34 @@ const CallApi = ({
       newArr.pop();
       return newArr;
     });
+  }
+
+  function validateEndpoint(str) {
+    const modifiedVariables = userVariables.map(
+      (variable) => '$' + variable.name
+    );
+
+    if (str.indexOf('$') === -1) {
+      setErrorText('');
+      return;
+    }
+
+    const index = str.indexOf('/');
+    let result;
+
+    if (index === -1) {
+      // '/' not found, return the entire string
+      result = str;
+    } else {
+      // '/' found, return the characters before it
+      result = str.substring(0, index);
+    }
+
+    if (modifiedVariables.includes(result)) {
+      setErrorText('');
+    } else {
+      setErrorText(`${result} not declared`);
+    }
   }
 
   return (
@@ -196,6 +236,7 @@ const CallApi = ({
             value={endpoint}
             onChange={(e) => {
               setEndpoint(e.target.value);
+              validateEndpoint(e.target.value);
             }}
           />
         </ListItem>
@@ -208,7 +249,7 @@ const CallApi = ({
             sx={{
               ml: 1,
               backgroundColor: '#dcdcdc',
-              '&:hover': {backgroundColor: '#b0b0b0'}
+              '&:hover': {backgroundColor: '#b0b0b0'},
             }}
             size='small'
             variant='contained'
@@ -219,7 +260,7 @@ const CallApi = ({
             sx={{
               ml: 1,
               backgroundColor: '#dcdcdc',
-              '&:hover': {backgroundColor: '#b0b0b0'}
+              '&:hover': {backgroundColor: '#b0b0b0'},
             }}
             size='small'
             variant='contained'
@@ -259,7 +300,7 @@ const CallApi = ({
             sx={{
               ml: 1,
               backgroundColor: '#dcdcdc',
-              '&:hover': {backgroundColor: '#b0b0b0'}
+              '&:hover': {backgroundColor: '#b0b0b0'},
             }}
             size='small'
             variant='contained'
@@ -270,7 +311,7 @@ const CallApi = ({
             sx={{
               ml: 1,
               backgroundColor: '#dcdcdc',
-              '&:hover': {backgroundColor: '#b0b0b0'}
+              '&:hover': {backgroundColor: '#b0b0b0'},
             }}
             size='small'
             variant='contained'
