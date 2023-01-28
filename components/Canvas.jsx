@@ -121,8 +121,7 @@ const CanvasComponent = ({isModule = false}) => {
       canvasRef.current.style.cursor = 'crosshair';
     } else if (isConnecting == 0) {
       deleteTempShape();
-      if (connectShape1.current?.nextItem === 'temp')
-        connectShape1.current?.setNextItem(null);
+      deleteConnectShape1NextItem();
       canvasRef.current.style.cursor = 'default';
       connectShape1.current?.setSelected(false);
       connectShape2.current?.setSelected(false);
@@ -410,26 +409,41 @@ const CanvasComponent = ({isModule = false}) => {
           setIsConnecting(2);
 
           if (element.type === 'switch') {
-            const isNearExitPoint = element.isNearExitPointSwitch(realX, realY);
-            if (isNearExitPoint) {
+            const isNearPoint = element.isNearExitPointSwitch(realX, realY);
+            if (isNearPoint) {
               stageGroup.current[pageNumber.current - 1].addTempShape(
                 realX,
                 realY
               );
-              element.setNextItem('temp');
+
+              const {position, totalPoints} = isNearPoint;
+
+              if (position < totalPoints) {
+                element.userValues.switchArray[position].nextId = 'temp';
+              } else {
+                element.userValues.default.nextId = 'temp';
+              }
             }
-            isSwitchExitPoint.current = isNearExitPoint;
+            isSwitchExitPoint.current = isNearPoint;
           }
           if (element.type === 'playMenu') {
-            const isNearExitPoint = element.isNearExitPointMenu(realX, realY);
-            if (isNearExitPoint) {
+            const isNearPoint = element.isNearExitPointMenu(realX, realY);
+            if (isNearPoint) {
               stageGroup.current[pageNumber.current - 1].addTempShape(
                 realX,
                 realY
               );
-              element.setNextItem('temp');
+
+              const {exitPoint} = isNearPoint;
+
+              const index = element.userValues.items.findIndex(
+                (row) => row.action === exitPoint
+              );
+              if (index !== -1) {
+                element.userValues.items[index].nextId = 'temp';
+              }
             }
-            isMenuExitPoint.current = isNearExitPoint;
+            isMenuExitPoint.current = isNearPoint;
           }
         }
         currentShape.current = element;
@@ -517,21 +531,21 @@ const CanvasComponent = ({isModule = false}) => {
       .forEach((shape) => {
         if (shape.isMouseInShape(realX, realY)) {
           if (shape.type === 'switch') {
-            const exitPoint = shape.isNearExitPointSwitch(realX, realY);
-            if (exitPoint) {
+            const currentPoint = shape.isNearExitPointSwitch(realX, realY);
+            if (currentPoint) {
               stageTooltipRef.current.style.display = 'block';
               stageTooltipRef.current.style.top = realY + 10 + 'px';
               stageTooltipRef.current.style.left = realX + 10 + 'px';
-              stageTooltipRef.current.textContent = exitPoint;
+              stageTooltipRef.current.textContent = currentPoint.exitPoint;
             }
           }
           if (shape.type === 'playMenu') {
-            const exitPoint = shape.isNearExitPointMenu(realX, realY);
-            if (exitPoint) {
+            const currentPoint = shape.isNearExitPointMenu(realX, realY);
+            if (currentPoint) {
               stageTooltipRef.current.style.display = 'block';
               stageTooltipRef.current.style.top = realY + 10 + 'px';
               stageTooltipRef.current.style.left = realX + 30 + 'px';
-              stageTooltipRef.current.textContent = exitPoint;
+              stageTooltipRef.current.textContent = currentPoint.exitPoint;
             }
           }
           if (shape.type === 'jumper') {
@@ -691,12 +705,44 @@ const CanvasComponent = ({isModule = false}) => {
     delete stageGroup.current[pageNumber.current - 1].getShapes().temp;
   }
 
+  function deleteConnectShape1NextItem() {
+    const shape1 = connectShape1.current;
+    if (!shape1) return;
+
+    if (shape1.nextItem === 'temp') {
+      shape1.setNextItem(null);
+    }
+
+    if (shape1.type === 'switch') {
+      if (isSwitchExitPoint.current) {
+        const {position, totalPoints} = isSwitchExitPoint.current;
+        if (
+          position < totalPoints &&
+          shape1.userValues.switchArray[position].nextId == 'temp'
+        ) {
+          shape1.userValues.switchArray[position].nextId = undefined;
+        } else {
+          if (shape1.userValues.default.nextId == 'temp') {
+            shape1.userValues.default.nextId = undefined;
+          }
+        }
+      }
+    }
+
+    if (shape1.type === 'playMenu') {
+      if (isMenuExitPoint.current) {
+        shape1.userValues.items.forEach((item) => {
+          if (item.nextId == 'temp') item.nextId = undefined;
+        });
+      }
+    }
+  }
+
   function connectShapes() {
     connectShape1.current.setSelected(false);
     connectShape2.current.setSelected(false);
-    if (connectShape1.current.nextItem === 'temp') {
-      connectShape1.current.setNextItem(null);
-    }
+
+    deleteConnectShape1NextItem();
     deleteTempShape();
     clearAndDraw();
 
@@ -732,19 +778,21 @@ const CanvasComponent = ({isModule = false}) => {
 
     if (connectShape1.current.type === 'switch') {
       if (isSwitchExitPoint.current) {
-        let position = connectShape1.current.userValues.switchArray.findIndex(
-          (row) => row.exitPoint == isSwitchExitPoint.current
-        );
-        if (position !== -1) {
+        const currentPoint = isSwitchExitPoint.current;
+
+        const {position, totalPoints} = currentPoint;
+
+        if (position < totalPoints) {
           connectShape1.current.userValues.switchArray[position].nextId =
             connectShape2.current.id;
           clearAndDraw();
           return;
+        } else {
+          connectShape1.current.userValues.default.nextId =
+            connectShape2.current.id;
+          clearAndDraw();
+          return;
         }
-        connectShape1.current.userValues.default.nextId =
-          connectShape2.current.id;
-        clearAndDraw();
-        return;
       }
       displayInfoMessage('Choose a switch action to connect.');
       return;
@@ -753,7 +801,7 @@ const CanvasComponent = ({isModule = false}) => {
     if (connectShape1.current.type === 'playMenu') {
       if (isMenuExitPoint.current) {
         const index = connectShape1.current.userValues.items.findIndex(
-          (row) => row.action === isMenuExitPoint.current
+          (row) => row.action === isMenuExitPoint.current.exitPoint
         );
         if (index !== -1) {
           connectShape1.current.userValues.items[index].nextId =
@@ -1002,9 +1050,7 @@ const CanvasComponent = ({isModule = false}) => {
   function generateInitVariablesJS() {
     let codeString = '';
     userVariables.current.forEach((el) => {
-      if (el.type === 'string' || el.type === 'prompt') {
-        codeString += `this.${el.name}${el.value ? `='${el.value}';` : ';'}`;
-      } else codeString += `this.${el.name}${el.value ? `=${el.value};` : ';'}`;
+      codeString += `this.${el.name}${el.value ? `='${el.value}';` : ';'}`;
     });
     return codeString;
   }

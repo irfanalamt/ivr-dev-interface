@@ -175,10 +175,6 @@ const CallApi = ({
   }
 
   function validateEndpoint(str) {
-    const modifiedVariables = userVariables.map(
-      (variable) => '$' + variable.name
-    );
-
     if (str.indexOf('$') === -1 || str.length < 2) {
       setErrorText('');
       return;
@@ -194,6 +190,10 @@ const CallApi = ({
       // '/' found, return the characters before it
       result = str.substring(0, index);
     }
+
+    const modifiedVariables = userVariables.map(
+      (variable) => '$' + variable.name
+    );
 
     if (modifiedVariables.includes(result)) {
       setErrorText('');

@@ -478,7 +478,7 @@ class Shapes {
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
-          lineColor: '#4a148c',
+          lineColor: shape2.id === 'temp' ? '#757575' : '#4a148c',
           lineData: {
             exitPoint: el.userValues.default.exitPoint,
             position: 1,
@@ -504,7 +504,7 @@ class Shapes {
             startItem: shape1.id,
             endItem: shape2.id,
             lineCap: null,
-            lineColor: '#4a148c',
+            lineColor: shape2.id === 'temp' ? '#757575' : '#4a148c',
             lineData: {
               exitPoint: row.exitPoint,
               position: i + 1,
@@ -529,7 +529,7 @@ class Shapes {
           startItem: shape1.id,
           endItem: shape2.id,
           lineCap: null,
-          lineColor: '#4a148c',
+          lineColor: shape2.id === 'temp' ? '#757575' : '#4a148c',
           lineData: {
             exitPoint: el.userValues.default.exitPoint,
             position: switchArrayLength + 1,
@@ -558,7 +558,7 @@ class Shapes {
           y2,
           startItem: shape1.id,
           endItem: shape2.id,
-          lineColor: '#4a148c',
+          lineColor: shape2.id === 'temp' ? '#757575' : '#4a148c',
           lineData: {
             exitPoint: itemsWithoutDefaults[0].action,
             position: 1,
@@ -579,7 +579,7 @@ class Shapes {
             y2,
             startItem: shape1.id,
             endItem: shape2.id,
-            lineColor: '#4a148c',
+            lineColor: shape2.id === 'temp' ? '#757575' : '#4a148c',
             lineData: {
               exitPoint: item.action,
               position: i + 1,

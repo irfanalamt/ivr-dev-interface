@@ -120,6 +120,11 @@ class Shape {
   isBetween(x, min, max) {
     return x >= min && x <= max;
   }
+
+  distanceBetweenPoints(x1, y1, x2, y2) {
+    return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  }
+
   fillSelected(ctx) {
     ctx.fillStyle = '#d4d7d8';
     ctx.fill();
@@ -134,68 +139,79 @@ class Shape {
     let bottomPoint;
 
     if (numExitPoints === 1) {
-      bottomPoint = this.getExitPoint();
-
-      if (
-        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
-        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
-      ) {
-        return this.userValues.default.exitPoint;
-      }
-
-      return false;
+      // return this.userValues.default.exitPoint;
+      return {
+        position: 1,
+        totalPoints: 1,
+        exitPoint: this.userValues.default.exitPoint,
+      };
     }
+
+    let distancesFromExitPoints = [];
 
     for (let i = 1; i <= numExitPoints; i++) {
       bottomPoint = this.getBottomPointForExit(numExitPoints, i);
+      const distance = this.distanceBetweenPoints(...bottomPoint, x, y);
 
-      if (
-        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
-        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
-      ) {
-        if (i == numExitPoints) {
-          return this.userValues.default.exitPoint;
-        }
-        return this.userValues.switchArray[i - 1].exitPoint;
-      }
+      distancesFromExitPoints.push(distance);
     }
-    return false;
+
+    const smallest = distancesFromExitPoints.reduce(
+      (acc, current, index) => {
+        if (current < acc.value) {
+          return {value: current, index};
+        }
+        return acc;
+      },
+      {value: Infinity, index: -1}
+    );
+
+    if (smallest.index + 1 == numExitPoints) {
+      return this.userValues.default.exitPoint;
+    }
+
+    return {
+      position: smallest.index,
+      totalPoints: numExitPoints,
+      exitPoint: this.userValues.switchArray[smallest.index].exitPoint,
+    };
   }
 
   isNearExitPointMenu(x, y) {
-    const itemsWithoutDefaults = this.userValues.items.filter(
-      (item) => !(item.isDefault === true)
+    const nonDefaultItems = this.userValues.items.filter(
+      (item) => !item.isDefault
     );
-    const numberOfExitPoints = itemsWithoutDefaults.length;
+    const exitPoints = nonDefaultItems.map((item) => item.action);
 
-    if (numberOfExitPoints === 0) return false;
+    if (!exitPoints.length) return false;
 
-    // If one exit point
-    if (numberOfExitPoints === 1) {
-      const bottomPoint = this.getExitPoint();
-
-      if (
-        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
-        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
-      ) {
-        return itemsWithoutDefaults[0].action;
-      }
-
-      return false;
+    if (exitPoints.length === 1) {
+      return {position: 0, totalPoints: 1, exitPoint: exitPoints[0]};
     }
 
-    // If multiple exit points
-    for (let i = 1; i <= numberOfExitPoints; i++) {
-      const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
+    const distancesFromExitPoints = exitPoints.map((exitPoint, index) => {
+      const bottomPoint = this.getBottomPointForExit(
+        exitPoints.length,
+        index + 1
+      );
+      return this.distanceBetweenPoints(...bottomPoint, x, y);
+    });
 
-      if (
-        this.isBetween(x, bottomPoint[0] - 5, bottomPoint[0] + 5) &&
-        this.isBetween(y, bottomPoint[1] - 5, bottomPoint[1] + 5)
-      ) {
-        return itemsWithoutDefaults[i - 1].action;
-      }
-    }
-    return false;
+    const closestExit = distancesFromExitPoints.reduce(
+      (acc, current, index) => {
+        if (current < acc.value) {
+          return {value: current, index};
+        }
+        return acc;
+      },
+      {value: Infinity, index: -1}
+    );
+
+    return {
+      position: closestExit.index,
+      totalPoints: exitPoints.length,
+      exitPoint: exitPoints[closestExit.index],
+    };
   }
 
   isMouseInShape(x, y) {
