@@ -4,6 +4,7 @@ import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import {
   Box,
+  Button,
   Divider,
   IconButton,
   InputLabel,
@@ -18,8 +19,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useRef, useState } from 'react';
-import { checkValidity } from '../src/helpers';
+import {useRef, useState} from 'react';
+import {checkValidity} from '../src/helpers';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 
@@ -50,7 +51,7 @@ const PlayMenu = ({
 
   function handleMenuObjChange(value, name) {
     setMenuObj((s) => {
-      const newArr = { ...s };
+      const newArr = {...s};
       newArr[name] = value;
       return newArr;
     });
@@ -97,7 +98,7 @@ const PlayMenu = ({
   }
 
   function generateJS() {
-    let menuString = JSON.stringify({ ...menuObj, items: itemsObj });
+    let menuString = JSON.stringify({...menuObj, items: itemsObj});
 
     let codeString = `this.${
       shapeName || `playMenu${shape.id}`
@@ -131,7 +132,7 @@ const PlayMenu = ({
 
   function handleAddItem() {
     if (!itemSelected) return;
-    setItemsObj((prevItems) => [...prevItems, { digit: itemSelected }]);
+    setItemsObj((prevItems) => [...prevItems, {digit: itemSelected}]);
     setItemSelected('');
   }
 
@@ -146,7 +147,7 @@ const PlayMenu = ({
   function handleItemsObjChange(value, index, name) {
     setItemsObj((prevItems) => {
       const newItems = [...prevItems];
-      newItems[index] = { ...newItems[index], [name]: value };
+      newItems[index] = {...newItems[index], [name]: value};
       return newItems;
     });
   }
@@ -176,7 +177,7 @@ const PlayMenu = ({
 
   function updateError(e, name, errorMessage) {
     e.target.style.backgroundColor = '#ffebee';
-    setErrorObj((s) => ({ ...s, [name]: errorMessage }));
+    setErrorObj((s) => ({...s, [name]: errorMessage}));
   }
 
   function isNameUnique(name) {
@@ -186,7 +187,7 @@ const PlayMenu = ({
   function clearError(e, name) {
     e.target.style.backgroundColor = '#f1f8e9';
     setErrorObj((s) => {
-      const newObj = { ...s };
+      const newObj = {...s};
       delete newObj[name];
       return newObj;
     });
@@ -208,7 +209,7 @@ const PlayMenu = ({
     return (
       <List key={key}>
         <ListItem>
-          <Box sx={{ width: '35%' }}>
+          <Box sx={{width: '35%'}}>
             <Typography
               sx={{
                 boxShadow: 1,
@@ -217,8 +218,7 @@ const PlayMenu = ({
                 backgroundColor: '#f1f8e9',
                 width: 'max-content',
               }}
-              variant='h6'
-            >
+              variant='h6'>
               {digit}
             </Typography>
           </Box>
@@ -230,19 +230,16 @@ const PlayMenu = ({
 
                 handleItemsObjChange('', key, 'action');
               }}
-              sx={{ mx: 0.5 }}
+              sx={{mx: 0.5}}
             />
           </Tooltip>
         </ListItem>
         <ListItem>
-          <Typography
-            sx={{ width: '35%', fontWeight: 405 }}
-            variant='subtitle1'
-          >
+          <Typography sx={{width: '35%', fontWeight: 405}} variant='subtitle1'>
             action:
           </Typography>
           <Select
-            sx={{ display: itemsObj[key].isDefault ? 'block' : 'none', mx: 1 }}
+            sx={{display: itemsObj[key].isDefault ? 'block' : 'none', mx: 1}}
             size='small'
             value={itemsObj[key].isDefault ? itemsObj[key].action : ''}
             onChange={(e) => {
@@ -254,8 +251,7 @@ const PlayMenu = ({
               if (e.target.value !== 'PreviousMenu') {
                 deleteItemObj(key, 'menuName');
               }
-            }}
-          >
+            }}>
             <MenuItem value='MainMenu'>MainMenu</MenuItem>
             <MenuItem value='PreviousMenu'>PreviousMenu</MenuItem>
             <MenuItem value='Disconnect'>Disconnect</MenuItem>
@@ -263,7 +259,7 @@ const PlayMenu = ({
             <MenuItem value='Message'>Message</MenuItem>
           </Select>
           <TextField
-            sx={{ display: !itemsObj[key].isDefault ? 'block' : 'none', mx: 1 }}
+            sx={{display: !itemsObj[key].isDefault ? 'block' : 'none', mx: 1}}
             value={itemsObj[key].action ?? ''}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'action');
@@ -278,12 +274,8 @@ const PlayMenu = ({
         <ListItem
           sx={{
             display: itemsObj[key].action === 'Transfer' ? 'flex' : 'none',
-          }}
-        >
-          <Typography
-            sx={{ width: '35%', fontWeight: 405 }}
-            variant='subtitle1'
-          >
+          }}>
+          <Typography sx={{width: '35%', fontWeight: 405}} variant='subtitle1'>
             transferPoint:
           </Typography>
           <TextField
@@ -292,19 +284,15 @@ const PlayMenu = ({
               handleItemsObjChange(e.target.value, key, 'transferPoint');
             }}
             helperText={errorObj[`transferPoint${key}`]}
-            sx={{ mx: 1 }}
+            sx={{mx: 1}}
             size='small'
           />
         </ListItem>
         <ListItem
           sx={{
             display: itemsObj[key].action === 'Message' ? 'flex' : 'none',
-          }}
-        >
-          <Typography
-            sx={{ width: '35%', fontWeight: 405 }}
-            variant='subtitle1'
-          >
+          }}>
+          <Typography sx={{width: '35%', fontWeight: 405}} variant='subtitle1'>
             messagePrompt:
           </Typography>
           <TextField
@@ -313,7 +301,7 @@ const PlayMenu = ({
               handleItemsObjChange(e.target.value, key, 'messagePrompt');
             }}
             helperText={errorObj[`messagePrompt${key}`]}
-            sx={{ mx: 1 }}
+            sx={{mx: 1}}
             size='small'
           />
         </ListItem>
@@ -321,12 +309,8 @@ const PlayMenu = ({
         <ListItem
           sx={{
             display: itemsObj[key].action === 'PreviousMenu' ? 'flex' : 'none',
-          }}
-        >
-          <Typography
-            sx={{ width: '35%', fontWeight: 405 }}
-            variant='subtitle1'
-          >
+          }}>
+          <Typography sx={{width: '35%', fontWeight: 405}} variant='subtitle1'>
             menuName:
           </Typography>
           <TextField
@@ -335,15 +319,12 @@ const PlayMenu = ({
               handleItemsObjChange(e.target.value, key, 'menuName');
             }}
             helperText={errorObj[`menuName${key}`]}
-            sx={{ mx: 1 }}
+            sx={{mx: 1}}
             size='small'
           />
         </ListItem>
         <ListItem>
-          <Typography
-            sx={{ width: '35%', fontWeight: 405 }}
-            variant='subtitle1'
-          >
+          <Typography sx={{width: '35%', fontWeight: 405}} variant='subtitle1'>
             prompt:
           </Typography>
           <TextField
@@ -353,16 +334,13 @@ const PlayMenu = ({
               handleValidation(e, `prompt${key}`, 'prompt');
             }}
             helperText={errorObj[`prompt${key}`]}
-            sx={{ mx: 1 }}
+            sx={{mx: 1}}
             size='small'
             placeholder='required'
           />
         </ListItem>
         <ListItem>
-          <Typography
-            sx={{ width: '35%', fontWeight: 405 }}
-            variant='subtitle1'
-          >
+          <Typography sx={{width: '35%', fontWeight: 405}} variant='subtitle1'>
             disable:
           </Typography>
           <Switch
@@ -370,14 +348,10 @@ const PlayMenu = ({
             onChange={(e) => {
               handleItemsObjChange(e.target.checked, key, 'disable');
             }}
-            sx={{ mx: 0.5 }}
-          ></Switch>
+            sx={{mx: 0.5}}></Switch>
         </ListItem>
         <ListItem>
-          <Typography
-            sx={{ width: '35%', fontWeight: 405 }}
-            variant='subtitle1'
-          >
+          <Typography sx={{width: '35%', fontWeight: 405}} variant='subtitle1'>
             silent:
           </Typography>
           <Switch
@@ -385,25 +359,20 @@ const PlayMenu = ({
             onChange={(e) => {
               handleItemsObjChange(e.target.checked, key, 'silent');
             }}
-            sx={{ mx: 0.5 }}
-          ></Switch>
+            sx={{mx: 0.5}}></Switch>
         </ListItem>
         <ListItem>
-          <Typography
-            sx={{ width: '35%', fontWeight: 405 }}
-            variant='subtitle1'
-          >
+          <Typography sx={{width: '35%', fontWeight: 405}} variant='subtitle1'>
             skip:
           </Typography>
           <Select
-            value={itemsObj[key].skip || ''}
+            value={itemsObj[key].skip || 0}
             onChange={(e) => {
               handleItemsObjChange(e.target.value, key, 'skip');
             }}
             size='small'
-            sx={{ minWidth: '25%' }}
-          >
-            {[...Array(10).keys()].slice(1).map((el, i) => (
+            sx={{minWidth: '25%'}}>
+            {[...Array(10).keys()].map((el, i) => (
               <MenuItem key={i} value={el}>
                 {el}
               </MenuItem>
@@ -411,22 +380,21 @@ const PlayMenu = ({
           </Select>
           <Tooltip title='Remove item' placement='top-start'>
             <IconButton
-              sx={{ ml: 'auto' }}
+              sx={{ml: 'auto'}}
               size='large'
               onClick={(e) => {
                 handleRemoveItem(e, key);
-              }}
-            >
+              }}>
               <RemoveCircleIcon
                 sx={{
                   fontSize: '1.5rem',
-                  '&:hover': { color: '#e57373' },
+                  '&:hover': {color: '#e57373'},
                 }}
               />
             </IconButton>
           </Tooltip>
         </ListItem>
-        <Divider sx={{ my: 2 }} />
+        <Divider sx={{my: 2}} />
       </List>
     );
   }
@@ -444,18 +412,16 @@ const PlayMenu = ({
                 borderRadius: 0.5,
                 fontWeight: 405,
                 width: '35%',
-              }}
-            >
+              }}>
               invalidAction:
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
               <Select
                 value={menuObj.invalidAction || ''}
                 onChange={(e) => {
                   handleMenuObjChange(e.target.value, 'invalidAction');
                 }}
-                size='small'
-              >
+                size='small'>
                 <MenuItem value='disconnect'>Disconnect</MenuItem>
                 <MenuItem value='transfer'>Transfer</MenuItem>
                 <MenuItem value='function'>Function</MenuItem>
@@ -463,14 +429,14 @@ const PlayMenu = ({
               {menuObj.invalidAction === 'transfer' && (
                 <TextField
                   placeholder='transferPoint'
-                  sx={{ my: 0.5, width: 150 }}
+                  sx={{my: 0.5, width: 150}}
                   size='small'
                 />
               )}
               {menuObj.invalidAction === 'function' && (
                 <TextField
                   placeholder='functionName'
-                  sx={{ my: 0.5, width: 150 }}
+                  sx={{my: 0.5, width: 150}}
                   size='small'
                 />
               )}
@@ -490,18 +456,16 @@ const PlayMenu = ({
                 borderRadius: 0.5,
                 fontWeight: 405,
                 width: '35%',
-              }}
-            >
+              }}>
               timeoutAction:
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
               <Select
                 value={menuObj.timeoutAction || ''}
                 onChange={(e) => {
                   handleMenuObjChange(e.target.value, 'timeoutAction');
                 }}
-                size='small'
-              >
+                size='small'>
                 <MenuItem value='disconnect'>Disconnect</MenuItem>
                 <MenuItem value='transfer'>Transfer</MenuItem>
                 <MenuItem value='function'>Function</MenuItem>
@@ -509,14 +473,14 @@ const PlayMenu = ({
               {menuObj.timeoutAction === 'transfer' && (
                 <TextField
                   placeholder='transferPoint'
-                  sx={{ my: 0.5, width: 150 }}
+                  sx={{my: 0.5, width: 150}}
                   size='small'
                 />
               )}
               {menuObj.timeoutAction === 'function' && (
                 <TextField
                   placeholder='functionName'
-                  sx={{ my: 0.5, width: 150 }}
+                  sx={{my: 0.5, width: 150}}
                   size='small'
                 />
               )}
@@ -535,8 +499,7 @@ const PlayMenu = ({
 
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               timeoutPrompt:
             </Typography>
             <TextField
@@ -546,7 +509,7 @@ const PlayMenu = ({
                 handleValidation(e, 'timeoutPrompt', 'prompt');
               }}
               helperText={errorObj.timeoutPrompt}
-              sx={{ mx: 0.5 }}
+              sx={{mx: 0.5}}
               size='small'
             />
           </ListItem>
@@ -563,8 +526,7 @@ const PlayMenu = ({
 
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               invalidPrompt:
             </Typography>
             <TextField
@@ -573,7 +535,7 @@ const PlayMenu = ({
                 handleMenuObjChange(e.target.value, 'invalidPrompt');
                 handleValidation(e, 'invalidPrompt', 'prompt');
               }}
-              sx={{ mx: 0.5 }}
+              sx={{mx: 0.5}}
               size='small'
               helperText={errorObj.invalidPrompt}
             />
@@ -590,18 +552,16 @@ const PlayMenu = ({
                 width: '35%',
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               maxRetries:
             </Typography>
             <Select
               size='small'
-              sx={{ marginX: 2 }}
+              sx={{marginX: 2}}
               value={menuObj.maxRetries || ''}
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'maxRetries');
-              }}
-            >
+              }}>
               {
                 // Array of 1..10
                 [...Array(11).keys()].slice(1).map((el, i) => {
@@ -627,8 +587,7 @@ const PlayMenu = ({
                 width: '35%',
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               transferPoint:
             </Typography>
             <TextField
@@ -636,7 +595,7 @@ const PlayMenu = ({
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'transferPoint');
               }}
-              sx={{ mx: 0.5 }}
+              sx={{mx: 0.5}}
               size='small'
             />
           </ListItem>
@@ -652,8 +611,7 @@ const PlayMenu = ({
                 width: '40%',
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               invalidTransferPoint:
             </Typography>
             <TextField
@@ -661,7 +619,7 @@ const PlayMenu = ({
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'invalidTransferPoint');
               }}
-              sx={{ mx: 0.5 }}
+              sx={{mx: 0.5}}
               size='small'
             />
           </ListItem>
@@ -677,8 +635,7 @@ const PlayMenu = ({
                 width: '40%',
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               timeoutTransferPoint:
             </Typography>
             <TextField
@@ -686,7 +643,7 @@ const PlayMenu = ({
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'timeoutTransferPoint');
               }}
-              sx={{ mx: 0.5 }}
+              sx={{mx: 0.5}}
               size='small'
             />
           </ListItem>
@@ -702,8 +659,7 @@ const PlayMenu = ({
                 width: '40%',
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               menuTimeout:
             </Typography>
             <TextField
@@ -711,7 +667,7 @@ const PlayMenu = ({
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'menuTimeout');
               }}
-              sx={{ mx: 0.5 }}
+              sx={{mx: 0.5}}
               size='small'
             />
           </ListItem>
@@ -721,7 +677,7 @@ const PlayMenu = ({
 
   return (
     <>
-      <List sx={{ minWidth: 350 }}>
+      <List sx={{minWidth: 350}}>
         <DrawerTop
           saveUserValues={saveUserValues}
           shape={shape}
@@ -741,28 +697,26 @@ const PlayMenu = ({
         />
         <ListItem>
           <Tabs
-            sx={{ marginX: 'auto' }}
+            sx={{marginX: 'auto'}}
             value={tabValue}
             onChange={(e, newVal) => {
               setTabValue(newVal);
-            }}
-          >
+            }}>
             <Tab label='General' />
             <Tab label='Items' />
           </Tabs>
         </ListItem>
-        <Box id='tabPanel1' sx={{ display: tabValue == 0 ? 'block' : 'none' }}>
+        <Box id='tabPanel1' sx={{display: tabValue == 0 ? 'block' : 'none'}}>
           {/* <pre>{JSON.stringify(menuObj, undefined, 2)}</pre> */}
 
-          <ListItem sx={{ my: 0.5 }}>
+          <ListItem sx={{my: 0.5}}>
             <Typography
               variant='subtitle2'
               sx={{
                 fontSize: 16,
                 width: '35%',
                 fontWeight: 405,
-              }}
-            >
+              }}>
               desc:
             </Typography>
             <TextField
@@ -771,11 +725,11 @@ const PlayMenu = ({
                 handleMenuObjChange(e.target.value, 'desc');
               }}
               size='small'
-              sx={{ mx: 0.5 }}
+              sx={{mx: 0.5}}
             />
           </ListItem>
 
-          <ListItem sx={{ my: 0.5 }}>
+          <ListItem sx={{my: 0.5}}>
             <Typography
               variant='subtitle2'
               sx={{
@@ -783,18 +737,16 @@ const PlayMenu = ({
                 width: '35%',
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               ignoreBuffer:
             </Typography>
             <Switch
               checked={menuObj.ignoreBuffer ?? false}
               onChange={(e) => {
                 handleMenuObjChange(e.target.checked, 'ignoreBuffer');
-              }}
-            ></Switch>
+              }}></Switch>
           </ListItem>
-          <ListItem sx={{ my: 0.5 }}>
+          <ListItem sx={{my: 0.5}}>
             <Typography
               variant='subtitle2'
               sx={{
@@ -802,16 +754,14 @@ const PlayMenu = ({
                 width: '35%',
                 borderRadius: 0.5,
                 fontWeight: 405,
-              }}
-            >
+              }}>
               logDb:
             </Typography>
             <Switch
               checked={menuObj.logDb ?? false}
               onChange={(e) => {
                 handleMenuObjChange(e.target.checked, 'logDb');
-              }}
-            ></Switch>
+              }}></Switch>
           </ListItem>
           {/* <pre>{JSON.stringify(errorObj, undefined, 2)}</pre> */}
           <ListItem>
@@ -821,21 +771,19 @@ const PlayMenu = ({
                 marginTop: 4,
                 borderBottom: 1,
               }}
-              variant='subtitle1'
-            >
+              variant='subtitle1'>
               Optional Params
             </Typography>
           </ListItem>
           {/* <pre>{JSON.stringify(paramSelectedList, undefined, 2)}</pre> */}
           <ListItem>
             <Select
-              sx={{ minWidth: '35%' }}
+              sx={{minWidth: '35%'}}
               value={paramSelected}
               onChange={(e) => {
                 setParamSelected(e.target.value);
               }}
-              size='small'
-            >
+              size='small'>
               {paramSelectedList.length > 0
                 ? optionalParamsList
                     .filter((el) => !paramSelectedList.includes(el))
@@ -856,17 +804,16 @@ const PlayMenu = ({
                   ml: 2,
                 }}
                 size='large'
-                onClick={handleAddParameter}
-              >
+                onClick={handleAddParameter}>
                 <AddCircleOutlineRoundedIcon
-                  sx={{ '&:hover': { color: '#81c784' } }}
+                  sx={{'&:hover': {color: '#81c784'}}}
                 />
               </IconButton>
             </Tooltip>
             <Tooltip title='Remove parameter'>
               <IconButton size='large' onClick={handleRemoveParameter}>
                 <RemoveCircleOutlineRoundedIcon
-                  sx={{ '&:hover': { color: '#e57373' } }}
+                  sx={{'&:hover': {color: '#e57373'}}}
                 />
               </IconButton>
             </Tooltip>
@@ -875,8 +822,9 @@ const PlayMenu = ({
             {paramSelectedList.map((el, i) => addParamsElements(el, i))}
           </List>
         </Box>
-        <Box id='tabPanel2' sx={{ display: tabValue == 1 ? 'block' : 'none' }}>
-          <ListItem sx={{ mb: 2, mt: 1 }}>
+        <Box id='tabPanel2' sx={{display: tabValue == 1 ? 'block' : 'none'}}>
+          {itemsObj?.map((el, i) => addItemElements(el.digit, i))}
+          <ListItem sx={{mb: 2}}>
             <InputLabel id='select-label'>Select Digit</InputLabel>
             <Select
               labelId='select-label'
@@ -884,9 +832,8 @@ const PlayMenu = ({
               onChange={(e) => {
                 setItemSelected(e.target.value);
               }}
-              sx={{ ml: 2 }}
-              size='small'
-            >
+              sx={{ml: 2}}
+              size='small'>
               {itemsObj.length > 0
                 ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*']
                     .filter((el) => !itemsObj.some((e) => e.digit == el))
@@ -915,25 +862,26 @@ const PlayMenu = ({
                   ))}
             </Select>
             <Tooltip title='Add Item' placement='right-start'>
-              <IconButton
+              <Button
                 sx={{
-                  mx: 2,
-                  '&:hover': { color: '#81c784' },
+                  ml: 2,
+                  backgroundColor: '#dcdcdc',
+                  '&:hover': {backgroundColor: '#81c784'},
                 }}
-                size='large'
-                onClick={handleAddItem}
-              >
+                size='small'
+                variant='contained'
+                onClick={handleAddItem}>
                 <AddCircleIcon
                   sx={{
                     fontSize: '1.5rem',
+                    color: 'black',
                   }}
                 />
-              </IconButton>
+              </Button>
             </Tooltip>
           </ListItem>
-          <Divider sx={{ mb: 2 }} />
+          <Divider sx={{mb: 2}} />
           {/* <pre>{JSON.stringify(itemsObj, null, 2)}</pre> */}
-          {itemsObj?.map((el, i) => addItemElements(el.digit, i))}
         </Box>
       </List>
     </>
