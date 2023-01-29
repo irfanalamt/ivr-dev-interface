@@ -3,6 +3,7 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   InputLabel,
   List,
@@ -21,6 +22,7 @@ const SetVariables = ({
   userVariables = [],
   setUserVariables,
   entireStageGroup,
+  isModule,
 }) => {
   const [varList, setVarList] = useState(userVariables);
   const [selectedVarIndex, setSelectedVarIndex] = useState('');
@@ -95,6 +97,12 @@ const SetVariables = ({
     const {value, name} = e.target;
 
     setCurrVariable((v) => ({...currVariable, [name]: value}));
+  };
+
+  const handleVarChangeCheckbox = (e) => {
+    const {checked, name} = e.target;
+
+    setCurrVariable((v) => ({...currVariable, [name]: checked}));
   };
 
   const handleValidation = (e) => {
@@ -285,6 +293,36 @@ const SetVariables = ({
             <MenuItem value='month'>Month</MenuItem>
             <MenuItem value='time'>Time</MenuItem>
           </Select>
+          {isModule && (
+            <>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Tooltip title='input variable' placement='top' arrow>
+                  <Checkbox
+                    name='isInput'
+                    checked={currVariable.isInput ?? false}
+                    onChange={handleVarChangeCheckbox}
+                    sx={{ml: 1}}
+                    size='small'
+                    disabled={isViewMode === true}
+                  />
+                </Tooltip>
+                <Typography>I/P</Typography>
+              </Box>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Tooltip title='output variable' placement='top' arrow>
+                  <Checkbox
+                    name='isOutput'
+                    checked={currVariable.isOutput ?? false}
+                    onChange={handleVarChangeCheckbox}
+                    sx={{ml: 1}}
+                    size='small'
+                    disabled={isViewMode === true}
+                  />
+                </Tooltip>
+                <Typography>O/P</Typography>
+              </Box>
+            </>
+          )}
         </ListItem>
         <ListItem>
           <Typography sx={{fontWeight: 'bold', width: '30%'}} variant='body1'>

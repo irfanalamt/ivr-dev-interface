@@ -62,7 +62,7 @@ class Shapes {
       case 'getDigits':
         stageFigure = new Shape(x, y, 110, 30, 'getDigits', '#9c27b0', true);
         stageFigure.setUserValues({
-          params: {minDigits: 1, maxDigits: 1, paramsList: []},
+          params: {minDigits: 1, maxDigits: 1},
           messageList: [],
           variableName: '',
         });

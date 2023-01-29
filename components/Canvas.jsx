@@ -1103,12 +1103,14 @@ const CanvasComponent = ({isModule = false}) => {
           />
         </Tooltip>
 
-        <Tooltip title='module manager' arrow>
-          <ViewModuleIcon
-            onClick={() => setIsOpenModules(true)}
-            sx={{height: 30, ml: 2}}
-          />
-        </Tooltip>
+        {!isModule && (
+          <Tooltip title='module manager' arrow>
+            <ViewModuleIcon
+              onClick={() => setIsOpenModules(true)}
+              sx={{height: 30, ml: 2}}
+            />
+          </Tooltip>
+        )}
 
         <Typography
           sx={{
@@ -1159,6 +1161,7 @@ const CanvasComponent = ({isModule = false}) => {
           userVariables={userVariables.current}
           setUserVariables={setUserVariables}
           entireStageGroup={stageGroup.current}
+          isModule={isModule}
         />
       </Drawer>
       <Drawer
