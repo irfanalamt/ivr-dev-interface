@@ -886,20 +886,37 @@ const CanvasComponent = ({isModule = false}) => {
   }
 
   function postToApi(data) {
-    axios
-      .post('/api/saveProject', data)
-      .then((response) => {
-        console.log(response.data);
-        isSuccessToast.current = true;
-        snackbarMessage.current = `Project saved successfully.`;
-        setOpenSnackbar(true);
-        setTimeout(() => {
-          isSuccessToast.current = false;
-        }, 1500);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (isModule) {
+      axios
+        .post('/api/saveModule', data)
+        .then((response) => {
+          console.log(response.data);
+          isSuccessToast.current = true;
+          snackbarMessage.current = `Module saved successfully.`;
+          setOpenSnackbar(true);
+          setTimeout(() => {
+            isSuccessToast.current = false;
+          }, 1500);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      axios
+        .post('/api/saveProject', data)
+        .then((response) => {
+          console.log(response.data);
+          isSuccessToast.current = true;
+          snackbarMessage.current = `Project saved successfully.`;
+          setOpenSnackbar(true);
+          setTimeout(() => {
+            isSuccessToast.current = false;
+          }, 1500);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }
 
   function saveToServer(ivrName) {
@@ -971,7 +988,8 @@ const CanvasComponent = ({isModule = false}) => {
     }
 
     // Global params for the IVR
-    const globalParamsString = `function ${ivrName}(IVR){
+    const globalParamsString =
+      `function ${ivrName}(IVR){
       IVR.params = {
         maxRetries: 3,
         maxRepeats: 3,
@@ -1001,17 +1019,18 @@ const CanvasComponent = ({isModule = false}) => {
         timeoutTransferPoint: '',
         logDB: false
       };
-      `;
+      ` + '\n \n';
 
     // Initialize variables
-    const allVariablesString = generateInitVariablesJS();
+    const allVariablesString = generateInitVariablesJS() + '\n \n';
 
     // Get all function strings from shapes
-    const allFunctionsString = entirestageGroup
-      .getShapesAsArray()
-      .filter((el) => el.functionString)
-      .map((el) => el.functionString)
-      .join(' ');
+    const allFunctionsString =
+      entirestageGroup
+        .getShapesAsArray()
+        .filter((el) => el.functionString)
+        .map((el) => el.functionString)
+        .join(' ') + '\n \n';
 
     // Get the ID of the first shape
     const idOfStartShape = entirestageGroup.getIdOfFirstShape();
@@ -1027,7 +1046,7 @@ const CanvasComponent = ({isModule = false}) => {
       entirestageGroup.traverseShapes(idOfStartShape);
 
     // End of export statement
-    const EndExportString = `} module.exports = ${ivrName} ;`;
+    const EndExportString = `} \n\n module.exports = ${ivrName} ;`;
 
     // Combine all strings to create final code
     const finalCodeString =
@@ -1037,14 +1056,17 @@ const CanvasComponent = ({isModule = false}) => {
       allDriverFunctionsString +
       EndExportString;
 
-    // Format the code using prettier
-    const formattedCode = prettier.format(finalCodeString, {
+    const formattedCode = formatCode(finalCodeString);
+
+    return formattedCode;
+  }
+
+  function formatCode(code) {
+    return prettier.format(code, {
       parser: 'babel',
       parser: (text, options) => babelParser.parse(text, options),
       singleQuote: true,
     });
-
-    return formattedCode;
   }
 
   function generateInitVariablesJS() {
