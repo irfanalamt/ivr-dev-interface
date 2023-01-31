@@ -160,39 +160,21 @@ const CallApi = ({
     });
   }
   function removeInput() {
-    setInputArr((s) => {
-      const newArr = [...s];
-      newArr.pop();
-      return newArr;
-    });
+    setInputArr((s) => [...s.slice(0, -1)]);
   }
   function removeOutput() {
-    setOutputArr((s) => {
-      const newArr = [...s];
-      newArr.pop();
-      return newArr;
-    });
+    setOutputArr((s) => [...s.slice(0, -1)]);
   }
 
   function validateEndpoint(str) {
-    if (str.indexOf('$') === -1 || str.length < 2) {
+    if (!str.includes('$') || str.length < 2) {
       setErrorText('');
       return;
     }
 
-    const index = str.indexOf('/');
-    let result;
-
-    if (index === -1) {
-      // '/' not found, return the entire string
-      result = str;
-    } else {
-      // '/' found, return the characters before it
-      result = str.substring(0, index);
-    }
-
+    const [result] = str.split('/', 1);
     const modifiedVariables = userVariables.map(
-      (variable) => '$' + variable.name
+      (variable) => `$${variable.name}`
     );
 
     if (modifiedVariables.includes(result)) {

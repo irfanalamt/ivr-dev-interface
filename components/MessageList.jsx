@@ -64,6 +64,7 @@ const MessageList = ({
   const handleAdd = () => {
     const objType = messageListObjects[selectIndex];
     setMessageList((prevList) => [...prevList, {type: objType, value: ''}]);
+    setSelectIndex(-1);
   };
 
   const handleRemove = () => {

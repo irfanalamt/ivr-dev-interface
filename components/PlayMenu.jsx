@@ -42,7 +42,7 @@ const PlayMenu = ({
     userValues.paramSelectedList || []
   );
   const [itemsObj, setItemsObj] = useState(userValues.items || []);
-  const [itemSelected, setItemSelected] = useState('');
+  const [itemSelected, setItemSelected] = useState(1);
   const [errorObj, setErrorObj] = useState({});
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
@@ -835,7 +835,7 @@ const PlayMenu = ({
               sx={{ml: 2}}
               size='small'>
               {itemsObj.length > 0
-                ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '#', '*']
+                ? ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '#', '*']
                     .filter((el) => !itemsObj.some((e) => e.digit == el))
                     .map((el, i) => (
                       <MenuItem key={i} value={el}>
@@ -843,7 +843,6 @@ const PlayMenu = ({
                       </MenuItem>
                     ))
                 : [
-                    '0',
                     '1',
                     '2',
                     '3',
@@ -853,6 +852,7 @@ const PlayMenu = ({
                     '7',
                     '8',
                     '9',
+                    '0',
                     '#',
                     '*',
                   ].map((el, i) => (
@@ -866,17 +866,13 @@ const PlayMenu = ({
                 sx={{
                   ml: 2,
                   backgroundColor: '#dcdcdc',
+                  color: 'black',
                   '&:hover': {backgroundColor: '#81c784'},
                 }}
                 size='small'
                 variant='contained'
                 onClick={handleAddItem}>
-                <AddCircleIcon
-                  sx={{
-                    fontSize: '1.5rem',
-                    color: 'black',
-                  }}
-                />
+                ADD
               </Button>
             </Tooltip>
           </ListItem>

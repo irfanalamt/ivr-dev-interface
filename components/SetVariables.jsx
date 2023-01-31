@@ -271,7 +271,7 @@ const SetVariables = ({
           Delete
         </Button>
       </ListItem>
-      <List sx={{mt: 4}}>
+      <List sx={{mt: 2}}>
         <Divider sx={{mb: 1}} />
         <ListItem>
           <Typography sx={{fontWeight: 'bold', width: '30%'}} variant='body1'>
@@ -293,36 +293,6 @@ const SetVariables = ({
             <MenuItem value='month'>Month</MenuItem>
             <MenuItem value='time'>Time</MenuItem>
           </Select>
-          {isModule && (
-            <>
-              <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <Tooltip title='input variable' placement='top' arrow>
-                  <Checkbox
-                    name='isInput'
-                    checked={currVariable.isInput ?? false}
-                    onChange={handleVarChangeCheckbox}
-                    sx={{ml: 1}}
-                    size='small'
-                    disabled={isViewMode === true}
-                  />
-                </Tooltip>
-                <Typography>I/P</Typography>
-              </Box>
-              <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <Tooltip title='output variable' placement='top' arrow>
-                  <Checkbox
-                    name='isOutput'
-                    checked={currVariable.isOutput ?? false}
-                    onChange={handleVarChangeCheckbox}
-                    sx={{ml: 1}}
-                    size='small'
-                    disabled={isViewMode === true}
-                  />
-                </Tooltip>
-                <Typography>O/P</Typography>
-              </Box>
-            </>
-          )}
         </ListItem>
         <ListItem>
           <Typography sx={{fontWeight: 'bold', width: '30%'}} variant='body1'>
@@ -395,6 +365,47 @@ const SetVariables = ({
             }}
             disabled={isViewMode === true}
           />
+        </ListItem>
+        <ListItem>
+          {isModule && (
+            <>
+              <Typography
+                sx={{fontWeight: 'bold', width: '30%'}}
+                variant='body1'>
+                paramType:
+              </Typography>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Tooltip title='input variable' placement='bottom' arrow>
+                  <Checkbox
+                    name='isInput'
+                    checked={currVariable.isInput ?? false}
+                    onChange={handleVarChangeCheckbox}
+                    sx={{ml: 1}}
+                    size='small'
+                    disabled={isViewMode === true}
+                  />
+                </Tooltip>
+                <Typography sx={{color: isViewMode === true && '#9e9e9e'}}>
+                  Input
+                </Typography>
+              </Box>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Tooltip title='output variable' placement='bottom' arrow>
+                  <Checkbox
+                    name='isOutput'
+                    checked={currVariable.isOutput ?? false}
+                    onChange={handleVarChangeCheckbox}
+                    sx={{ml: 2}}
+                    size='small'
+                    disabled={isViewMode === true}
+                  />
+                </Tooltip>
+                <Typography sx={{color: isViewMode === true && '#9e9e9e'}}>
+                  Output
+                </Typography>
+              </Box>
+            </>
+          )}
         </ListItem>
         <ListItem>
           <Typography sx={{fontWeight: 'bold', width: '30%'}} variant='body1'>
