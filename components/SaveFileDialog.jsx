@@ -10,7 +10,13 @@ import {
 import {useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
-const SaveFileDialog = ({open, handleClose, saveToServer, setIvrName}) => {
+const SaveFileDialog = ({
+  open,
+  handleClose,
+  saveToServer,
+  setIvrName,
+  isModule,
+}) => {
   const [ivrName, setIVRName] = useState('');
   const [version, setVersion] = useState(1);
   const [errorText, setErrorText] = useState('');
@@ -87,7 +93,7 @@ const SaveFileDialog = ({open, handleClose, saveToServer, setIvrName}) => {
           color='secondary'
           variant='contained'
           size='small'>
-          Save File
+          Save {isModule ? 'module' : 'project'}
         </Button>
       </DialogActions>
     </Dialog>

@@ -1233,6 +1233,7 @@ const CanvasComponent = ({isModule = false}) => {
         }}
         setIvrName={setIvrName}
         saveToServer={saveToServer}
+        isModule={isModule}
       />
       <Typography
         sx={{
