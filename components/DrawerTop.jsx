@@ -1,17 +1,28 @@
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
-import {Box, Button, IconButton, Tooltip, Typography} from '@mui/material';
+import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
+import {
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import DrawerUserGuideDialog from './DrawerUserGuideDialog';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
+import SetVariables from './SetVariables';
+import {VariableContext} from '../src/context';
 
 const DrawerTop = ({
   saveUserValues,
   shape,
-  handleCloseDrawer,
   backgroundColor,
-  blockName
+  blockName,
+  handleCloseDrawer,
 }) => {
+  const {openVariablesDrawer} = useContext(VariableContext);
   const [openGuideDialog, setOpenGuideDialog] = useState(false);
 
   return (
@@ -21,7 +32,7 @@ const DrawerTop = ({
           mt: 1,
           display: 'flex',
           justifyContent: 'space-between',
-          alignItems: 'center'
+          alignItems: 'center',
         }}>
         <Typography
           sx={{
@@ -30,26 +41,41 @@ const DrawerTop = ({
             py: 1,
             boxShadow: 1,
             fontSize: '1.5rem',
-            width: 'max-content'
+            width: 'max-content',
           }}
           variant='h6'>
           {blockName}
         </Typography>
 
         <Box>
-          <Tooltip placement='right' title='guide' arrow>
+          <Tooltip placement='bottom' title='guide' arrow>
             <IconButton
               sx={{
                 ml: 4,
                 mr: 2,
                 backgroundColor: '#dcdcdc',
                 '&:hover': {backgroundColor: '#80cbc4'},
-                width: 'max-content'
+                width: 'max-content',
               }}
               aria-label='user-guide'
               size='small'
               onClick={() => setOpenGuideDialog(true)}>
               <HelpCenterIcon sx={{color: 'black', fontSize: 'medium'}} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip placement='bottom' title='manage variables' arrow>
+            <IconButton
+              sx={{
+                mr: 2,
+                backgroundColor: '#dcdcdc',
+                '&:hover': {backgroundColor: '#80cbc4'},
+                width: 'max-content',
+              }}
+              size='small'
+              onClick={openVariablesDrawer}>
+              <SettingsApplicationsIcon
+                sx={{color: 'black', fontSize: 'medium'}}
+              />
             </IconButton>
           </Tooltip>
           <Tooltip title='SAVE'>
@@ -59,7 +85,7 @@ const DrawerTop = ({
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#aed581'}
+                '&:hover': {backgroundColor: '#aed581'},
               }}
               size='small'
               variant='contained'
@@ -76,7 +102,7 @@ const DrawerTop = ({
                 mr: 1,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#e57373'}
+                '&:hover': {backgroundColor: '#e57373'},
               }}
               onClick={() => {
                 shape.setSelected(false);

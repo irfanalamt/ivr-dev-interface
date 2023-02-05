@@ -62,6 +62,7 @@ const MessageList = ({
   ];
 
   const handleAdd = () => {
+    if (selectIndex < 0) return;
     const objType = messageListObjects[selectIndex];
     setMessageList((prevList) => [...prevList, {type: objType, value: ''}]);
     setSelectIndex(-1);
@@ -106,10 +107,10 @@ const MessageList = ({
   return (
     <>
       <ListItem>
-        <InputLabel id='select-label'>object type:</InputLabel>
+        <InputLabel id='select-label'>Message Type:</InputLabel>
         <Select
           labelId='select-label'
-          sx={{ml: 2}}
+          sx={{ml: 2, minWidth: 100}}
           size='small'
           value={selectIndex}
           onChange={(e) => setSelectIndex(e.target.value)}>

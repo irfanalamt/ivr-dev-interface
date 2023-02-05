@@ -29,6 +29,7 @@ import SaveFileDialog from './SaveFileDialog';
 import SetVariables from './SetVariables';
 const prettier = require('prettier');
 const babelParser = require('@babel/parser');
+import {VariableContext} from '../src/context';
 
 const CanvasComponent = ({isModule = false}) => {
   const router = useRouter();
@@ -1112,7 +1113,7 @@ const CanvasComponent = ({isModule = false}) => {
           width: '100vw',
         }}
         id='bottomBar'>
-        <Tooltip title='setVariables' arrow>
+        <Tooltip title='variables' arrow>
           <SettingsApplicationsIcon
             sx={{height: 30}}
             onClick={() => setIsOpenVars(true)}
@@ -1207,16 +1208,21 @@ const CanvasComponent = ({isModule = false}) => {
           promptDescriptionObj={promptDescriptionObj}
         />
       )}
+      <VariableContext.Provider
+        value={{
+          openVariablesDrawer: () => setIsOpenVars(true),
+        }}>
+        <DrawerComponent
+          isOpen={isOpenDrawer}
+          handleCloseDrawer={handleCloseDrawer}
+          shape={currentShape.current}
+          userVariables={userVariables.current}
+          stageGroup={stageGroup.current[pageNumber.current - 1]}
+          entireStageGroup={stageGroup.current}
+          clearAndDraw={clearAndDraw}
+        />
+      </VariableContext.Provider>
 
-      <DrawerComponent
-        isOpen={isOpenDrawer}
-        handleCloseDrawer={handleCloseDrawer}
-        shape={currentShape.current}
-        userVariables={userVariables.current}
-        stageGroup={stageGroup.current[pageNumber.current - 1]}
-        entireStageGroup={stageGroup.current}
-        clearAndDraw={clearAndDraw}
-      />
       <ResetCanvasDialog
         open={showCanvasResetDialog}
         handleClose={() => {

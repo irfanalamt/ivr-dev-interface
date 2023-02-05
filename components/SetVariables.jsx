@@ -178,7 +178,7 @@ const SetVariables = ({
             width: 'max-content',
           }}
           variant='h6'>
-          Set Variables
+          Manage Variables
         </Typography>
         <Tooltip title='CLOSE'>
           <Button
