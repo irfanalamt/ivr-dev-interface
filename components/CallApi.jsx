@@ -116,7 +116,7 @@ const CallApi = ({
       .map((el) => `this.${el.value}=outputVars.${el.value};`)
       .join('');
 
-    let endpointString = endpoint;
+    let endpointString = `'${endpoint}'`;
     if (endpoint.indexOf('$') !== -1) {
       const index = endpoint.indexOf('/');
       let result;

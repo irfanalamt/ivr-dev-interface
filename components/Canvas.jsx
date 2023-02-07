@@ -1179,7 +1179,6 @@ const CanvasComponent = ({isModule = false}) => {
         <SetVariables
           handleCloseDrawer={() => {
             setIsOpenVars(false);
-            clearAndDraw();
           }}
           userVariables={userVariables.current}
           setUserVariables={setUserVariables}
@@ -1194,7 +1193,6 @@ const CanvasComponent = ({isModule = false}) => {
         <ModuleManager
           handleCloseDrawer={() => {
             setIsOpenModules(false);
-            clearAndDraw();
           }}
           moduleList={moduleList.current}
           addModule={addModule}
