@@ -5,57 +5,21 @@ import {useRouter} from 'next/router';
 const Home = () => {
   const router = useRouter();
 
-  const handleNewProject = () => {
+  function handleNewProject() {
     router.push('/project');
-  };
+  }
 
-  const handleNewModule = () => {
+  function handleNewModule() {
     router.push('/module');
-  };
+  }
 
-  const handleOpenSavedProjects = () => {
+  function handleOpenSavedProjects() {
     router.push('/saved-projects');
-  };
+  }
 
-  // const handleOpen = (type = null) => {
-  //   // Prompt user to select a file
-  //   const fileInput = document.createElement('input');
-  //   fileInput.type = 'file';
-  //   fileInput.accept = '.ivrf';
-  //   if (type) fileInput.onchange = handleFileSelectModule;
-  //   else fileInput.onchange = handleFileSelectProject;
-  //   fileInput.click();
-  // };
-
-  const handleFileSelectProject = (event) => {
-    const file = event.target.files[0];
-    // Use file to load project data and set it in the component state
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const contents = event.target.result;
-      router.push({
-        pathname: '/project',
-        query: {projectData: contents},
-      });
-    };
-    reader.readAsText(file);
-  };
-
-  const handleFileSelectModule = (event) => {
-    const file = event.target.files[0];
-    // Use file to load project data and set it in the component state
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const contents = event.target.result;
-      router.push({
-        pathname: '/module',
-        query: {projectData: contents},
-      });
-    };
-    reader.readAsText(file);
-  };
+  function handleOpenSavedModules() {
+    router.push('/saved-modules');
+  }
 
   return (
     <Container>
@@ -125,7 +89,7 @@ const Home = () => {
             sx={{textAlign: 'center'}}
             variant='outlined'
             color='secondary'
-            onClick={handleOpenSavedProjects}>
+            onClick={handleOpenSavedModules}>
             Open module
           </Button>
         </Stack>

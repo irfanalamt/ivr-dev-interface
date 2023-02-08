@@ -158,6 +158,7 @@ const DrawerComponent = ({
             {...{
               shape,
               handleCloseDrawer,
+              userVariables,
             }}
           />
         );

@@ -13,74 +13,53 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import {useState} from 'react';
+import axios from 'axios';
+import {useEffect, useState} from 'react';
 
-const ModuleManager = ({handleCloseDrawer, moduleList, addModule}) => {
-  const [modules, setModules] = useState(Object.keys(moduleList) || []);
+const ModuleManager = ({handleCloseDrawer, addModule}) => {
+  const [modules, setModules] = useState([]);
   const [currentModule, setCurrentModule] = useState('');
 
-  async function handleFileSelect(event) {
-    const file = event.target.files[0];
+  useEffect(() => {
+    fetchModules();
+  }, []);
+
+  async function fetchModules() {
+    try {
+      const response = await axios.get('/api/getModules');
+      setModules(response.data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
+  async function handleView() {
+    if (!currentModule) return;
 
     try {
-      const contents = await readFile(file);
-      const {userVariables, stageGroup, shapeCount, pageCount, ivrName} =
-        JSON.parse(contents);
+      const response = await axios.get(
+        `/api/getModule?fileName=${currentModule}`
+      );
+      const contents = JSON.stringify(response.data);
+      const encoded = encodeURIComponent(contents);
 
-      setModules((prevModules) => [...prevModules, ivrName]);
-      setCurrentModule(ivrName);
-      moduleList[ivrName] = contents;
-    } catch (err) {
-      console.error(err);
+      window.open(`/module?projectData=${encoded}`, '_blank');
+    } catch (error) {
+      console.log(error);
     }
   }
 
-  function handleImportFile() {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.ivrf';
-    fileInput.onchange = handleFileSelect;
-    fileInput.click();
-  }
-
-  function readFile(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target.result);
-      reader.onerror = (e) => reject(e);
-      reader.readAsText(file);
-    });
-  }
-
-  function handleDelete() {
+  async function handleAddToWorkspace() {
     if (!currentModule) return;
 
-    const index = modules.findIndex((m) => m === currentModule);
-
-    if (index !== -1) {
-      setModules((m) => {
-        const temp = [...m];
-        temp.splice(index, 1);
-        return temp;
-      });
-
-      delete moduleList[currentModule];
-      setCurrentModule('');
+    try {
+      const response = await axios.get(
+        `/api/getModule?fileName=${currentModule}`
+      );
+      addModule(currentModule, {data: JSON.stringify(response.data)});
+    } catch (error) {
+      console.log(error);
     }
-  }
-
-  function handleView() {
-    if (!currentModule) return;
-
-    const contents = moduleList[currentModule];
-    const encoded = encodeURIComponent(contents);
-
-    window.open('/module?projectData=' + encoded, '_blank');
-  }
-
-  function handleAddToWorkspace() {
-    if (!currentModule) return;
-    addModule(currentModule, {data: moduleList[currentModule]});
   }
 
   return (
@@ -136,40 +115,16 @@ const ModuleManager = ({handleCloseDrawer, moduleList, addModule}) => {
         </Select>
       </ListItem>
       <ListItem>
-        <Tooltip title='Import module from file'>
-          <Button
-            sx={{
-              mr: 1,
-              color: 'black',
-              backgroundColor: '#dcdcdc',
-              '&:hover': {backgroundColor: '#b0b0b0'},
-            }}
-            variant='contained'
-            onClick={handleImportFile}>
-            Import
-          </Button>
-        </Tooltip>
         <Box sx={{ml: 'auto'}}>
-          <Tooltip title='Delete module from project'>
-            <Button
-              sx={{
-                mr: 1,
-                color: 'black',
-                backgroundColor: '#dcdcdc',
-                '&:hover': {backgroundColor: '#b0b0b0'},
-              }}
-              onClick={handleDelete}>
-              Delete
-            </Button>
-          </Tooltip>
           <Tooltip title='View module in new tab'>
             <Button
               sx={{
-                mr: 1,
+                mr: 2,
                 color: 'black',
                 backgroundColor: '#dcdcdc',
                 '&:hover': {backgroundColor: '#b0b0b0'},
               }}
+              variant='contained'
               onClick={handleView}>
               View
             </Button>
@@ -182,6 +137,7 @@ const ModuleManager = ({handleCloseDrawer, moduleList, addModule}) => {
                 backgroundColor: '#dcdcdc',
                 '&:hover': {backgroundColor: '#b0b0b0'},
               }}
+              variant='contained'
               onClick={handleAddToWorkspace}>
               Use
             </Button>

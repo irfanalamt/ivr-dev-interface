@@ -84,7 +84,6 @@ const CanvasComponent = ({isModule = false}) => {
   const isDragging = useRef(false);
   const isPalletShape = useRef(false);
   const promptDescriptionObj = useRef(null);
-  const moduleList = useRef({});
   const isSuccessToast = useRef(false);
 
   let startX, startY;
@@ -676,6 +675,7 @@ const CanvasComponent = ({isModule = false}) => {
             console.log(
               'Current shape: ' + JSON.stringify(currentShape.current, null, 2)
             );
+
             currentShape.current.setSelected(true);
             setIsOpenDrawer(true);
             clearAndDraw();
@@ -876,48 +876,37 @@ const CanvasComponent = ({isModule = false}) => {
     const count = shapeCount.current.module++;
     console.log('count==', count);
     stageGroup.current[pageNumber.current - 1].addModule(
-      window.innerWidth - 150,
-      100,
+      200,
+      100 + scrollOffsetY.current,
       count,
       pageNumber.current,
       name,
       data
     );
+    setIsOpenModules(false);
     clearAndDraw();
   }
 
   function postToApi(data) {
-    if (isModule) {
-      axios
-        .post('/api/saveModule', data)
-        .then((response) => {
-          console.log(response.data);
-          isSuccessToast.current = true;
-          snackbarMessage.current = `Module saved successfully.`;
-          setOpenSnackbar(true);
-          setTimeout(() => {
-            isSuccessToast.current = false;
-          }, 1500);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      axios
-        .post('/api/saveProject', data)
-        .then((response) => {
-          console.log(response.data);
-          isSuccessToast.current = true;
-          snackbarMessage.current = `Project saved successfully.`;
-          setOpenSnackbar(true);
-          setTimeout(() => {
-            isSuccessToast.current = false;
-          }, 1500);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+    const apiEndpoint = isModule ? '/api/saveModule' : '/api/saveProject';
+    const successMessage = isModule
+      ? 'Module saved successfully.'
+      : 'Project saved successfully.';
+
+    axios
+      .post(apiEndpoint, data)
+      .then((response) => {
+        console.log(response.data);
+        isSuccessToast.current = true;
+        snackbarMessage.current = successMessage;
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          isSuccessToast.current = false;
+        }, 1500);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   function saveToServer(ivrName) {
@@ -1194,7 +1183,6 @@ const CanvasComponent = ({isModule = false}) => {
           handleCloseDrawer={() => {
             setIsOpenModules(false);
           }}
-          moduleList={moduleList.current}
           addModule={addModule}
         />
       </Drawer>
