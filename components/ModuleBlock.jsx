@@ -1,20 +1,13 @@
-import {CleaningServices} from '@mui/icons-material';
 import {
-  Box,
   Divider,
   List,
   ListItem,
   MenuItem,
   Select,
-  Tab,
-  Tabs,
-  TextField,
   Typography,
 } from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
-import DrawerName from './DrawerName';
+import {useEffect, useState} from 'react';
 import DrawerTop from './DrawerTop';
-import MessageList from './MessageList';
 
 const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
   const [inputVars, setInputVars] = useState(
@@ -23,26 +16,62 @@ const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
   const [outputVars, setOutputVars] = useState(
     shape.userValues.outputVars || null
   );
+  const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   useEffect(() => {
     if (!inputVars || !outputVars) fillInputAndOutputVariables();
   }, []);
 
   function fillInputAndOutputVariables() {
-    const moduleUserVariables = JSON.parse(shape.userValues.data).userVariables;
-
-    const input = moduleUserVariables.filter((v) => v.isInput);
+    const input = JSON.parse(shape.userValues.data).userVariables.filter(
+      (v) => v.isInput
+    );
     setInputVars(input);
 
-    const output = moduleUserVariables.filter((v) => v.isOutput);
+    const output = JSON.parse(shape.userValues.data).userVariables.filter(
+      (v) => v.isOutput
+    );
     setOutputVars(output);
   }
 
   function saveUserValues() {
-    shape.setUserValues({...shape.userValues, inputVars, outputVars});
+    const inputNotMapped = inputVars.some(
+      (obj) => !obj.hasOwnProperty('currentName')
+    );
+    if (inputNotMapped) {
+      setErrorText('all inputs not mapped');
+      return;
+    }
 
-    console.log('inputVars', inputVars);
-    console.log('outputVars', outputVars);
+    const outputNotMapped = outputVars.some(
+      (obj) => !obj.hasOwnProperty('currentName')
+    );
+    if (outputNotMapped) {
+      setErrorText('all outputs not mapped');
+      return;
+    }
+
+    setErrorText('');
+
+    const codeString = generateJS();
+    shape.setFunctionString(codeString);
+    shape.setUserValues({...shape.userValues, inputVars, outputVars});
+    setSuccessText('Save successful');
+  }
+
+  function generateJS() {
+    const inputVarsString = inputVars
+      .map((obj) => `${obj.name}:this.${obj.currentName}`)
+      .join(', ');
+
+    const codeString = `this.${shape.text}=async function(){
+      let inputVars = {${inputVarsString}};
+      let outputVars = await IVR.runModule('${shape.text}', inputVars);
+    };`;
+
+    console.log(codeString);
+    return codeString;
   }
 
   function handleOutputVarsChange(e, index) {
@@ -74,6 +103,36 @@ const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
         backgroundColor='#f5cbab'
         blockName='Module'
       />
+      <Typography
+        sx={{
+          backgroundColor: ' #FFE4E1',
+          color: '#FF0000',
+          width: 'max-content',
+          position: 'absolute',
+          px: 1,
+          left: 0,
+          right: 0,
+          mx: 'auto',
+          fontSize: '0.75rem',
+        }}
+        variant='subtitle1'>
+        {errorText}
+      </Typography>{' '}
+      <Typography
+        sx={{
+          backgroundColor: '#7eca8f',
+          color: '#ffffff',
+          width: 'max-content',
+          position: 'absolute',
+          px: 1,
+          left: 0,
+          right: 0,
+          mx: 'auto',
+          fontSize: '0.75rem',
+        }}
+        variant='subtitle1'>
+        {successText}
+      </Typography>
       <ListItem sx={{my: 2}}>
         <Typography sx={{mr: 1, fontSize: '1rem'}} variant='h6'>
           Name:
