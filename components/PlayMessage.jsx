@@ -65,7 +65,7 @@ const PlayMessage = ({
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
     // remove null values; SAVE
-    const filteredMsgObj = msgObj.filter((n) => n.value);
+    const filteredMsgObj = msgObj.filter((n) => n.item);
     shape.setText(shapeName);
     clearAndDraw();
 

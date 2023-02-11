@@ -70,7 +70,7 @@ const PlayConfirm = ({
     setSuccessText('Save successful');
     setTimeout(() => setSuccessText(''), 3000);
 
-    const filteredMsgObj = msgObj.filter((n) => n.value);
+    const filteredMsgObj = msgObj.filter((n) => n.item);
     shape.setText(shapeName);
     clearAndDraw();
     shape.setUserValues({

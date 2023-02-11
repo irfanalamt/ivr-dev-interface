@@ -76,7 +76,7 @@ const GetDigits = ({
     }
 
     // remove null values and save
-    const filteredMsgObj = msgObj.filter((n) => n.value);
+    const filteredMsgObj = msgObj.filter((n) => n.item);
 
     shape.setText(shapeName);
     clearAndDraw();
