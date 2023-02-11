@@ -98,7 +98,11 @@ const PlayMenu = ({
   }
 
   function generateJS() {
-    let menuString = JSON.stringify({...menuObj, items: itemsObj});
+    let menuString = JSON.stringify({
+      ...menuObj,
+      items: itemsObj,
+      menuId: shapeName,
+    });
 
     let codeString = `this.${
       shapeName || `playMenu${shape.id}`
