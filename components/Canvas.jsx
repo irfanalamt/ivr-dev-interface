@@ -606,7 +606,8 @@ const CanvasComponent = ({isModule = false}) => {
         realX,
         realY,
         count,
-        pageNumber.current
+        pageNumber.current,
+        isModule
       );
       clearAndDraw();
       return;
@@ -910,25 +911,30 @@ const CanvasComponent = ({isModule = false}) => {
   }
 
   function saveToServer(ivrName) {
+    const moduleCode = isModule ? generateJS() : undefined;
+
     const data = {
       stageGroup: stageGroup.current,
       userVariables: userVariables.current,
       shapeCount: shapeCount.current,
       pageCount: pageCount,
       ivrName: ivrName,
+      moduleCode: moduleCode,
     };
+
     postToApi({filename: ivrName, data: JSON.stringify(data)});
   }
 
   function generateConfigFile() {
-    clearAndDraw();
     const jsString = generateJS();
 
     // Exit if generateJS() returns a falsy value
     if (!jsString) return;
 
     // Create a Blob object from the JS string
-    const configFile = new Blob([jsString], {type: 'application/javascript'});
+    const configFile = new Blob([jsString], {
+      type: 'application/javascript',
+    });
 
     // Create a download link for the config file
     const downloadLink = document.createElement('a');
@@ -942,9 +948,11 @@ const CanvasComponent = ({isModule = false}) => {
     // Clean up by removing the link and revoking the ObjectURL
     document.body.removeChild(downloadLink);
     URL.revokeObjectURL(downloadLink.href);
+
+    clearAndDraw();
   }
 
-  function generateJS() {
+  function getEntireStageGroup() {
     const entirestageGroup = new Shapes('entireStageGroup');
 
     // Combine all shapes from current pages
@@ -954,6 +962,12 @@ const CanvasComponent = ({isModule = false}) => {
         ...page.shapes,
       };
     }
+
+    return entirestageGroup;
+  }
+
+  function generateJS() {
+    const entirestageGroup = getEntireStageGroup();
 
     // Check if there are any shapes added to the stage
     if (!entirestageGroup.getShapesAsArray().length) {
@@ -979,11 +993,11 @@ const CanvasComponent = ({isModule = false}) => {
 
     // Global params for the IVR
     const globalParamsString =
-      `function ${ivrName}(IVR){
+      `function ${ivrName}(IVR${isModule ? ',inputVars' : ''}){
       IVR.params = {
         maxRetries: 3,
         maxRepeats: 3,
-        lang: 'enBcx',
+        lang: 'bcxEn',
         currency: 'SAR',
         terminator: 'X',
         firstTimeout: 10,
@@ -1031,12 +1045,25 @@ const CanvasComponent = ({isModule = false}) => {
       return false;
     }
 
+    let returnModuleString = '';
+    if (isModule) {
+      returnModuleString = generateReturnModuleJS();
+    }
+
     // Get driver functions for all shapes
     const allDriverFunctionsString =
       entirestageGroup.traverseShapes(idOfStartShape);
 
     // End of export statement
-    const EndExportString = `} \n\n module.exports = ${ivrName} ;`;
+    const EndProjectBraces = `} \n\n `;
+
+    const AllModulesCode = generateModuleCode(entirestageGroup);
+
+    // const EndExportString = `module.exports = ${ivrName} ;\n\n`;
+    let EndExportString = '';
+    if (!isModule) {
+      EndExportString = generateExportString(entirestageGroup);
+    }
 
     // Combine all strings to create final code
     const finalCodeString =
@@ -1044,6 +1071,9 @@ const CanvasComponent = ({isModule = false}) => {
       allVariablesString +
       allFunctionsString +
       allDriverFunctionsString +
+      returnModuleString +
+      EndProjectBraces +
+      AllModulesCode +
       EndExportString;
 
     const formattedCode = formatCode(finalCodeString);
@@ -1059,11 +1089,69 @@ const CanvasComponent = ({isModule = false}) => {
     });
   }
 
+  function generateExportString(entireStageGroup) {
+    const uniqueModules = getUniqueModuleNames(entireStageGroup);
+
+    if (uniqueModules.length === 0) {
+      return `module.exports = ${ivrName} ;\n\n`;
+    } else return `module.exports={${ivrName},${uniqueModules.join(',')}}`;
+  }
+
+  function getUniqueModuleNames(entireStageGroup) {
+    const moduleNames = [
+      ...new Set(
+        entireStageGroup
+          .getShapesAsArray()
+          .filter((el) => el.type === 'module')
+          .map((el) => el.text)
+      ),
+    ];
+
+    return moduleNames;
+  }
+
+  function generateModuleCode(entireStageGroup) {
+    const uniqueModules = getUniqueModuleNames(entireStageGroup).map((name) =>
+      entireStageGroup.getShapesAsArray().find((el) => el.text === name)
+    );
+
+    let moduleCodeString = '';
+    uniqueModules.forEach((module) => {
+      const modData = JSON.parse(module.userValues.data);
+      const modCode = modData.moduleCode;
+      if (modCode) {
+        moduleCodeString += modCode + '\n\n';
+      }
+    });
+
+    return moduleCodeString;
+  }
+
+  function generateReturnModuleJS() {
+    const outputVariables = userVariables.current.filter((el) => el.isOutput);
+    const codeStringInner = outputVariables
+      .map((el) => `this.outputVars.${el.name} = this.${el.name};`)
+      .join('');
+
+    const codeStringOuter = `this.endModule = async function() {
+  ${codeStringInner}
+    };`;
+
+    return codeStringOuter;
+  }
+
   function generateInitVariablesJS() {
     let codeString = '';
     userVariables.current.forEach((el) => {
-      codeString += `this.${el.name}${el.value ? `='${el.value}';` : ';'}`;
+      codeString += `this.${el.name}${
+        isModule && el.isInput
+          ? `=inputVars.${el.name};`
+          : el.value
+          ? `='${el.value}';`
+          : ';'
+      }`;
     });
+
     return codeString;
   }
 
@@ -1197,6 +1285,7 @@ const CanvasComponent = ({isModule = false}) => {
       <VariableContext.Provider
         value={{
           openVariablesDrawer: () => setIsOpenVars(true),
+          isModule: isModule,
         }}>
         <DrawerComponent
           isOpen={isOpenDrawer}

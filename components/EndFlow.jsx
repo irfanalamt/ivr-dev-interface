@@ -7,11 +7,15 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
+import {useContext, useState} from 'react';
+import {VariableContext} from '../src/context';
 import DrawerTop from './DrawerTop';
 
-const EndFlow = ({ shape, handleCloseDrawer }) => {
-  const [type, setType] = useState(shape.userValues?.type ?? 'disconnect');
+const EndFlow = ({shape, handleCloseDrawer}) => {
+  const {isModule} = useContext(VariableContext);
+  const [type, setType] = useState(
+    shape.userValues?.type ?? (isModule ? 'return' : 'disconnect')
+  );
   const [transferPoint, setTransferPoint] = useState(
     shape.userValues?.transferPoint ?? ''
   );
@@ -33,7 +37,7 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
 
   return (
     <>
-      <List sx={{ minWidth: 350 }}>
+      <List sx={{minWidth: 350}}>
         <DrawerTop
           saveUserValues={saveUserValues}
           shape={shape}
@@ -41,26 +45,32 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
           backgroundColor='#f8bbd0'
           blockName='End Flow'
         />
-        <ListItem sx={{ mt: 4 }}>
-          <Typography sx={{ fontSize: '1.1rem' }} variant='h6'>
+        <ListItem sx={{mt: 4}}>
+          <Typography sx={{fontSize: '1.1rem'}} variant='h6'>
             Type:
           </Typography>
         </ListItem>
         <ListItem>
           <RadioGroup
-            row
             name='radio-endflowType'
             value={type}
-            onChange={handleTypeChange}
-          >
+            onChange={handleTypeChange}>
+            {isModule && (
+              <FormControlLabel
+                sx={{ml: 1}}
+                value='return'
+                control={<Radio />}
+                label='RETURN'
+              />
+            )}
             <FormControlLabel
-              sx={{ ml: 1 }}
+              sx={{ml: 1}}
               value='disconnect'
               control={<Radio />}
               label='DISCONNECT'
             />
             <FormControlLabel
-              sx={{ ml: 2 }}
+              sx={{ml: 1}}
               value='transfer'
               control={<Radio />}
               label='TRANSFER'
@@ -68,19 +78,15 @@ const EndFlow = ({ shape, handleCloseDrawer }) => {
           </RadioGroup>
         </ListItem>
         {type === 'transfer' && (
-          <ListItem sx={{ mt: 2 }}>
-            <Typography
-              variant='body1'
-              sx={{ fontWeight: 'bold', fontSize: 15 }}
-            >
+          <ListItem sx={{mt: 2}}>
+            <Typography variant='body1' sx={{fontWeight: 'bold', fontSize: 15}}>
               transferPoint:
             </Typography>
             <TextField
-              sx={{ width: 180, ml: 2 }}
+              sx={{width: 180, ml: 2}}
               size='small'
               value={transferPoint}
-              onChange={handleTransferPointChange}
-            ></TextField>
+              onChange={handleTransferPointChange}></TextField>
           </ListItem>
         )}
       </List>

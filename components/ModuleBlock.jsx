@@ -1,54 +1,39 @@
+import {CleaningServices} from '@mui/icons-material';
 import {
   Divider,
   List,
   ListItem,
   MenuItem,
   Select,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import {useEffect, useState} from 'react';
 import DrawerTop from './DrawerTop';
 
 const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
-  const [inputVars, setInputVars] = useState(
-    shape.userValues.inputVars || null
-  );
-  const [outputVars, setOutputVars] = useState(
-    shape.userValues.outputVars || null
-  );
+  const [allVars, setAllVars] = useState(shape.userValues.allVars || null);
+
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
 
   useEffect(() => {
-    if (!inputVars || !outputVars) fillInputAndOutputVariables();
+    if (!allVars) fillAllVariables();
   }, []);
 
-  function fillInputAndOutputVariables() {
-    const input = JSON.parse(shape.userValues.data).userVariables.filter(
-      (v) => v.isInput
+  function fillAllVariables() {
+    const allV = JSON.parse(shape.userValues.data).userVariables.filter(
+      (v) => v.isInput || v.isOutput
     );
-    setInputVars(input);
-
-    const output = JSON.parse(shape.userValues.data).userVariables.filter(
-      (v) => v.isOutput
-    );
-    setOutputVars(output);
+    setAllVars(allV);
   }
 
   function saveUserValues() {
-    const inputNotMapped = inputVars.some(
+    const varsNotMapped = allVars.some(
       (obj) => !obj.hasOwnProperty('currentName')
     );
-    if (inputNotMapped) {
-      setErrorText('all inputs not mapped');
-      return;
-    }
-
-    const outputNotMapped = outputVars.some(
-      (obj) => !obj.hasOwnProperty('currentName')
-    );
-    if (outputNotMapped) {
-      setErrorText('all outputs not mapped');
+    if (varsNotMapped) {
+      setErrorText('all variables not mapped');
       return;
     }
 
@@ -56,38 +41,35 @@ const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
 
     const codeString = generateJS();
     shape.setFunctionString(codeString);
-    shape.setUserValues({...shape.userValues, inputVars, outputVars});
+
+    shape.setUserValues({...shape.userValues, allVars});
     setSuccessText('Save successful');
   }
 
   function generateJS() {
-    const inputVarsString = inputVars
+    const inputVarsString = allVars
+      .filter((obj) => obj.isInput)
       .map((obj) => `${obj.name}:this.${obj.currentName}`)
       .join(', ');
+    const outputVarsString = allVars
+      .filter((obj) => obj.isOutput)
+      .map((obj) => `this.${obj.currentName}=outputVars.${obj.name}`)
+      .join(';');
 
     const codeString = `this.${shape.text}=async function(){
       let inputVars = {${inputVarsString}};
       let outputVars = await IVR.runModule('${shape.text}', inputVars);
+      ${outputVarsString}
     };`;
 
     console.log(codeString);
     return codeString;
   }
 
-  function handleOutputVarsChange(e, index) {
+  function handleAllVarsChange(e, index) {
     const {value} = e.target;
 
-    setOutputVars((v) => {
-      const temp = [...v];
-      temp[index].currentName = value;
-      return temp;
-    });
-  }
-
-  function handleInputVarsChange(e, index) {
-    const {value} = e.target;
-
-    setInputVars((v) => {
+    setAllVars((v) => {
       const temp = [...v];
       temp[index].currentName = value;
       return temp;
@@ -117,7 +99,7 @@ const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
         }}
         variant='subtitle1'>
         {errorText}
-      </Typography>{' '}
+      </Typography>
       <Typography
         sx={{
           backgroundColor: '#7eca8f',
@@ -139,48 +121,37 @@ const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
         </Typography>
         <Typography>{shape.text}</Typography>
       </ListItem>
-      <Divider />
-      <ListItem>
-        <Typography sx={{mt: 1, fontSize: '1rem'}} variant='h6'>
-          Input Variables
-        </Typography>
-      </ListItem>
+      <Divider sx={{mb: 2}} />
+
       <List>
-        {inputVars?.map((v, i) => (
+        <ListItem>
+          <Typography sx={{boxShadow: 1, px: 1, mb: 2}} variant='subtitle2'>
+            Module variables
+          </Typography>
+        </ListItem>
+
+        {allVars?.map((v, i) => (
           <ListItem key={i}>
-            <Typography variant='body2'>{v.name}:</Typography>
+            <Tooltip
+              title={
+                `${v.isInput ? 'input ' : ''}` +
+                `${v.isOutput ? 'output ' : ''}` +
+                v.type
+              }
+              placement='top'
+              arrow>
+              <Typography
+                sx={{minWidth: '25%', fontWeight: 'bold'}}
+                variant='body2'>
+                {v.name}:
+              </Typography>
+            </Tooltip>
             <Select
               onChange={(e) => {
-                handleInputVarsChange(e, i);
+                handleAllVarsChange(e, i);
               }}
               value={v.currentName ?? ''}
-              sx={{ml: 2}}
-              size='small'>
-              {userVariables.map((v, i) => (
-                <MenuItem value={v.name} key={i}>
-                  {v.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <ListItem>
-        <Typography sx={{mt: 1, fontSize: '1rem'}} variant='h6'>
-          Output Variables
-        </Typography>
-      </ListItem>
-      <List>
-        {outputVars?.map((v, i) => (
-          <ListItem key={i}>
-            <Typography variant='body2'>{v.name}:</Typography>
-            <Select
-              onChange={(e) => {
-                handleOutputVarsChange(e, i);
-              }}
-              value={v.currentName ?? ''}
-              sx={{ml: 2}}
+              sx={{ml: 2, minWidth: 80}}
               size='small'>
               {userVariables.map((v, i) => (
                 <MenuItem value={v.name} key={i}>

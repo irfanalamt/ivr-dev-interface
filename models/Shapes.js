@@ -27,7 +27,7 @@ class Shapes {
     this.shapes[id] = stageFigure;
   }
 
-  addShape(type, x, y, count, pageNumber) {
+  addShape(type, x, y, count, pageNumber, isModule = false) {
     let stageFigure;
     switch (type) {
       case 'setParams':
@@ -104,7 +104,7 @@ class Shapes {
 
       case 'endFlow':
         stageFigure = new Shape(x, y, 35, 35, 'endFlow', '#e91e63', true);
-        stageFigure.setUserValues({type: 'disconnect'});
+        stageFigure.setUserValues({type: isModule ? 'return' : 'disconnect'});
         break;
 
       case 'connector':
@@ -264,6 +264,8 @@ class Shapes {
       if (el.type === 'endFlow') {
         if (el.userValues.type === 'disconnect') {
           mainMenuString += 'IVR.doDisconnect();';
+        } else if (el.userValues.type === 'return') {
+          mainMenuString += 'IVR.doReturnModule();';
         } else if (el.userValues.transferPoint) {
           mainMenuString += `IVR.doTransfer('${el.userValues.transferPoint}');`;
         }
@@ -294,6 +296,8 @@ class Shapes {
             if (el.type === 'endFlow') {
               if (el.userValues.type === 'disconnect') {
                 ifCode += 'IVR.doDisconnect();';
+              } else if (el.userValues.type === 'return') {
+                ifCode += 'IVR.doReturnModule();';
               } else if (el.userValues.transferPoint) {
                 ifCode += `IVR.doTransfer('${el.userValues.transferPoint}');`;
               }
@@ -315,6 +319,8 @@ class Shapes {
           if (el.type === 'endFlow') {
             if (el.userValues.type === 'disconnect') {
               elseCode += 'IVR.doDisconnect();';
+            } else if (el.userValues.type === 'return') {
+              elseCode += 'IVR.doReturnModule();';
             } else if (el.userValues.transferPoint) {
               elseCode += `IVR.doTransfer('${el.userValues.transferPoint}');`;
             }
@@ -341,6 +347,8 @@ class Shapes {
         if (el.type === 'endFlow') {
           if (el.userValues.type === 'disconnect') {
             code += 'IVR.doDisconnect();';
+          } else if (el.userValues.type === 'return') {
+            code += 'IVR.doReturnModule();';
           } else if (el.userValues.transferPoint) {
             code += `IVR.doTransfer('${el.userValues.transferPoint}');`;
           }
@@ -375,6 +383,8 @@ class Shapes {
           if (el.type === 'endFlow') {
             if (el.userValues.type === 'disconnect') {
               code += 'IVR.doDisconnect();';
+            } else if (el.userValues.type === 'return') {
+              code += 'IVR.doReturnModule();';
             } else if (el.userValues.transferPoint) {
               code += `IVR.doTransfer('${el.userValues.transferPoint}');`;
             }

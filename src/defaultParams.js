@@ -13,7 +13,7 @@ const defaultParams = [
   },
   {
     name: 'lang',
-    value: 'enBcx',
+    value: 'bcxEn',
   },
   {
     name: 'currency',
