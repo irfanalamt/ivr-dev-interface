@@ -967,125 +967,105 @@ const CanvasComponent = ({isModule = false}) => {
   }
 
   function generateJS() {
-    const entirestageGroup = getEntireStageGroup();
+    const entireStageGroup = getEntireStageGroup();
+    const shapes = entireStageGroup.getShapesAsArray();
 
-    // Check if there are any shapes added to the stage
-    if (!entirestageGroup.getShapesAsArray().length) {
-      snackbarMessage.current = `No shapes added to stage.`;
-      setOpenSnackbar(true);
-      return false;
+    if (!shapes.length) {
+      return handleSnackbarMessage('No shapes added to stage.');
     }
 
-    // Check if the IVR name is set
     if (!ivrName) {
-      snackbarMessage.current = `Please save first to generate script.`;
-      setOpenSnackbar(true);
-      return false;
+      return handleSnackbarMessage('Please save first to generate script.');
     }
 
-    // Check if all shapes have function strings
-    const isFunctionStringPresent = entirestageGroup.isFunctionStringPresent();
-    if (isFunctionStringPresent) {
-      snackbarMessage.current = `Please update ${isFunctionStringPresent}. Default values detected.`;
-      setOpenSnackbar(true);
-      return false;
+    const missingFunctionString = entireStageGroup.isFunctionStringPresent();
+    if (missingFunctionString) {
+      return handleSnackbarMessage(
+        `Please update ${missingFunctionString}. Default values detected.`
+      );
     }
 
-    // Global params for the IVR
     const globalParamsString =
       `function ${ivrName}(IVR${isModule ? ',inputVars' : ''}){
-        ${
-          isModule
-            ? '//MODULE'
-            : `IVR.params = {
-          maxRetries: 3,
-          maxRepeats: 3,
-          lang: 'bcxEn',
-          currency: 'SAR',
-          terminator: 'X',
-          firstTimeout: 10,
-          interTimeout: 5,
-          menuTimeout: 5,
-          maxCallTime: 3600,
-          invalidAction: 'Disconnect',
-          timeoutAction: 'Disconnect',
-          confirmOption: 1,
-          cancelOption: 2,
-          invalidPrompt: 'std-invalid',
-          timeoutPrompt: 'std-timeout',
-          cancelPrompt: 'std-cancel',
-          goodbyeMessage: 'std-goodbye',
-          terminateMessage: 'std-terminate',
-          repeatInfoPrompt: 'std-repeat-info',
-          confirmPrompt: 'std-confirm',
-          hotkeyMainMenu: 'X', 
-          hotkeyPreviousMenu: 'X',
-          hotkeyTransfer: 'X',
-          transferPoint: '',
-          invalidTransferPoint: '',
-          timeoutTransferPoint: '',
-          logDB: false
-        };`
-        }
-   
-      ` + '\n \n';
+      ${
+        isModule
+          ? '//MODULE'
+          : `IVR.params = {
+      maxRetries: 3, maxRepeats: 3,
+      lang: 'bcxEn',
+      currency: 'SAR',
+      terminator: 'X',
+      firstTimeout: 10,
+      interTimeout: 5,
+      menuTimeout: 5,
+      maxCallTime: 3600,
+      invalidAction: 'Disconnect',
+      timeoutAction: 'Disconnect',
+      confirmOption: 1,
+      cancelOption: 2,
+      invalidPrompt: 'std-invalid',
+      timeoutPrompt: 'std-timeout',
+      cancelPrompt: 'std-cancel',
+      goodbyeMessage: 'std-goodbye',
+      terminateMessage: 'std-terminate',
+      repeatInfoPrompt: 'std-repeat-info',
+      confirmPrompt: 'std-confirm',
+      hotkeyMainMenu: 'X', 
+      hotkeyPreviousMenu: 'X',
+      hotkeyTransfer: 'X',
+      transferPoint: '',
+      invalidTransferPoint: '',
+      timeoutTransferPoint: '',
+      logDB: false
+    };`
+      }` + '\n \n';
 
-    // Initialize variables
     const allVariablesString = generateInitVariablesJS() + '\n \n';
-
-    // Get all function strings from shapes
     const allFunctionsString =
-      entirestageGroup
-        .getShapesAsArray()
-        .filter((el) => el.functionString)
-        .map((el) => el.functionString)
+      shapes
+        .filter((shape) => shape.functionString)
+        .map((shape) => shape.functionString)
         .join(' ') + '\n \n';
 
-    // Get the ID of the first shape
-    const idOfStartShape = entirestageGroup.getIdOfFirstShape();
+    const idOfStartShape = entireStageGroup.getIdOfFirstShape();
     if (!idOfStartShape) {
-      snackbarMessage.current =
-        'Please add a setParams block to start control flow.';
-      setOpenSnackbar(true);
-      return false;
+      return handleSnackbarMessage(
+        'Please add a setParams block to start control flow.'
+      );
     }
 
-    let returnModuleString = '';
-    if (isModule) {
-      returnModuleString = generateReturnModuleJS();
-    }
+    const returnModuleString = isModule ? generateReturnModuleJS() : '';
 
-    // Get driver functions for all shapes
-    const allDriverFunctionsString = entirestageGroup.traverseShapes(
+    const allDriverFunctionsString = entireStageGroup.traverseShapes(
       idOfStartShape,
       isModule
     );
 
-    // End of export statement
-    const EndProjectBraces = `} \n\n `;
+    const endProjectBraces = `} \n\n `;
 
-    const AllModulesCode = generateModuleCode(entirestageGroup);
+    const allModulesCode = generateModuleCode(entireStageGroup);
 
-    // const EndExportString = `module.exports = ${ivrName} ;\n\n`;
-    let EndExportString = '';
-    if (!isModule) {
-      EndExportString = generateExportString(entirestageGroup);
-    }
+    const endExportString = !isModule
+      ? generateExportString(entireStageGroup)
+      : '';
 
-    // Combine all strings to create final code
     const finalCodeString =
       globalParamsString +
       allVariablesString +
       allFunctionsString +
       allDriverFunctionsString +
       returnModuleString +
-      EndProjectBraces +
-      AllModulesCode +
-      EndExportString;
+      endProjectBraces +
+      allModulesCode +
+      endExportString;
 
-    const formattedCode = formatCode(finalCodeString);
+    return formatCode(finalCodeString);
+  }
 
-    return formattedCode;
+  function handleSnackbarMessage(message) {
+    snackbarMessage.current = message;
+    setOpenSnackbar(true);
+    return false;
   }
 
   function formatCode(code) {
