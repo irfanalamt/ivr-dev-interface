@@ -13,7 +13,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import {useEffect} from 'react';
 import {useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
@@ -168,7 +167,7 @@ const MessageList = ({
                   {userVariables
                     .filter(
                       (el) =>
-                        el.type === (m.type === 'Prompt' ? 'Prompt' : 'Number')
+                        el.type === (m.type === 'Prompt' ? 'prompt' : 'number')
                     )
                     .map((el, i) => (
                       <MenuItem key={i} value={`$${el.name}` ?? ''}>
@@ -207,7 +206,7 @@ const MessageList = ({
                   value={m.useVariable ? m.item : ''}
                   onChange={(e) => handleChange(e, i)}>
                   {userVariables
-                    .filter((el) => el.type === 'Number')
+                    .filter((el) => el.type === 'number')
                     .map((el, i) => {
                       return (
                         <MenuItem key={i} value={`$${el.name}` ?? ''}>
@@ -257,7 +256,7 @@ const MessageList = ({
                   value={m.useVariable ? m.item : ''}
                   onChange={(e) => handleChange(e, i)}>
                   {userVariables
-                    .filter((el) => el.type === m.type)
+                    .filter((el) => el.type === 'date')
                     .map((el, i) => {
                       return (
                         <MenuItem key={i} value={`$${el.name}` ?? ''}>
@@ -302,7 +301,7 @@ const MessageList = ({
                   value={m.useVariable ? m.item : ''}
                   onChange={(e) => handleChange(e, i)}>
                   {userVariables
-                    .filter((el) => el.type === m.type)
+                    .filter((el) => el.type === 'time')
                     .map((el, i) => {
                       return (
                         <MenuItem key={i} value={`$${el.name}` ?? ''}>
@@ -355,7 +354,7 @@ const MessageList = ({
                   value={m.useVariable ? m.item : ''}
                   onChange={(e) => handleChange(e, i)}>
                   {userVariables
-                    .filter((el) => el.type === m.type)
+                    .filter((el) => el.type === 'day')
                     .map((el, i) => {
                       return (
                         <MenuItem key={i} value={`$${el.name}` ?? ''}>
@@ -403,7 +402,7 @@ const MessageList = ({
                   value={m.useVariable ? m.item : ''}
                   onChange={(e) => handleChange(e, i)}>
                   {userVariables
-                    .filter((el) => el.type === m.type)
+                    .filter((el) => el.type === 'month')
                     .map((el, i) => {
                       return (
                         <MenuItem key={i} value={`$${el.name}` ?? ''}>
