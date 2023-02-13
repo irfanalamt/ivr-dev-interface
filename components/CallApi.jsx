@@ -250,28 +250,29 @@ const CallApi = ({
             <RemoveRoundedIcon sx={{color: 'red', fontSize: '1.2rem'}} />
           </Button>
         </ListItem>
-        <ListItem>
+        <List>
           {inputArr?.map((item, i) => {
             return (
-              <Select
-                sx={{mr: 0.5}}
-                onChange={(e) => {
-                  handleInputArrChange(e, i);
-                }}
-                value={item.value}
-                key={i}
-                size='small'>
-                {userVariables?.map((el, i) => {
-                  return (
-                    <MenuItem key={i} value={el.name}>
-                      {el.name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
+              <ListItem key={i}>
+                <Select
+                  sx={{mr: 0.5, minWidth: 100}}
+                  onChange={(e) => {
+                    handleInputArrChange(e, i);
+                  }}
+                  value={item.value}
+                  size='small'>
+                  {userVariables?.map((el, i) => {
+                    return (
+                      <MenuItem key={i} value={el.name}>
+                        {el.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </ListItem>
             );
           })}
-        </ListItem>
+        </List>
         <Divider sx={{mt: 2}} />
         <ListItem>
           <Typography sx={{fontSize: '1rem', width: '50%'}} variant='h6'>
@@ -301,28 +302,29 @@ const CallApi = ({
             <RemoveRoundedIcon sx={{color: 'red', fontSize: '1.2rem'}} />
           </Button>
         </ListItem>
-        <ListItem>
+        <List>
           {outputArr?.map((item, i) => {
             return (
-              <Select
-                sx={{mr: 0.5}}
-                onChange={(e) => {
-                  handleOutputArrChange(e, i);
-                }}
-                value={item.value}
-                key={i}
-                size='small'>
-                {userVariables?.map((el, i) => {
-                  return (
-                    <MenuItem key={i} value={el.name}>
-                      {el.name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
+              <ListItem key={i}>
+                <Select
+                  sx={{mr: 0.5, minWidth: 100}}
+                  onChange={(e) => {
+                    handleOutputArrChange(e, i);
+                  }}
+                  value={item.value}
+                  size='small'>
+                  {userVariables?.map((el, i) => {
+                    return (
+                      <MenuItem key={i} value={el.name}>
+                        {el.name}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </ListItem>
             );
           })}
-        </ListItem>
+        </List>
       </List>
       <Snackbar
         open={openToast}
