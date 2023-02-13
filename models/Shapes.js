@@ -182,8 +182,8 @@ class Shapes {
     return firstShape ? firstShape.id : null;
   }
 
-  traverseShapes(id) {
-    let tempString = this.generateMainMenuCode(id);
+  traverseShapes(id, isModule = false) {
+    let tempString = this.generateMainMenuCode(id, isModule);
     const visitedShapes = new Set();
     const shapeStack = [this.shapes[id]];
 
@@ -254,12 +254,14 @@ class Shapes {
 
     return entryJumper?.nextItem;
   }
-  generateMainMenuCode(id) {
+  generateMainMenuCode(id, isModule = false) {
     if (!this.shapes[id]) return '';
 
     const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(id);
 
-    let mainMenuString = 'this.ivrMain = async function() { try { ';
+    let mainMenuString = `this.${
+      isModule ? 'moduleMain' : 'ivrMain'
+    } = async function() { try { `;
     arrayShapesTillMenuOrSwitch.forEach((el) => {
       if (el.type === 'endFlow') {
         if (el.userValues.type === 'disconnect') {

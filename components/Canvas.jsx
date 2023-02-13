@@ -994,35 +994,40 @@ const CanvasComponent = ({isModule = false}) => {
     // Global params for the IVR
     const globalParamsString =
       `function ${ivrName}(IVR${isModule ? ',inputVars' : ''}){
-      IVR.params = {
-        maxRetries: 3,
-        maxRepeats: 3,
-        lang: 'bcxEn',
-        currency: 'SAR',
-        terminator: 'X',
-        firstTimeout: 10,
-        interTimeout: 5,
-        menuTimeout: 5,
-        maxCallTime: 3600,
-        invalidAction: 'Disconnect',
-        timeoutAction: 'Disconnect',
-        confirmOption: 1,
-        cancelOption: 2,
-        invalidPrompt: 'std-invalid',
-        timeoutPrompt: 'std-timeout',
-        cancelPrompt: 'std-cancel',
-        goodbyeMessage: 'std-goodbye',
-        terminateMessage: 'std-terminate',
-        repeatInfoPrompt: 'std-repeat-info',
-        confirmPrompt: 'std-confirm',
-        hotkeyMainMenu: 'X', 
-        hotkeyPreviousMenu: 'X',
-        hotkeyTransfer: 'X',
-        transferPoint: '',
-        invalidTransferPoint: '',
-        timeoutTransferPoint: '',
-        logDB: false
-      };
+        ${
+          isModule
+            ? '//MODULE'
+            : `IVR.params = {
+          maxRetries: 3,
+          maxRepeats: 3,
+          lang: 'bcxEn',
+          currency: 'SAR',
+          terminator: 'X',
+          firstTimeout: 10,
+          interTimeout: 5,
+          menuTimeout: 5,
+          maxCallTime: 3600,
+          invalidAction: 'Disconnect',
+          timeoutAction: 'Disconnect',
+          confirmOption: 1,
+          cancelOption: 2,
+          invalidPrompt: 'std-invalid',
+          timeoutPrompt: 'std-timeout',
+          cancelPrompt: 'std-cancel',
+          goodbyeMessage: 'std-goodbye',
+          terminateMessage: 'std-terminate',
+          repeatInfoPrompt: 'std-repeat-info',
+          confirmPrompt: 'std-confirm',
+          hotkeyMainMenu: 'X', 
+          hotkeyPreviousMenu: 'X',
+          hotkeyTransfer: 'X',
+          transferPoint: '',
+          invalidTransferPoint: '',
+          timeoutTransferPoint: '',
+          logDB: false
+        };`
+        }
+   
       ` + '\n \n';
 
     // Initialize variables
@@ -1051,8 +1056,10 @@ const CanvasComponent = ({isModule = false}) => {
     }
 
     // Get driver functions for all shapes
-    const allDriverFunctionsString =
-      entirestageGroup.traverseShapes(idOfStartShape);
+    const allDriverFunctionsString = entirestageGroup.traverseShapes(
+      idOfStartShape,
+      isModule
+    );
 
     // End of export statement
     const EndProjectBraces = `} \n\n `;
@@ -1152,7 +1159,19 @@ const CanvasComponent = ({isModule = false}) => {
       }`;
     });
 
-    return codeString;
+    let outputVarsString = '';
+    if (isModule) {
+      let outputVars = userVariables.current
+        .filter((variable) => variable.isOutput)
+        .map((variable) => `${variable.name}:'${variable.value}'`)
+        .join(',');
+
+      outputVars = '{' + outputVars + '}';
+
+      outputVarsString = `\n\n this.outputVars = ${outputVars}`;
+    }
+
+    return codeString + outputVarsString;
   }
 
   return (
