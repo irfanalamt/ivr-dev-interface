@@ -90,7 +90,7 @@ const PlayMessage = ({
     )};let params = ${JSON.stringify({
       interruptible,
       repeatOption,
-    })};await IVR.playMessage(msgList,params);};`;
+    })};await IVR.playMessage('${shapeName}',msgList,params);};`;
 
     shape.setFunctionString(codeString);
   }

@@ -13,12 +13,12 @@ import {
   Typography,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useRef, useState } from 'react';
+import {useRef, useState} from 'react';
 import defaultParams from '../src/defaultParams';
 import DrawerName from './DrawerName';
 import DrawerTop from './DrawerTop';
 import SaveIcon from '@mui/icons-material/Save';
-import { useEffect } from 'react';
+import {useEffect} from 'react';
 
 const SetParams = ({
   shape,
@@ -70,20 +70,17 @@ const SetParams = ({
   };
 
   function generateJS() {
-    const codeParamArray = [];
+    const codeParamObj = {};
     for (const prop in modifiedParameters) {
-      const newObject = {
-        name: modifiedParameters[prop].name,
-        value: modifiedParameters[prop].value,
-      };
-      codeParamArray.push(newObject);
+      codeParamObj[modifiedParameters[prop].name] =
+        modifiedParameters[prop].value;
     }
 
     let codeString = `this.${
       shapeName || `setParams${shape.id}`
     }= async function(){
-      let newParams = ${JSON.stringify(codeParamArray)};
-      await IVR.setCallParams(newParams);
+      let newParams = ${JSON.stringify(codeParamObj)};
+      await IVR.setCallParams('${shapeName}',newParams);
     };`;
 
     shape.setFunctionString(codeString);
@@ -92,13 +89,13 @@ const SetParams = ({
   const getCurrentUserValues = () => {
     return JSON.stringify({
       name: shapeName,
-      userValues: { params: modifiedParameters },
+      userValues: {params: modifiedParameters},
     });
   };
   childRef.getCurrentUserValues = getCurrentUserValues;
 
   const handleSelectedParameterChange = (e) => {
-    const { value } = e.target;
+    const {value} = e.target;
     setSelectedParameterIndex(value);
 
     const param = modifiedParameters[defaultParams[value].name]
@@ -111,11 +108,11 @@ const SetParams = ({
   };
 
   const handleFieldChange = (e) => {
-    setSelectedParameter({ ...selectedParameter, value: e.target.value });
+    setSelectedParameter({...selectedParameter, value: e.target.value});
   };
 
   const handleSwitchChange = (e) => {
-    setSelectedParameter({ ...selectedParameter, value: e.target.checked });
+    setSelectedParameter({...selectedParameter, value: e.target.checked});
   };
 
   const handleUpdateParameter = () => {
@@ -123,7 +120,7 @@ const SetParams = ({
       ...modifiedParameters,
       [selectedParameter.name]: selectedParameter,
     });
-    shape.setUserValues({ params: modifiedParameters });
+    shape.setUserValues({params: modifiedParameters});
     setSuccessText('parameter updated');
     setTimeout(() => {
       setSuccessText('');
@@ -132,13 +129,13 @@ const SetParams = ({
 
   const handleDeleteParameter = (parameterName) => {
     setModifiedParameters((p) => {
-      const temp = { ...p };
+      const temp = {...p};
       delete temp[parameterName];
       return temp;
     });
   };
   return (
-    <List sx={{ minWidth: 350 }}>
+    <List sx={{minWidth: 350}}>
       <DrawerTop
         saveUserValues={saveUserValues}
         shape={shape}
@@ -157,15 +154,14 @@ const SetParams = ({
         shapeId={shape.id}
       />
       <Divider />
-      <ListItem sx={{ mt: 2 }}>
+      <ListItem sx={{mt: 2}}>
         <InputLabel id='select-label'>parameter list</InputLabel>
         <Select
-          sx={{ ml: 2 }}
+          sx={{ml: 2}}
           labelId='select-label'
           size='small'
           value={selectedParameterIndex}
-          onChange={handleSelectedParameterChange}
-        >
+          onChange={handleSelectedParameterChange}>
           {defaultParams.map((p, i) => (
             <MenuItem value={i} key={i}>
               {p.name}
@@ -173,18 +169,14 @@ const SetParams = ({
           ))}
         </Select>
       </ListItem>
-      <ListItem
-        sx={{ mt: 2, justifyContent: 'center' }}
-        id='paramter-view-area'
-      >
+      <ListItem sx={{mt: 2, justifyContent: 'center'}} id='paramter-view-area'>
         <Typography variant='body1'>{selectedParameter.name}:</Typography>
         {selectedParameter.type === 'select' && (
           <Select
-            sx={{ ml: 2 }}
+            sx={{ml: 2}}
             size='small'
             value={selectedParameter.value}
-            onChange={handleFieldChange}
-          >
+            onChange={handleFieldChange}>
             {selectedParameter.optionList?.map((p, i) => (
               <MenuItem value={p} key={i}>
                 {p}
@@ -194,7 +186,7 @@ const SetParams = ({
         )}
         {!selectedParameter.type && (
           <TextField
-            sx={{ ml: 2, width: 150 }}
+            sx={{ml: 2, width: 150}}
             size='small'
             name='name'
             value={selectedParameter.value}
@@ -203,18 +195,18 @@ const SetParams = ({
         )}
         {selectedParameter.type === 'switch' && (
           <Switch
-            sx={{ ml: 2 }}
+            sx={{ml: 2}}
             checked={selectedParameter.value}
             onChange={handleSwitchChange}
           />
         )}
         <Tooltip title='update parameter' placement='top-end'>
-          <Button sx={{ ml: 2 }} onClick={handleUpdateParameter}>
-            <SaveIcon sx={{ fontSize: '1.3rem', color: '#424242' }} />
+          <Button sx={{ml: 2}} onClick={handleUpdateParameter}>
+            <SaveIcon sx={{fontSize: '1.3rem', color: '#424242'}} />
           </Button>
         </Tooltip>
       </ListItem>
-      <Divider sx={{ my: 1 }} />
+      <Divider sx={{my: 1}} />
       <List>
         {Object.values(modifiedParameters).map((p, i) => (
           <Box
@@ -226,22 +218,20 @@ const SetParams = ({
               pr: 4,
               alignItems: 'center',
             }}
-            key={i}
-          >
-            <Typography sx={{ ml: 4, fontSize: '1rem' }} variant='subtitle2'>
+            key={i}>
+            <Typography sx={{ml: 4, fontSize: '1rem'}} variant='subtitle2'>
               {p.name}:
             </Typography>
-            <Typography sx={{ ml: 1, fontSize: '1rem' }}>
+            <Typography sx={{ml: 1, fontSize: '1rem'}}>
               {p.value}
               {typeof p.value === 'boolean' && `${p.value}`}
             </Typography>
             <Button
-              sx={{ ml: 'auto', mr: -3 }}
+              sx={{ml: 'auto', mr: -3}}
               onClick={() => {
                 handleDeleteParameter(p.name);
-              }}
-            >
-              <DeleteIcon sx={{ fontSize: '1.3rem', color: '#424242' }} />
+              }}>
+              <DeleteIcon sx={{fontSize: '1.3rem', color: '#424242'}} />
             </Button>
           </Box>
         ))}

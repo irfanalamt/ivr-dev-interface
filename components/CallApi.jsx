@@ -133,7 +133,7 @@ const CallApi = ({
     }
 
     const shapeNameToUse = shapeName || `callAPI${shape.id}`;
-    const codeString = `this.${shapeNameToUse}=async function(){let endpoint = ${endpointString};let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI(endpoint,inputVars);${outputVarsString}};`;
+    const codeString = `this.${shapeNameToUse}=async function(){let endpoint = ${endpointString};let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI('${shapeName}',endpoint,inputVars);${outputVarsString}};`;
 
     shape.setFunctionString(codeString);
     console.log('🕺🏻callAPI code:', codeString);

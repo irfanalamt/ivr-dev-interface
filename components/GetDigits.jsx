@@ -120,10 +120,11 @@ const GetDigits = ({
     } = async function(){
       let msgList = ${replaceVarNameDollar(JSON.stringify(codeMessageObject))};
       let params = ${JSON.stringify(getEntireParamsObj())};
-      this.${resultName || 'default'} = await IVR.getDigits(msgList,params);
+      this.${
+        resultName || 'default'
+      } = await IVR.getDigits('${shapeName}',msgList,params);
     };`;
     shape.setFunctionString(codeString);
-    console.log('🕺🏻getDigits code:', codeString);
   }
 
   function addParamsInput() {
