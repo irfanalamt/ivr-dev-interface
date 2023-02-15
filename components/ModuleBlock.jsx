@@ -51,15 +51,10 @@ const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
       .filter((obj) => obj.isInput)
       .map((obj) => `${obj.name}:this.${obj.currentName}`)
       .join(', ');
-    const outputVarsString = allVars
-      .filter((obj) => obj.isOutput)
-      .map((obj) => `this.${obj.currentName}=outputVars.${obj.name}`)
-      .join(';');
 
     const codeString = `this.${shape.text}=async function(){
       let inputVars = {${inputVarsString}};
-      let outputVars = await IVR.runModule('${shape.text}', inputVars);
-      ${outputVarsString}
+      await IVR.runModule('${shape.text}', inputVars);
     };`;
 
     console.log(codeString);

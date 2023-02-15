@@ -210,7 +210,9 @@ class Shapes {
       return this.generateMenuCode(shape.id);
     } else if (shape.type === 'switch') {
       return this.generateSwitchCode(shape.id);
-    } else {
+    } else if (shape.type === 'module')
+      return this.generateModuleCode(shape.id);
+    else {
       return '';
     }
   }
@@ -257,7 +259,8 @@ class Shapes {
   generateMainMenuCode(id, isModule = false) {
     if (!this.shapes[id]) return '';
 
-    const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(id);
+    const arrayShapesTillMenuOrSwitch =
+      this.getShapesTillMenuSwitchOrModule(id);
 
     let mainMenuString = `this.${
       isModule ? 'moduleMain' : 'ivrMain'
@@ -290,9 +293,8 @@ class Shapes {
     if (switchShape.userValues.switchArray.length > 0) {
       switchShape.userValues.switchArray.forEach((el) => {
         if (el.nextId) {
-          const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(
-            el.nextId
-          );
+          const arrayShapesTillMenuOrSwitch =
+            this.getShapesTillMenuSwitchOrModule(el.nextId);
           let ifCode = `if (${el.condition}) {`;
           arrayShapesTillMenuOrSwitch.forEach((el) => {
             if (el.type === 'endFlow') {
@@ -313,9 +315,10 @@ class Shapes {
       });
 
       if (switchShape.userValues.default.nextId) {
-        const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(
-          switchShape.userValues.default.nextId
-        );
+        const arrayShapesTillMenuOrSwitch =
+          this.getShapesTillMenuSwitchOrModule(
+            switchShape.userValues.default.nextId
+          );
         let elseCode = `else {`;
         arrayShapesTillMenuOrSwitch.forEach((el) => {
           if (el.type === 'endFlow') {
@@ -341,7 +344,7 @@ class Shapes {
     }
 
     if (switchShape.userValues.default.nextId) {
-      const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(
+      const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuSwitchOrModule(
         switchShape.userValues.default.nextId
       );
       let code = `this.${switchShape.text} = async function() { try {`;
@@ -377,9 +380,8 @@ class Shapes {
     // generate driver fn for each item
     items.forEach((item) => {
       if (item.nextId) {
-        const arrayShapesTillMenuOrSwitch = this.getShapesTillMenuOrSwitch(
-          item.nextId
-        );
+        const arrayShapesTillMenuOrSwitch =
+          this.getShapesTillMenuSwitchOrModule(item.nextId);
         let code = `this.${menuShape.text}_${item.action} = async function() { try {`;
         arrayShapesTillMenuOrSwitch.forEach((el) => {
           if (el.type === 'endFlow') {
@@ -401,7 +403,48 @@ class Shapes {
     return finalCode;
   }
 
-  getShapesTillMenuOrSwitch(id) {
+  generateModuleCode(id) {
+    const moduleShape = this.shapes[id];
+    const moduleStartCode = moduleShape.functionString;
+    const allVars = moduleShape.userValues.allVars;
+    const outputVarsString = allVars
+      .filter((obj) => obj.isOutput)
+      .map((obj) => `this.${obj.currentName}=outputVars.${obj.name}`)
+      .join(';');
+
+    const shapesArray = this.getShapesTillMenuSwitchOrModule(
+      moduleShape.nextItem
+    );
+    let flowCode = '';
+    shapesArray.forEach((el) => {
+      if (el.type === 'endFlow') {
+        switch (el.userValues.type) {
+          case 'disconnect':
+            flowCode += 'IVR.doDisconnect();';
+            break;
+          case 'return':
+            flowCode += 'IVR.doReturnModule();';
+            break;
+          default:
+            if (el.userValues.transferPoint) {
+              flowCode += `IVR.doTransfer('${el.userValues.transferPoint}');`;
+            }
+            break;
+        }
+      } else {
+        flowCode += `await this.${el.text}();`;
+      }
+    });
+
+    const moduleFinishCode = `this.${moduleShape.text}_finished = async function(outputVars) {
+      ${outputVarsString};
+      ${flowCode}
+    };`;
+
+    return moduleStartCode + moduleFinishCode;
+  }
+
+  getShapesTillMenuSwitchOrModule(id) {
     const tempArray = [];
     const visitedShapes = new Set();
     let currentShape = this.shapes[id];
@@ -420,6 +463,10 @@ class Shapes {
       }
 
       visitedShapes.add(currentShape.id);
+
+      if (currentShape.type === 'module') {
+        break;
+      }
 
       if (currentShape.type === 'jumper') {
         currentShape =

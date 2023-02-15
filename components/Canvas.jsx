@@ -1030,7 +1030,7 @@ const CanvasComponent = ({isModule = false}) => {
     const allVariablesString = generateInitVariablesJS() + '\n \n';
     const allFunctionsString =
       shapes
-        .filter((shape) => shape.functionString)
+        .filter((shape) => shape.functionString && shape.type !== 'module')
         .map((shape) => shape.functionString)
         .join(' ') + '\n \n';
 

@@ -34,44 +34,41 @@ function drawGridLines(ctx, canvas) {
     width: 0.5,
   };
 
-  // Draw thick horizontal lines
+  function drawLine(startX, startY, endX, endY, style) {
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.strokeStyle = style.color;
+    ctx.lineWidth = style.width;
+    ctx.stroke();
+  }
+
   for (let i = 0; i <= canvasHeight; i += gridSpacing) {
-    ctx.beginPath();
-    ctx.moveTo(xPaletteOffset, i);
-    ctx.lineTo(canvasWidth, i);
-    ctx.strokeStyle = thickGrid.color;
-    ctx.lineWidth = thickGrid.width;
-    ctx.stroke();
+    drawLine(xPaletteOffset, i, canvasWidth, i, thickGrid);
+    drawLine(
+      xPaletteOffset,
+      i + thinGridOffset,
+      canvasWidth,
+      i + thinGridOffset,
+      thinGrid
+    );
   }
 
-  // Draw thick vertical lines
   for (let j = 0; j <= canvasWidth; j += gridSpacing) {
-    ctx.beginPath();
-    ctx.moveTo(j + xPaletteOffset, 0);
-    ctx.lineTo(j + xPaletteOffset, canvasHeight);
-    ctx.strokeStyle = thickGrid.color;
-    ctx.lineWidth = thickGrid.width;
-    ctx.stroke();
-  }
-
-  // Draw thin horizontal lines
-  for (let i = 0; i <= canvasHeight; i += gridSpacing) {
-    ctx.beginPath();
-    ctx.moveTo(xPaletteOffset, i + thinGridOffset);
-    ctx.lineTo(canvasWidth, i + thinGridOffset);
-    ctx.strokeStyle = thinGrid.color;
-    ctx.lineWidth = thinGrid.width;
-    ctx.stroke();
-  }
-
-  // Draw thin vertical lines
-  for (let j = 0; j <= canvasWidth; j += gridSpacing) {
-    ctx.beginPath();
-    ctx.moveTo(j + xPaletteOffset + thinGridOffset, 0);
-    ctx.lineTo(j + xPaletteOffset + thinGridOffset, canvasHeight);
-    ctx.strokeStyle = thinGrid.color;
-    ctx.lineWidth = thinGrid.width;
-    ctx.stroke();
+    drawLine(
+      j + xPaletteOffset,
+      0,
+      j + xPaletteOffset,
+      canvasHeight,
+      thickGrid
+    );
+    drawLine(
+      j + xPaletteOffset + thinGridOffset,
+      0,
+      j + xPaletteOffset + thinGridOffset,
+      canvasHeight,
+      thinGrid
+    );
   }
 }
 
