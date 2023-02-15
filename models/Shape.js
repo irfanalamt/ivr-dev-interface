@@ -27,23 +27,23 @@ class Shape {
 
   getRelativeExitPoint(shape2) {
     if (this.type === 'connector') {
-      return this.getConnectorCordinates(shape2.x, shape2.y);
+      return this.getConnectorCoordinates(shape2.x, shape2.y);
     }
 
-    let [x, y] = this.getBottomCordinates();
+    let [x, y] = this.getBottomCoordinates();
 
     if (this.y < shape2.y) {
-      if (shape2.getTopCordinates()[1] < this.getBottomCordinates()[1]) {
+      if (shape2.getTopCoordinates()[1] < this.getBottomCoordinates()[1]) {
         [x, y] =
           this.x < shape2.x
-            ? this.getRightCordinates()
-            : this.getLeftCordinates();
+            ? this.getRightCoordinates()
+            : this.getLeftCoordinates();
       }
     } else {
       [x, y] =
         this.x < shape2.x
-          ? this.getRightCordinates()
-          : this.getLeftCordinates();
+          ? this.getRightCoordinates()
+          : this.getLeftCoordinates();
     }
 
     return [x, y];
@@ -51,36 +51,38 @@ class Shape {
 
   getRelativeEntryPoint(shape1, exitPoint) {
     if (this.type === 'connector') {
-      return this.getConnectorCordinates(exitPoint.x, exitPoint.y);
+      return this.getConnectorCoordinates(exitPoint.x, exitPoint.y);
     }
 
-    let [x, y] = this.getTopCordinates();
+    let [x, y] = this.getTopCoordinates();
 
-    if (this.getTopCordinates()[1] < shape1.getBottomCordinates()[1]) {
-      let dxLeft = Math.abs(this.getLeftCordinates()[0] - exitPoint.x);
-      let dxRight = Math.abs(this.getRightCordinates()[0] - exitPoint.x);
+    if (this.getTopCoordinates()[1] < shape1.getBottomCoordinates()[1]) {
+      let dxLeft = Math.abs(this.getLeftCoordinates()[0] - exitPoint.x);
+      let dxRight = Math.abs(this.getRightCoordinates()[0] - exitPoint.x);
 
       [x, y] =
-        dxLeft < dxRight ? this.getLeftCordinates() : this.getRightCordinates();
+        dxLeft < dxRight
+          ? this.getLeftCoordinates()
+          : this.getRightCoordinates();
     }
 
     return [x, y];
   }
 
-  getBottomCordinates() {
+  getBottomCoordinates() {
     return [this.x, this.y + this.height / 2];
   }
-  getTopCordinates() {
+  getTopCoordinates() {
     return [this.x, this.y - this.height / 2];
   }
-  getLeftCordinates() {
+  getLeftCoordinates() {
     return [this.x - this.width / 2, this.y];
   }
-  getRightCordinates() {
+  getRightCoordinates() {
     return [this.x + this.width / 2, this.y];
   }
 
-  getConnectorCordinates(pointX, pointY) {
+  getConnectorCoordinates(pointX, pointY) {
     const angle = Math.atan2(pointY - this.y, pointX - this.x);
     const radius = this.width / 2;
     const x = this.x + radius * Math.cos(angle);
@@ -225,17 +227,16 @@ class Shape {
 
   setWidthFromText(ctx) {
     const width = ctx.measureText(this.text).width;
+    let additionalWidth = 20;
 
     if (this.type === 'playMenu') {
-      this.width = width + 30 > 120 ? width + 30 : 120;
-      return;
-    }
-    if (this.type === 'switch') {
-      this.width = width + 40 > 120 ? width + 40 : 120;
-      return;
+      additionalWidth = 30;
+    } else if (this.type === 'switch') {
+      additionalWidth = 40;
     }
 
-    this.width = width + 20;
+    this.width = Math.ceil((width + additionalWidth) / 20) * 20;
+    this.width = Math.max(this.width, 120);
   }
 
   drawShape(ctx) {
@@ -298,6 +299,24 @@ class Shape {
     }
   }
 
+  drawDotsTopAndBottom(ctx) {
+    const dotRadius = 1.9;
+    const topCoordinates = this.getTopCoordinates();
+    const bottomCoordinates = this.getBottomCoordinates();
+
+    ctx.fillStyle = this.style;
+
+    // Draw top dot
+    ctx.beginPath();
+    ctx.arc(...topCoordinates, dotRadius, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Draw bottom dot
+    ctx.beginPath();
+    ctx.arc(...bottomCoordinates, dotRadius, 0, 2 * Math.PI);
+    ctx.fill();
+  }
+
   drawInvertedHexagon(ctx) {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
@@ -325,6 +344,8 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = '#2196f3';
       ctx.stroke();
+      this.style = '#2196f3';
+      this.drawDotsTopAndBottom(ctx);
       return;
     }
 
@@ -416,12 +437,14 @@ class Shape {
       ctx.textBaseline = 'middle';
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = '#ff5722';
+      this.style = '#ff5722';
       ctx.strokeRect(
         this.x - this.width / 2,
         this.y - this.height / 2,
         this.width,
         this.height
       );
+      this.drawDotsTopAndBottom(ctx);
     } else {
       ctx.strokeStyle = this.style;
 
@@ -462,6 +485,7 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y - 2);
       ctx.strokeStyle = '#e91e63';
       ctx.stroke();
+      this.drawDotsTopAndBottom(ctx);
       return;
     }
 
@@ -494,6 +518,9 @@ class Shape {
 
       ctx.strokeStyle = '#9c27b0';
       ctx.stroke();
+
+      this.style = '#9c27b0';
+      this.drawDotsTopAndBottom(ctx);
       return;
     }
     ctx.strokeStyle = this.style;
@@ -528,6 +555,7 @@ class Shape {
       ctx.strokeStyle = '#009688';
       ctx.stroke();
       this.drawExitPointsMenu(ctx);
+      this.drawDotsTopAndBottom(ctx);
       return;
     }
 
@@ -573,6 +601,7 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = this.style;
       ctx.stroke();
+      this.drawDotsTopAndBottom(ctx);
       return;
     }
     ctx.strokeStyle = this.style;
@@ -617,6 +646,7 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = '#7cb342';
       ctx.stroke();
+      this.drawDotsTopAndBottom(ctx);
       return;
     }
     ctx.strokeStyle = this.style;
@@ -681,6 +711,7 @@ class Shape {
       ctx.strokeStyle = this.style;
       ctx.stroke();
       this.drawExitPointsSwitch(ctx);
+      this.drawDotsTopAndBottom(ctx);
       return;
     }
 

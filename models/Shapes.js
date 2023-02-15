@@ -33,16 +33,15 @@ class Shapes {
       case 'setParams':
         stageFigure = new Shape(x, y, 120, 30, 'setParams', '#e91e63', true);
         stageFigure.setUserValues({params: {}});
-
         break;
 
       case 'runScript':
-        stageFigure = new Shape(x, y, 105, 30, 'runScript', null, true);
+        stageFigure = new Shape(x, y, 120, 30, 'runScript', null, true);
         stageFigure.setUserValues({script: ''});
         break;
 
       case 'callAPI':
-        stageFigure = new Shape(x, y, 90, 30, 'callAPI', null, true);
+        stageFigure = new Shape(x, y, 100, 30, 'callAPI', null, true);
         stageFigure.setUserValues({
           endpoint: '',
           inputArr: [{value: ''}],
@@ -51,7 +50,7 @@ class Shapes {
         break;
 
       case 'playMenu':
-        stageFigure = new Shape(x, y, 125, 30, 'playMenu', '#009688', true);
+        stageFigure = new Shape(x, y, 140, 30, 'playMenu', '#009688', true);
         stageFigure.setUserValues({
           params: {},
           paramSelectedList: [],
@@ -60,7 +59,7 @@ class Shapes {
         break;
 
       case 'getDigits':
-        stageFigure = new Shape(x, y, 110, 30, 'getDigits', '#9c27b0', true);
+        stageFigure = new Shape(x, y, 120, 30, 'getDigits', '#9c27b0', true);
         stageFigure.setUserValues({
           params: {minDigits: 1, maxDigits: 1},
           messageList: [],
@@ -69,7 +68,7 @@ class Shapes {
         break;
 
       case 'playMessage':
-        stageFigure = new Shape(x, y, 125, 30, 'playMessage', '#c0ca33', true);
+        stageFigure = new Shape(x, y, 140, 30, 'playMessage', '#c0ca33', true);
         stageFigure.setUserValues({
           params: {interruptible: true, repeatOption: 'X'},
           messageList: [],
@@ -77,7 +76,7 @@ class Shapes {
         break;
 
       case 'playConfirm':
-        stageFigure = new Shape(x, y, 125, 30, 'playConfirm', '#7cb342', true);
+        stageFigure = new Shape(x, y, 140, 30, 'playConfirm', '#7cb342', true);
         stageFigure.setUserValues({
           params: {
             confirmOption: '',
@@ -90,7 +89,7 @@ class Shapes {
         break;
 
       case 'switch':
-        stageFigure = new Shape(x, y, 130, 30, 'switch', '#795548', true);
+        stageFigure = new Shape(x, y, 140, 30, 'switch', '#795548', true);
         stageFigure.setUserValues({
           switchArray: [
             {
