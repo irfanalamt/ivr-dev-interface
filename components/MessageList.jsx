@@ -151,12 +151,13 @@ const MessageList = ({
                   name='item'
                   sx={{
                     display: m.useVariable ? 'none' : 'block',
-                    width: m.type === 'Prompt' ? 180 : 100,
+                    px: 1,
                   }}
                   size='small'
                   value={m.item ?? ''}
                   onChange={(e) => handleChange(e, i, m.type)}
                   error={m.isError}
+                  fullWidth
                 />
                 <Select
                   sx={{display: m.useVariable ? 'block' : 'none'}}

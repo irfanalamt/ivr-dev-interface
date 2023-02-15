@@ -354,16 +354,14 @@ const CanvasComponent = ({isModule = false}) => {
 
     // Draw the palette shapes and stage shapes on the canvas
     palletGroup.current.drawAllShapes(canvas);
-    const currentPageGroup = stageGroup.current[pageNumber.current - 1];
-    if (currentPageGroup) {
-      currentPageGroup.drawAllShapes(canvas);
+    stageGroup.current[pageNumber.current - 1]?.drawAllShapes(canvas);
 
-      // Calculate connections between shapes and draw them
-      const connectionsArray = currentPageGroup.getConnectionsArray();
-      const lineGroup = new Lines([]);
-      lineGroup.setConnections(connectionsArray);
-      lineGroup.connectAllPoints(canvas);
-    }
+    // calculate connections between shapes and draw them
+    const connectionsArray =
+      stageGroup.current[pageNumber.current - 1].getConnectionsArray();
+    lineGroup.current = new Lines([]);
+    lineGroup.current.setConnections(connectionsArray);
+    lineGroup.current.connectAllPoints(canvas);
   }
 
   function handleCloseDrawer() {
