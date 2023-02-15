@@ -30,6 +30,7 @@ import SetVariables from './SetVariables';
 const prettier = require('prettier');
 const babelParser = require('@babel/parser');
 import {VariableContext} from '../src/context';
+import {drawGridLines} from '../src/myFunctions';
 
 const CanvasComponent = ({isModule = false}) => {
   const router = useRouter();
@@ -201,67 +202,68 @@ const CanvasComponent = ({isModule = false}) => {
     const setParams = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 1,
-      30,
-      20,
+      36,
+      18,
       'setParams',
       '#880e4f'
     );
-    const runScript = new Shape(
+    const playMessage = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 2,
-      30,
-      20,
+      40,
+      18,
+      'playMessage',
+      '#827717'
+    );
+    const getDigits = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 3,
+      32,
+      16,
+      'getDigits',
+      '#4a148c'
+    );
+    const playConfirm = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 4,
+      40,
+      18,
+      'playConfirm',
+      '#33691e'
+    );
+    const playMenu = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 5,
+      40,
+      18,
+      'playMenu',
+      '#004d40'
+    );
+    const runScript = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 6,
+      36,
+      18,
       'runScript',
       '#bf360c'
     );
+    const switchShape = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 7,
+      36,
+      16,
+      'switch',
+      '#3e2723'
+    );
     const callAPI = new Shape(
       40,
-      55 + scrollOffsetY.current + shapeHeight * 3,
-      30,
+      55 + scrollOffsetY.current + shapeHeight * 8,
+      38,
       20,
       'callAPI',
       '#0d47a1'
     );
-    const playMenu = new Shape(
-      40,
-      55 + scrollOffsetY.current + shapeHeight * 4,
-      30,
-      20,
-      'playMenu',
-      '#004d40'
-    );
-    const getDigits = new Shape(
-      40,
-      55 + scrollOffsetY.current + shapeHeight * 5,
-      25,
-      20,
-      'getDigits',
-      '#4a148c'
-    );
-    const playMessage = new Shape(
-      40,
-      55 + scrollOffsetY.current + shapeHeight * 6,
-      35,
-      20,
-      'playMessage',
-      '#827717'
-    );
-    const playConfirm = new Shape(
-      40,
-      55 + scrollOffsetY.current + shapeHeight * 7,
-      35,
-      20,
-      'playConfirm',
-      '#33691e'
-    );
-    const switchShape = new Shape(
-      40,
-      55 + scrollOffsetY.current + shapeHeight * 8,
-      30,
-      20,
-      'switch',
-      '#3e2723'
-    );
+
     const endFlow = new Shape(
       40,
       55 + scrollOffsetY.current + shapeHeight * 9,
@@ -288,13 +290,13 @@ const CanvasComponent = ({isModule = false}) => {
     );
     palletGroup.current = new Shapes('palette', {
       1: setParams,
-      2: runScript,
-      3: callAPI,
-      4: playMenu,
-      5: getDigits,
-      6: playMessage,
-      7: playConfirm,
-      8: switchShape,
+      2: playMessage,
+      3: getDigits,
+      4: playConfirm,
+      5: playMenu,
+      6: runScript,
+      7: switchShape,
+      8: callAPI,
       9: endFlow,
       10: connector,
       11: jumper,
@@ -303,21 +305,26 @@ const CanvasComponent = ({isModule = false}) => {
 
   function clearAndDraw() {
     const canvas = contextRef.current;
-    // clear canvas
+
+    // Clear the canvas
     canvas.clearRect(0, 0, window.innerWidth, window.innerHeight * 2);
 
+    // Draw grid lines on the canvas
+    drawGridLines(contextRef.current, canvasRef.current);
+
+    // Set the line cap, line width, and fill style
     canvas.lineCap = 'round';
     canvas.lineWidth = 1;
     canvas.fillStyle = 'white';
 
-    // draw background palette rectangle
+    // Draw the background palette rectangle with a shadow
     canvas.shadowColor = '#757575';
     canvas.shadowBlur = 4;
     canvas.shadowOffsetX = 0;
     canvas.shadowOffsetY = 2;
-
     canvas.fillRect(5, 55 + scrollOffsetY.current, 70, window.innerHeight - 95);
 
+    // Reset the shadow and set the font style
     canvas.shadowColor = 'transparent';
     canvas.shadowBlur = 0;
     canvas.shadowOffsetX = 0;
@@ -325,17 +332,17 @@ const CanvasComponent = ({isModule = false}) => {
     canvas.fillStyle = '#616161';
     canvas.font = '20px Arial';
 
-    // display page number in top right corner
+    // Display the current page number in the top right corner
     canvas.fillText(
       `P${pageNumber.current}`,
       window.innerWidth * 0.9 - 35,
       80 + scrollOffsetY.current
     );
 
+    // If the user is dragging a shape and it's not a palette shape, draw a delete icon
     if (isDragging.current && !isPalletShape.current) {
       const img = new Image();
       img.src = '/icons/delete.png';
-
       canvas.drawImage(
         img,
         window.innerWidth - 80,
@@ -345,16 +352,18 @@ const CanvasComponent = ({isModule = false}) => {
       );
     }
 
-    // draw palette and stage on canvas
+    // Draw the palette shapes and stage shapes on the canvas
     palletGroup.current.drawAllShapes(canvas);
-    stageGroup.current[pageNumber.current - 1]?.drawAllShapes(canvas);
+    const currentPageGroup = stageGroup.current[pageNumber.current - 1];
+    if (currentPageGroup) {
+      currentPageGroup.drawAllShapes(canvas);
 
-    // calculate connections between shapes and draw them
-    const connectionsArray =
-      stageGroup.current[pageNumber.current - 1].getConnectionsArray();
-    lineGroup.current = new Lines([]);
-    lineGroup.current.setConnections(connectionsArray);
-    lineGroup.current.connectAllPoints(canvas);
+      // Calculate connections between shapes and draw them
+      const connectionsArray = currentPageGroup.getConnectionsArray();
+      const lineGroup = new Lines([]);
+      lineGroup.setConnections(connectionsArray);
+      lineGroup.connectAllPoints(canvas);
+    }
   }
 
   function handleCloseDrawer() {
@@ -1078,10 +1087,11 @@ const CanvasComponent = ({isModule = false}) => {
 
   function generateExportString(entireStageGroup) {
     const uniqueModules = getUniqueModuleNames(entireStageGroup);
+    const moduleNames = uniqueModules.join(',');
 
-    if (uniqueModules.length === 0) {
-      return `module.exports = ${ivrName} ;\n\n`;
-    } else return `module.exports={${ivrName},${uniqueModules.join(',')}}`;
+    return `module.exports = {${ivrName}${
+      moduleNames ? ',' + moduleNames : ''
+    }}`;
   }
 
   function getUniqueModuleNames(entireStageGroup) {

@@ -90,7 +90,7 @@ class Shapes {
         break;
 
       case 'switch':
-        stageFigure = new Shape(x, y, 130, 35, 'switch', '#795548', true);
+        stageFigure = new Shape(x, y, 130, 30, 'switch', '#795548', true);
         stageFigure.setUserValues({
           switchArray: [
             {

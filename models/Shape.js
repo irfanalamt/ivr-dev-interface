@@ -226,8 +226,12 @@ class Shape {
   setWidthFromText(ctx) {
     const width = ctx.measureText(this.text).width;
 
-    if (this.type === 'playMenu' || this.type === 'switch') {
-      this.width = width + 25 > 120 ? width + 30 : 120;
+    if (this.type === 'playMenu') {
+      this.width = width + 30 > 120 ? width + 30 : 120;
+      return;
+    }
+    if (this.type === 'switch') {
+      this.width = width + 40 > 120 ? width + 40 : 120;
       return;
     }
 
@@ -654,11 +658,10 @@ class Shape {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
     this.stroke && this.setWidthFromText(ctx);
-    ctx.moveTo(this.width * 0.5, this.height * 0.1);
-    ctx.lineTo(this.width * 0.5, this.height * 0.5);
+    ctx.moveTo(this.width * 0.5, this.height * 0.5);
     ctx.lineTo(-this.width * 0.5, this.height * 0.5);
-    ctx.lineTo(-this.width * 0.5, this.height * 0.1);
-    ctx.lineTo(0, -this.height * 0.5);
+    ctx.lineTo(-this.width * 0.5 + 0.5 * this.height, -this.height * 0.5);
+    ctx.lineTo(this.width * 0.5 - 0.5 * this.height, -this.height * 0.5);
 
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -674,7 +677,7 @@ class Shape {
       ctx.lineWidth = 2;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(this.text, this.x, this.y + 6);
+      ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = this.style;
       ctx.stroke();
       this.drawExitPointsSwitch(ctx);
