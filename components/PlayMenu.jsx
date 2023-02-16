@@ -42,7 +42,7 @@ const PlayMenu = ({
     userValues.paramSelectedList || []
   );
   const [itemsObj, setItemsObj] = useState(userValues.items || []);
-  const [itemSelected, setItemSelected] = useState(1);
+  const [itemSelected, setItemSelected] = useState('');
   const [errorObj, setErrorObj] = useState({});
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');

@@ -96,8 +96,10 @@ class Shape {
   }
 
   getBottomPointForExit(numExits, exitIndex) {
-    const xCoord = (this.width / (numExits + 1)) * exitIndex;
-    return [this.x - this.width / 2 + xCoord, this.y + this.height / 2];
+    return [
+      this.x + ((numExits - 1) * 0.5 + exitIndex - numExits) * 30,
+      this.y + this.height / 2,
+    ];
   }
 
   setUserValues(userValues) {
@@ -228,15 +230,30 @@ class Shape {
   setWidthFromText(ctx) {
     const width = ctx.measureText(this.text).width;
     let additionalWidth = 20;
+    let minWidth = 90;
 
     if (this.type === 'playMenu') {
+      const numItems = this.userValues.items.filter(
+        (item) => !item.isDefault
+      ).length;
       additionalWidth = 30;
-    } else if (this.type === 'switch' || this.type === 'getDigits') {
+      minWidth = Math.max((numItems + 1) * 30, minWidth);
+    } else if (this.type === 'switch') {
+      const numItems =
+        1 +
+        (this.userValues?.switchArray || []).filter(
+          (object) => object.condition && object.exitPoint
+        ).length;
+      additionalWidth = 30;
+      minWidth = Math.max(numItems * 30, minWidth);
+    } else if (this.type === 'getDigits') {
       additionalWidth = 40;
     }
 
-    this.width = Math.ceil((width + additionalWidth) / 15) * 15;
-    this.width = Math.max(this.width, 120);
+    this.width = Math.max(
+      Math.ceil((width + additionalWidth) / 30) * 30,
+      minWidth
+    );
   }
 
   drawShape(ctx) {
@@ -554,8 +571,9 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = '#009688';
       ctx.stroke();
-      this.drawExitPointsMenu(ctx);
+
       this.drawDotsTopAndBottom(ctx);
+      this.drawExitPointsMenu(ctx);
       return;
     }
 
@@ -710,8 +728,8 @@ class Shape {
       ctx.fillText(this.text, this.x, this.y);
       ctx.strokeStyle = this.style;
       ctx.stroke();
-      this.drawExitPointsSwitch(ctx);
       this.drawDotsTopAndBottom(ctx);
+      this.drawExitPointsSwitch(ctx);
       return;
     }
 
@@ -728,7 +746,7 @@ class Shape {
       ).length;
 
     if (numberOfExitPoints === 1) {
-      this.drawTinyCircle(ctx, ...this.getExitPoint(), '#43a047');
+      this.drawTinyCircle(ctx, ...this.getExitPoint(), '#593f35');
       return;
     }
 
@@ -737,7 +755,7 @@ class Shape {
 
     for (let i = 1; i <= numberOfExitPoints; i++) {
       const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
-      this.drawTinyCircle(ctx, ...bottomPoint, '#43a047');
+      this.drawTinyCircle(ctx, ...bottomPoint, '#593f35');
     }
   }
 
@@ -751,19 +769,19 @@ class Shape {
     if (numberOfExitPoints === 0) return;
 
     if (numberOfExitPoints === 1) {
-      this.drawTinyCircle(ctx, ...this.getExitPoint(), '#fb8c00');
+      this.drawTinyCircle(ctx, ...this.getExitPoint(), '#00635a');
       return;
     }
 
     for (let i = 1; i <= numberOfExitPoints; i++) {
       const bottomPoint = this.getBottomPointForExit(numberOfExitPoints, i);
-      this.drawTinyCircle(ctx, ...bottomPoint, '#fb8c00');
+      this.drawTinyCircle(ctx, ...bottomPoint, '#00635a');
     }
   }
 
   drawModule(ctx) {
     this.setWidthFromText(ctx);
-    ctx.fillStyle = this.style;
+    ctx.fillStyle = '#f5cbab';
     ctx.fillRect(
       this.x - this.width / 2,
       this.y - this.height / 2,
@@ -771,6 +789,8 @@ class Shape {
       this.height
     );
     ctx.strokeStyle = '#eda167';
+    this.style = '#eda167';
+    this.drawDotsTopAndBottom(ctx);
     ctx.strokeRect(
       this.x - this.width / 2,
       this.y - this.height / 2,

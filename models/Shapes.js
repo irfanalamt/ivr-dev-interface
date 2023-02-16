@@ -17,7 +17,7 @@ class Shapes {
   }
 
   addModule(x, y, count, pageNumber, name, data) {
-    const stageFigure = new Shape(x, y, 50, 50, 'module', '#f5cbab', true);
+    const stageFigure = new Shape(x, y, 50, 45, 'module', '#f5cbab', true);
     stageFigure.text = name;
     stageFigure.setUserValues(data);
 
@@ -41,7 +41,7 @@ class Shapes {
         break;
 
       case 'callAPI':
-        stageFigure = new Shape(x, y, 120, 30, 'callAPI', null, true);
+        stageFigure = new Shape(x, y, 90, 30, 'callAPI', null, true);
         stageFigure.setUserValues({
           endpoint: '',
           inputArr: [{value: ''}],
@@ -199,7 +199,7 @@ class Shapes {
       const closestMultipleY = Math.round(yCordinate / 15) * 15;
       const dy = closestMultipleY - yCordinate;
 
-      if (Math.abs(dy) <= 5) {
+      if (Math.abs(dy) <= 10) {
         shape.y += dy;
       }
     }
