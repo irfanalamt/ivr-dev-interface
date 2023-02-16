@@ -616,6 +616,7 @@ const CanvasComponent = ({isModule = false}) => {
         pageNumber.current,
         isModule
       );
+      alignShapes();
       clearAndDraw();
       return;
     }
