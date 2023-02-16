@@ -5,17 +5,26 @@ import {
   ListItem,
   MenuItem,
   Select,
+  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
 import {useEffect, useState} from 'react';
+import {checkValidity} from '../src/helpers';
 import DrawerTop from './DrawerTop';
 
-const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
+const ModuleBlock = ({
+  shape,
+  handleCloseDrawer,
+  userVariables,
+  stageGroup,
+  clearAndDraw,
+}) => {
   const [allVars, setAllVars] = useState(shape.userValues.allVars || null);
 
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
+  const [shapeName, setShapeName] = useState(shape.text);
 
   useEffect(() => {
     if (!allVars) fillAllVariables();
@@ -39,11 +48,31 @@ const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
 
     setErrorText('');
 
+    shape.setText(shapeName);
+    clearAndDraw();
+
     const codeString = generateJS();
     shape.setFunctionString(codeString);
 
     shape.setUserValues({...shape.userValues, allVars});
     setSuccessText('Save successful');
+  }
+
+  function handleNameValidation(value) {
+    const otherShapes = stageGroup
+      ?.getShapesAsArray()
+      .filter((el) => el.id !== shape.id);
+    if (otherShapes.some((el) => el.text === value)) {
+      setErrorText('Name already in use');
+      return 'Name already in use';
+    }
+    const error = checkValidity('object', value);
+    if (error === -1) {
+      setErrorText('');
+      return false;
+    }
+    setErrorText(error);
+    return error;
   }
 
   function generateJS() {
@@ -110,11 +139,22 @@ const ModuleBlock = ({shape, handleCloseDrawer, userVariables}) => {
         variant='subtitle1'>
         {successText}
       </Typography>
+
       <ListItem sx={{my: 2}}>
-        <Typography sx={{mr: 1, fontSize: '1rem'}} variant='h6'>
-          Name:
+        <Typography
+          sx={{fontWeight: 'bold', fontSize: '1.1rem'}}
+          variant='body1'>
+          Name
         </Typography>
-        <Typography>{shape.text}</Typography>
+        <TextField
+          sx={{ml: 2, width: 180}}
+          size='small'
+          value={shapeName}
+          onChange={(e) => {
+            handleNameValidation(e.target.value);
+            setShapeName(e.target.value);
+          }}
+        />
       </ListItem>
       <Divider sx={{mb: 2}} />
 

@@ -193,91 +193,114 @@ const CanvasComponent = ({isModule = false}) => {
   }
 
   function initializePallette() {
-    const NUMBER_OF_SHAPES = 12;
-    const scrollOffsetY = 0;
     const paletteHeight = window.innerHeight - 95;
+
+    // Calculate the vertical space that each shape should occupy
+    const NUMBER_OF_SHAPES = 12;
     const shapeHeight = paletteHeight / NUMBER_OF_SHAPES;
 
-    const shapesData = [
-      {
-        x: 40,
-        y: 55,
-        width: 36,
-        height: 18,
-        label: 'setParams',
-        color: '#880e4f',
-      },
-      {
-        x: 40,
-        y: 55,
-        width: 40,
-        height: 18,
-        label: 'playMessage',
-        color: '#827717',
-      },
-      {
-        x: 40,
-        y: 55,
-        width: 32,
-        height: 16,
-        label: 'getDigits',
-        color: '#4a148c',
-      },
-      {
-        x: 40,
-        y: 55,
-        width: 40,
-        height: 18,
-        label: 'playConfirm',
-        color: '#33691e',
-      },
-      {
-        x: 40,
-        y: 55,
-        width: 40,
-        height: 18,
-        label: 'playMenu',
-        color: '#004d40',
-      },
-      {
-        x: 40,
-        y: 55,
-        width: 36,
-        height: 18,
-        label: 'runScript',
-        color: '#bf360c',
-      },
-      {x: 40, y: 55, width: 36, height: 16, label: 'switch', color: '#3e2723'},
-      {x: 40, y: 55, width: 38, height: 20, label: 'callAPI', color: '#0d47a1'},
-      {x: 40, y: 55, width: 25, height: 25, label: 'endFlow', color: '#f8bbd0'},
-      {
-        x: 40,
-        y: 55,
-        width: 25,
-        height: 25,
-        label: 'connector',
-        color: '#b2dfdb',
-      },
-      {x: 40, y: 55, width: 25, height: 25, label: 'jumper', color: '#ffe0b2'},
-    ];
+    const setParams = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 1,
+      36,
+      18,
+      'setParams',
+      '#880e4f'
+    );
+    const playMessage = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 2,
+      40,
+      18,
+      'playMessage',
+      '#827717'
+    );
+    const getDigits = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 3,
+      32,
+      16,
+      'getDigits',
+      '#4a148c'
+    );
+    const playConfirm = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 4,
+      40,
+      18,
+      'playConfirm',
+      '#33691e'
+    );
+    const playMenu = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 5,
+      40,
+      18,
+      'playMenu',
+      '#004d40'
+    );
+    const runScript = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 6,
+      36,
+      18,
+      'runScript',
+      '#bf360c'
+    );
+    const switchShape = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 7,
+      36,
+      16,
+      'switch',
+      '#3e2723'
+    );
+    const callAPI = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 8,
+      38,
+      20,
+      'callAPI',
+      '#0d47a1'
+    );
 
-    const shapes = shapesData.map((shape, index) => {
-      return new Shape(
-        shape.x,
-        shape.y + scrollOffsetY + shapeHeight * (index + 1),
-        shape.width,
-        shape.height,
-        shape.label,
-        shape.color
-      );
+    const endFlow = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 9,
+      25,
+      25,
+      'endFlow',
+      '#f8bbd0'
+    );
+    const connector = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 10,
+      25,
+      25,
+      'connector',
+      '#b2dfdb'
+    );
+    const jumper = new Shape(
+      40,
+      55 + scrollOffsetY.current + shapeHeight * 11,
+      25,
+      25,
+      'jumper',
+      '#ffe0b2'
+    );
+    palletGroup.current = new Shapes('palette', {
+      1: setParams,
+      2: playMessage,
+      3: getDigits,
+      4: playConfirm,
+      5: playMenu,
+      6: runScript,
+      7: switchShape,
+      8: callAPI,
+      9: endFlow,
+      10: connector,
+      11: jumper,
     });
-
-    const shapesObject = shapes.reduce((acc, shape, index) => {
-      acc[index + 1] = shape;
-      return acc;
-    }, {});
-
-    palletGroup.current = new Shapes('palette', shapesObject);
   }
 
   function clearAndDraw() {
@@ -1282,7 +1305,7 @@ const CanvasComponent = ({isModule = false}) => {
           handleCloseDrawer={handleCloseDrawer}
           shape={currentShape.current}
           userVariables={userVariables.current}
-          stageGroup={stageGroup.current[pageNumber.current - 1]}
+          stageGroup={getEntireStageGroup()}
           entireStageGroup={stageGroup.current}
           clearAndDraw={clearAndDraw}
         />

@@ -1,6 +1,6 @@
-import { ListItem, TextField, Typography } from '@mui/material';
-import { useState } from 'react';
-import { checkValidity } from '../src/helpers';
+import {ListItem, TextField, Typography} from '@mui/material';
+import {useState} from 'react';
+import {checkValidity} from '../src/helpers';
 
 const DrawerName = ({
   shapeName,
@@ -12,7 +12,7 @@ const DrawerName = ({
   drawerNameRef = null,
   shapeId = null,
 }) => {
-  const handleNameValidation = (value) => {
+  function handleNameValidation(value) {
     const otherShapes = stageGroup
       ?.getShapesAsArray()
       .filter((el) => el.id !== shapeId);
@@ -30,7 +30,7 @@ const DrawerName = ({
 
     setErrorText(error);
     return error;
-  };
+  }
 
   if (drawerNameRef) {
     drawerNameRef.current.handleNameValidation = handleNameValidation;
@@ -51,8 +51,7 @@ const DrawerName = ({
           mx: 'auto',
           fontSize: '0.75rem',
         }}
-        variant='subtitle1'
-      >
+        variant='subtitle1'>
         {errorText}
       </Typography>
       <Typography
@@ -68,19 +67,17 @@ const DrawerName = ({
           mx: 'auto',
           fontSize: '0.75rem',
         }}
-        variant='subtitle1'
-      >
+        variant='subtitle1'>
         {successText}
       </Typography>
-      <ListItem sx={{ my: 4 }}>
+      <ListItem sx={{my: 4}}>
         <Typography
-          sx={{ fontWeight: 'bold', fontSize: '1.1rem' }}
-          variant='body1'
-        >
+          sx={{fontWeight: 'bold', fontSize: '1.1rem'}}
+          variant='body1'>
           Name
         </Typography>
         <TextField
-          sx={{ ml: 2, width: 180 }}
+          sx={{ml: 2, width: 180}}
           size='small'
           value={shapeName}
           onChange={(e) => {

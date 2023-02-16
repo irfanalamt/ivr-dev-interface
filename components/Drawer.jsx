@@ -1,4 +1,4 @@
-import {Button, Typography} from '@mui/material';
+import {Typography} from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 
 import CallApi from './CallApi';
@@ -159,6 +159,8 @@ const DrawerComponent = ({
               shape,
               handleCloseDrawer,
               userVariables,
+              stageGroup,
+              clearAndDraw,
             }}
           />
         );
