@@ -235,7 +235,7 @@ class Shape {
       additionalWidth = 40;
     }
 
-    this.width = Math.ceil((width + additionalWidth) / 20) * 20;
+    this.width = Math.ceil((width + additionalWidth) / 15) * 15;
     this.width = Math.max(this.width, 120);
   }
 

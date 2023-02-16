@@ -41,7 +41,7 @@ class Shapes {
         break;
 
       case 'callAPI':
-        stageFigure = new Shape(x, y, 100, 30, 'callAPI', null, true);
+        stageFigure = new Shape(x, y, 120, 30, 'callAPI', null, true);
         stageFigure.setUserValues({
           endpoint: '',
           inputArr: [{value: ''}],
@@ -50,7 +50,7 @@ class Shapes {
         break;
 
       case 'playMenu':
-        stageFigure = new Shape(x, y, 140, 30, 'playMenu', '#009688', true);
+        stageFigure = new Shape(x, y, 150, 30, 'playMenu', '#009688', true);
         stageFigure.setUserValues({
           params: {},
           paramSelectedList: [],
@@ -68,7 +68,7 @@ class Shapes {
         break;
 
       case 'playMessage':
-        stageFigure = new Shape(x, y, 140, 30, 'playMessage', '#c0ca33', true);
+        stageFigure = new Shape(x, y, 150, 30, 'playMessage', '#c0ca33', true);
         stageFigure.setUserValues({
           params: {interruptible: true, repeatOption: 'X'},
           messageList: [],
@@ -76,7 +76,7 @@ class Shapes {
         break;
 
       case 'playConfirm':
-        stageFigure = new Shape(x, y, 140, 30, 'playConfirm', '#7cb342', true);
+        stageFigure = new Shape(x, y, 150, 30, 'playConfirm', '#7cb342', true);
         stageFigure.setUserValues({
           params: {
             confirmOption: '',
@@ -89,7 +89,7 @@ class Shapes {
         break;
 
       case 'switch':
-        stageFigure = new Shape(x, y, 140, 30, 'switch', '#795548', true);
+        stageFigure = new Shape(x, y, 150, 30, 'switch', '#795548', true);
         stageFigure.setUserValues({
           switchArray: [
             {
@@ -179,6 +179,30 @@ class Shapes {
     );
 
     return firstShape ? firstShape.id : null;
+  }
+
+  alignAllShapes() {
+    const shapes = this.getShapesAsArray();
+    const paletteOffset = 75;
+
+    for (const shape of shapes) {
+      const xCordinate = shape.x;
+      const multipleNumber = xCordinate - paletteOffset;
+      const closestMultipleX = Math.round(multipleNumber / 15) * 15;
+      const dx = closestMultipleX - multipleNumber;
+
+      if (Math.abs(dx) <= 10) {
+        shape.x += dx;
+      }
+
+      const yCordinate = shape.y;
+      const closestMultipleY = Math.round(yCordinate / 15) * 15;
+      const dy = closestMultipleY - yCordinate;
+
+      if (Math.abs(dy) <= 5) {
+        shape.y += dy;
+      }
+    }
   }
 
   traverseShapes(id, isModule = false) {

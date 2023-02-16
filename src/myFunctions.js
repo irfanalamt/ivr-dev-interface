@@ -22,7 +22,7 @@ function replaceVarNameDollar(str) {
 function drawGridLines(ctx, canvas) {
   const canvasHeight = canvas.height;
   const canvasWidth = canvas.width;
-  const gridSpacing = 40;
+  const gridSpacing = 30;
   const xPaletteOffset = 75;
   const thinGridOffset = gridSpacing / 2;
   const thickGrid = {

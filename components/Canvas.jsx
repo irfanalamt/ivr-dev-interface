@@ -620,6 +620,8 @@ const CanvasComponent = ({isModule = false}) => {
       return;
     }
 
+    alignShapes();
+
     // Handle deleting shapes
     if (currentShape.current && !isPalletShape.current) {
       if (
@@ -691,6 +693,10 @@ const CanvasComponent = ({isModule = false}) => {
           }
         });
     }
+  }
+
+  function alignShapes() {
+    stageGroup.current[pageNumber.current - 1].alignAllShapes();
   }
 
   function handleRightClick(e) {
