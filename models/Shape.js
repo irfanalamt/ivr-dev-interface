@@ -231,7 +231,7 @@ class Shape {
 
     if (this.type === 'playMenu') {
       additionalWidth = 30;
-    } else if (this.type === 'switch') {
+    } else if (this.type === 'switch' || this.type === 'getDigits') {
       additionalWidth = 40;
     }
 
