@@ -124,6 +124,9 @@ class Shapes {
     ) {
       // if this is the first setParams; set it to be the start
       stageFigure.text = 'start';
+      stageFigure.setFunctionString(
+        "this.start= async function(){\n      let newParams = {};\n      await IVR.setCallParams('start',newParams);\n    };"
+      );
     } else {
       //append shapeCount to shape text
       stageFigure.text += count;
