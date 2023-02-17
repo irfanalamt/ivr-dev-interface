@@ -185,26 +185,27 @@ class Shapes {
     const shapes = this.getShapesAsArray();
     const paletteOffset = 75;
     const yAppbarOffset = 50;
+    const snapValue = 15;
+    const tolerance = 10;
 
     for (const shape of shapes) {
-      const xCordinate = shape.x;
-      const multipleNumberX = xCordinate - paletteOffset;
-      const closestMultipleX = Math.round(multipleNumberX / 15) * 15;
-      const dx = closestMultipleX - multipleNumberX;
+      let dx = this.calculateDelta(shape.x, paletteOffset, snapValue);
+      let dy = this.calculateDelta(shape.y, yAppbarOffset, snapValue);
 
-      if (Math.abs(dx) <= 10) {
+      if (Math.abs(dx) <= tolerance) {
         shape.x += dx;
       }
 
-      const yCordinate = shape.y;
-      const multipleNumberY = yCordinate - yAppbarOffset;
-      const closestMultipleY = Math.round(multipleNumberY / 15) * 15;
-      const dy = closestMultipleY - multipleNumberY;
-
-      if (Math.abs(dy) <= 10) {
+      if (Math.abs(dy) <= tolerance) {
         shape.y += dy;
       }
     }
+  }
+
+  calculateDelta(coordinate, offset, snapValue) {
+    const multipleNumber = coordinate - offset;
+    const closestMultiple = Math.round(multipleNumber / snapValue) * snapValue;
+    return closestMultiple - multipleNumber;
   }
 
   traverseShapes(id, isModule = false) {

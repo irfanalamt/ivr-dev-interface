@@ -229,7 +229,7 @@ class Shape {
 
   setWidthFromText(ctx) {
     const width = ctx.measureText(this.text).width;
-    let additionalWidth = 20;
+    let additionalWidth = 30;
     let minWidth = 90;
 
     if (this.type === 'playMenu') {
@@ -246,8 +246,6 @@ class Shape {
         ).length;
       additionalWidth = 30;
       minWidth = Math.max(numItems * 30, minWidth);
-    } else if (this.type === 'getDigits') {
-      additionalWidth = 40;
     }
 
     this.width = Math.max(
