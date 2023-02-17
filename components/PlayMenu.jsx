@@ -163,6 +163,27 @@ const PlayMenu = ({
     });
   }
 
+  function handleMenuNameValidation(name) {
+    if (!name) {
+      setErrorText('');
+      return;
+    }
+
+    if (!doesMenuNameExist(name)) {
+      setErrorText('Menu name not valid');
+      return;
+    }
+
+    setErrorText('');
+  }
+  function doesMenuNameExist(name) {
+    const playMenus = stageGroup
+      .getShapesAsArray()
+      .filter((el) => el.type === 'playMenu');
+
+    return playMenus.some((menu) => menu.text === name);
+  }
+
   function handleValidation(e, name, type) {
     let errorMessage = checkValidity(type, e.target.value);
 
@@ -727,6 +748,26 @@ const PlayMenu = ({
               value={menuObj.desc || ''}
               onChange={(e) => {
                 handleMenuObjChange(e.target.value, 'desc');
+              }}
+              size='small'
+              sx={{mx: 0.5}}
+            />
+          </ListItem>
+          <ListItem sx={{my: 0.5}}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                fontSize: 16,
+                width: '35%',
+                fontWeight: 405,
+              }}>
+              previousMenuId:
+            </Typography>
+            <TextField
+              value={menuObj.previousMenuId || ''}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.value, 'previousMenuId');
+                handleMenuNameValidation(e.target.value);
               }}
               size='small'
               sx={{mx: 0.5}}
