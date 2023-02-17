@@ -24,6 +24,7 @@ function drawGridLines(ctx, canvas) {
   const canvasWidth = canvas.width;
   const gridSpacing = 30;
   const xPaletteOffset = 75;
+  const yAppbarOffset = 50;
   const thinGridOffset = gridSpacing / 2;
   const thickGrid = {
     color: '#E6E6E6',
@@ -43,30 +44,38 @@ function drawGridLines(ctx, canvas) {
     ctx.stroke();
   }
 
+  //horizontals
   for (let i = 0; i <= canvasHeight; i += gridSpacing) {
-    drawLine(xPaletteOffset, i, canvasWidth, i, thickGrid);
     drawLine(
       xPaletteOffset,
-      i + thinGridOffset,
+      i + yAppbarOffset,
       canvasWidth,
-      i + thinGridOffset,
+      i + yAppbarOffset,
+      thickGrid
+    );
+    drawLine(
+      xPaletteOffset,
+      i + thinGridOffset + yAppbarOffset,
+      canvasWidth,
+      i + thinGridOffset + yAppbarOffset,
       thinGrid
     );
   }
 
+  //verticals
   for (let j = 0; j <= canvasWidth; j += gridSpacing) {
     drawLine(
       j + xPaletteOffset,
-      0,
+      0 + yAppbarOffset,
       j + xPaletteOffset,
-      canvasHeight,
+      canvasHeight + yAppbarOffset,
       thickGrid
     );
     drawLine(
       j + xPaletteOffset + thinGridOffset,
-      0,
+      0 + yAppbarOffset,
       j + xPaletteOffset + thinGridOffset,
-      canvasHeight,
+      canvasHeight + yAppbarOffset,
       thinGrid
     );
   }

@@ -184,20 +184,22 @@ class Shapes {
   alignAllShapes() {
     const shapes = this.getShapesAsArray();
     const paletteOffset = 75;
+    const yAppbarOffset = 50;
 
     for (const shape of shapes) {
       const xCordinate = shape.x;
-      const multipleNumber = xCordinate - paletteOffset;
-      const closestMultipleX = Math.round(multipleNumber / 15) * 15;
-      const dx = closestMultipleX - multipleNumber;
+      const multipleNumberX = xCordinate - paletteOffset;
+      const closestMultipleX = Math.round(multipleNumberX / 15) * 15;
+      const dx = closestMultipleX - multipleNumberX;
 
       if (Math.abs(dx) <= 10) {
         shape.x += dx;
       }
 
       const yCordinate = shape.y;
-      const closestMultipleY = Math.round(yCordinate / 15) * 15;
-      const dy = closestMultipleY - yCordinate;
+      const multipleNumberY = yCordinate - yAppbarOffset;
+      const closestMultipleY = Math.round(multipleNumberY / 15) * 15;
+      const dy = closestMultipleY - multipleNumberY;
 
       if (Math.abs(dy) <= 10) {
         shape.y += dy;
