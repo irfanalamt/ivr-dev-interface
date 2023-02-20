@@ -171,7 +171,11 @@ class Shape {
     );
 
     if (smallest.index + 1 == numExitPoints) {
-      return this.userValues.default.exitPoint;
+      return {
+        position: smallest.index,
+        totalPoints: numExitPoints,
+        exitPoint: this.userValues.default.exitPoint,
+      };
     }
 
     return {
@@ -437,7 +441,7 @@ class Shape {
     if (this.stroke) {
       this.setWidthFromText(ctx);
       if (this.selected) {
-        ctx.fillStyle = '#eceff1';
+        ctx.fillStyle = '#d4d7d8';
         ctx.fillRect(
           this.x - this.width / 2,
           this.y - this.height / 2,

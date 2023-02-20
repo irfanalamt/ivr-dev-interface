@@ -473,6 +473,23 @@ class Shapes {
     return moduleStartCode + moduleFinishCode;
   }
 
+  getSelectedShapesInRectangle(startX, startY, endX, endY) {
+    const shapes = this.getShapesAsArray();
+
+    const x1 = Math.min(startX, endX);
+    const x2 = Math.max(startX, endX);
+
+    const y1 = Math.min(startY, endY);
+    const y2 = Math.max(startY, endY);
+
+    const selectedShapes = shapes.filter(
+      (shape) =>
+        shape.x >= x1 && shape.x <= x2 && shape.y >= y1 && shape.y <= y2
+    );
+
+    return selectedShapes;
+  }
+
   getShapesTillMenuSwitchOrModule(id) {
     const tempArray = [];
     const visitedShapes = new Set();
@@ -511,24 +528,24 @@ class Shapes {
   getConnectionsArray() {
     // traverse through all shapes, return an array of connections to draw arrows
 
-    const tempArray = [];
+    const connections = [];
     this.getShapesAsArray().forEach((el) => {
       if (el.nextItem !== null) {
         let shape2 = this.shapes[el.nextItem];
         if (shape2) {
-          tempArray.push(this.getConnection(el, shape2));
+          connections.push(this.getConnection(el, shape2));
         }
       }
 
       if (el.type === 'switch') {
-        this.getSwitchConnections(tempArray, el);
+        this.getSwitchConnections(connections, el);
       }
 
       if (el.type === 'playMenu') {
-        this.getMenuConnections(tempArray, el);
+        this.getMenuConnections(connections, el);
       }
     });
-    return tempArray;
+    return connections;
   }
 
   getConnection(shape1, shape2) {

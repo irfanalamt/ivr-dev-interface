@@ -87,6 +87,11 @@ const CanvasComponent = ({isModule = false}) => {
   const promptDescriptionObj = useRef(null);
   const isSuccessToast = useRef(false);
 
+  const multiSelectStartPoint = useRef(null);
+  const multiSelectEndPoint = useRef(null);
+  const selectedShapes = useRef(null);
+  const multiSelectDragStartPoint = useRef(null);
+
   let startX, startY;
   let startX1, startY1;
   let clickedInShape = false;
@@ -356,6 +361,24 @@ const CanvasComponent = ({isModule = false}) => {
     palletGroup.current.drawAllShapes(canvas);
     stageGroup.current[pageNumber.current - 1]?.drawAllShapes(canvas);
 
+    if (multiSelectStartPoint.current && multiSelectEndPoint.current) {
+      const x = multiSelectStartPoint.current.x;
+
+      const y = multiSelectStartPoint.current.y;
+
+      const width =
+        multiSelectEndPoint.current.x - multiSelectStartPoint.current.x;
+      const height =
+        multiSelectEndPoint.current.y - multiSelectStartPoint.current.y;
+      //border
+      canvas.strokeStyle = 'black';
+      canvas.lineWidth = 0.2;
+      canvas.strokeRect(x, y, width, height);
+
+      canvas.fillStyle = 'rgba(0, 114, 198, 0.08)';
+      canvas.fillRect(x, y, width, height);
+    }
+
     // calculate connections between shapes and draw them
     const connectionsArray =
       stageGroup.current[pageNumber.current - 1].getConnectionsArray();
@@ -376,7 +399,6 @@ const CanvasComponent = ({isModule = false}) => {
       if (element.isMouseInShape(realX, realY)) {
         setIsConnecting(0);
         setShowInfoMessage(false);
-
         currentShape.current = element;
         isDragging.current = true;
         isPalletShape.current = true;
@@ -493,7 +515,48 @@ const CanvasComponent = ({isModule = false}) => {
     // check if mouse in stage shape
     checkMouseInStageShape(realX, realY);
 
-    if (!clickedInShape) setIsConnecting(0);
+    if (!clickedInShape && realX > 80) {
+      setIsConnecting(0);
+      mouseDownMultiSelect(realX, realY);
+    }
+  }
+
+  function mouseDownMultiSelect(realX, realY) {
+    if (selectedShapes.current && multiSelectStartPoint.current) {
+      const [smallX, smallY, bigX, bigY] = [
+        Math.min(
+          multiSelectStartPoint.current.x,
+          multiSelectEndPoint.current.x
+        ),
+        Math.min(
+          multiSelectStartPoint.current.y,
+          multiSelectEndPoint.current.y
+        ),
+        Math.max(
+          multiSelectStartPoint.current.x,
+          multiSelectEndPoint.current.x
+        ),
+        Math.max(
+          multiSelectStartPoint.current.y,
+          multiSelectEndPoint.current.y
+        ),
+      ];
+
+      if (
+        realX >= smallX &&
+        realX <= bigX &&
+        realY >= smallY &&
+        realY <= bigY
+      ) {
+        multiSelectDragStartPoint.current = {x: realX, y: realY};
+      } else {
+        resetMultiSelect();
+      }
+    }
+
+    if (!multiSelectEndPoint.current) {
+      multiSelectStartPoint.current = {x: realX, y: realY};
+    }
   }
 
   function handleMouseMove(e) {
@@ -501,28 +564,48 @@ const CanvasComponent = ({isModule = false}) => {
     const {clientX, clientY} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
 
-    if (isDragging.current) {
-      if (isConnecting === 0 && currentShape.current) {
-        // drag shape - mousemove
-        const dx = realX - startX;
-        const dy = realY - startY;
-        const current_shape = currentShape.current;
+    const isDraggingShape =
+      isDragging.current && isConnecting === 0 && currentShape.current;
 
-        current_shape.x += dx || 0;
-        current_shape.y += dy || 0;
+    const isMultiSelectDragging =
+      multiSelectDragStartPoint.current && selectedShapes.current?.length;
 
-        clearAndDraw();
-        startX = realX;
-        startY = realY;
-      }
-      resetTooltips();
-      return;
+    if (isDraggingShape) {
+      // Drag a single shape
+      const dx = realX - startX;
+      const dy = realY - startY;
+      const currentShapeRef = currentShape.current;
+
+      currentShapeRef.x += dx || 0;
+      currentShapeRef.y += dy || 0;
+
+      clearAndDraw();
+      startX = realX;
+      startY = realY;
+    } else if (isMultiSelectDragging) {
+      // Drag multiple shapes
+      const dx = realX - multiSelectDragStartPoint.current.x;
+      const dy = realY - multiSelectDragStartPoint.current.y;
+
+      selectedShapes.current?.forEach((shape) => {
+        shape.x += dx || 0;
+        shape.y += dy || 0;
+      });
+
+      multiSelectStartPoint.current.x += dx || 0;
+      multiSelectStartPoint.current.y += dy || 0;
+      multiSelectEndPoint.current.x += dx || 0;
+      multiSelectEndPoint.current.y += dy || 0;
+
+      clearAndDraw();
+      multiSelectDragStartPoint.current.x = realX;
+      multiSelectDragStartPoint.current.y = realY;
     }
 
     resetTooltips();
 
     // place tooltip on mouse pallet shape
-    palletGroup.current.getShapesAsArray().forEach((shape) => {
+    for (const shape of palletGroup.current.getShapesAsArray()) {
       if (shape.isMouseInShape(realX, realY)) {
         tooltipRef.current.style.display = 'block';
         tooltipRef.current.style.top = realY - 5 + 'px';
@@ -530,46 +613,48 @@ const CanvasComponent = ({isModule = false}) => {
         tooltipRef.current.textContent = shape.text;
         return;
       }
-    });
+    }
 
-    // check mouse on stage shapes
-    stageGroup.current[pageNumber.current - 1]
-      .getShapesAsArray()
-      .forEach((shape) => {
-        if (shape.isMouseInShape(realX, realY)) {
-          if (shape.type === 'switch') {
-            const currentPoint = shape.isNearExitPointSwitch(realX, realY);
-            if (currentPoint) {
-              stageTooltipRef.current.style.display = 'block';
-              stageTooltipRef.current.style.top = realY + 10 + 'px';
-              stageTooltipRef.current.style.left = realX + 10 + 'px';
-              stageTooltipRef.current.textContent = currentPoint.exitPoint;
-            }
+    // // check mouse on stage shapes
+
+    const stageShapes =
+      stageGroup.current[pageNumber.current - 1].getShapesAsArray();
+    for (const shape of stageShapes) {
+      if (shape.isMouseInShape(realX, realY)) {
+        if (shape.type === 'switch') {
+          const currentPoint = shape.isNearExitPointSwitch(realX, realY);
+
+          if (currentPoint) {
+            stageTooltipRef.current.style.display = 'block';
+            stageTooltipRef.current.style.top = realY + 10 + 'px';
+            stageTooltipRef.current.style.left = realX + 10 + 'px';
+            stageTooltipRef.current.textContent = currentPoint.exitPoint;
           }
-          if (shape.type === 'playMenu') {
-            const currentPoint = shape.isNearExitPointMenu(realX, realY);
-            if (currentPoint) {
-              stageTooltipRef.current.style.display = 'block';
-              stageTooltipRef.current.style.top = realY + 10 + 'px';
-              stageTooltipRef.current.style.left = realX + 30 + 'px';
-              stageTooltipRef.current.textContent = currentPoint.exitPoint;
-            }
-          }
-          if (shape.type === 'jumper') {
-            const jumperType = shape.userValues.type;
-            const textContent =
-              jumperType === 'exit'
-                ? `${shape.text}: EXIT`
-                : `${shape.userValues.exitPoint}: ENTRY`;
+        }
+        if (shape.type === 'playMenu') {
+          const currentPoint = shape.isNearExitPointMenu(realX, realY);
+          if (currentPoint) {
             stageTooltipRef.current.style.display = 'block';
             stageTooltipRef.current.style.top = realY + 10 + 'px';
             stageTooltipRef.current.style.left = realX + 30 + 'px';
-            stageTooltipRef.current.textContent = textContent;
+            stageTooltipRef.current.textContent = currentPoint.exitPoint;
           }
-
-          return;
         }
-      });
+        if (shape.type === 'jumper') {
+          const jumperType = shape.userValues.type;
+          const textContent =
+            jumperType === 'exit'
+              ? `${shape.text}: EXIT`
+              : `${shape.userValues.exitPoint}: ENTRY`;
+          stageTooltipRef.current.style.display = 'block';
+          stageTooltipRef.current.style.top = realY + 10 + 'px';
+          stageTooltipRef.current.style.left = realX + 30 + 'px';
+          stageTooltipRef.current.textContent = textContent;
+        }
+
+        return;
+      }
+    }
 
     // place and display line tooltip
     lineGroup.current.getLines().forEach((line) => {
@@ -591,6 +676,38 @@ const CanvasComponent = ({isModule = false}) => {
     const {realX, realY} = getRealCoordinates(clientX, clientY);
 
     if (button !== 0) return;
+
+    multiSelectDragStartPoint.current = null;
+    const isMultiSelecting =
+      multiSelectStartPoint.current && !multiSelectEndPoint.current;
+
+    if (isMultiSelecting && !multiSelectDragStartPoint.current) {
+      const diffX = multiSelectStartPoint.current.x - realX;
+
+      const diffY = multiSelectStartPoint.current.y - realY;
+
+      if (Math.abs(diffX) > 30 && Math.abs(diffY) > 30) {
+        multiSelectEndPoint.current = {x: realX, y: realY};
+
+        const shapes = stageGroup.current[
+          pageNumber.current - 1
+        ]?.getSelectedShapesInRectangle(
+          multiSelectStartPoint.current.x,
+          multiSelectStartPoint.current.y,
+          multiSelectEndPoint.current.x,
+          multiSelectEndPoint.current.y
+        );
+
+        if (shapes) {
+          selectedShapes.current = shapes;
+          selectedShapes.current.forEach((shape) => {
+            shape.setSelected(true);
+          });
+        }
+      } else {
+        resetMultiSelect();
+      }
+    }
 
     // Handle pallet shape
     if (isPalletShape.current) {
@@ -694,6 +811,21 @@ const CanvasComponent = ({isModule = false}) => {
           }
         });
     }
+  }
+
+  function resetMultiSelect() {
+    multiSelectStartPoint.current = null;
+    multiSelectEndPoint.current = null;
+
+    if (selectedShapes.current) {
+      selectedShapes.current.forEach((shape) => {
+        shape.setSelected(false);
+      });
+    }
+
+    selectedShapes.current = null;
+    multiSelectDragStartPoint.current = null;
+    clearAndDraw();
   }
 
   function alignShapes() {
