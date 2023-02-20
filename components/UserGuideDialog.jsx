@@ -6,7 +6,7 @@ import {
   Stack,
   List,
   ListItem,
-  Box
+  Box,
 } from '@mui/material';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 
@@ -14,8 +14,17 @@ const UserGuideDialog = ({open, handleClose}) => {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>
-        <Typography sx={{display: 'flex', alignItems: 'center'}} variant='h6'>
-          <HelpCenterIcon />
+        <Typography
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            boxShadow: 1,
+            width: 'max-content',
+            px: 1,
+            borderRadius: 1,
+          }}
+          variant='h6'>
+          <HelpCenterIcon sx={{mr: 0.5}} />
           User Guide
         </Typography>
       </DialogTitle>
@@ -27,8 +36,7 @@ const UserGuideDialog = ({open, handleClose}) => {
             </Typography>
             <List>
               <ListItem disablePadding>
-                • Drag and drop elements from the toolbar to the desired
-                location on the workspace.
+                • Choose an element from the toolbar.
               </ListItem>
               <ListItem disablePadding>
                 • Left click on the added element to open its settings panel.
@@ -45,8 +53,10 @@ const UserGuideDialog = ({open, handleClose}) => {
                 mode.
               </ListItem>
               <ListItem disablePadding>
-                • Left-click and hold down the mouse on the first element, then
-                release it on the second element to connect them.
+                • Left-click and hold down the mouse on the first element.
+              </ListItem>
+              <ListItem disablePadding>
+                • Release the mouse on the second element to connect them.
               </ListItem>
               <ListItem disablePadding>
                 • Left-click anywhere on the workspace to switch back to drawing
@@ -62,6 +72,23 @@ const UserGuideDialog = ({open, handleClose}) => {
               <ListItem disablePadding>
                 • Drag the element you wish to delete to the bottom right delete
                 icon.
+              </ListItem>
+            </List>
+          </Box>
+          <Box>
+            <Typography fontSize='medium' variant='subtitle2'>
+              Moving Elements:
+            </Typography>
+            <List>
+              <ListItem disablePadding>
+                • Left-click anywhere on the workspace and start dragging to
+                create a multi-selection rectangle.
+              </ListItem>
+              <ListItem disablePadding>
+                • Selected elements can be moved together.
+              </ListItem>
+              <ListItem disablePadding>
+                • Left-click and drag elements to move them one by one.
               </ListItem>
             </List>
           </Box>
