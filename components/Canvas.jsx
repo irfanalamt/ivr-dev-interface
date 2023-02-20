@@ -486,6 +486,36 @@ const CanvasComponent = ({isModule = false}) => {
     });
   }
 
+  function isPointInSelectRectangle(x, y) {
+    if (!multiSelectStartPoint.current || !multiSelectEndPoint.current) {
+      return false;
+    }
+
+    const x1 = Math.min(
+      multiSelectStartPoint.current.x,
+      multiSelectEndPoint.current.x
+    );
+    const x2 = Math.max(
+      multiSelectStartPoint.current.x,
+      multiSelectEndPoint.current.x
+    );
+
+    const y1 = Math.min(
+      multiSelectStartPoint.current.y,
+      multiSelectEndPoint.current.y
+    );
+    const y2 = Math.max(
+      multiSelectStartPoint.current.y,
+      multiSelectEndPoint.current.y
+    );
+
+    if (x >= x1 && x <= x2 && y >= y1 && y <= y2) {
+      return true;
+    }
+
+    return false;
+  }
+
   function getRealCoordinates(clientX, clientY) {
     const boundingRect = canvasRef.current.getBoundingClientRect();
     const realX = clientX - boundingRect.left;
@@ -509,53 +539,28 @@ const CanvasComponent = ({isModule = false}) => {
       return;
     }
 
+    if (multiSelectEndPoint.current) {
+      if (isPointInSelectRectangle(realX, realY)) {
+        multiSelectDragStartPoint.current = {x: realX, y: realY};
+      } else {
+        resetMultiSelect();
+      }
+
+      return;
+    }
+
     // check if mouse in palette shape
     checkMouseInPaletteShape(realX, realY);
 
     // check if mouse in stage shape
     checkMouseInStageShape(realX, realY);
 
-    if (!clickedInShape && realX > 80) {
+    if (!clickedInShape) {
       setIsConnecting(0);
-      mouseDownMultiSelect(realX, realY);
-    }
-  }
 
-  function mouseDownMultiSelect(realX, realY) {
-    if (selectedShapes.current && multiSelectStartPoint.current) {
-      const [smallX, smallY, bigX, bigY] = [
-        Math.min(
-          multiSelectStartPoint.current.x,
-          multiSelectEndPoint.current.x
-        ),
-        Math.min(
-          multiSelectStartPoint.current.y,
-          multiSelectEndPoint.current.y
-        ),
-        Math.max(
-          multiSelectStartPoint.current.x,
-          multiSelectEndPoint.current.x
-        ),
-        Math.max(
-          multiSelectStartPoint.current.y,
-          multiSelectEndPoint.current.y
-        ),
-      ];
-
-      if (
-        realX >= smallX &&
-        realX <= bigX &&
-        realY >= smallY &&
-        realY <= bigY
-      ) {
-        multiSelectDragStartPoint.current = {x: realX, y: realY};
-      } else {
-        resetMultiSelect();
+      if (!multiSelectEndPoint.current && realX > 75) {
+        multiSelectStartPoint.current = {x: realX, y: realY};
       }
-    }
-
-    if (!multiSelectEndPoint.current) {
-      multiSelectStartPoint.current = {x: realX, y: realY};
     }
   }
 
@@ -570,19 +575,7 @@ const CanvasComponent = ({isModule = false}) => {
     const isMultiSelectDragging =
       multiSelectDragStartPoint.current && selectedShapes.current?.length;
 
-    if (isDraggingShape) {
-      // Drag a single shape
-      const dx = realX - startX;
-      const dy = realY - startY;
-      const currentShapeRef = currentShape.current;
-
-      currentShapeRef.x += dx || 0;
-      currentShapeRef.y += dy || 0;
-
-      clearAndDraw();
-      startX = realX;
-      startY = realY;
-    } else if (isMultiSelectDragging) {
+    if (multiSelectDragStartPoint.current) {
       // Drag multiple shapes
       const dx = realX - multiSelectDragStartPoint.current.x;
       const dy = realY - multiSelectDragStartPoint.current.y;
@@ -600,6 +593,33 @@ const CanvasComponent = ({isModule = false}) => {
       clearAndDraw();
       multiSelectDragStartPoint.current.x = realX;
       multiSelectDragStartPoint.current.y = realY;
+      return;
+    }
+
+    if (multiSelectStartPoint.current && !multiSelectEndPoint.current) {
+      clearAndDraw();
+      contextRef.current.strokeStyle = 'black';
+      contextRef.current.strokeRect(
+        multiSelectStartPoint.current.x,
+        multiSelectStartPoint.current.y,
+        realX - multiSelectStartPoint.current.x,
+        realY - multiSelectStartPoint.current.y
+      );
+      return;
+    }
+
+    if (isDraggingShape) {
+      // Drag a single shape
+      const dx = realX - startX;
+      const dy = realY - startY;
+      const currentShapeRef = currentShape.current;
+
+      currentShapeRef.x += dx || 0;
+      currentShapeRef.y += dy || 0;
+
+      clearAndDraw();
+      startX = realX;
+      startY = realY;
     }
 
     resetTooltips();
@@ -677,35 +697,37 @@ const CanvasComponent = ({isModule = false}) => {
 
     if (button !== 0) return;
 
-    multiSelectDragStartPoint.current = null;
-    const isMultiSelecting =
-      multiSelectStartPoint.current && !multiSelectEndPoint.current;
+    if (multiSelectDragStartPoint.current) {
+      multiSelectDragStartPoint.current = null;
+      return;
+    }
 
-    if (isMultiSelecting && !multiSelectDragStartPoint.current) {
-      const diffX = multiSelectStartPoint.current.x - realX;
+    if (multiSelectStartPoint.current && multiSelectEndPoint.current) {
+      return;
+    }
 
-      const diffY = multiSelectStartPoint.current.y - realY;
+    if (multiSelectStartPoint.current && !multiSelectEndPoint.current) {
+      multiSelectEndPoint.current = {x: realX, y: realY};
 
-      if (Math.abs(diffX) > 30 && Math.abs(diffY) > 30) {
-        multiSelectEndPoint.current = {x: realX, y: realY};
+      const shapes = stageGroup.current[
+        pageNumber.current - 1
+      ]?.getSelectedShapesInRectangle(
+        multiSelectStartPoint.current.x,
+        multiSelectStartPoint.current.y,
+        multiSelectEndPoint.current.x,
+        multiSelectEndPoint.current.y
+      );
 
-        const shapes = stageGroup.current[
-          pageNumber.current - 1
-        ]?.getSelectedShapesInRectangle(
-          multiSelectStartPoint.current.x,
-          multiSelectStartPoint.current.y,
-          multiSelectEndPoint.current.x,
-          multiSelectEndPoint.current.y
-        );
-
-        if (shapes) {
-          selectedShapes.current = shapes;
-          selectedShapes.current.forEach((shape) => {
-            shape.setSelected(true);
-          });
-        }
-      } else {
+      if (!shapes.length) {
         resetMultiSelect();
+        return;
+      }
+
+      if (shapes) {
+        selectedShapes.current = shapes;
+        selectedShapes.current.forEach((shape) => {
+          shape.setSelected(true);
+        });
       }
     }
 
