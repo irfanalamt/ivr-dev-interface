@@ -520,7 +520,7 @@ const CanvasComponent = ({isModule = false}) => {
     clickedInShape = false;
 
     // check if right click
-    if (button === 2) {
+    if (button === 2 && !multiSelectEndPoint.current) {
       setIsConnecting(1);
       return;
     }
