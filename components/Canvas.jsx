@@ -491,29 +491,15 @@ const CanvasComponent = ({isModule = false}) => {
       return false;
     }
 
-    const x1 = Math.min(
-      multiSelectStartPoint.current.x,
-      multiSelectEndPoint.current.x
-    );
-    const x2 = Math.max(
-      multiSelectStartPoint.current.x,
-      multiSelectEndPoint.current.x
-    );
+    const {x: x1, y: y1} = multiSelectStartPoint.current;
+    const {x: x2, y: y2} = multiSelectEndPoint.current;
 
-    const y1 = Math.min(
-      multiSelectStartPoint.current.y,
-      multiSelectEndPoint.current.y
+    return (
+      x >= Math.min(x1, x2) &&
+      x <= Math.max(x1, x2) &&
+      y >= Math.min(y1, y2) &&
+      y <= Math.max(y1, y2)
     );
-    const y2 = Math.max(
-      multiSelectStartPoint.current.y,
-      multiSelectEndPoint.current.y
-    );
-
-    if (x >= x1 && x <= x2 && y >= y1 && y <= y2) {
-      return true;
-    }
-
-    return false;
   }
 
   function getRealCoordinates(clientX, clientY) {
@@ -572,9 +558,6 @@ const CanvasComponent = ({isModule = false}) => {
     const isDraggingShape =
       isDragging.current && isConnecting === 0 && currentShape.current;
 
-    const isMultiSelectDragging =
-      multiSelectDragStartPoint.current && selectedShapes.current?.length;
-
     if (multiSelectDragStartPoint.current) {
       // Drag multiple shapes
       const dx = realX - multiSelectDragStartPoint.current.x;
@@ -598,13 +581,7 @@ const CanvasComponent = ({isModule = false}) => {
 
     if (multiSelectStartPoint.current && !multiSelectEndPoint.current) {
       clearAndDraw();
-      contextRef.current.strokeStyle = 'black';
-      contextRef.current.strokeRect(
-        multiSelectStartPoint.current.x,
-        multiSelectStartPoint.current.y,
-        realX - multiSelectStartPoint.current.x,
-        realY - multiSelectStartPoint.current.y
-      );
+      drawMultiSelectRectangle(contextRef.current, realX, realY);
       return;
     }
 
@@ -833,6 +810,17 @@ const CanvasComponent = ({isModule = false}) => {
           }
         });
     }
+  }
+
+  function drawMultiSelectRectangle(ctx, realX, realY) {
+    ctx.lineWidth = 0.3;
+    ctx.strokeStyle = 'black';
+    ctx.strokeRect(
+      multiSelectStartPoint.current.x,
+      multiSelectStartPoint.current.y,
+      realX - multiSelectStartPoint.current.x,
+      realY - multiSelectStartPoint.current.y
+    );
   }
 
   function resetMultiSelect() {
