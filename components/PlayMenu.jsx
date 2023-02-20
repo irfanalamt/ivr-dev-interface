@@ -48,6 +48,7 @@ const PlayMenu = ({
   const [successText, setSuccessText] = useState('');
 
   const drawerNameRef = useRef({});
+  const divRef = useRef(null);
 
   function handleMenuObjChange(value, name) {
     setMenuObj((s) => {
@@ -119,8 +120,6 @@ const PlayMenu = ({
     'timeoutPrompt',
     'maxRetries',
     'transferPoint',
-    'invalidTransferPoint',
-    'timeoutTransferPoint',
     'menuTimeout',
   ];
 
@@ -131,13 +130,25 @@ const PlayMenu = ({
 
   function handleRemoveParameter() {
     if (!paramSelectedList.length) return;
+
+    deleteMenuObj(paramSelectedList.at(-1));
     setParamSelectedList((prevList) => prevList.slice(0, -1));
+  }
+
+  function deleteMenuObj(name) {
+    setMenuObj((obj) => {
+      const temp = {...obj};
+      delete temp[name];
+      return temp;
+    });
   }
 
   function handleAddItem() {
     if (!itemSelected) return;
     setItemsObj((prevItems) => [...prevItems, {digit: itemSelected}]);
     setItemSelected('');
+
+    divRef.current.scrollIntoView(false);
   }
 
   function handleRemoveItem(e, key) {
@@ -449,20 +460,17 @@ const PlayMenu = ({
                 size='small'>
                 <MenuItem value='disconnect'>Disconnect</MenuItem>
                 <MenuItem value='transfer'>Transfer</MenuItem>
-                <MenuItem value='function'>Function</MenuItem>
+                <MenuItem value='invalid'>Other</MenuItem>
               </Select>
               {menuObj.invalidAction === 'transfer' && (
                 <TextField
-                  placeholder='transferPoint'
-                  sx={{my: 0.5, width: 150}}
+                  placeholder='invalidTransferPoint'
+                  sx={{my: 0.5}}
                   size='small'
-                />
-              )}
-              {menuObj.invalidAction === 'function' && (
-                <TextField
-                  placeholder='functionName'
-                  sx={{my: 0.5, width: 150}}
-                  size='small'
+                  value={menuObj.invalidTransferPoint || ''}
+                  onChange={(e) =>
+                    handleMenuObjChange(e.target.value, 'invalidTransferPoint')
+                  }
                 />
               )}
             </Box>
@@ -493,20 +501,17 @@ const PlayMenu = ({
                 size='small'>
                 <MenuItem value='disconnect'>Disconnect</MenuItem>
                 <MenuItem value='transfer'>Transfer</MenuItem>
-                <MenuItem value='function'>Function</MenuItem>
+                <MenuItem value='timeout'>Other</MenuItem>
               </Select>
               {menuObj.timeoutAction === 'transfer' && (
                 <TextField
-                  placeholder='transferPoint'
-                  sx={{my: 0.5, width: 150}}
+                  placeholder='timeoutTransferPoint'
+                  sx={{my: 0.5}}
                   size='small'
-                />
-              )}
-              {menuObj.timeoutAction === 'function' && (
-                <TextField
-                  placeholder='functionName'
-                  sx={{my: 0.5, width: 150}}
-                  size='small'
+                  value={menuObj.timeoutTransferPoint || ''}
+                  onChange={(e) =>
+                    handleMenuObjChange(e.target.value, 'timeoutTransferPoint')
+                  }
                 />
               )}
             </Box>
@@ -625,54 +630,7 @@ const PlayMenu = ({
             />
           </ListItem>
         );
-      case 'invalidTransferPoint':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '40%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}>
-              invalidTransferPoint:
-            </Typography>
-            <TextField
-              value={menuObj.invalidTransferPoint || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'invalidTransferPoint');
-              }}
-              sx={{mx: 0.5}}
-              size='small'
-            />
-          </ListItem>
-        );
-      case 'timeoutTransferPoint':
-        return (
-          <ListItem key={key}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                marginX: 1,
-                fontSize: 16,
-                width: '40%',
-                borderRadius: 0.5,
-                fontWeight: 405,
-              }}>
-              timeoutTransferPoint:
-            </Typography>
-            <TextField
-              value={menuObj.timeoutTransferPoint || ''}
-              onChange={(e) => {
-                handleMenuObjChange(e.target.value, 'timeoutTransferPoint');
-              }}
-              sx={{mx: 0.5}}
-              size='small'
-            />
-          </ListItem>
-        );
+
       case 'menuTimeout':
         return (
           <ListItem key={key}>
@@ -869,7 +827,7 @@ const PlayMenu = ({
         </Box>
         <Box id='tabPanel2' sx={{display: tabValue == 1 ? 'block' : 'none'}}>
           {itemsObj?.map((el, i) => addItemElements(el.digit, i))}
-          <ListItem sx={{mb: 2}}>
+          <ListItem ref={divRef} sx={{mb: 2}}>
             <InputLabel id='select-label'>Select Digit</InputLabel>
             <Select
               labelId='select-label'
