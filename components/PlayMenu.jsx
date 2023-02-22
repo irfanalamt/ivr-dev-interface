@@ -670,7 +670,7 @@ const PlayMenu = ({
             </Typography>
 
             <Switch
-              checked={menuObj.interruptible || false}
+              checked={menuObj.interruptible ?? true}
               onChange={(e) => {
                 handleMenuObjChange(e.target.checked, 'interruptible');
               }}
