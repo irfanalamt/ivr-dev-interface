@@ -1,5 +1,6 @@
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import RemoveCircleOutlineRoundedIcon from '@mui/icons-material/RemoveCircleOutlineRounded';
 import {
@@ -155,6 +156,7 @@ const PlayMenu = ({
     'invalidPrompt',
     'timeoutPrompt',
     'maxRetries',
+    'interruptible',
     'transferPoint',
     'menuTimeout',
   ];
@@ -450,9 +452,19 @@ const PlayMenu = ({
               </MenuItem>
             ))}
           </Select>
-          <Tooltip title='Remove item' placement='top-start'>
+          <Tooltip title='Save item' placement='top'>
+            <IconButton sx={{ml: 'auto'}} size='large' onClick={saveUserValues}>
+              <SaveRoundedIcon
+                sx={{
+                  fontSize: '1.5rem',
+                  '&:hover': {color: '#aed581'},
+                }}
+              />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Remove item' placement='top'>
             <IconButton
-              sx={{ml: 'auto'}}
+              sx={{ml: 2}}
               size='large'
               onClick={(e) => {
                 handleRemoveItem(e, key);
@@ -639,6 +651,30 @@ const PlayMenu = ({
                 })
               }
             </Select>
+          </ListItem>
+        );
+
+      case 'interruptible':
+        return (
+          <ListItem key={key}>
+            <Typography
+              variant='subtitle2'
+              sx={{
+                marginX: 1,
+                fontSize: 16,
+                width: '35%',
+                borderRadius: 0.5,
+                fontWeight: 405,
+              }}>
+              interruptible:
+            </Typography>
+
+            <Switch
+              checked={menuObj.interruptible || false}
+              onChange={(e) => {
+                handleMenuObjChange(e.target.checked, 'interruptible');
+              }}
+            />
           </ListItem>
         );
 
