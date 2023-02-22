@@ -186,20 +186,19 @@ class Shape {
   }
 
   isNearExitPointMenu(x, y) {
-    const nonDefaultItems = this.userValues.items.filter(
-      (item) => !item.isDefault
-    );
-    const exitPoints = nonDefaultItems.map((item) => item.action);
+    const numberOfExitPoints = this.getMenuNumberOfExitPoints();
 
-    if (!exitPoints.length) return false;
+    if (!numberOfExitPoints) return false;
 
-    if (exitPoints.length === 1) {
+    const exitPoints = this.getMenuExitPointNames();
+
+    if (numberOfExitPoints === 1) {
       return {position: 0, totalPoints: 1, exitPoint: exitPoints[0]};
     }
 
     const distancesFromExitPoints = exitPoints.map((exitPoint, index) => {
       const bottomPoint = this.getBottomPointForExit(
-        exitPoints.length,
+        numberOfExitPoints,
         index + 1
       );
       return this.distanceBetweenPoints(...bottomPoint, x, y);
@@ -217,7 +216,7 @@ class Shape {
 
     return {
       position: closestExit.index,
-      totalPoints: exitPoints.length,
+      totalPoints: numberOfExitPoints,
       exitPoint: exitPoints[closestExit.index],
     };
   }
@@ -761,14 +760,28 @@ class Shape {
     }
   }
 
-  drawExitPointsMenu(ctx) {
-    // only draw exitPoints for non default actions
-    const itemsWithoutDefaults = this.userValues.items.filter(
-      (item) => !(item.isDefault === true)
-    );
-    const numberOfExitPoints = itemsWithoutDefaults.length;
+  getMenuExitPointNames() {
+    const {items} = this.userValues;
 
-    if (numberOfExitPoints === 0) return;
+    const exitPoints = items
+      .filter((item) => !item.isDefault)
+      .map((item) => item.action);
+
+    return exitPoints;
+  }
+
+  getMenuNumberOfExitPoints() {
+    const {items} = this.userValues;
+
+    const exitCount = items.filter((item) => !item.isDefault).length;
+
+    return exitCount;
+  }
+
+  drawExitPointsMenu(ctx) {
+    const numberOfExitPoints = this.getMenuNumberOfExitPoints();
+
+    if (!numberOfExitPoints) return;
 
     if (numberOfExitPoints === 1) {
       this.drawTinyCircle(ctx, ...this.getExitPoint(), '#00635a');

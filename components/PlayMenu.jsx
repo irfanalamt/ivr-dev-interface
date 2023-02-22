@@ -86,8 +86,44 @@ const PlayMenu = ({
 
     shape.setText(shapeName || 'playMenu');
     clearAndDraw();
-    // only save items with both action and prompt values
-    const filteredItems = itemsObj.filter((item) => item.action && item.prompt);
+    // Filter items that have both action and prompt values or have a digit of 'i' or 't'
+    const filteredItems = itemsObj.filter(
+      (item) => (item.action && item.prompt) || ['i', 't'].includes(item.digit)
+    );
+
+    // Add 'invalid' item if menuObj.invalidAction is 'invalid' and there isn't already an 'i' item
+    if (
+      menuObj.invalidAction === 'invalid' &&
+      !filteredItems.some((item) => item.digit === 'i')
+    ) {
+      filteredItems.push({digit: 'i', action: 'invalid'});
+    }
+
+    // Add 'timeout' item if menuObj.invalidAction is 'timeout' and there isn't already a 't' item
+    if (
+      menuObj.timeoutAction === 'timeout' &&
+      !filteredItems.some((item) => item.digit === 't')
+    ) {
+      filteredItems.push({digit: 't', action: 'timeout'});
+    }
+
+    // Remove 'i' item if menuObj.invalidAction is not 'invalid'
+    if (menuObj.invalidAction !== 'invalid') {
+      const index = filteredItems.findIndex((item) => item.digit === 'i');
+      if (index !== -1) {
+        filteredItems.splice(index, 1);
+      }
+    }
+
+    // Remove 't' item if menuObj.invalidAction is not 'timeout'
+    if (menuObj.timeoutAction !== 'timeout') {
+      const index = filteredItems.findIndex((item) => item.digit === 't');
+      if (index !== -1) {
+        filteredItems.splice(index, 1);
+      }
+    }
+
+    // Set the user values
     shape.setUserValues({
       params: menuObj,
       paramSelectedList,
@@ -826,7 +862,9 @@ const PlayMenu = ({
           </List>
         </Box>
         <Box id='tabPanel2' sx={{display: tabValue == 1 ? 'block' : 'none'}}>
-          {itemsObj?.map((el, i) => addItemElements(el.digit, i))}
+          {itemsObj
+            ?.filter((el) => !['i', 't'].includes(el.digit))
+            .map((el, i) => addItemElements(el.digit, i))}
           <ListItem ref={divRef} sx={{mb: 2}}>
             <InputLabel id='select-label'>Select Digit</InputLabel>
             <Select
