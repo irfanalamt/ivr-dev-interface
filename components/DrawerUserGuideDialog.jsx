@@ -31,7 +31,14 @@ const DrawerUserGuideDialog = ({open, handleClose, name = ''}) => {
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth>
-      <DialogTitle sx={{display: 'flex', alignItems: 'center'}}>
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          boxShadow: 1,
+          width: 'max-content',
+          px: 2,
+        }}>
         <HelpCenterIcon sx={{mr: 0.5}} />
         Guide
       </DialogTitle>
