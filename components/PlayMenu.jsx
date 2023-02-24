@@ -136,9 +136,16 @@ const PlayMenu = ({
   }
 
   function generateJS() {
+    const filteredItems = itemsObj
+      .filter((item) => item.digit !== 'i' && item.digit !== 't')
+      .map((item) => ({
+        ...item,
+        digit: item.digit.toString(),
+      }));
+
     let menuString = JSON.stringify({
       ...menuObj,
-      items: itemsObj,
+      items: filteredItems,
       menuId: shapeName,
     });
 
@@ -280,6 +287,8 @@ const PlayMenu = ({
   childRef.getCurrentUserValues = getCurrentUserValues;
 
   function addItemElements(digit, key) {
+    if (digit == 'i' || digit == 't') return <></>;
+
     return (
       <List key={key}>
         <ListItem>
@@ -506,8 +515,8 @@ const PlayMenu = ({
                   handleMenuObjChange(e.target.value, 'invalidAction');
                 }}
                 size='small'>
-                <MenuItem value='disconnect'>Disconnect</MenuItem>
-                <MenuItem value='transfer'>Transfer</MenuItem>
+                <MenuItem value='Disconnect'>Disconnect</MenuItem>
+                <MenuItem value='Transfer'>Transfer</MenuItem>
                 <MenuItem value='invalid'>Other</MenuItem>
               </Select>
               {menuObj.invalidAction === 'transfer' && (
@@ -547,8 +556,8 @@ const PlayMenu = ({
                   handleMenuObjChange(e.target.value, 'timeoutAction');
                 }}
                 size='small'>
-                <MenuItem value='disconnect'>Disconnect</MenuItem>
-                <MenuItem value='transfer'>Transfer</MenuItem>
+                <MenuItem value='Disconnect'>Disconnect</MenuItem>
+                <MenuItem value='Transfer'>Transfer</MenuItem>
                 <MenuItem value='timeout'>Other</MenuItem>
               </Select>
               {menuObj.timeoutAction === 'transfer' && (
@@ -898,9 +907,7 @@ const PlayMenu = ({
           </List>
         </Box>
         <Box id='tabPanel2' sx={{display: tabValue == 1 ? 'block' : 'none'}}>
-          {itemsObj
-            ?.filter((el) => !['i', 't'].includes(el.digit))
-            .map((el, i) => addItemElements(el.digit, i))}
+          {itemsObj?.map((el, i) => addItemElements(el.digit, i))}
           <ListItem ref={divRef} sx={{mb: 2}}>
             <InputLabel id='select-label'>Select Digit</InputLabel>
             <Select
