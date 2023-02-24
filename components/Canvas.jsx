@@ -99,7 +99,6 @@ const CanvasComponent = ({isModule = false}) => {
   const selectedShapes = useRef(null);
   const multiSelectDragStartPoint = useRef(null);
 
-  const contextMenuRef = useRef(null);
   const contextMenuItem = useRef(null);
 
   let startX, startY;
@@ -556,11 +555,15 @@ const CanvasComponent = ({isModule = false}) => {
 
     stageGroup.current[pageNumber.current - 1].copyShapes(
       selectedShapes.current,
-      shapeCount.current
+      offsetX,
+      offsetY,
+      shapeCount.current,
+      pageNumber.current,
+      getEntireShapeNames()
     );
 
     contextMenuItem.current = null;
-    clearAndDraw();
+    resetMultiSelect();
   }
 
   function checkMouseInPaletteShape(realX, realY) {
@@ -731,102 +734,6 @@ const CanvasComponent = ({isModule = false}) => {
         setIsConnecting(1);
       }
 
-      return;
-    }
-
-    if (contextMenuRef.current) {
-      let prevContextMenuItem = contextMenuItem.current;
-
-      if (contextMenuItem.current == 'Paste') {
-        contextMenuItem.current = prevContextMenuItem + '-Paste';
-
-        if (contextMenuItem.current == 'Copy-Paste') {
-          let offsetX = realX - multiSelectStartPoint.current.x;
-
-          let offsetY = realY - multiSelectStartPoint.current.y;
-
-          multiSelectStartPoint.current.x += offsetX;
-          multiSelectStartPoint.current.y += offsetY;
-
-          multiSelectEndPoint.current.x += offsetX;
-          multiSelectEndPoint.current.y += offsetY;
-
-          const connectingShapes = [];
-
-          selectedShapes.current.forEach((shape) => {
-            // shape.x += offsetX;
-            // shape.y += offsetY;
-
-            const count = shapeCount.current[shape.type]++;
-            const newShape = stageGroup.current[
-              pageNumber.current - 1
-            ].addShape(
-              shape.type,
-              shape.x + offsetX,
-              shape.y + offsetY,
-              count,
-              pageNumber.current,
-              isModule
-            );
-            connectingShapes.push({shape, newShape});
-            newShape.userValues = structuredClone(shape.userValues);
-          });
-
-          for (let i = 0; i < connectingShapes.length; i++) {
-            let nextItem = connectingShapes[i].shape.nextItem;
-            connectingShapes[i].newShape.text =
-              connectingShapes[i].shape.text + '1';
-            for (let j = 0; j < connectingShapes.length; j++) {
-              if (connectingShapes[j].shape.id === nextItem) {
-                connectingShapes[i].newShape.nextItem =
-                  connectingShapes[j].newShape.id;
-              }
-            }
-          }
-
-          for (let i = 0; i < connectingShapes.length; i++) {
-            if (connectingShapes[i].shape.type === 'playMenu') {
-              for (
-                let k = 0;
-                k < connectingShapes[i].shape.userValues.items.length;
-                k++
-              ) {
-                let nextId =
-                  connectingShapes[i].shape.userValues.items[k].nextId;
-
-                for (let j = 0; j < connectingShapes.length; j++) {
-                  if (connectingShapes[j].shape.id === nextId) {
-                    connectingShapes[i].newShape.userValues.items[k].nextId =
-                      connectingShapes[j].newShape.id;
-                  }
-                }
-              }
-            }
-          }
-
-          // connectingShapes
-          //   .filter((x) => x.shape.type === 'playMenu')
-          //   .forEach((x) => {
-          //     const items = x.shape.userValues.items;
-
-          //     items.forEach((item) => {
-          //       const nextId = item.nextId;
-
-          //       const index = connectingShapes.findIndex(
-          //         (x) => x.shape.id === nextId
-          //       );
-
-          //       if (index !== -1) {
-          //         x.newShape.nextId = connectingShapes[index].newShape.id;
-          //       }
-          //     });
-          //   });
-
-          contextMenuItem.current = null;
-        }
-      }
-
-      clearAndDraw();
       return;
     }
 
@@ -1464,6 +1371,14 @@ const CanvasComponent = ({isModule = false}) => {
     }
 
     return entirestageGroup;
+  }
+
+  function getEntireShapeNames() {
+    const allNames = getEntireStageGroup()
+      .getShapesAsArray()
+      .map((shape) => shape.text);
+
+    return allNames;
   }
 
   function generateJS() {

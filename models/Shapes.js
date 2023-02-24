@@ -757,12 +757,93 @@ class Shapes {
       }
     });
   }
+  getUniqueName(oldName, shapeNames) {
+    let num = 1;
+    let newName = oldName + num.toString();
+    while (shapeNames.includes(newName)) {
+      num++;
+      newName = oldName + num.toString();
+    }
+    return newName;
+  }
 
-  copyShapes(shapes, count) {
-    shapes.forEach((s) => {
-      count[s.type]++;
-      s.text += '1';
-      s.id += '1';
+  copyShapes(shapesArr, offsetX, offsetY, count, pageNumber, shapeNames) {
+    const idMap = {};
+
+    shapesArr.forEach((oldShape) => {
+      //create new shape
+      const newShape = new Shape(
+        oldShape.x + offsetX,
+        oldShape.y + offsetY,
+        oldShape.width,
+        oldShape.height,
+        oldShape.type,
+        oldShape.style,
+        true
+      );
+
+      // increase shapes count
+      const shapeCount = count[oldShape.type]++;
+      // make sure id unique using count and pageNum
+      const id = this.generateID(oldShape.type, pageNumber, shapeCount);
+      newShape.id = id;
+      // make sure id unique using all shapeNames
+      newShape.text = this.getUniqueName(oldShape.text, shapeNames);
+      // copy user values
+      newShape.userValues = structuredClone(oldShape.userValues);
+
+      //add shape to group
+      this.shapes[id] = newShape;
+
+      // add old and new id to idMap
+      idMap[oldShape.id] = newShape.id;
+    });
+
+    shapesArr.forEach((oldShape) => {
+      // map all previous valid connections
+
+      const newShape = this.shapes[idMap[oldShape.id]];
+
+      if (oldShape.type === 'playMenu') {
+        const items = oldShape.userValues.items;
+
+        items.forEach((item, i) => {
+          if (Object.keys(idMap).includes(item.nextId)) {
+            newShape.userValues.items[i].nextId = idMap[item.nextId];
+          } else {
+            newShape.userValues.items[i].nextId = undefined;
+          }
+        });
+
+        return;
+      }
+
+      if (oldShape.type === 'switch') {
+        const switchArray = oldShape.userValues.switchArray;
+        switchArray.forEach((item, i) => {
+          if (Object.keys(idMap).includes(item.nextId)) {
+            newShape.userValues.switchArray[i].nextId = idMap[item.nextId];
+          } else {
+            newShape.userValues.switchArray[i].nextId = undefined;
+          }
+        });
+
+        if (Object.keys(idMap).includes(oldShape.userValues.default.nextId)) {
+          newShape.userValues.default.nextId =
+            idMap[oldShape.userValues.default.nextId];
+        } else {
+          newShape.userValues.default.nextId = undefined;
+        }
+
+        return;
+      }
+
+      if (Object.keys(idMap).includes(oldShape.nextItem)) {
+        // the connection is among the shapes we copied.
+        // make a corresponding connection between newShapes
+
+        newShape.nextItem = idMap[oldShape.nextItem];
+      }
     });
   }
 
