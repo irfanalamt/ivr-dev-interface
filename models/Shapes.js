@@ -27,6 +27,12 @@ class Shapes {
     this.shapes[id] = stageFigure;
   }
 
+  moveShapes(shapes) {
+    shapes.forEach((shape) => {
+      this.shapes[shape.id] = shape;
+    });
+  }
+
   addShape(type, x, y, count, pageNumber, isModule = false) {
     let stageFigure;
     switch (type) {
@@ -135,6 +141,8 @@ class Shapes {
     stageFigure.id = id;
     //add shape to group
     this.shapes[id] = stageFigure;
+
+    return stageFigure;
   }
 
   addTempShape(x, y) {
@@ -719,6 +727,45 @@ class Shapes {
   removeShape(key) {
     delete this.shapes[key];
   }
+
+  removeConnectionsTo(shapes) {
+    const shapeIds = shapes.map((shape) => shape.id);
+
+    this.getShapesAsArray().forEach((s) => {
+      if (s.type === 'playMenu') {
+        const items = s.userValues.items;
+
+        items.forEach((item) => {
+          if (shapeIds.includes(item.nextId)) {
+            item.nextId = undefined;
+          }
+        });
+      } else if (s.type === 'switch') {
+        if (shapeIds.includes(s.userValues.default.nextId)) {
+          s.userValues.default.nextId = undefined;
+        }
+        const switchArr = s.userValues.switchArray;
+        switchArr.forEach((item) => {
+          if (shapeIds.includes(item.nextId)) {
+            item.nextId = undefined;
+          }
+        });
+      } else {
+        if (shapeIds.includes(s.nextItem)) {
+          s.nextItem = null;
+        }
+      }
+    });
+  }
+
+  copyShapes(shapes, count) {
+    shapes.forEach((s) => {
+      count[s.type]++;
+      s.text += '1';
+      s.id += '1';
+    });
+  }
+
   removeConnectingLine(shape1Id, shape2Id, lineData = null) {
     const shape1 = this.shapes[shape1Id];
     if (shape1) {

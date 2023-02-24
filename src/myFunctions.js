@@ -35,6 +35,11 @@ function drawGridLines(ctx, canvas) {
     width: 0.5,
   };
 
+  ctx.shadowColor = 'rgba(0, 0, 0, 0)';
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+  ctx.shadowBlur = 0;
+
   function drawLine(startX, startY, endX, endY, style) {
     ctx.beginPath();
     ctx.moveTo(startX, startY);

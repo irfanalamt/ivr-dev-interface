@@ -2,13 +2,19 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
 import InfoIcon from '@mui/icons-material/Info';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import ContentCutIcon from '@mui/icons-material/ContentCut';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
+import DeleteIcon from '@mui/icons-material/Delete';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import {
   Alert,
   Box,
   Drawer,
   IconButton,
+  Menu,
+  MenuItem,
   Pagination,
   Snackbar,
   Tooltip,
@@ -48,6 +54,7 @@ const CanvasComponent = ({isModule = false}) => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [ivrName, setIvrName] = useState('');
+  const [contextMenu, setContextMenu] = useState(null);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -91,6 +98,9 @@ const CanvasComponent = ({isModule = false}) => {
   const multiSelectEndPoint = useRef(null);
   const selectedShapes = useRef(null);
   const multiSelectDragStartPoint = useRef(null);
+
+  const contextMenuRef = useRef(null);
+  const contextMenuItem = useRef(null);
 
   let startX, startY;
   let startX1, startY1;
@@ -309,36 +319,36 @@ const CanvasComponent = ({isModule = false}) => {
   }
 
   function clearAndDraw() {
-    const canvas = contextRef.current;
+    const ctx = contextRef.current;
 
     // Clear the canvas
-    canvas.clearRect(0, 0, window.innerWidth, window.innerHeight * 2);
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight * 2);
 
     // Draw grid lines on the canvas
     drawGridLines(contextRef.current, canvasRef.current);
 
     // Set the line cap, line width, and fill style
-    canvas.lineCap = 'round';
-    canvas.lineWidth = 1;
-    canvas.fillStyle = 'white';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = 'white';
 
     // Draw the background palette rectangle with a shadow
-    canvas.shadowColor = '#757575';
-    canvas.shadowBlur = 4;
-    canvas.shadowOffsetX = 0;
-    canvas.shadowOffsetY = 2;
-    canvas.fillRect(5, 55 + scrollOffsetY.current, 70, window.innerHeight - 95);
+    ctx.shadowColor = '#757575';
+    ctx.shadowBlur = 4;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 2;
+    ctx.fillRect(5, 55 + scrollOffsetY.current, 70, window.innerHeight - 95);
 
     // Reset the shadow and set the font style
-    canvas.shadowColor = 'transparent';
-    canvas.shadowBlur = 0;
-    canvas.shadowOffsetX = 0;
-    canvas.shadowOffsetY = 0;
-    canvas.fillStyle = '#616161';
-    canvas.font = '20px Arial';
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.fillStyle = '#616161';
+    ctx.font = '20px Arial';
 
     // Display the current page number in the top right corner
-    canvas.fillText(
+    ctx.fillText(
       `P${pageNumber.current}`,
       window.innerWidth * 0.9 - 35,
       80 + scrollOffsetY.current
@@ -348,7 +358,7 @@ const CanvasComponent = ({isModule = false}) => {
     if (isDragging.current && !isPalletShape.current) {
       const img = new Image();
       img.src = '/icons/delete.png';
-      canvas.drawImage(
+      ctx.drawImage(
         img,
         window.innerWidth - 80,
         window.innerHeight - 95 + scrollOffsetY.current,
@@ -358,10 +368,14 @@ const CanvasComponent = ({isModule = false}) => {
     }
 
     // Draw the palette shapes and stage shapes on the canvas
-    palletGroup.current.drawAllShapes(canvas);
-    stageGroup.current[pageNumber.current - 1]?.drawAllShapes(canvas);
+    palletGroup.current.drawAllShapes(ctx);
+    stageGroup.current[pageNumber.current - 1]?.drawAllShapes(ctx);
 
-    if (multiSelectStartPoint.current && multiSelectEndPoint.current) {
+    if (
+      multiSelectStartPoint.current &&
+      multiSelectEndPoint.current &&
+      !selectedShapes.current.pageChanged
+    ) {
       const x = multiSelectStartPoint.current.x;
 
       const y = multiSelectStartPoint.current.y;
@@ -371,12 +385,19 @@ const CanvasComponent = ({isModule = false}) => {
       const height =
         multiSelectEndPoint.current.y - multiSelectStartPoint.current.y;
       //border
-      canvas.strokeStyle = 'black';
-      canvas.lineWidth = 0.2;
-      canvas.strokeRect(x, y, width, height);
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 0.2;
+      ctx.strokeRect(x, y, width, height);
 
-      canvas.fillStyle = 'rgba(0, 114, 198, 0.08)';
-      canvas.fillRect(x, y, width, height);
+      if (contextMenuItem.current == 'Cut') {
+        ctx.fillStyle = 'rgba(127,184,226,0.08)';
+      } else if (contextMenuItem.current == 'Copy') {
+        ctx.fillStyle = 'rgba(0,91,158,0.1)';
+      } else {
+        ctx.fillStyle = 'rgba(0,114,198,0.08)';
+      }
+
+      ctx.fillRect(x, y, width, height);
     }
 
     // calculate connections between shapes and draw them
@@ -384,12 +405,162 @@ const CanvasComponent = ({isModule = false}) => {
       stageGroup.current[pageNumber.current - 1].getConnectionsArray();
     lineGroup.current = new Lines([]);
     lineGroup.current.setConnections(connectionsArray);
-    lineGroup.current.connectAllPoints(canvas);
+    lineGroup.current.connectAllPoints(ctx);
   }
 
   function handleCloseDrawer() {
     clearAndDraw();
     setIsOpenDrawer(false);
+  }
+
+  function handleContextMenuClick(e, item) {
+    const {clientX, clientY} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
+    setContextMenu(null);
+
+    console.log('id:::', item);
+
+    if (item === 'Delete') {
+      console.log('delete context');
+      handleContextDelete();
+      return;
+    }
+
+    if (item === 'Cut') {
+      // selectedShapes.current.forEach((shape) =>
+      //   stageGroup.current[pageNumber.current - 1].removeShape(shape.id)
+      // );
+      selectedShapes.current.cutPage = pageNumber.current;
+      contextMenuItem.current = 'Cut';
+      clearAndDraw();
+      return;
+    }
+
+    if (item === 'Copy') {
+      contextMenuItem.current = 'Copy';
+      clearAndDraw();
+      return;
+    }
+
+    if (item === 'Paste') {
+      console.log('paste🔥', item);
+
+      if (contextMenuItem.current == 'Copy') {
+        handleContextCopyPaste(realX, realY);
+      } else if (contextMenuItem.current == 'Cut') {
+        console.log('cut-paste🔥', item);
+        handleContextCutPaste(realX, realY);
+      }
+    }
+    contextMenuItem.current = null;
+  }
+
+  function handleContextDelete() {
+    console.log('deleteeee');
+    selectedShapes.current.forEach((shape) =>
+      stageGroup.current[pageNumber.current - 1].removeShape(shape.id)
+    );
+
+    const num = selectedShapes.current.length;
+
+    snackbarMessage.current = `${num} element${num > 1 ? 's' : ''} deleted.`;
+    setOpenSnackbar(true);
+
+    resetMultiSelect();
+
+    contextMenuItem.current = null;
+  }
+  function handleContextCutPaste(realX, realY) {
+    const MIN_X = 75;
+    const MAX_X = canvasRef.current.width;
+    const MIN_Y = 55;
+    const MAX_Y = canvasRef.current.height;
+
+    let offsetX = realX - multiSelectStartPoint.current.x;
+    let offsetY = realY - multiSelectStartPoint.current.y;
+
+    if (multiSelectStartPoint.current.x + offsetX < MIN_X) {
+      offsetX = MIN_X - multiSelectStartPoint.current.x;
+    }
+    if (multiSelectStartPoint.current.y + offsetY < MIN_Y) {
+      offsetY = MIN_Y - multiSelectStartPoint.current.y;
+    }
+    if (multiSelectEndPoint.current.x + offsetX > MAX_X) {
+      offsetX = MAX_X - multiSelectEndPoint.current.x;
+    }
+    if (multiSelectEndPoint.current.y + offsetY > MAX_Y) {
+      offsetY = MAX_Y - multiSelectEndPoint.current.y;
+    }
+
+    multiSelectStartPoint.current.x += offsetX;
+    multiSelectStartPoint.current.y += offsetY;
+
+    multiSelectEndPoint.current.x += offsetX;
+    multiSelectEndPoint.current.y += offsetY;
+
+    selectedShapes.current.forEach((shape) => {
+      shape.x += offsetX;
+      shape.y += offsetY;
+    });
+
+    selectedShapes.current.forEach((shape) =>
+      stageGroup.current[selectedShapes.current.cutPage - 1].removeShape(
+        shape.id
+      )
+    );
+
+    if (selectedShapes.current.cutPage !== pageNumber.current) {
+      stageGroup.current[
+        selectedShapes.current.cutPage - 1
+      ].removeConnectionsTo(selectedShapes.current);
+    }
+
+    stageGroup.current[pageNumber.current - 1].moveShapes(
+      selectedShapes.current
+    );
+
+    console.log('selectedShapes:', selectedShapes.current);
+    contextMenuItem.current = null;
+    clearAndDraw();
+  }
+
+  function handleContextCopyPaste(realX, realY) {
+    console.log('copy-paste🔥');
+
+    const MIN_X = 75;
+    const MAX_X = canvasRef.current.width;
+    const MIN_Y = 55;
+    const MAX_Y = canvasRef.current.height;
+
+    let offsetX = realX - multiSelectStartPoint.current.x;
+    let offsetY = realY - multiSelectStartPoint.current.y;
+
+    if (multiSelectStartPoint.current.x + offsetX < MIN_X) {
+      offsetX = MIN_X - multiSelectStartPoint.current.x;
+    }
+    if (multiSelectStartPoint.current.y + offsetY < MIN_Y) {
+      offsetY = MIN_Y - multiSelectStartPoint.current.y;
+    }
+    if (multiSelectEndPoint.current.x + offsetX > MAX_X) {
+      offsetX = MAX_X - multiSelectEndPoint.current.x;
+    }
+    if (multiSelectEndPoint.current.y + offsetY > MAX_Y) {
+      offsetY = MAX_Y - multiSelectEndPoint.current.y;
+    }
+
+    multiSelectStartPoint.current.x += offsetX;
+    multiSelectStartPoint.current.y += offsetY;
+
+    multiSelectEndPoint.current.x += offsetX;
+    multiSelectEndPoint.current.y += offsetY;
+
+    stageGroup.current[pageNumber.current - 1].copyShapes(
+      selectedShapes.current,
+      shapeCount.current
+    );
+
+    contextMenuItem.current = null;
+    clearAndDraw();
   }
 
   function checkMouseInPaletteShape(realX, realY) {
@@ -447,7 +618,8 @@ const CanvasComponent = ({isModule = false}) => {
 
               const {position, totalPoints} = isNearPoint;
 
-              if (position < totalPoints) {
+              console.log('position', position, 'totalPoints', totalPoints);
+              if (position < totalPoints - 1) {
                 element.userValues.switchArray[position].nextId = 'temp';
               } else {
                 element.userValues.default.nextId = 'temp';
@@ -519,9 +691,142 @@ const CanvasComponent = ({isModule = false}) => {
     const {realX, realY} = getRealCoordinates(clientX, clientY);
     clickedInShape = false;
 
-    // check if right click
-    if (button === 2 && !multiSelectEndPoint.current) {
-      setIsConnecting(1);
+    if (button === 2) {
+      // check if right click
+      if (multiSelectEndPoint.current) {
+        if (isPointInSelectRectangle(realX, realY)) {
+          let items = ['Cut', 'Copy', 'Delete'];
+          // drawContextMenu(contextRef.current, realX, realY, items);
+          contextMenuItem.current = null;
+          clearAndDraw();
+          setContextMenu(
+            contextMenu === null
+              ? {
+                  mouseX: realX,
+                  mouseY: realY,
+                  items: items,
+                }
+              : null
+          );
+        } else {
+          if (
+            contextMenuItem.current == 'Cut' ||
+            contextMenuItem.current == 'Copy'
+          ) {
+            let items = ['Paste'];
+
+            // drawContextMenu(contextRef.current, realX, realY, items);
+            setContextMenu(
+              contextMenu === null
+                ? {
+                    mouseX: realX,
+                    mouseY: realY,
+                    items: items,
+                  }
+                : null
+            );
+          }
+        }
+      } else {
+        setIsConnecting(1);
+      }
+
+      return;
+    }
+
+    if (contextMenuRef.current) {
+      let prevContextMenuItem = contextMenuItem.current;
+
+      if (contextMenuItem.current == 'Paste') {
+        contextMenuItem.current = prevContextMenuItem + '-Paste';
+
+        if (contextMenuItem.current == 'Copy-Paste') {
+          let offsetX = realX - multiSelectStartPoint.current.x;
+
+          let offsetY = realY - multiSelectStartPoint.current.y;
+
+          multiSelectStartPoint.current.x += offsetX;
+          multiSelectStartPoint.current.y += offsetY;
+
+          multiSelectEndPoint.current.x += offsetX;
+          multiSelectEndPoint.current.y += offsetY;
+
+          const connectingShapes = [];
+
+          selectedShapes.current.forEach((shape) => {
+            // shape.x += offsetX;
+            // shape.y += offsetY;
+
+            const count = shapeCount.current[shape.type]++;
+            const newShape = stageGroup.current[
+              pageNumber.current - 1
+            ].addShape(
+              shape.type,
+              shape.x + offsetX,
+              shape.y + offsetY,
+              count,
+              pageNumber.current,
+              isModule
+            );
+            connectingShapes.push({shape, newShape});
+            newShape.userValues = structuredClone(shape.userValues);
+          });
+
+          for (let i = 0; i < connectingShapes.length; i++) {
+            let nextItem = connectingShapes[i].shape.nextItem;
+            connectingShapes[i].newShape.text =
+              connectingShapes[i].shape.text + '1';
+            for (let j = 0; j < connectingShapes.length; j++) {
+              if (connectingShapes[j].shape.id === nextItem) {
+                connectingShapes[i].newShape.nextItem =
+                  connectingShapes[j].newShape.id;
+              }
+            }
+          }
+
+          for (let i = 0; i < connectingShapes.length; i++) {
+            if (connectingShapes[i].shape.type === 'playMenu') {
+              for (
+                let k = 0;
+                k < connectingShapes[i].shape.userValues.items.length;
+                k++
+              ) {
+                let nextId =
+                  connectingShapes[i].shape.userValues.items[k].nextId;
+
+                for (let j = 0; j < connectingShapes.length; j++) {
+                  if (connectingShapes[j].shape.id === nextId) {
+                    connectingShapes[i].newShape.userValues.items[k].nextId =
+                      connectingShapes[j].newShape.id;
+                  }
+                }
+              }
+            }
+          }
+
+          // connectingShapes
+          //   .filter((x) => x.shape.type === 'playMenu')
+          //   .forEach((x) => {
+          //     const items = x.shape.userValues.items;
+
+          //     items.forEach((item) => {
+          //       const nextId = item.nextId;
+
+          //       const index = connectingShapes.findIndex(
+          //         (x) => x.shape.id === nextId
+          //       );
+
+          //       if (index !== -1) {
+          //         x.newShape.nextId = connectingShapes[index].newShape.id;
+          //       }
+          //     });
+          //   });
+
+          contextMenuItem.current = null;
+        }
+      }
+
+      clearAndDraw();
       return;
     }
 
@@ -554,28 +859,42 @@ const CanvasComponent = ({isModule = false}) => {
     e.preventDefault();
     const {clientX, clientY} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
+    const MIN_X = 75;
+    const MAX_X = canvasRef.current.width;
+    const MIN_Y = 55;
+    const MAX_Y = canvasRef.current.height;
 
     const isDraggingShape =
       isDragging.current && isConnecting === 0 && currentShape.current;
 
     if (multiSelectDragStartPoint.current) {
-      // Drag multiple shapes
       const dx = realX - multiSelectDragStartPoint.current.x;
       const dy = realY - multiSelectDragStartPoint.current.y;
 
-      selectedShapes.current?.forEach((shape) => {
-        shape.x += dx || 0;
-        shape.y += dy || 0;
-      });
+      const inBoundsX =
+        multiSelectStartPoint.current.x + dx > MIN_X &&
+        multiSelectEndPoint.current.x + dx < MAX_X;
+      const inBoundsY =
+        multiSelectStartPoint.current.y + dy > MIN_Y &&
+        multiSelectEndPoint.current.y + dy < MAX_Y;
 
-      multiSelectStartPoint.current.x += dx || 0;
-      multiSelectStartPoint.current.y += dy || 0;
-      multiSelectEndPoint.current.x += dx || 0;
-      multiSelectEndPoint.current.y += dy || 0;
+      if (inBoundsX && inBoundsY) {
+        selectedShapes.current?.forEach((shape) => {
+          shape.x += dx || 0;
+          shape.y += dy || 0;
+        });
 
-      clearAndDraw();
-      multiSelectDragStartPoint.current.x = realX;
-      multiSelectDragStartPoint.current.y = realY;
+        multiSelectStartPoint.current.x += dx || 0;
+        multiSelectStartPoint.current.y += dy || 0;
+        multiSelectEndPoint.current.x += dx || 0;
+        multiSelectEndPoint.current.y += dy || 0;
+
+        multiSelectDragStartPoint.current.x = realX;
+        multiSelectDragStartPoint.current.y = realY;
+
+        clearAndDraw();
+      }
+
       return;
     }
 
@@ -589,14 +908,23 @@ const CanvasComponent = ({isModule = false}) => {
       // Drag a single shape
       const dx = realX - startX;
       const dy = realY - startY;
-      const currentShapeRef = currentShape.current;
+      const shape = currentShape.current;
 
-      currentShapeRef.x += dx || 0;
-      currentShapeRef.y += dy || 0;
+      const inBoundsX =
+        shape.x + dx - shape.width / 2 > MIN_X &&
+        shape.x + dx + shape.width / 2 < MAX_X;
+      const inBoundsY =
+        shape.y + dy - shape.height / 2 > MIN_Y &&
+        shape.y + dy + shape.height / 2 < MAX_Y;
 
-      clearAndDraw();
-      startX = realX;
-      startY = realY;
+      if (inBoundsX && inBoundsY) {
+        shape.x += dx || 0;
+        shape.y += dy || 0;
+
+        clearAndDraw();
+        startX = realX;
+        startY = realY;
+      }
     }
 
     resetTooltips();
@@ -672,47 +1000,10 @@ const CanvasComponent = ({isModule = false}) => {
     const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
 
-    if (button !== 0) return;
-
-    if (multiSelectDragStartPoint.current) {
-      multiSelectDragStartPoint.current = null;
-      return;
-    }
-
-    if (multiSelectStartPoint.current && multiSelectEndPoint.current) {
-      return;
-    }
-
-    if (multiSelectStartPoint.current && !multiSelectEndPoint.current) {
-      multiSelectEndPoint.current = {x: realX, y: realY};
-
-      const shapes = stageGroup.current[
-        pageNumber.current - 1
-      ]?.getSelectedShapesInRectangle(
-        multiSelectStartPoint.current.x,
-        multiSelectStartPoint.current.y,
-        multiSelectEndPoint.current.x,
-        multiSelectEndPoint.current.y
-      );
-
-      if (!shapes.length) {
-        resetMultiSelect();
-        return;
-      }
-
-      if (shapes) {
-        selectedShapes.current = shapes;
-        selectedShapes.current.forEach((shape) => {
-          shape.setSelected(true);
-        });
-      }
-    }
-
     // Handle pallet shape
     if (isPalletShape.current) {
       isPalletShape.current = false;
       isDragging.current = false;
-
       const palletFigureDragged = currentShape.current;
       // reset shape to palette
       [palletFigureDragged.x, palletFigureDragged.y] =
@@ -735,6 +1026,56 @@ const CanvasComponent = ({isModule = false}) => {
       alignShapes();
       clearAndDraw();
       return;
+    }
+
+    if (button !== 0) return;
+
+    if (multiSelectDragStartPoint.current) {
+      multiSelectDragStartPoint.current = null;
+      return;
+    }
+
+    if (multiSelectStartPoint.current && multiSelectEndPoint.current) {
+      return;
+    }
+
+    if (multiSelectStartPoint.current && !multiSelectEndPoint.current) {
+      multiSelectEndPoint.current = {x: realX, y: realY};
+
+      if (multiSelectEndPoint.current.x < multiSelectStartPoint.current.x) {
+        let tempx = multiSelectStartPoint.current.x;
+        multiSelectStartPoint.current.x = multiSelectEndPoint.current.x;
+
+        multiSelectEndPoint.current.x = tempx;
+      }
+
+      if (multiSelectEndPoint.current.y < multiSelectStartPoint.current.y) {
+        let tempy = multiSelectStartPoint.current.y;
+        multiSelectStartPoint.current.y = multiSelectEndPoint.current.y;
+
+        multiSelectEndPoint.current.y = tempy;
+      }
+
+      const shapes = stageGroup.current[
+        pageNumber.current - 1
+      ]?.getSelectedShapesInRectangle(
+        multiSelectStartPoint.current.x,
+        multiSelectStartPoint.current.y,
+        multiSelectEndPoint.current.x,
+        multiSelectEndPoint.current.y
+      );
+
+      if (!shapes.length) {
+        resetMultiSelect();
+        return;
+      }
+
+      if (shapes) {
+        selectedShapes.current = shapes;
+        selectedShapes.current.forEach((shape) => {
+          shape.setSelected(true);
+        });
+      }
     }
 
     alignShapes();
@@ -875,7 +1216,7 @@ const CanvasComponent = ({isModule = false}) => {
       if (isSwitchExitPoint.current) {
         const {position, totalPoints} = isSwitchExitPoint.current;
         if (
-          position < totalPoints &&
+          position < totalPoints - 1 &&
           shape1.userValues.switchArray[position].nextId == 'temp'
         ) {
           shape1.userValues.switchArray[position].nextId = undefined;
@@ -940,7 +1281,7 @@ const CanvasComponent = ({isModule = false}) => {
 
         const {position, totalPoints} = currentPoint;
 
-        if (position < totalPoints) {
+        if (position < totalPoints - 1) {
           connectShape1.current.userValues.switchArray[position].nextId =
             connectShape2.current.id;
           clearAndDraw();
@@ -958,6 +1299,7 @@ const CanvasComponent = ({isModule = false}) => {
 
     if (connectShape1.current.type === 'playMenu') {
       if (isMenuExitPoint.current) {
+        console.log('exit point:☄️', isMenuExitPoint.current.exitPoint);
         const index = connectShape1.current.userValues.items.findIndex(
           (row) => row.action === isMenuExitPoint.current.exitPoint
         );
@@ -1022,6 +1364,8 @@ const CanvasComponent = ({isModule = false}) => {
 
   function handlePageChange(e, pageNum) {
     pageNumber.current = pageNum;
+    if (selectedShapes.current) selectedShapes.current.pageChanged = true;
+
     clearAndDraw();
   }
 
@@ -1312,7 +1656,7 @@ const CanvasComponent = ({isModule = false}) => {
   }
 
   return (
-    <>
+    <div onContextMenu={handleRightClick}>
       <CanvasAppbar
         isConnecting={isConnecting}
         setIsConnecting={setIsConnecting}
@@ -1332,8 +1676,7 @@ const CanvasComponent = ({isModule = false}) => {
           isConnecting > 0 && moveTempShape(e);
         }}
         onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onContextMenu={handleRightClick}></canvas>
+        onMouseUp={handleMouseUp}></canvas>
       <Box
         sx={{
           display: 'flex',
@@ -1525,7 +1868,46 @@ const CanvasComponent = ({isModule = false}) => {
           {snackbarMessage.current}
         </Alert>
       </Snackbar>
-    </>
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleContextMenuClick}
+        anchorReference='anchorPosition'
+        anchorPosition={
+          contextMenu !== null
+            ? {top: contextMenu.mouseY, left: contextMenu.mouseX}
+            : undefined
+        }>
+        {contextMenu?.items.map((item, i) => (
+          <MenuItem onClick={(e) => handleContextMenuClick(e, item)} key={i}>
+            {item === 'Cut' && (
+              <ContentCutIcon
+                sx={{mr: 0.5, fontSize: '1.1rem', color: '#424242'}}
+              />
+            )}
+            {item === 'Copy' && (
+              <ContentCopyIcon
+                sx={{mr: 0.5, fontSize: '1.1rem', color: '#424242'}}
+              />
+            )}
+            {item === 'Delete' && (
+              <DeleteIcon
+                sx={{mr: 0.5, fontSize: '1.1rem', color: '#424242'}}
+              />
+            )}
+            {item === 'Paste' && (
+              <ContentPasteIcon
+                sx={{mr: 0.5, fontSize: '1.1rem', color: '#424242'}}
+              />
+            )}
+            <Typography>{item}</Typography>
+          </MenuItem>
+        ))}
+        {/* <MenuItem onClick={handleCloseContextMenu}>Copy</MenuItem>
+        <MenuItem onClick={handleCloseContextMenu}>Print</MenuItem>
+        <MenuItem onClick={handleCloseContextMenu}>Highlight</MenuItem>
+        <MenuItem onClick={handleCloseContextMenu}>Email</MenuItem> */}
+      </Menu>
+    </div>
   );
 };
 
