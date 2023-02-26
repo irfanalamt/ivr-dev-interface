@@ -354,19 +354,6 @@ const CanvasComponent = ({isModule = false}) => {
       80 + scrollOffsetY.current
     );
 
-    // If the user is dragging a shape and it's not a palette shape, draw a delete icon
-    if (isDragging.current && !isPalletShape.current) {
-      const img = new Image();
-      img.src = '/icons/delete.png';
-      ctx.drawImage(
-        img,
-        window.innerWidth - 80,
-        window.innerHeight - 95 + scrollOffsetY.current,
-        50,
-        50
-      );
-    }
-
     // Draw the palette shapes and stage shapes on the canvas
     palletGroup.current.drawAllShapes(ctx);
     stageGroup.current[pageNumber.current - 1]?.drawAllShapes(ctx);
@@ -1093,35 +1080,6 @@ const CanvasComponent = ({isModule = false}) => {
     }
 
     alignShapes();
-
-    // Handle deleting shapes
-    if (currentShape.current && !isPalletShape.current) {
-      if (
-        currentShape.current.y >
-          window.innerHeight - 100 + scrollOffsetY.current &&
-        currentShape.current.x + currentShape.current.width / 2 >
-          window.innerWidth - 60
-      ) {
-        stageGroup.current[pageNumber.current - 1].removeShape(
-          currentShape.current.id
-        );
-
-        if (
-          currentShape.current.type === 'connector' ||
-          currentShape.current.type === 'endFlow'
-        ) {
-          snackbarMessage.current = `${currentShape.current.type} deleted.`;
-        } else {
-          snackbarMessage.current = `${currentShape.current.text} deleted.`;
-        }
-        isDragging.current = false;
-        currentShape.current = null;
-        clearAndDraw();
-        setOpenSnackbar(true);
-
-        return;
-      }
-    }
 
     // Handle connecting shapes
     if (isDragging.current && isConnecting === 2) {
