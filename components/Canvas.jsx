@@ -7,6 +7,7 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsIcon from '@mui/icons-material/Settings';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import {
   Alert,
@@ -417,11 +418,15 @@ const CanvasComponent = ({isModule = false}) => {
     const {realX, realY} = getRealCoordinates(clientX, clientY);
     setContextMenu(null);
 
-    console.log('id:::', item);
+    if (item === 'Settings') {
+      handleContextSettings();
+      clearAndDraw();
+      return;
+    }
 
     if (item === 'Delete') {
-      console.log('delete context');
       handleContextDelete();
+      clearAndDraw();
       return;
     }
 
@@ -429,6 +434,10 @@ const CanvasComponent = ({isModule = false}) => {
       // selectedShapes.current.forEach((shape) =>
       //   stageGroup.current[pageNumber.current - 1].removeShape(shape.id)
       // );
+      if (!multiSelectEndPoint.current) {
+        selectedShapes.current = [];
+        selectedShapes.current.push(currentShape.current);
+      }
       selectedShapes.current.cutPage = pageNumber.current;
       contextMenuItem.current = 'Cut';
       clearAndDraw();
@@ -436,36 +445,55 @@ const CanvasComponent = ({isModule = false}) => {
     }
 
     if (item === 'Copy') {
+      if (!multiSelectEndPoint.current) {
+        selectedShapes.current = [];
+        selectedShapes.current.push(currentShape.current);
+      }
       contextMenuItem.current = 'Copy';
       clearAndDraw();
       return;
     }
 
     if (item === 'Paste') {
-      console.log('paste🔥', item);
-
       if (contextMenuItem.current == 'Copy') {
         handleContextCopyPaste(realX, realY);
       } else if (contextMenuItem.current == 'Cut') {
-        console.log('cut-paste🔥', item);
         handleContextCutPaste(realX, realY);
       }
     }
     contextMenuItem.current = null;
   }
 
+  function handleContextSettings() {
+    const shape = currentShape.current;
+    if (shape.type !== 'connector' && shape.type !== 'tinyCircle') {
+      console.log('Current shape: ' + JSON.stringify(shape, null, 2));
+
+      shape.setSelected(true);
+      setIsOpenDrawer(true);
+    }
+  }
+
   function handleContextDelete() {
-    console.log('deleteeee');
-    selectedShapes.current.forEach((shape) =>
-      stageGroup.current[pageNumber.current - 1].removeShape(shape.id)
-    );
+    if (multiSelectEndPoint.current) {
+      selectedShapes.current.forEach((shape) =>
+        stageGroup.current[pageNumber.current - 1].removeShape(shape.id)
+      );
 
-    const num = selectedShapes.current.length;
+      const num = selectedShapes.current.length;
 
-    snackbarMessage.current = `${num} element${num > 1 ? 's' : ''} deleted.`;
-    setOpenSnackbar(true);
+      snackbarMessage.current = `${num} element${num > 1 ? 's' : ''} deleted.`;
+      setOpenSnackbar(true);
 
-    resetMultiSelect();
+      resetMultiSelect();
+    } else {
+      // single shape
+      stageGroup.current[pageNumber.current - 1].removeShape(
+        currentShape.current.id
+      );
+      snackbarMessage.current = `${currentShape.current.text} deleted.`;
+      setOpenSnackbar(true);
+    }
 
     contextMenuItem.current = null;
   }
@@ -475,92 +503,128 @@ const CanvasComponent = ({isModule = false}) => {
     const MIN_Y = 55;
     const MAX_Y = canvasRef.current.height;
 
-    let offsetX = realX - multiSelectStartPoint.current.x;
-    let offsetY = realY - multiSelectStartPoint.current.y;
+    if (multiSelectEndPoint.current) {
+      let offsetX = realX - multiSelectStartPoint.current.x;
+      let offsetY = realY - multiSelectStartPoint.current.y;
 
-    if (multiSelectStartPoint.current.x + offsetX < MIN_X) {
-      offsetX = MIN_X - multiSelectStartPoint.current.x;
-    }
-    if (multiSelectStartPoint.current.y + offsetY < MIN_Y) {
-      offsetY = MIN_Y - multiSelectStartPoint.current.y;
-    }
-    if (multiSelectEndPoint.current.x + offsetX > MAX_X) {
-      offsetX = MAX_X - multiSelectEndPoint.current.x;
-    }
-    if (multiSelectEndPoint.current.y + offsetY > MAX_Y) {
-      offsetY = MAX_Y - multiSelectEndPoint.current.y;
-    }
+      if (multiSelectStartPoint.current.x + offsetX < MIN_X)
+        offsetX = MIN_X - multiSelectStartPoint.current.x;
 
-    multiSelectStartPoint.current.x += offsetX;
-    multiSelectStartPoint.current.y += offsetY;
+      if (multiSelectStartPoint.current.y + offsetY < MIN_Y)
+        offsetY = MIN_Y - multiSelectStartPoint.current.y;
 
-    multiSelectEndPoint.current.x += offsetX;
-    multiSelectEndPoint.current.y += offsetY;
+      if (multiSelectEndPoint.current.x + offsetX > MAX_X)
+        offsetX = MAX_X - multiSelectEndPoint.current.x;
 
-    selectedShapes.current.forEach((shape) => {
+      if (multiSelectEndPoint.current.y + offsetY > MAX_Y)
+        offsetY = MAX_Y - multiSelectEndPoint.current.y;
+
+      multiSelectStartPoint.current.x += offsetX;
+      multiSelectStartPoint.current.y += offsetY;
+
+      multiSelectEndPoint.current.x += offsetX;
+      multiSelectEndPoint.current.y += offsetY;
+
+      selectedShapes.current.forEach((shape) => {
+        shape.x += offsetX;
+        shape.y += offsetY;
+      });
+
+      selectedShapes.current.forEach((shape) =>
+        stageGroup.current[selectedShapes.current.cutPage - 1].removeShape(
+          shape.id
+        )
+      );
+
+      if (selectedShapes.current.cutPage !== pageNumber.current) {
+        stageGroup.current[
+          selectedShapes.current.cutPage - 1
+        ].removeConnectionsTo(selectedShapes.current);
+      }
+
+      stageGroup.current[pageNumber.current - 1].moveShapes(
+        selectedShapes.current
+      );
+    } else {
+      // single shape
+
+      const shape = selectedShapes.current[0];
+
+      const offsetX = realX - shape.x;
+      const offsetY = realY - shape.y;
       shape.x += offsetX;
       shape.y += offsetY;
-    });
 
-    selectedShapes.current.forEach((shape) =>
       stageGroup.current[selectedShapes.current.cutPage - 1].removeShape(
         shape.id
-      )
-    );
+      );
 
-    if (selectedShapes.current.cutPage !== pageNumber.current) {
-      stageGroup.current[
-        selectedShapes.current.cutPage - 1
-      ].removeConnectionsTo(selectedShapes.current);
+      if (selectedShapes.current.cutPage !== pageNumber.current) {
+        stageGroup.current[
+          selectedShapes.current.cutPage - 1
+        ].removeConnectionsTo([shape]);
+      }
+
+      stageGroup.current[pageNumber.current - 1].moveShapes([shape]);
     }
 
-    stageGroup.current[pageNumber.current - 1].moveShapes(
-      selectedShapes.current
-    );
-
-    console.log('selectedShapes:', selectedShapes.current);
     contextMenuItem.current = null;
     clearAndDraw();
   }
 
   function handleContextCopyPaste(realX, realY) {
-    console.log('copy-paste🔥');
-
     const MIN_X = 75;
     const MAX_X = canvasRef.current.width;
     const MIN_Y = 55;
     const MAX_Y = canvasRef.current.height;
 
-    let offsetX = realX - multiSelectStartPoint.current.x;
-    let offsetY = realY - multiSelectStartPoint.current.y;
+    if (multiSelectEndPoint.current) {
+      let offsetX = realX - multiSelectStartPoint.current.x;
+      let offsetY = realY - multiSelectStartPoint.current.y;
 
-    if (multiSelectStartPoint.current.x + offsetX < MIN_X) {
-      offsetX = MIN_X - multiSelectStartPoint.current.x;
-    }
-    if (multiSelectStartPoint.current.y + offsetY < MIN_Y) {
-      offsetY = MIN_Y - multiSelectStartPoint.current.y;
-    }
-    if (multiSelectEndPoint.current.x + offsetX > MAX_X) {
-      offsetX = MAX_X - multiSelectEndPoint.current.x;
-    }
-    if (multiSelectEndPoint.current.y + offsetY > MAX_Y) {
-      offsetY = MAX_Y - multiSelectEndPoint.current.y;
-    }
+      if (multiSelectStartPoint.current.x + offsetX < MIN_X)
+        offsetX = MIN_X - multiSelectStartPoint.current.x;
 
-    multiSelectStartPoint.current.x += offsetX;
-    multiSelectStartPoint.current.y += offsetY;
+      if (multiSelectStartPoint.current.y + offsetY < MIN_Y)
+        offsetY = MIN_Y - multiSelectStartPoint.current.y;
 
-    multiSelectEndPoint.current.x += offsetX;
-    multiSelectEndPoint.current.y += offsetY;
+      if (multiSelectEndPoint.current.x + offsetX > MAX_X)
+        offsetX = MAX_X - multiSelectEndPoint.current.x;
 
-    stageGroup.current[pageNumber.current - 1].copyShapes(
-      selectedShapes.current,
-      offsetX,
-      offsetY,
-      shapeCount.current,
-      pageNumber.current,
-      getEntireShapeNames()
-    );
+      if (multiSelectEndPoint.current.y + offsetY > MAX_Y)
+        offsetY = MAX_Y - multiSelectEndPoint.current.y;
+
+      multiSelectStartPoint.current.x += offsetX;
+      multiSelectStartPoint.current.y += offsetY;
+
+      multiSelectEndPoint.current.x += offsetX;
+      multiSelectEndPoint.current.y += offsetY;
+
+      stageGroup.current[pageNumber.current - 1].copyShapes(
+        selectedShapes.current,
+        offsetX,
+        offsetY,
+        shapeCount.current,
+        pageNumber.current,
+        getEntireShapeNames()
+      );
+    } else {
+      // single shape
+
+      const shape = selectedShapes.current[0];
+
+      const offsetX = realX - shape.x;
+      const offsetY = realY - shape.y;
+
+      stageGroup.current[pageNumber.current - 1].copyShapes(
+        [shape],
+        offsetX,
+        offsetY,
+        shapeCount.current,
+        pageNumber.current,
+        getEntireShapeNames()
+      );
+    }
 
     contextMenuItem.current = null;
     resetMultiSelect();
@@ -582,7 +646,7 @@ const CanvasComponent = ({isModule = false}) => {
     });
   }
 
-  function checkMouseInStageShape(realX, realY) {
+  function checkMouseInStageShape(realX, realY, button) {
     const shapeEntries =
       stageGroup.current[pageNumber.current - 1].getShapesEntries();
 
@@ -651,12 +715,14 @@ const CanvasComponent = ({isModule = false}) => {
           }
         }
         currentShape.current = element;
-        isDragging.current = true;
-        isPalletShape.current = false;
-        startX = realX;
-        startY = realY;
-        startX1 = realX;
-        startY1 = realY;
+        if (button === 0) {
+          isDragging.current = true;
+          isPalletShape.current = false;
+          startX = realX;
+          startY = realY;
+          startX1 = realX;
+          startY1 = realY;
+        }
       }
     });
   }
@@ -731,7 +797,47 @@ const CanvasComponent = ({isModule = false}) => {
           }
         }
       } else {
-        setIsConnecting(1);
+        checkMouseInStageShape(realX, realY);
+        if (clickedInShape) {
+          if (
+            !['connector', 'tinyCircle'].includes(currentShape.current.type)
+          ) {
+            let items = ['Settings', 'Cut', 'Copy', 'Delete'];
+
+            contextMenuItem.current = null;
+            clearAndDraw();
+            setContextMenu(
+              contextMenu === null
+                ? {
+                    mouseX: realX,
+                    mouseY: realY,
+                    items: items,
+                  }
+                : null
+            );
+          }
+        } else if (realX > 75) {
+          if (
+            selectedShapes.current &&
+            (contextMenuItem.current == 'Cut' ||
+              contextMenuItem.current == 'Copy')
+          ) {
+            let items = ['Paste'];
+
+            clearAndDraw();
+            setContextMenu(
+              contextMenu === null
+                ? {
+                    mouseX: realX,
+                    mouseY: realY,
+                    items: items,
+                  }
+                : null
+            );
+          } else {
+            setIsConnecting(1);
+          }
+        }
       }
 
       return;
@@ -751,7 +857,7 @@ const CanvasComponent = ({isModule = false}) => {
     checkMouseInPaletteShape(realX, realY);
 
     // check if mouse in stage shape
-    checkMouseInStageShape(realX, realY);
+    checkMouseInStageShape(realX, realY, button);
 
     if (!clickedInShape) {
       setIsConnecting(0);
@@ -1036,28 +1142,28 @@ const CanvasComponent = ({isModule = false}) => {
     isDragging.current = false;
     clearAndDraw();
 
-    // Handle clicking on stage shape
-    if (realX === startX1 && realY === startY1) {
-      stageGroup.current[pageNumber.current - 1]
-        .getShapesAsArray()
-        .forEach((element) => {
-          if (
-            element.isMouseInShape(realX, realY) &&
-            element.type !== 'connector' &&
-            element.type !== 'tinyCircle'
-          ) {
-            currentShape.current = element;
-            console.log(
-              'Current shape: ' + JSON.stringify(currentShape.current, null, 2)
-            );
+    // // Handle clicking on stage shape
+    // if (realX === startX1 && realY === startY1) {
+    //   stageGroup.current[pageNumber.current - 1]
+    //     .getShapesAsArray()
+    //     .forEach((element) => {
+    //       if (
+    //         element.isMouseInShape(realX, realY) &&
+    //         element.type !== 'connector' &&
+    //         element.type !== 'tinyCircle'
+    //       ) {
+    //         currentShape.current = element;
+    //         console.log(
+    //           'Current shape: ' + JSON.stringify(currentShape.current, null, 2)
+    //         );
 
-            currentShape.current.setSelected(true);
-            setIsOpenDrawer(true);
-            clearAndDraw();
-            return;
-          }
-        });
-    }
+    //         currentShape.current.setSelected(true);
+    //         setIsOpenDrawer(true);
+    //         clearAndDraw();
+    //         return;
+    //       }
+    //     });
+    // }
   }
 
   function drawMultiSelectRectangle(ctx, realX, realY) {
@@ -1081,7 +1187,6 @@ const CanvasComponent = ({isModule = false}) => {
       });
     }
 
-    selectedShapes.current = null;
     multiSelectDragStartPoint.current = null;
     clearAndDraw();
   }
@@ -1793,28 +1898,36 @@ const CanvasComponent = ({isModule = false}) => {
             : undefined
         }>
         {contextMenu?.items.map((item, i) => (
-          <MenuItem onClick={(e) => handleContextMenuClick(e, item)} key={i}>
+          <MenuItem
+            sx={{display: 'flex', alignItems: 'center'}}
+            onClick={(e) => handleContextMenuClick(e, item)}
+            key={i}>
+            {item === 'Settings' && (
+              <SettingsIcon
+                sx={{mr: 0.8, fontSize: 'small', color: '#424242'}}
+              />
+            )}
             {item === 'Cut' && (
               <ContentCutIcon
-                sx={{mr: 0.5, fontSize: '1.1rem', color: '#424242'}}
+                sx={{mr: 0.8, fontSize: 'small', color: '#424242'}}
               />
             )}
             {item === 'Copy' && (
               <ContentCopyIcon
-                sx={{mr: 0.5, fontSize: '1.1rem', color: '#424242'}}
+                sx={{mr: 0.8, fontSize: 'small', color: '#424242'}}
               />
             )}
             {item === 'Delete' && (
-              <DeleteIcon
-                sx={{mr: 0.5, fontSize: '1.1rem', color: '#424242'}}
-              />
+              <DeleteIcon sx={{mr: 0.8, fontSize: 'small', color: '#424242'}} />
             )}
             {item === 'Paste' && (
               <ContentPasteIcon
-                sx={{mr: 0.5, fontSize: '1.1rem', color: '#424242'}}
+                sx={{mr: 0.8, fontSize: 'small', color: '#424242'}}
               />
             )}
-            <Typography>{item}</Typography>
+            <Typography sx={{fontSize: 'small'}} variant='button'>
+              {item}
+            </Typography>
           </MenuItem>
         ))}
         {/* <MenuItem onClick={handleCloseContextMenu}>Copy</MenuItem>
