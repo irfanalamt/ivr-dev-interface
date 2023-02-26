@@ -800,7 +800,8 @@ const CanvasComponent = ({isModule = false}) => {
         checkMouseInStageShape(realX, realY);
         if (clickedInShape) {
           if (
-            !['connector', 'tinyCircle'].includes(currentShape.current.type)
+            !['connector', 'tinyCircle'].includes(currentShape.current.type) &&
+            isConnecting === 0
           ) {
             let items = ['Settings', 'Cut', 'Copy', 'Delete'];
 
