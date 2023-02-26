@@ -128,12 +128,12 @@ const FunctionBlock = ({
       <ListItem sx={{mt: 4}}>
         <TextField
           sx={{
-            mx: 'auto',
+            mx: 2,
             backgroundColor: isFunctionError
               ? '#ffebee'
               : functionString.length > 2 && '#f1f8e9',
           }}
-          label={isFunctionError ? 'code invalid' : 'code valid'}
+          label={isFunctionError ? 'code invalid' : ''}
           value={functionString}
           onChange={(e) => {
             setFunctionString(e.target.value);
@@ -141,6 +141,7 @@ const FunctionBlock = ({
           placeholder='Enter JS code'
           minRows={9}
           multiline
+          fullWidth
         />
       </ListItem>
       <ListItem>
