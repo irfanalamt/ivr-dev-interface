@@ -161,19 +161,6 @@ static error(message){}
           fullWidth
         />
       </ListItem>
-      <ListItem>
-        <Button
-          sx={{
-            mx: 'auto',
-            backgroundColor: '#dcdcdc',
-            color: '#1b5e20',
-            '&:hover': {backgroundColor: '#b0b0b0'},
-          }}
-          variant='contained'
-          onClick={() => validateFunctionString(functionString)}>
-          Validate
-        </Button>
-      </ListItem>
     </List>
   );
 };
