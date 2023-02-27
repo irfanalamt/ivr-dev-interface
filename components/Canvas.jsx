@@ -424,6 +424,7 @@ const CanvasComponent = ({isModule = false}) => {
       if (!multiSelectEndPoint.current) {
         selectedShapes.current = [];
         selectedShapes.current.push(currentShape.current);
+        currentShape.current.setSelected(true);
       }
       selectedShapes.current.cutPage = pageNumber.current;
       contextMenuItem.current = 'Cut';
@@ -435,6 +436,7 @@ const CanvasComponent = ({isModule = false}) => {
       if (!multiSelectEndPoint.current) {
         selectedShapes.current = [];
         selectedShapes.current.push(currentShape.current);
+        currentShape.current.setSelected(true);
       }
       contextMenuItem.current = 'Copy';
       clearAndDraw();
@@ -536,6 +538,7 @@ const CanvasComponent = ({isModule = false}) => {
       // single shape
 
       const shape = selectedShapes.current[0];
+      shape.setSelected(false);
 
       const offsetX = realX - shape.x;
       const offsetY = realY - shape.y;
@@ -595,10 +598,12 @@ const CanvasComponent = ({isModule = false}) => {
         pageNumber.current,
         getEntireShapeNames()
       );
+      resetMultiSelect();
     } else {
       // single shape
 
       const shape = selectedShapes.current[0];
+      shape.setSelected(false);
 
       const offsetX = realX - shape.x;
       const offsetY = realY - shape.y;
@@ -611,10 +616,10 @@ const CanvasComponent = ({isModule = false}) => {
         pageNumber.current,
         getEntireShapeNames()
       );
+      clearAndDraw();
     }
 
     contextMenuItem.current = null;
-    resetMultiSelect();
   }
 
   function checkMouseInPaletteShape(realX, realY) {
