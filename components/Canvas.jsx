@@ -909,31 +909,54 @@ const CanvasComponent = ({isModule = false}) => {
       drawMultiSelectRectangle(contextRef.current, realX, realY);
       return;
     }
+    resetTooltips();
 
     if (isDraggingShape) {
       // Drag a single shape
-      const dx = realX - startX;
-      const dy = realY - startY;
-      const shape = currentShape.current;
+      if (isPalletShape.current && realX > 150) {
+        isPalletShape.current = false;
 
-      const inBoundsX =
-        shape.x + dx - shape.width / 2 > MIN_X &&
-        shape.x + dx + shape.width / 2 < MAX_X;
-      const inBoundsY =
-        shape.y + dy - shape.height / 2 > MIN_Y &&
-        shape.y + dy + shape.height / 2 < MAX_Y;
+        const palletFigureDragged = currentShape.current;
+        // reset shape to palette
+        [palletFigureDragged.x, palletFigureDragged.y] =
+          palletFigureDragged.getInitPos();
 
-      if (inBoundsX && inBoundsY) {
-        shape.x += dx || 0;
-        shape.y += dy || 0;
+        const count = shapeCount.current[palletFigureDragged.type]++;
+        const newShape = stageGroup.current[pageNumber.current - 1].addShape(
+          palletFigureDragged.type,
+          realX,
+          realY,
+          count,
+          pageNumber.current,
+          isModule
+        );
+        currentShape.current = newShape;
 
         clearAndDraw();
-        startX = realX;
-        startY = realY;
-      }
-    }
+      } else {
+        const dx = realX - startX;
+        const dy = realY - startY;
+        const shape = currentShape.current;
 
-    resetTooltips();
+        const inBoundsX =
+          shape.x + dx - shape.width / 2 > MIN_X &&
+          shape.x + dx + shape.width / 2 < MAX_X;
+        const inBoundsY =
+          shape.y + dy - shape.height / 2 > MIN_Y &&
+          shape.y + dy + shape.height / 2 < MAX_Y;
+
+        if (inBoundsX && inBoundsY) {
+          shape.x += dx || 0;
+          shape.y += dy || 0;
+
+          clearAndDraw();
+          startX = realX;
+          startY = realY;
+        }
+      }
+
+      return;
+    }
 
     // place tooltip on mouse pallet shape
     for (const shape of palletGroup.current.getShapesAsArray()) {
@@ -1007,7 +1030,7 @@ const CanvasComponent = ({isModule = false}) => {
     const {realX, realY} = getRealCoordinates(clientX, clientY);
 
     // Handle pallet shape
-    if (isPalletShape.current) {
+    if (isPalletShape.current && isDragging.current) {
       isPalletShape.current = false;
       isDragging.current = false;
       const palletFigureDragged = currentShape.current;
@@ -1015,24 +1038,31 @@ const CanvasComponent = ({isModule = false}) => {
       [palletFigureDragged.x, palletFigureDragged.y] =
         palletFigureDragged.getInitPos();
 
-      if (realX < 120) {
-        clearAndDraw();
-        return;
-      }
-
-      const count = shapeCount.current[palletFigureDragged.type]++;
-      stageGroup.current[pageNumber.current - 1].addShape(
-        palletFigureDragged.type,
-        realX,
-        realY,
-        count,
-        pageNumber.current,
-        isModule
-      );
-      alignShapes();
       clearAndDraw();
       return;
     }
+
+    // // Drag a single shape
+    // if (isPalletShape.current && realX > 150) {
+    //   isPalletShape.current = false;
+
+    //   const palletFigureDragged = currentShape.current;
+    //   // reset shape to palette
+    //   [palletFigureDragged.x, palletFigureDragged.y] =
+    //     palletFigureDragged.getInitPos();
+
+    //   const count = shapeCount.current[palletFigureDragged.type]++;
+    //   const newShape = stageGroup.current[pageNumber.current - 1].addShape(
+    //     palletFigureDragged.type,
+    //     realX,
+    //     realY,
+    //     count,
+    //     pageNumber.current,
+    //     isModule
+    //   );
+    //   currentShape.current = newShape;
+
+    //   clearAndDraw();
 
     if (button !== 0) return;
 
