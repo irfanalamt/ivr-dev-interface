@@ -24,23 +24,6 @@ const DrawerComponent = ({
 }) => {
   const childRef = {};
 
-  const handleClosing = () => {
-    shape.setSelected(false);
-    if (!childRef.getCurrentUserValues) {
-      handleCloseDrawer();
-      return;
-    }
-    const currentValues = childRef.getCurrentUserValues();
-    console.log('🚀currentValues', currentValues);
-    const existingValues = JSON.stringify({
-      name: shape.text,
-      userValues: shape.userValues,
-    });
-    console.log(' existingValues', existingValues);
-
-    if (currentValues === existingValues) handleCloseDrawer();
-  };
-
   if (!shape) return null;
 
   const renderShape = () => {
@@ -174,7 +157,7 @@ const DrawerComponent = ({
   };
 
   return (
-    <Drawer anchor='right' open={isOpen} onClose={handleClosing}>
+    <Drawer anchor='right' open={isOpen}>
       {renderShape()}
     </Drawer>
   );
