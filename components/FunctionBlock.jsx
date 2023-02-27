@@ -30,14 +30,18 @@ const FunctionBlock = ({
     }
 
     const newReplacedString = replaceDollarString(functionString);
+    const ivrReplacedString = replaceLogWithIvrLog(newReplacedString);
     const shapeId = shape.id;
     const shapeFunctionName = shapeName || `runScript${shapeId}`;
-    const codeString = `this.${shapeFunctionName} = async function(){${newReplacedString}};`;
+    const codeString = `this.${shapeFunctionName} = async function(){${ivrReplacedString}};`;
     shape.setFunctionString(codeString);
   }
 
   function replaceDollarString(str) {
     return str.replace(/\$([a-zA-Z])/g, 'this.$1');
+  }
+  function replaceLogWithIvrLog(str) {
+    return str.replace(/log/g, 'IVR.log');
   }
 
   function saveUserValues() {
@@ -56,7 +60,7 @@ const FunctionBlock = ({
     shape.setUserValues({script: functionString});
     clearAndDraw();
 
-    if (validateFunctionString()) {
+    if (validateFunctionString(functionString)) {
       generateJS();
       setSuccessText('Save successful');
       setTimeout(() => setSuccessText(''), 3000);
@@ -77,21 +81,32 @@ const FunctionBlock = ({
     return variables;
   }
 
-  function validateFunctionString() {
-    const topCode = getUserVariablesString();
-    const bottomCode = functionString;
+  function getLogCode() {
+    const logValidationString = `class log{
+static trace(message){}
+static info(message){}
+static error(message){}
+    }`;
+
+    return logValidationString;
+  }
+
+  function validateFunctionString(script) {
+    const variablesCode = getUserVariablesString();
+    const logCode = getLogCode();
+    const bottomCode = script;
 
     try {
-      eval(topCode + bottomCode);
+      eval(variablesCode + logCode + bottomCode);
     } catch (error) {
       setIsFunctionError(true);
+      setSuccessText('');
       setErrorText(error.message);
       return false;
     }
     setIsFunctionError(false);
     setErrorText('');
     setSuccessText('script valid');
-    setTimeout(() => setSuccessText(''), 3000);
 
     return true;
   }
@@ -137,7 +152,9 @@ const FunctionBlock = ({
           value={functionString}
           onChange={(e) => {
             setFunctionString(e.target.value);
+            validateFunctionString(e.target.value);
           }}
+          inputProps={{spellCheck: 'false'}}
           placeholder='Enter JS code'
           minRows={9}
           multiline
@@ -153,7 +170,7 @@ const FunctionBlock = ({
             '&:hover': {backgroundColor: '#b0b0b0'},
           }}
           variant='contained'
-          onClick={validateFunctionString}>
+          onClick={() => validateFunctionString(functionString)}>
           Validate
         </Button>
       </ListItem>
