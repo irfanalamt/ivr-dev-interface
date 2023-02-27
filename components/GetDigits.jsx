@@ -33,8 +33,8 @@ const GetDigits = ({
   const [resultName, setResultName] = useState(userValues.variableName ?? '');
   const [shapeName, setShapeName] = useState(shape.text);
   const [tabValue, setTabValue] = useState(0);
-  const [minDigits, setMinDigits] = useState(userValues.params.minDigits ?? 1);
-  const [maxDigits, setMaxDigits] = useState(userValues.params.maxDigits ?? 1);
+  const [minDigits, setMinDigits] = useState(userValues.params.minDigits ?? 5);
+  const [maxDigits, setMaxDigits] = useState(userValues.params.maxDigits ?? 20);
   const [msgObj, setMsgObj] = useState(userValues.messageList || []);
   const [paramsObj, setParamsObj] = useState(
     userValues.params.paramsList ?? []

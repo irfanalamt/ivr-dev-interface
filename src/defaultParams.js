@@ -21,7 +21,7 @@ const defaultParams = [
   },
   {
     name: 'terminator',
-    value: 'X',
+    value: '#',
     type: 'select',
     optionList: [
       'X',
@@ -147,6 +147,10 @@ const defaultParams = [
   {
     name: 'timeoutTransferPoint',
     value: '',
+  },
+  {
+    name: 'allowedDigits',
+    value: '1234567890',
   },
   {
     name: 'logDB',
