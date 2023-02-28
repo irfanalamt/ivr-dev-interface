@@ -930,6 +930,7 @@ const CanvasComponent = ({isModule = false}) => {
           pageNumber.current,
           isModule
         );
+
         currentShape.current = newShape;
 
         clearAndDraw();
@@ -945,7 +946,7 @@ const CanvasComponent = ({isModule = false}) => {
           shape.y + dy - shape.height / 2 > MIN_Y &&
           shape.y + dy + shape.height / 2 < MAX_Y;
 
-        if (inBoundsX && inBoundsY) {
+        if ((inBoundsX && inBoundsY) || isPalletShape.current) {
           shape.x += dx || 0;
           shape.y += dy || 0;
 
@@ -1029,17 +1030,22 @@ const CanvasComponent = ({isModule = false}) => {
     const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
 
-    // Handle pallet shape
-    if (isPalletShape.current && isDragging.current) {
-      isPalletShape.current = false;
-      isDragging.current = false;
-      const palletFigureDragged = currentShape.current;
-      // reset shape to palette
-      [palletFigureDragged.x, palletFigureDragged.y] =
-        palletFigureDragged.getInitPos();
-
-      clearAndDraw();
-      return;
+    if (isDragging.current) {
+      // Handle pallet shape
+      if (isPalletShape.current) {
+        isPalletShape.current = false;
+        isDragging.current = false;
+        const palletFigureDragged = currentShape.current;
+        // reset shape to palette
+        [palletFigureDragged.x, palletFigureDragged.y] =
+          palletFigureDragged.getInitPos();
+        clearAndDraw();
+        return;
+      } else {
+        if (realX < 75 + currentShape.current.width / 2) {
+          currentShape.current.x = 75 + 30 + currentShape.current.width / 2;
+        }
+      }
     }
 
     // // Drag a single shape
