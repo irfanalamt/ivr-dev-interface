@@ -76,7 +76,7 @@ const MessageList = ({
     let isError = false;
 
     if (type) {
-      const errorM = checkValidity(type, value);
+      const errorM = checkValidity(type.toLowerCase(), value);
       if (errorM === -1) {
         setErrorText('');
       } else {
@@ -131,7 +131,7 @@ const MessageList = ({
           </IconButton>
         </Tooltip>
       </ListItem>
-      <Divider sx={{mt: 1}} />
+      <Divider sx={{my: 1}} />
       <List>
         {messageList.map((m, i) => {
           if (['Prompt', 'Number', 'Ordinal', 'Digit'].includes(m.type))
@@ -152,12 +152,13 @@ const MessageList = ({
                   sx={{
                     display: m.useVariable ? 'none' : 'block',
                     px: 1,
+                    width: m.type === 'Prompt' ? undefined : 120,
                   }}
                   size='small'
                   value={m.item ?? ''}
                   onChange={(e) => handleChange(e, i, m.type)}
                   error={m.isError}
-                  fullWidth
+                  fullWidth={m.type === 'Prompt' && true}
                 />
                 <Select
                   sx={{display: m.useVariable ? 'block' : 'none'}}
