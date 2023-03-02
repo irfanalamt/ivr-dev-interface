@@ -11,6 +11,20 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     ? Object.keys(toolBarObj)[0]
     : null;
 
+  const shapeCount = useRef({
+    setParams: 1,
+    runScript: 1,
+    callAPI: 1,
+    playMenu: 1,
+    getDigits: 1,
+    playMessage: 1,
+    playConfirm: 1,
+    switch: 1,
+    endFlow: 1,
+    connector: 1,
+    jumper: 1,
+    module: 1,
+  });
   const currentShape = useRef(null);
   const isDragging = useRef(false);
 
@@ -40,7 +54,9 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   function addNewShape(x, y, type) {
     // to add a new shape to state variable
 
+    const count = shapeCount.current[type]++;
     const newShape = new Shape(x, y, type);
+    newShape.text += count;
     setShapes([...shapes, newShape]);
   }
 
@@ -80,6 +96,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     e.preventDefault();
     // Reset dragging mode
     isDragging.current = false;
+    clearAndDraw();
   }
 
   function handleMouseMove(e) {
