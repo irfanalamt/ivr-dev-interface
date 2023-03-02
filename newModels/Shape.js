@@ -201,8 +201,8 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(this.text, this.x, this.y);
-    ctx.strokeStyle = '#ff5722';
-    this.style = '#ff5722';
+    ctx.strokeStyle = '#008080';
+    this.style = '#008080';
     ctx.strokeRect(
       this.x - this.width / 2,
       this.y - this.height / 2,
@@ -236,9 +236,9 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(this.text, this.x, this.y);
-    ctx.strokeStyle = '#2196f3';
+    ctx.strokeStyle = '#008080';
     ctx.stroke();
-    this.style = '#2196f3';
+    this.style = '#008080';
     this.drawDotsTopAndBottom(ctx);
   }
   drawPentagon(ctx) {
@@ -263,9 +263,9 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(this.text, this.x, this.y - 2);
-    ctx.strokeStyle = '#e91e63';
+    ctx.strokeStyle = '#008080';
     ctx.stroke();
-    this.style = '#e91e63';
+    this.style = '#008080';
     this.drawDotsTopAndBottom(ctx);
   }
   drawHexagon(ctx) {
@@ -291,10 +291,10 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(this.text, this.x, this.y);
-    ctx.strokeStyle = '#009688';
+    ctx.strokeStyle = '#008080';
     ctx.stroke();
 
-    this.style = '#009688';
+    this.style = '#008080';
     this.drawDotsTopAndBottom(ctx);
     // this.drawExitPointsMenu(ctx);
   }
@@ -320,14 +320,14 @@ class Shape {
     ctx.textBaseline = 'middle';
     ctx.fillText(this.text, this.x, this.y);
 
-    ctx.strokeStyle = '#9c27b0';
+    ctx.strokeStyle = '#008080';
     ctx.stroke();
 
-    this.style = '#9c27b0';
+    this.style = '#008080';
     this.drawDotsTopAndBottom(ctx);
   }
   drawRoundedRectangle(ctx) {
-    this.style = '#c0ca33';
+    this.style = '#008080';
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -392,7 +392,7 @@ class Shape {
 
     // fill color if selected
     this.selected && this.fillSelected(ctx);
-    this.style = '#7cb342';
+    this.style = '#008080';
     ctx.font = '18px sans-serif';
     ctx.fillStyle = 'black';
     ctx.lineWidth = 2;
@@ -422,7 +422,7 @@ class Shape {
     ctx.fillText('Χ', this.x, this.y + 2);
   }
   drawSmallCircle(ctx) {
-    this.style = '#009688';
+    this.style = '#AAAAAA';
     ctx.beginPath();
 
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
@@ -440,7 +440,7 @@ class Shape {
   }
 
   drawTriangle(ctx) {
-    this.style = '#f57f17';
+    this.style = '#FF5733';
 
     ctx.beginPath();
 
@@ -458,7 +458,7 @@ class Shape {
     ctx.fillText('▼', this.x, this.y + 2);
   }
   drawPentagonSwitch(ctx) {
-    this.style = '#795548';
+    this.style = '#008080';
 
     ctx.beginPath();
     ctx.translate(this.x, this.y);

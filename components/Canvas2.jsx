@@ -53,8 +53,10 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
   function handleMouseDown(e) {
     e.preventDefault();
-    const {clientX, clientY} = e;
+    const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
+    // only left click is valid
+    if (button !== 0) return;
 
     if (selectedItemToolbar) {
       addNewShape(realX, realY, selectedItemToolbar);
@@ -73,6 +75,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       }
     }
   }
+
   function handleMouseUp(e) {
     e.preventDefault();
     // Reset dragging mode
@@ -96,12 +99,35 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       const dx = realX - startX;
       const dy = realY - startY;
 
-      draggingShape.x += dx || 0;
-      draggingShape.y += dy || 0;
+      const MIN_X = 75;
+      const MAX_X = canvasRef.current.width;
+      const MIN_Y = 50;
+      const MAX_Y = canvasRef.current.height;
 
-      clearAndDraw();
-      startX = realX;
-      startY = realY;
+      const inBoundsX =
+        draggingShape.x + dx - draggingShape.width / 2 > MIN_X &&
+        draggingShape.x + dx + draggingShape.width / 2 < MAX_X;
+      const inBoundsY =
+        draggingShape.y + dy - draggingShape.height / 2 > MIN_Y &&
+        draggingShape.y + dy + draggingShape.height / 2 < MAX_Y;
+
+      if (inBoundsX && inBoundsY) {
+        draggingShape.x += dx || 0;
+        draggingShape.y += dy || 0;
+
+        clearAndDraw();
+        startX = realX;
+        startY = realY;
+      }
+      return;
+    }
+
+    canvasRef.current.style.cursor = 'default';
+    for (const shape of shapes) {
+      if (shape.isMouseInShape(realX, realY)) {
+        canvasRef.current.style.cursor = 'pointer';
+        break;
+      }
     }
   }
 
@@ -109,7 +135,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     <canvas
       style={{
         backgroundColor: '#EFF7FD',
-        cursor: isToolBarItemSelected ? 'crosshair' : 'default',
+        cursor: isToolBarItemSelected ? 'none' : 'default',
       }}
       height={2 * window.innerHeight}
       width={window.innerWidth - 20}
