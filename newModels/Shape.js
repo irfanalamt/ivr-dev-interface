@@ -2,18 +2,84 @@ class Shape {
   constructor(x, y, type, style = 'black') {
     this.x = x;
     this.y = y;
-    this.width = null;
-    this.height = null;
+
     this.type = type;
     this.style = style;
 
-    this.initPos = [x, y];
     this.text = type;
     this.selected = false;
     this.userValues = null;
 
     this.nextItem = null;
     this.functionString = '';
+    this.setWidthAndHeight(type);
+  }
+  setWidthAndHeight(type) {
+    switch (type) {
+      case 'runScript':
+        this.width = 120;
+        this.height = 30;
+        break;
+
+      case 'callAPI':
+        this.width = 90;
+        this.height = 30;
+        break;
+
+      case 'setParams':
+        this.width = 120;
+        this.height = 30;
+        break;
+
+      case 'playMenu':
+        this.width = 150;
+        this.height = 30;
+        break;
+
+      case 'getDigits':
+        this.width = 120;
+        this.height = 30;
+        break;
+
+      case 'playMessage':
+        this.width = 150;
+        this.height = 30;
+        break;
+
+      case 'playConfirm':
+        this.width = 150;
+        this.height = 30;
+        break;
+
+      case 'endFlow':
+        this.width = 35;
+        this.height = 35;
+        break;
+
+      case 'connector':
+        this.width = 25;
+        this.height = 25;
+        break;
+
+      case 'jumper':
+        this.width = 25;
+        this.height = 25;
+        break;
+
+      case 'switch':
+        this.width = 120;
+        this.height = 30;
+        break;
+
+      case 'module':
+        this.width = 50;
+        this.height = 45;
+        break;
+
+      default:
+        this.width = 120;
+        this.height = 30;
+    }
   }
 
   fillSelected(ctx) {
@@ -31,6 +97,14 @@ class Shape {
   }
   getRightCoordinates() {
     return [this.x + this.width / 2, this.y];
+  }
+  isMouseInShape(x, y) {
+    const shapeLeft = this.x - this.width / 2;
+    const shapeRight = this.x + this.width / 2;
+    const shapeTop = this.y - this.height / 2;
+    const shapeBottom = this.y + this.height / 2;
+
+    return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
   }
 
   drawDotsTopAndBottom(ctx) {
@@ -112,9 +186,6 @@ class Shape {
   }
 
   drawRectangle(ctx) {
-    this.width = 120;
-    this.height = 30;
-
     if (this.selected) {
       ctx.fillStyle = '#d4d7d8';
       ctx.fillRect(
@@ -142,9 +213,6 @@ class Shape {
   }
 
   drawInvertedHexagon(ctx) {
-    this.width = 90;
-    this.height = 30;
-
     ctx.beginPath();
     ctx.translate(this.x, this.y);
     this.stroke && this.setWidthFromText(ctx);
@@ -174,8 +242,6 @@ class Shape {
     this.drawDotsTopAndBottom(ctx);
   }
   drawPentagon(ctx) {
-    this.width = 120;
-    this.height = 30;
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -203,8 +269,6 @@ class Shape {
     this.drawDotsTopAndBottom(ctx);
   }
   drawHexagon(ctx) {
-    this.width = 150;
-    this.height = 30;
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -235,8 +299,6 @@ class Shape {
     // this.drawExitPointsMenu(ctx);
   }
   drawParallelogram(ctx) {
-    this.width = 120;
-    this.height = 30;
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -265,8 +327,6 @@ class Shape {
     this.drawDotsTopAndBottom(ctx);
   }
   drawRoundedRectangle(ctx) {
-    this.width = 150;
-    this.height = 30;
     this.style = '#c0ca33';
     ctx.beginPath();
     ctx.translate(this.x, this.y);
@@ -306,8 +366,6 @@ class Shape {
     this.drawDotsTopAndBottom(ctx);
   }
   drawRoundedRectangle2(ctx) {
-    this.width = 150;
-    this.height = 30;
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -347,8 +405,6 @@ class Shape {
   }
 
   drawEndCircle(ctx) {
-    this.width = 35;
-    this.height = 35;
     this.style = '#e91e63';
     ctx.beginPath();
 
@@ -366,8 +422,6 @@ class Shape {
     ctx.fillText('Χ', this.x, this.y + 2);
   }
   drawSmallCircle(ctx) {
-    this.width = 25;
-    this.height = 25;
     this.style = '#009688';
     ctx.beginPath();
 
@@ -386,8 +440,6 @@ class Shape {
   }
 
   drawTriangle(ctx) {
-    this.width = 25;
-    this.height = 25;
     this.style = '#f57f17';
 
     ctx.beginPath();
@@ -406,8 +458,6 @@ class Shape {
     ctx.fillText('▼', this.x, this.y + 2);
   }
   drawPentagonSwitch(ctx) {
-    this.width = 120;
-    this.height = 30;
     this.style = '#795548';
 
     ctx.beginPath();
@@ -439,9 +489,6 @@ class Shape {
   }
 
   drawModule(ctx) {
-    this.width = 50;
-    this.height = 45;
-
     ctx.fillStyle = '#f5cbab';
     ctx.fillRect(
       this.x - this.width / 2,
