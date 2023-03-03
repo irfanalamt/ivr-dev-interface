@@ -75,12 +75,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
               ? '#FFA500'
               : '#ECEFF1',
           }}>
-          <NumbersIcon
-            sx={{
-              fontSize: '25px',
-              color: selectedItemToolbar['getDigits'] ? 'black' : '#607D8B',
-            }}
-          />
+          {selectedItemToolbar['getDigits'] ? (
+            <img src='/icons/getDigitsBlack.png' alt='Icon' height={'22px'} />
+          ) : (
+            <img src='/icons/getDigits.png' alt='Icon' height={'22px'} />
+          )}
         </Button>
       </LightTooltip>
       <LightTooltip title='playConfirm' placement='right'>
@@ -157,12 +156,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
               ? '#FFA500'
               : '#ECEFF1',
           }}>
-          <ApiIcon
-            sx={{
-              fontSize: '25px',
-              color: selectedItemToolbar['callAPI'] ? 'black' : '#607D8B',
-            }}
-          />
+          {selectedItemToolbar['callAPI'] ? (
+            <img src='/icons/callAPIBlack.png' alt='Icon' height={'25px'} />
+          ) : (
+            <img src='/icons/callAPI.png' alt='Icon' height={'25px'} />
+          )}
         </Button>
       </LightTooltip>
       <LightTooltip title='endFlow' placement='right'>

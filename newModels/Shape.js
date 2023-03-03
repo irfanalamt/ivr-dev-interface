@@ -1,3 +1,4 @@
+import ApiIcon from '@mui/icons-material/Api';
 class Shape {
   constructor(x, y, type, style = 'black') {
     this.x = x;
@@ -18,37 +19,37 @@ class Shape {
     switch (type) {
       case 'runScript':
         this.width = 120;
-        this.height = 30;
+        this.height = 40;
         break;
 
       case 'callAPI':
         this.width = 90;
-        this.height = 30;
+        this.height = 40;
         break;
 
       case 'setParams':
         this.width = 120;
-        this.height = 30;
+        this.height = 50;
         break;
 
       case 'playMenu':
         this.width = 150;
-        this.height = 30;
+        this.height = 40;
         break;
 
       case 'getDigits':
         this.width = 120;
-        this.height = 30;
+        this.height = 40;
         break;
 
       case 'playMessage':
         this.width = 150;
-        this.height = 30;
+        this.height = 40;
         break;
 
       case 'playConfirm':
         this.width = 150;
-        this.height = 30;
+        this.height = 40;
         break;
 
       case 'endFlow':
@@ -68,7 +69,7 @@ class Shape {
 
       case 'switch':
         this.width = 120;
-        this.height = 30;
+        this.height = 40;
         break;
 
       case 'module':
@@ -78,7 +79,7 @@ class Shape {
 
       default:
         this.width = 120;
-        this.height = 30;
+        this.height = 40;
     }
   }
 
@@ -105,6 +106,18 @@ class Shape {
     const shapeBottom = this.y + this.height / 2;
 
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
+  }
+
+  setWidthFromText(ctx) {
+    const width = ctx.measureText(this.text).width;
+    let additionalWidth = 50;
+    let minWidth = 90;
+
+    if (this.type === 'getDigits' || this.type === 'switch') {
+      additionalWidth = 60;
+    }
+
+    this.width = Math.max(width + additionalWidth, minWidth);
   }
 
   drawDotsTopAndBottom(ctx) {
@@ -186,6 +199,7 @@ class Shape {
   }
 
   drawRectangle(ctx) {
+    this.setWidthFromText(ctx);
     if (this.selected) {
       ctx.fillStyle = '#d4d7d8';
       ctx.fillRect(
@@ -200,7 +214,13 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, this.x, this.y);
+
+    const img = new Image();
+    img.src = '/icons/runScriptBlack.png';
+
+    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.fillText(this.text, this.x + 10, this.y);
+
     ctx.strokeStyle = '#008080';
     this.style = '#008080';
     ctx.strokeRect(
@@ -209,10 +229,13 @@ class Shape {
       this.width,
       this.height
     );
+
     this.drawDotsTopAndBottom(ctx);
   }
 
   drawInvertedHexagon(ctx) {
+    this.setWidthFromText(ctx);
+
     ctx.beginPath();
     ctx.translate(this.x, this.y);
     this.stroke && this.setWidthFromText(ctx);
@@ -235,13 +258,20 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, this.x, this.y);
+
+    const img = new Image();
+    img.src = '/icons/callAPIBlack.png';
+
+    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.fillText(this.text, this.x + 10, this.y);
+
     ctx.strokeStyle = '#008080';
     ctx.stroke();
     this.style = '#008080';
     this.drawDotsTopAndBottom(ctx);
   }
   drawPentagon(ctx) {
+    this.setWidthFromText(ctx);
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -262,13 +292,19 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, this.x, this.y - 2);
+
+    const img = new Image();
+    img.src = '/icons/setParamsBlack.png';
+    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.fillText(this.text, this.x + 12, this.y);
+
     ctx.strokeStyle = '#008080';
     ctx.stroke();
     this.style = '#008080';
     this.drawDotsTopAndBottom(ctx);
   }
   drawHexagon(ctx) {
+    this.setWidthFromText(ctx);
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -299,6 +335,7 @@ class Shape {
     // this.drawExitPointsMenu(ctx);
   }
   drawParallelogram(ctx) {
+    this.setWidthFromText(ctx);
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -318,7 +355,11 @@ class Shape {
 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, this.x, this.y);
+
+    const img = new Image();
+    img.src = '/icons/getDigitsBlack.png';
+    ctx.drawImage(img, this.x + 9 + 10 - this.width / 2, this.y - 9, 18, 18);
+    ctx.fillText(this.text, this.x + 12, this.y);
 
     ctx.strokeStyle = '#008080';
     ctx.stroke();
@@ -327,6 +368,7 @@ class Shape {
     this.drawDotsTopAndBottom(ctx);
   }
   drawRoundedRectangle(ctx) {
+    this.setWidthFromText(ctx);
     this.style = '#008080';
     ctx.beginPath();
     ctx.translate(this.x, this.y);
@@ -360,12 +402,19 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, this.x, this.y);
+
+    const img = new Image();
+    img.src = '/icons/playMessageBlack.png';
+
+    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.fillText(this.text, this.x + 10, this.y);
+
     ctx.strokeStyle = this.style;
     ctx.stroke();
     this.drawDotsTopAndBottom(ctx);
   }
   drawRoundedRectangle2(ctx) {
+    this.setWidthFromText(ctx);
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -398,7 +447,12 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, this.x, this.y);
+    const img = new Image();
+    img.src = '/icons/playConfirmBlack.png';
+
+    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.fillText(this.text, this.x + 10, this.y);
+
     ctx.strokeStyle = this.style;
     ctx.stroke();
     this.drawDotsTopAndBottom(ctx);
@@ -458,6 +512,7 @@ class Shape {
     ctx.fillText('▼', this.x, this.y + 2);
   }
   drawPentagonSwitch(ctx) {
+    this.setWidthFromText(ctx);
     this.style = '#008080';
 
     ctx.beginPath();
@@ -481,7 +536,12 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, this.x, this.y);
+    const img = new Image();
+    img.src = '/icons/switchBlack.png';
+
+    ctx.drawImage(img, this.x + 15 - this.width / 2, this.y - 10, 22, 22);
+    ctx.fillText(this.text, this.x + 10, this.y);
+
     ctx.strokeStyle = this.style;
     ctx.stroke();
     this.drawDotsTopAndBottom(ctx);
@@ -489,6 +549,7 @@ class Shape {
   }
 
   drawModule(ctx) {
+    this.setWidthFromText(ctx);
     ctx.fillStyle = '#f5cbab';
     ctx.fillRect(
       this.x - this.width / 2,
