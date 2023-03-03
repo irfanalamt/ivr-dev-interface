@@ -1,7 +1,12 @@
-import {Button, Menu, MenuItem, Typography} from '@mui/material';
+import {Button, Menu, MenuItem, Tooltip, Typography} from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import Shape from '../newModels/Shape';
 import ElementDrawer from './ElementDrawer';
+import SettingsIcon from '@mui/icons-material/Settings';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import ContentCutIcon from '@mui/icons-material/ContentCut';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const [shapes, setShapes] = useState([]);
@@ -288,14 +293,27 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
             : undefined
         }>
         {contextMenu?.items.map((item, i) => (
-          <MenuItem
-            sx={{display: 'flex', alignItems: 'center'}}
-            onClick={() => handleContextMenuClick(item)}
-            key={i}>
-            <Typography sx={{fontSize: 'small'}} variant='button'>
-              {item}
-            </Typography>
-          </MenuItem>
+          <Tooltip key={i} title={item} placement='right'>
+            <MenuItem
+              sx={{display: 'flex', alignItems: 'center'}}
+              onClick={() => handleContextMenuClick(item)}>
+              {item === 'Settings' && (
+                <SettingsIcon sx={{fontSize: '20px', color: '#424242'}} />
+              )}
+              {item === 'Cut' && (
+                <ContentCutIcon sx={{fontSize: '20px', color: '#424242'}} />
+              )}
+              {item === 'Copy' && (
+                <ContentCopyIcon sx={{fontSize: '20px', color: '#424242'}} />
+              )}
+              {item === 'Delete' && (
+                <DeleteIcon sx={{fontSize: '20px', color: '#424242'}} />
+              )}
+              {item === 'Paste' && (
+                <ContentPasteIcon sx={{fontSize: '20px', color: '#424242'}} />
+              )}
+            </MenuItem>
+          </Tooltip>
         ))}
       </Menu>
       <ElementDrawer
