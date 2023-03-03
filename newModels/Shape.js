@@ -211,6 +211,13 @@ class Shape {
 
   drawRectangle(ctx) {
     this.setWidthFromText(ctx);
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fillRect(
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height
+    );
     if (this.selected) {
       ctx.fillStyle = '#d4d7d8';
       ctx.fillRect(
@@ -221,13 +228,6 @@ class Shape {
       );
     }
 
-    ctx.fillStyle = '#f8fbfe';
-    ctx.fillRect(
-      this.x - this.width / 2,
-      this.y - this.height / 2,
-      this.width,
-      this.height
-    );
     ctx.font = '18px sans-serif';
     ctx.fillStyle = 'black';
     ctx.lineWidth = 2;

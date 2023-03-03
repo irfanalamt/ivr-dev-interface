@@ -246,6 +246,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       console.log('Current shape: ' + JSON.stringify(shape, null, 2));
 
       shape.setSelected(true);
+      clearAndDraw();
       setIsOpenElementDrawer(true);
     }
   }
@@ -259,6 +260,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     console.log('closee');
     setIsOpenElementDrawer(false);
     currentShape.current.setSelected(false);
+    clearAndDraw();
   }
 
   return (
