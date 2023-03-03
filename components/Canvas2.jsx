@@ -247,12 +247,13 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
   function handleContextSettings() {
     const shape = currentShape.current;
+
     if (shape.type !== 'connector') {
       console.log('Current shape: ' + JSON.stringify(shape, null, 2));
 
       shape.setSelected(true);
-      clearAndDraw();
       setIsOpenElementDrawer(true);
+      clearAndDraw();
     }
   }
 
@@ -291,35 +292,32 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
           contextMenu !== null
             ? {top: contextMenu.mouseY, left: contextMenu.mouseX}
             : undefined
-        }>
+        }
+        PaperProps={{
+          style: {
+            backgroundColor: '#CCCCCC',
+          },
+        }}>
         {contextMenu?.items.map((item, i) => (
           <Tooltip key={i} title={item} placement='right'>
             <MenuItem
               sx={{display: 'flex', alignItems: 'center'}}
               onClick={() => handleContextMenuClick(item)}>
-              {item === 'Settings' && (
-                <SettingsIcon sx={{fontSize: '18px', color: '#424242'}} />
-              )}
-              {item === 'Cut' && (
-                <ContentCutIcon sx={{fontSize: '18px', color: '#424242'}} />
-              )}
-              {item === 'Copy' && (
-                <ContentCopyIcon sx={{fontSize: '18px', color: '#424242'}} />
-              )}
-              {item === 'Delete' && (
-                <DeleteIcon sx={{fontSize: '18px', color: '#424242'}} />
-              )}
-              {item === 'Paste' && (
-                <ContentPasteIcon sx={{fontSize: '18px', color: '#424242'}} />
-              )}
+              {item === 'Settings' && <SettingsIcon sx={{fontSize: '18px'}} />}
+              {item === 'Cut' && <ContentCutIcon sx={{fontSize: '18px'}} />}
+              {item === 'Copy' && <ContentCopyIcon sx={{fontSize: '18px'}} />}
+              {item === 'Delete' && <DeleteIcon sx={{fontSize: '18px'}} />}
+              {item === 'Paste' && <ContentPasteIcon sx={{fontSize: '18px'}} />}
             </MenuItem>
           </Tooltip>
         ))}
       </Menu>
       <ElementDrawer
         shape={currentShape.current}
+        shapes={shapes}
         isOpen={isOpenElementDrawer}
         handleCloseDrawer={handleCloseElementDrawer}
+        clearAndDraw={clearAndDraw}
       />
     </>
   );

@@ -234,7 +234,7 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const img = new Image();
+    const img = new Image(20, 20);
     img.src = '/icons/runScriptBlack.png';
 
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
@@ -281,10 +281,11 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const img = new Image();
+    const img = new Image(20, 20);
     img.src = '/icons/callAPIBlack.png';
 
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+
     ctx.fillText(this.text, this.x + 10, this.y);
 
     ctx.lineWidth = 1.5;
@@ -319,10 +320,10 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const img = new Image();
+    const img = new Image(20, 20);
     img.src = '/icons/setParamsBlack.png';
-    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
-    ctx.fillText(this.text, this.x + 12, this.y);
+    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10 - 2, 20, 20);
+    ctx.fillText(this.text, this.x + 12, this.y - 2);
 
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = '#00456B';
@@ -356,7 +357,7 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const img = new Image();
+    const img = new Image(20, 20);
     img.src = '/icons/playMenuBlack.png';
 
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
@@ -395,7 +396,7 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const img = new Image();
+    const img = new Image(18, 18);
     img.src = '/icons/getDigitsBlack.png';
     ctx.drawImage(img, this.x + 9 + 10 - this.width / 2, this.y - 9, 18, 18);
     ctx.fillText(this.text, this.x + 12, this.y);
@@ -446,7 +447,7 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    const img = new Image();
+    const img = new Image(20, 20);
     img.src = '/icons/playMessageBlack.png';
 
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
@@ -494,7 +495,7 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const img = new Image();
+    const img = new Image(20, 20);
     img.src = '/icons/playConfirmBlack.png';
 
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
@@ -587,7 +588,7 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const img = new Image();
+    const img = new Image(22, 22);
     img.src = '/icons/switchBlack.png';
 
     ctx.drawImage(img, this.x + 15 - this.width / 2, this.y - 10, 22, 22);

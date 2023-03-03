@@ -36,7 +36,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             backgroundColor: selectedItemToolbar['setParams']
               ? '#FFA500'
               : '#ECEFF1',
-          }}>
+            width: 45,
+            height: 45,
+            borderColor: '#B0BEC5',
+          }}
+          variant='outlined'>
           {selectedItemToolbar['setParams'] ? (
             <img src='/icons/setParamsBlack.png' alt='Icon' height={'22px'} />
           ) : (
@@ -51,8 +55,12 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             backgroundColor: selectedItemToolbar['playMessage']
               ? '#FFA500'
               : '#ECEFF1',
+            width: 45,
+            height: 45,
+            borderColor: '#B0BEC5',
           }}
-          size='small'>
+          size='small'
+          variant='outlined'>
           {selectedItemToolbar['playMessage'] ? (
             <img src='/icons/playMessageBlack.png' alt='Icon' height={'25px'} />
           ) : (
@@ -68,7 +76,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             backgroundColor: selectedItemToolbar['getDigits']
               ? '#FFA500'
               : '#ECEFF1',
-          }}>
+            width: 45,
+            height: 45,
+            borderColor: '#B0BEC5',
+          }}
+          variant='outlined'>
           {selectedItemToolbar['getDigits'] ? (
             <img src='/icons/getDigitsBlack.png' alt='Icon' height={'22px'} />
           ) : (
@@ -84,7 +96,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             backgroundColor: selectedItemToolbar['playConfirm']
               ? '#FFA500'
               : '#ECEFF1',
-          }}>
+            width: 45,
+            height: 45,
+            borderColor: '#B0BEC5',
+          }}
+          variant='outlined'>
           {selectedItemToolbar['playConfirm'] ? (
             <img src='/icons/playConfirmBlack.png' alt='Icon' height={'25px'} />
           ) : (
@@ -100,7 +116,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             backgroundColor: selectedItemToolbar['playMenu']
               ? '#FFA500'
               : '#ECEFF1',
-          }}>
+            width: 45,
+            height: 45,
+            borderColor: '#B0BEC5',
+          }}
+          variant='outlined'>
           {selectedItemToolbar['playMenu'] ? (
             <img src='/icons/playMenuBlack.png' alt='Icon' height={'22px'} />
           ) : (
@@ -116,7 +136,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             backgroundColor: selectedItemToolbar['runScript']
               ? '#FFA500'
               : '#ECEFF1',
-          }}>
+            width: 45,
+            height: 45,
+            borderColor: '#B0BEC5',
+          }}
+          variant='outlined'>
           {selectedItemToolbar['runScript'] ? (
             <img src='/icons/runScriptBlack.png' alt='Icon' height={'25px'} />
           ) : (
@@ -132,7 +156,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             backgroundColor: selectedItemToolbar['switch']
               ? '#FFA500'
               : '#ECEFF1',
-          }}>
+            width: 45,
+            height: 45,
+            borderColor: '#B0BEC5',
+          }}
+          variant='outlined'>
           {selectedItemToolbar['switch'] ? (
             <img src='/icons/switchBlack.png' alt='Icon' height={'25px'} />
           ) : (
@@ -148,7 +176,12 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             backgroundColor: selectedItemToolbar['callAPI']
               ? '#FFA500'
               : '#ECEFF1',
-          }}>
+            width: 45,
+            height: 45,
+            borderColor: '#B0BEC5',
+          }}
+          variant='outlined'
+          color='info'>
           {selectedItemToolbar['callAPI'] ? (
             <img src='/icons/callAPIBlack.png' alt='Icon' height={'25px'} />
           ) : (

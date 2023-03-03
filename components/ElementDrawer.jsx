@@ -11,9 +11,16 @@ import PlayConfirm from './PlayConfirm';
 import PlayMenu from './PlayMenu';
 import PlayMessage from './PlayMessage';
 import SetParams from './SetParams';
+import SetParams2 from './SetParams2';
 import SwitchBlock from './SwitchBlock';
 
-const ElementDrawer = ({shape, isOpen, handleCloseDrawer}) => {
+const ElementDrawer = ({
+  shape,
+  isOpen,
+  handleCloseDrawer,
+  shapes,
+  clearAndDraw,
+}) => {
   if (!shape) return null;
 
   const renderShape = () => {
@@ -82,18 +89,17 @@ const ElementDrawer = ({shape, isOpen, handleCloseDrawer}) => {
       //         }}
       //       />
       //     );
-      //   case 'setParams':
-      //     return (
-      //       <SetParams
-      //         {...{
-      //           shape,
-      //           handleCloseDrawer,
-      //           stageGroup,
-      //           clearAndDraw,
-      //           childRef,
-      //         }}
-      //       />
-      //     );
+      case 'setParams':
+        return (
+          <SetParams2
+            {...{
+              shape,
+              handleCloseDrawer,
+              shapes,
+              clearAndDraw,
+            }}
+          />
+        );
       //   case 'runScript':
       //     return (
       //       <FunctionBlock
