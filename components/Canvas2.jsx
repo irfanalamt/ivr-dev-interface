@@ -108,7 +108,6 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     e.preventDefault();
     // Reset dragging mode
     isDragging.current = false;
-    clearAndDraw();
   }
 
   function handleMouseMove(e) {
@@ -190,9 +189,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     }
   }
 
-  function handleContextMenuClick(e, item) {
-    const {clientX, clientY} = e;
-    const {realX, realY} = getRealCoordinates(clientX, clientY);
+  function handleContextMenuClick(item) {
     setContextMenu(null);
 
     console.log('item clicked: ' + item);
@@ -291,7 +288,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
         {contextMenu?.items.map((item, i) => (
           <MenuItem
             sx={{display: 'flex', alignItems: 'center'}}
-            onClick={(e) => handleContextMenuClick(e, item)}
+            onClick={() => handleContextMenuClick(item)}
             key={i}>
             <Typography sx={{fontSize: 'small'}} variant='button'>
               {item}
