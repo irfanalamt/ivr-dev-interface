@@ -298,19 +298,19 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
               sx={{display: 'flex', alignItems: 'center'}}
               onClick={() => handleContextMenuClick(item)}>
               {item === 'Settings' && (
-                <SettingsIcon sx={{fontSize: '20px', color: '#424242'}} />
+                <SettingsIcon sx={{fontSize: '18px', color: '#424242'}} />
               )}
               {item === 'Cut' && (
-                <ContentCutIcon sx={{fontSize: '20px', color: '#424242'}} />
+                <ContentCutIcon sx={{fontSize: '18px', color: '#424242'}} />
               )}
               {item === 'Copy' && (
-                <ContentCopyIcon sx={{fontSize: '20px', color: '#424242'}} />
+                <ContentCopyIcon sx={{fontSize: '18px', color: '#424242'}} />
               )}
               {item === 'Delete' && (
-                <DeleteIcon sx={{fontSize: '20px', color: '#424242'}} />
+                <DeleteIcon sx={{fontSize: '18px', color: '#424242'}} />
               )}
               {item === 'Paste' && (
-                <ContentPasteIcon sx={{fontSize: '20px', color: '#424242'}} />
+                <ContentPasteIcon sx={{fontSize: '18px', color: '#424242'}} />
               )}
             </MenuItem>
           </Tooltip>
