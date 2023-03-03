@@ -29,7 +29,7 @@ class Shape {
 
       case 'setParams':
         this.width = 120;
-        this.height = 50;
+        this.height = 45;
         break;
 
       case 'playMenu':
@@ -209,6 +209,14 @@ class Shape {
         this.height
       );
     }
+
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fillRect(
+      this.x - this.width / 2,
+      this.y - this.height / 2,
+      this.width,
+      this.height
+    );
     ctx.font = '18px sans-serif';
     ctx.fillStyle = 'black';
     ctx.lineWidth = 2;
@@ -221,8 +229,9 @@ class Shape {
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     ctx.fillText(this.text, this.x + 10, this.y);
 
-    ctx.strokeStyle = '#008080';
-    this.style = '#008080';
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#00456B';
+    this.style = '#00456B';
     ctx.strokeRect(
       this.x - this.width / 2,
       this.y - this.height / 2,
@@ -250,6 +259,9 @@ class Shape {
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fill();
+
     // fill color when selected
     this.selected && this.fillSelected(ctx);
 
@@ -265,9 +277,10 @@ class Shape {
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     ctx.fillText(this.text, this.x + 10, this.y);
 
-    ctx.strokeStyle = '#008080';
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#00456B';
     ctx.stroke();
-    this.style = '#008080';
+    this.style = '#00456B';
     this.drawDotsTopAndBottom(ctx);
   }
   drawPentagon(ctx) {
@@ -284,6 +297,9 @@ class Shape {
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fill();
+
     // fill color when selected
     this.selected && this.fillSelected(ctx);
 
@@ -298,9 +314,10 @@ class Shape {
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     ctx.fillText(this.text, this.x + 12, this.y);
 
-    ctx.strokeStyle = '#008080';
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#00456B';
     ctx.stroke();
-    this.style = '#008080';
+    this.style = '#00456B';
     this.drawDotsTopAndBottom(ctx);
   }
   drawHexagon(ctx) {
@@ -318,6 +335,9 @@ class Shape {
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fill();
+
     // fill color when selected
     this.selected && this.fillSelected(ctx);
 
@@ -327,10 +347,11 @@ class Shape {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(this.text, this.x, this.y);
-    ctx.strokeStyle = '#008080';
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#00456B';
     ctx.stroke();
 
-    this.style = '#008080';
+    this.style = '#00456B';
     this.drawDotsTopAndBottom(ctx);
     // this.drawExitPointsMenu(ctx);
   }
@@ -345,6 +366,9 @@ class Shape {
     ctx.lineTo(-this.width * (5 / 8), this.height / 2);
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fill();
 
     // fill color when selected
     this.selected && this.fillSelected(ctx);
@@ -361,15 +385,16 @@ class Shape {
     ctx.drawImage(img, this.x + 9 + 10 - this.width / 2, this.y - 9, 18, 18);
     ctx.fillText(this.text, this.x + 12, this.y);
 
-    ctx.strokeStyle = '#008080';
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#00456B';
     ctx.stroke();
 
-    this.style = '#008080';
+    this.style = '#00456B';
     this.drawDotsTopAndBottom(ctx);
   }
   drawRoundedRectangle(ctx) {
     this.setWidthFromText(ctx);
-    this.style = '#008080';
+    this.style = '#00456B';
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -394,6 +419,9 @@ class Shape {
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fill();
+
     // fill color if selected
     this.selected && this.fillSelected(ctx);
 
@@ -409,6 +437,7 @@ class Shape {
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     ctx.fillText(this.text, this.x + 10, this.y);
 
+    ctx.lineWidth = 1.5;
     ctx.strokeStyle = this.style;
     ctx.stroke();
     this.drawDotsTopAndBottom(ctx);
@@ -439,9 +468,12 @@ class Shape {
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fill();
+
     // fill color if selected
     this.selected && this.fillSelected(ctx);
-    this.style = '#008080';
+    this.style = '#00456B';
     ctx.font = '18px sans-serif';
     ctx.fillStyle = 'black';
     ctx.lineWidth = 2;
@@ -453,13 +485,14 @@ class Shape {
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     ctx.fillText(this.text, this.x + 10, this.y);
 
+    ctx.lineWidth = 1.5;
     ctx.strokeStyle = this.style;
     ctx.stroke();
     this.drawDotsTopAndBottom(ctx);
   }
 
   drawEndCircle(ctx) {
-    this.style = '#e91e63';
+    this.style = '#F8D7DA';
     ctx.beginPath();
 
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
@@ -513,7 +546,7 @@ class Shape {
   }
   drawPentagonSwitch(ctx) {
     this.setWidthFromText(ctx);
-    this.style = '#008080';
+    this.style = '#00456B';
 
     ctx.beginPath();
     ctx.translate(this.x, this.y);
@@ -527,6 +560,9 @@ class Shape {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
     // exit points for switch when in stage
+
+    ctx.fillStyle = '#f8fbfe';
+    ctx.fill();
 
     // fill color if selected
     this.selected && this.fillSelected(ctx);
@@ -542,6 +578,7 @@ class Shape {
     ctx.drawImage(img, this.x + 15 - this.width / 2, this.y - 10, 22, 22);
     ctx.fillText(this.text, this.x + 10, this.y);
 
+    ctx.lineWidth = 1.5;
     ctx.strokeStyle = this.style;
     ctx.stroke();
     this.drawDotsTopAndBottom(ctx);
