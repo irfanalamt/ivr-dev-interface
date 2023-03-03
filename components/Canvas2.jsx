@@ -7,11 +7,13 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import DeleteIcon from '@mui/icons-material/Delete';
+import {drawFilledArrow, getConnectingLines} from '../src/myFunctions';
 
 const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const [shapes, setShapes] = useState([]);
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
+  const [connectingMode, setConnectingMode] = useState(0);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -37,6 +39,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const currentShape = useRef(null);
   const isDragging = useRef(false);
 
+  const connectingShapes = useRef(null);
+
   let startX, startY;
 
   useEffect(() => {
@@ -50,6 +54,10 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     clearCanvas();
     shapes.forEach((shape) => {
       shape.drawShape(ctx);
+    });
+    const connectionsArray = getConnectingLines(shapes);
+    connectionsArray.forEach((c) => {
+      drawFilledArrow(contextRef.current, c.x1, c.y1, c.x2, c.y2);
     });
   }
   function clearCanvas() {
@@ -66,7 +74,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
     const count = shapeCount.current[type]++;
     const newShape = new Shape(x, y, type);
-    newShape.text += count;
+    newShape.setTextAndId(count);
     setShapes([...shapes, newShape]);
   }
   function deleteShape(shapeToDelete) {
@@ -99,7 +107,24 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     for (const shape of shapes) {
       console.log('in loop', shape, realX, realY);
       if (shape.isMouseInShape(realX, realY)) {
-        console.log('mouseInShape');
+        const exitPoint = shape.isMouseNearExitPoint(realX, realY);
+        if (exitPoint && connectingMode === 0) {
+          connectingShapes.current = {};
+          connectingShapes.current.shape1 = shape;
+          connectingShapes.current.exitPoint = exitPoint;
+          setConnectingMode(1);
+          return;
+        }
+        if (connectingMode === 1) {
+          connectingShapes.current.shape2 = shape;
+          connectingShapes.current.shape1.nextItem =
+            connectingShapes.current.shape2.id;
+          setConnectingMode(0);
+          connectingShapes.current = null;
+          clearAndDraw();
+          return;
+        }
+
         isDragging.current = true;
         currentShape.current = shape;
         startX = realX;
@@ -107,6 +132,9 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
         return;
       }
     }
+
+    setConnectingMode(0);
+    connectingShapes.current = null;
   }
 
   function handleMouseUp(e) {
@@ -155,11 +183,24 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       return;
     }
 
-    canvasRef.current.style.cursor = 'default';
-    for (const shape of shapes) {
-      if (shape.isMouseInShape(realX, realY)) {
-        canvasRef.current.style.cursor = 'pointer';
-        break;
+    if (connectingMode == 1) {
+      const shape1 = connectingShapes.current.shape1;
+      const [x1, y1] = shape1.getBottomCoordinates();
+      clearAndDraw();
+      drawFilledArrow(contextRef.current, x1, y1, realX, realY);
+    }
+
+    if (connectingMode === 0) {
+      canvasRef.current.style.cursor = 'default';
+      for (const shape of shapes) {
+        if (shape.isMouseInShape(realX, realY)) {
+          canvasRef.current.style.cursor = 'pointer';
+          if (shape.isMouseNearExitPoint(realX, realY)) {
+            console.log('near exit 🧠🧠');
+            canvasRef.current.style.cursor = 'crosshair';
+          }
+          break;
+        }
       }
     }
   }
@@ -274,7 +315,11 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       <canvas
         style={{
           backgroundColor: '#EFF7FD',
-          cursor: isToolBarItemSelected ? 'none' : 'default',
+          cursor: isToolBarItemSelected
+            ? 'none'
+            : connectingMode > 0
+            ? 'crosshair'
+            : 'default',
         }}
         height={2 * window.innerHeight}
         width={window.innerWidth - 20}

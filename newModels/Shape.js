@@ -11,8 +11,9 @@ class Shape {
     this.text = type;
     this.selected = false;
     this.userValues = null;
-
     this.nextItem = null;
+
+    this.exitPoints = [];
     this.functionString = '';
     this.setWidthAndHeight(type);
   }
@@ -84,6 +85,28 @@ class Shape {
     }
   }
 
+  setTextAndId(shapeCount) {
+    const shapeTypeLetterMap = {
+      setParams: 'A',
+      runScript: 'B',
+      callAPI: 'C',
+      playMenu: 'D',
+      getDigits: 'E',
+      playMessage: 'F',
+      playConfirm: 'G',
+      switch: 'H',
+      endFlow: 'I',
+      connector: 'J',
+      jumper: 'K',
+      module: 'M',
+    };
+    const startCharacter = shapeTypeLetterMap[this.type] || 'X';
+    const id = `${startCharacter}${shapeCount}`;
+
+    this.text += shapeCount;
+    this.id = id;
+  }
+
   fillSelected(ctx) {
     ctx.fillStyle = '#d4d7d8';
     ctx.fill();
@@ -101,12 +124,26 @@ class Shape {
     return [this.x + this.width / 2, this.y];
   }
   isMouseInShape(x, y) {
-    const shapeLeft = this.x - this.width / 2;
-    const shapeRight = this.x + this.width / 2;
-    const shapeTop = this.y - this.height / 2;
-    const shapeBottom = this.y + this.height / 2;
+    const threshold = 4;
+    const shapeLeft = this.x - this.width / 2 - threshold;
+    const shapeRight = this.x + this.width / 2 + threshold;
+    const shapeTop = this.y - this.height / 2 - threshold;
+    const shapeBottom = this.y + this.height / 2 + threshold;
 
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
+  }
+
+  isMouseNearExitPoint(x, y) {
+    const [exitX, exitY] = this.getBottomCoordinates();
+    const distance = Math.sqrt((x - exitX) ** 2 + (y - exitY) ** 2);
+    console.log('distance.....', distance);
+
+    // if true return {totalPoints:1,position:1,name:'default}
+    // starting from 1
+    // adjust for  menu, switch
+    if (distance <= 4) {
+      return {totalPoints: 1, position: 1, name: 'default'};
+    } else return false;
   }
 
   setSelected(bool) {
@@ -143,9 +180,10 @@ class Shape {
     ctx.arc(...topCoordinates, dotRadius, 0, 2 * Math.PI);
     ctx.fill();
 
+    ctx.fillStyle = '#0d5bdd';
     // Draw bottom dot
     ctx.beginPath();
-    ctx.arc(...bottomCoordinates, dotRadius, 0, 2 * Math.PI);
+    ctx.arc(...bottomCoordinates, dotRadius * 2, 0, 2 * Math.PI);
     ctx.fill();
   }
 

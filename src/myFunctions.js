@@ -86,4 +86,54 @@ function drawGridLines(ctx, canvas) {
   }
 }
 
-export {replaceVarNameDollar, drawGridLines};
+function drawFilledArrow(ctx, x1, y1, x2, y2) {
+  // draw a line from the first point to the second
+
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = '#424242';
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // draw an arrow head
+  let angle = Math.atan2(y2 - y1, x2 - x1);
+  ctx.beginPath();
+  ctx.fillStyle = '#424242';
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle - Math.PI / 6),
+    y2 - 10 * Math.sin(angle - Math.PI / 6)
+  );
+  ctx.lineTo(
+    x2 - 10 * Math.cos(angle + Math.PI / 6),
+    y2 - 10 * Math.sin(angle + Math.PI / 6)
+  );
+  ctx.fill();
+}
+
+function getConnectingLines(shapes) {
+  const connections = [];
+
+  for (const shape of shapes) {
+    if (shape.nextItem) {
+      const shape2 = shapes.find((s) => s.id === shape.nextItem);
+
+      const [x1, y1] = shape.getBottomCoordinates();
+
+      const [x2, y2] = shape2.getTopCoordinates();
+
+      connections.push({x1, y1, x2, y2});
+    }
+  }
+
+  return connections;
+}
+
+export {
+  replaceVarNameDollar,
+  drawGridLines,
+  drawFilledArrow,
+  getConnectingLines,
+};
