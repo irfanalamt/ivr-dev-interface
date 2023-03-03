@@ -1,4 +1,5 @@
 import ApiIcon from '@mui/icons-material/Api';
+
 class Shape {
   constructor(x, y, type, style = 'black') {
     this.x = x;
@@ -109,9 +110,15 @@ class Shape {
   }
 
   setWidthFromText(ctx) {
+    // reset text styles
+    ctx.font = '18px sans-serif';
+    ctx.lineWidth = 2;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
     const width = ctx.measureText(this.text).width;
+    const minWidth = 90;
     let additionalWidth = 50;
-    let minWidth = 90;
 
     if (this.type === 'getDigits' || this.type === 'switch') {
       additionalWidth = 60;
@@ -228,7 +235,6 @@ class Shape {
 
     ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     ctx.fillText(this.text, this.x + 10, this.y);
-
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = '#00456B';
     this.style = '#00456B';
@@ -346,7 +352,12 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(this.text, this.x, this.y);
+    const img = new Image();
+    img.src = '/icons/playMenuBlack.png';
+
+    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.fillText(this.text, this.x + 10, this.y);
+
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = '#00456B';
     ctx.stroke();

@@ -1,14 +1,8 @@
-import {Box, Button, IconButton, Toolbar, Typography} from '@mui/material';
-import Tooltip, {tooltipClasses} from '@mui/material/Tooltip';
-import PentagonIcon from '@mui/icons-material/Pentagon';
-import NumbersIcon from '@mui/icons-material/Numbers';
-import ToggleOnIcon from '@mui/icons-material/ToggleOn';
-import {styled} from '@mui/material/styles';
-import PlaylistPlayIcon from '@mui/icons-material/PlaylistPlay';
-import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import CancelIcon from '@mui/icons-material/Cancel';
-import {useEffect, useState} from 'react';
-import ApiIcon from '@mui/icons-material/Api';
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import {Box, Button} from '@mui/material';
+import {styled} from '@mui/material/styles';
+import Tooltip, {tooltipClasses} from '@mui/material/Tooltip';
 
 const LightTooltip = styled(({className, ...props}) => (
   <Tooltip {...props} classes={{popper: className}} />
@@ -107,12 +101,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
               ? '#FFA500'
               : '#ECEFF1',
           }}>
-          <PlaylistPlayIcon
-            sx={{
-              fontSize: '25px',
-              color: selectedItemToolbar['playMenu'] ? 'black' : '#607D8B',
-            }}
-          />
+          {selectedItemToolbar['playMenu'] ? (
+            <img src='/icons/playMenuBlack.png' alt='Icon' height={'22px'} />
+          ) : (
+            <img src='/icons/playMenu.png' alt='Icon' height={'22px'} />
+          )}
         </Button>
       </LightTooltip>
       <LightTooltip title='runScript' placement='right'>

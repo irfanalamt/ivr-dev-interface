@@ -77,6 +77,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     if (selectedItemToolbar) {
       addNewShape(realX, realY, selectedItemToolbar);
       resetSelectedItemToolbar();
+      return;
     }
 
     for (const shape of shapes) {
@@ -106,6 +107,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
     if (selectedItemToolbar) {
       clearAndDraw();
+
       const tempShape = new Shape(realX, realY, selectedItemToolbar);
       tempShape.drawShape(contextRef.current);
       return;
@@ -116,9 +118,9 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       const dx = realX - startX;
       const dy = realY - startY;
 
-      const MIN_X = 75;
+      const MIN_X = 85;
       const MAX_X = canvasRef.current.width;
-      const MIN_Y = 50;
+      const MIN_Y = 60;
       const MAX_Y = canvasRef.current.height;
 
       const inBoundsX =
