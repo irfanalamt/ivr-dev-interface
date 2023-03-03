@@ -1,9 +1,13 @@
-import {Button} from '@mui/material';
+import {Button, Menu, MenuItem, Typography} from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import Shape from '../newModels/Shape';
+import ElementDrawer from './ElementDrawer';
 
 const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const [shapes, setShapes] = useState([]);
+  const [contextMenu, setContextMenu] = useState(null);
+  const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
+
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
   const isToolBarItemSelected = Object.values(toolBarObj)[0];
@@ -33,6 +37,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   useEffect(() => {
     const context = canvasRef.current.getContext('2d');
     contextRef.current = context;
+    clearAndDraw();
   }, [shapes]);
 
   function clearAndDraw() {
@@ -59,6 +64,14 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     newShape.text += count;
     setShapes([...shapes, newShape]);
   }
+  function deleteShape(shapeToDelete) {
+    const index = shapes.indexOf(shapeToDelete);
+    if (index !== -1) {
+      const newShapes = [...shapes];
+      newShapes.splice(index, 1);
+      setShapes(newShapes);
+    }
+  }
 
   function getRealCoordinates(clientX, clientY) {
     const boundingRect = canvasRef.current.getBoundingClientRect();
@@ -71,10 +84,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     e.preventDefault();
     const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
-    // only left click is valid
-    if (button !== 0) return;
 
-    if (selectedItemToolbar) {
+    if (selectedItemToolbar && button === 0) {
       addNewShape(realX, realY, selectedItemToolbar);
       resetSelectedItemToolbar();
       return;
@@ -88,7 +99,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
         currentShape.current = shape;
         startX = realX;
         startY = realY;
-        break;
+        return;
       }
     }
   }
@@ -107,7 +118,6 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
     if (selectedItemToolbar) {
       clearAndDraw();
-
       const tempShape = new Shape(realX, realY, selectedItemToolbar);
       tempShape.drawShape(contextRef.current);
       return;
@@ -150,19 +160,151 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     }
   }
 
+  function handleContextMenu(e) {
+    e.preventDefault();
+    const {clientX, clientY} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
+    if (selectedItemToolbar) return;
+
+    for (const shape of shapes) {
+      if (shape.isMouseInShape(realX, realY)) {
+        let items = ['Settings', 'Cut', 'Copy', 'Delete'];
+        if (shape.type === 'connector') {
+          // no settings for connector
+          items.splice(0, 1);
+        }
+
+        // contextMenuItem.current = null;
+        // clearAndDraw();
+        setContextMenu(
+          contextMenu === null
+            ? {
+                mouseX: realX,
+                mouseY: realY,
+                items: items,
+              }
+            : null
+        );
+        break;
+      }
+    }
+  }
+
+  function handleContextMenuClick(e, item) {
+    const {clientX, clientY} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
+    setContextMenu(null);
+
+    console.log('item clicked: ' + item);
+
+    if (item === 'Settings') {
+      handleContextSettings();
+      return;
+    }
+
+    if (item === 'Delete') {
+      handleContextDelete();
+      return;
+    }
+
+    // if (item === 'Cut') {
+    //   // selectedShapes.current.forEach((shape) =>
+    //   //   stageGroup.current[pageNumber.current - 1].removeShape(shape.id)
+    //   // );
+    //   if (!multiSelectEndPoint.current) {
+    //     selectedShapes.current = [];
+    //     selectedShapes.current.push(currentShape.current);
+    //     currentShape.current.setSelected(true);
+    //   }
+    //   selectedShapes.current.cutPage = pageNumber.current;
+    //   contextMenuItem.current = 'Cut';
+    //   clearAndDraw();
+    //   return;
+    // }
+
+    // if (item === 'Copy') {
+    //   if (!multiSelectEndPoint.current) {
+    //     selectedShapes.current = [];
+    //     selectedShapes.current.push(currentShape.current);
+    //     currentShape.current.setSelected(true);
+    //   }
+    //   contextMenuItem.current = 'Copy';
+    //   clearAndDraw();
+    //   return;
+    // }
+
+    // if (item === 'Paste') {
+    //   if (contextMenuItem.current == 'Copy') {
+    //     handleContextCopyPaste(realX, realY);
+    //   } else if (contextMenuItem.current == 'Cut') {
+    //     handleContextCutPaste(realX, realY);
+    //   }
+    // }
+    // contextMenuItem.current = null;
+  }
+
+  function handleContextSettings() {
+    const shape = currentShape.current;
+    if (shape.type !== 'connector') {
+      console.log('Current shape: ' + JSON.stringify(shape, null, 2));
+
+      shape.setSelected(true);
+      setIsOpenElementDrawer(true);
+    }
+  }
+
+  function handleContextDelete() {
+    deleteShape(currentShape.current);
+    currentShape.current = null;
+  }
+
+  function handleCloseElementDrawer() {
+    console.log('closee');
+    setIsOpenElementDrawer(false);
+    currentShape.current.setSelected(false);
+  }
+
   return (
-    <canvas
-      style={{
-        backgroundColor: '#EFF7FD',
-        cursor: isToolBarItemSelected ? 'none' : 'default',
-      }}
-      height={2 * window.innerHeight}
-      width={window.innerWidth - 20}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseMove={handleMouseMove}
-      ref={canvasRef}
-    />
+    <>
+      <canvas
+        style={{
+          backgroundColor: '#EFF7FD',
+          cursor: isToolBarItemSelected ? 'none' : 'default',
+        }}
+        height={2 * window.innerHeight}
+        width={window.innerWidth - 20}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onContextMenu={handleContextMenu}
+        ref={canvasRef}
+      />
+      <Menu
+        open={contextMenu !== null}
+        onClose={handleContextMenuClick}
+        anchorReference='anchorPosition'
+        anchorPosition={
+          contextMenu !== null
+            ? {top: contextMenu.mouseY, left: contextMenu.mouseX}
+            : undefined
+        }>
+        {contextMenu?.items.map((item, i) => (
+          <MenuItem
+            sx={{display: 'flex', alignItems: 'center'}}
+            onClick={(e) => handleContextMenuClick(e, item)}
+            key={i}>
+            <Typography sx={{fontSize: 'small'}} variant='button'>
+              {item}
+            </Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+      <ElementDrawer
+        shape={currentShape.current}
+        isOpen={isOpenElementDrawer}
+        handleCloseDrawer={handleCloseElementDrawer}
+      />
+    </>
   );
 };
 

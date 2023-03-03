@@ -109,6 +109,10 @@ class Shape {
     return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
   }
 
+  setSelected(bool) {
+    this.selected = bool;
+  }
+
   setWidthFromText(ctx) {
     // reset text styles
     ctx.font = '18px sans-serif';
