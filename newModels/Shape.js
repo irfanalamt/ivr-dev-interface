@@ -60,13 +60,13 @@ class Shape {
         break;
 
       case 'connector':
-        this.width = 25;
-        this.height = 25;
+        this.width = 30;
+        this.height = 30;
         break;
 
       case 'jumper':
-        this.width = 25;
-        this.height = 25;
+        this.width = 35;
+        this.height = 35;
         break;
 
       case 'switch':
@@ -107,10 +107,6 @@ class Shape {
     this.id = id;
   }
 
-  fillSelected(ctx) {
-    ctx.fillStyle = '#d4d7d8';
-    ctx.fill();
-  }
   getBottomCoordinates() {
     return [this.x, this.y + this.height / 2];
   }
@@ -148,6 +144,10 @@ class Shape {
 
   setSelected(bool) {
     this.selected = bool;
+  }
+  fillSelected(ctx) {
+    ctx.fillStyle = '#d4d7d8';
+    ctx.fill();
   }
 
   setWidthFromText(ctx) {
@@ -598,11 +598,11 @@ class Shape {
     ctx.fill();
 
     ctx.lineWidth = 1;
-    ctx.font = '20px sans-serif';
+    ctx.font = '22px sans-serif';
     ctx.fillStyle = 'black';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('▼', this.x, this.y + 2);
+    ctx.fillText('▼', this.x, this.y + 3);
   }
   drawPentagonSwitch(ctx) {
     this.setWidthFromText(ctx);

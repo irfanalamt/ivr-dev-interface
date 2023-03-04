@@ -153,30 +153,34 @@ function drawGridLines2(ctx, canvas) {
   }
 }
 
-function drawFilledArrow(ctx, x1, y1, x2, y2) {
-  // draw a line from the first point to the second
+function drawFilledArrow(ctx, startX, startY, endX, endY) {
+  const arrowLength = 10;
+  const arrowAngle = Math.PI / 6;
+  const arrowColor = '#424242';
+  const lineWidth = 2;
 
-  ctx.beginPath();
-  ctx.moveTo(x1, y1);
-  ctx.lineTo(x2, y2);
-  ctx.strokeStyle = '#424242';
-  ctx.lineWidth = 2;
+  // Set drawing styles
+  ctx.strokeStyle = arrowColor;
+  ctx.fillStyle = arrowColor;
+  ctx.lineWidth = lineWidth;
   ctx.lineCap = 'round';
+
+  // Draw line
+  ctx.beginPath();
+  ctx.moveTo(startX, startY);
+  ctx.lineTo(endX, endY);
   ctx.stroke();
 
-  // draw an arrow head
-  let angle = Math.atan2(y2 - y1, x2 - x1);
+  // Draw arrowhead
+  const angle = Math.atan2(endY - startY, endX - startX);
+  const arrowPoint1X = endX - arrowLength * Math.cos(angle - arrowAngle);
+  const arrowPoint1Y = endY - arrowLength * Math.sin(angle - arrowAngle);
+  const arrowPoint2X = endX - arrowLength * Math.cos(angle + arrowAngle);
+  const arrowPoint2Y = endY - arrowLength * Math.sin(angle + arrowAngle);
   ctx.beginPath();
-  ctx.fillStyle = '#424242';
-  ctx.moveTo(x2, y2);
-  ctx.lineTo(
-    x2 - 10 * Math.cos(angle - Math.PI / 6),
-    y2 - 10 * Math.sin(angle - Math.PI / 6)
-  );
-  ctx.lineTo(
-    x2 - 10 * Math.cos(angle + Math.PI / 6),
-    y2 - 10 * Math.sin(angle + Math.PI / 6)
-  );
+  ctx.moveTo(endX, endY);
+  ctx.lineTo(arrowPoint1X, arrowPoint1Y);
+  ctx.lineTo(arrowPoint2X, arrowPoint2Y);
   ctx.fill();
 }
 
@@ -184,15 +188,20 @@ function getConnectingLines(shapes) {
   const connections = [];
 
   for (const shape of shapes) {
-    if (shape.nextItem) {
-      const shape2 = shapes.find((s) => s.id === shape.nextItem);
-
-      const [x1, y1] = shape.getBottomCoordinates();
-
-      const [x2, y2] = shape2.getTopCoordinates();
-
-      connections.push({x1, y1, x2, y2});
+    if (!shape.nextItem) {
+      continue;
     }
+
+    const shape2 = shapes.find((s) => s.id === shape.nextItem);
+
+    if (!shape2) {
+      continue;
+    }
+
+    const [x1, y1] = shape.getBottomCoordinates();
+    const [x2, y2] = shape2.getTopCoordinates();
+
+    connections.push({x1, y1, x2, y2});
   }
 
   return connections;

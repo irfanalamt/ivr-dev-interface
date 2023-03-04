@@ -13,6 +13,7 @@ import {
   Alert,
   BottomNavigation,
   Box,
+  Button,
   Drawer,
   IconButton,
   Menu,
@@ -33,7 +34,7 @@ const BottomBar = ({resetSelectedItemToolbar}) => {
     <Box
       style={{
         height: 35,
-        backgroundColor: '#cfd8dc',
+        backgroundColor: '#CCCCCC',
         position: 'fixed',
         bottom: 0,
         width: '100%',
@@ -41,16 +42,22 @@ const BottomBar = ({resetSelectedItemToolbar}) => {
         alignItems: 'center',
       }}
       onClick={handleClick}>
-      <Tooltip title='variables' arrow>
-        <SettingsApplicationsIcon sx={{ml: 2}} />
+      {/* <Tooltip title='variables' arrow>
+        <Button>
+          <SettingsApplicationsIcon sx={{ml: 2}} />
+        </Button>
       </Tooltip>
       <Tooltip title='prompt list' arrow>
-        <ListAltIcon sx={{ml: 2}} />
+        <Button>
+          <ListAltIcon sx={{ml: 2}} />
+        </Button>
       </Tooltip>
 
       <Tooltip title='module manager' arrow>
-        <ViewModuleIcon sx={{ml: 2}} />
-      </Tooltip>
+        <Button>
+          <ViewModuleIcon sx={{ml: 2}} />
+        </Button>
+      </Tooltip> */}
 
       {/* <Typography
         sx={{

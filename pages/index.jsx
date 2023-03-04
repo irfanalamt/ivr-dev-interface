@@ -1,4 +1,12 @@
-import {Avatar, Box, Button, Container, Stack, Typography} from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {useRouter} from 'next/router';
 
@@ -63,7 +71,21 @@ const Home = () => {
           Easily design personalized IVR flows using our intuitive, visual
           editor
         </Typography>
+
         <Stack sx={{pt: 4}} direction='row' spacing={2} justifyContent='center'>
+          <Tooltip arrow title='BETA' placement='top'>
+            <Button
+              sx={{
+                justifySelf: 'flex-start',
+                justifyItems: 'start',
+                backgroundColor: '#e0e0e0',
+              }}
+              variant='outlined'
+              color='primary'
+              onClick={() => router.push('/project2')}>
+              V2
+            </Button>
+          </Tooltip>
           <Button
             sx={{textAlign: 'center'}}
             variant='contained'

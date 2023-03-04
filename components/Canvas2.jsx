@@ -58,13 +58,11 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     const ctx = contextRef.current;
     clearCanvas();
     drawGridLines2(contextRef.current, canvasRef.current);
-    shapes.forEach((shape) => {
-      shape.drawShape(ctx);
-    });
+    shapes.forEach((shape) => shape.drawShape(ctx));
     const connectionsArray = getConnectingLines(shapes);
-    connectionsArray.forEach((c) => {
-      drawFilledArrow(contextRef.current, c.x1, c.y1, c.x2, c.y2);
-    });
+    connectionsArray.forEach((c) =>
+      drawFilledArrow(contextRef.current, c.x1, c.y1, c.x2, c.y2)
+    );
   }
   function clearCanvas() {
     contextRef.current.clearRect(
@@ -77,12 +75,12 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
   function addNewShape(x, y, type) {
     // to add a new shape to state variable
-
     const count = shapeCount.current[type]++;
     const newShape = new Shape(x, y, type);
     newShape.setTextAndId(count);
     setShapes([...shapes, newShape]);
   }
+
   function deleteShape(shapeToDelete) {
     const index = shapes.indexOf(shapeToDelete);
     if (index !== -1) {
@@ -139,8 +137,13 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       }
     }
 
+    if (connectingMode == 1) {
+      // reset connection if clicked in workspace while connecting
+      connectingShapes.current.shape1.nextItem = null;
+    }
     setConnectingMode(0);
     connectingShapes.current = null;
+    clearAndDraw();
   }
 
   function handleMouseUp(e) {
@@ -350,17 +353,19 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
           },
         }}>
         {contextMenu?.items.map((item, i) => (
-          <Tooltip key={i} title={item} placement='right'>
-            <MenuItem
-              sx={{display: 'flex', alignItems: 'center'}}
-              onClick={() => handleContextMenuClick(item)}>
-              {item === 'Settings' && <SettingsIcon sx={{fontSize: '18px'}} />}
-              {item === 'Cut' && <ContentCutIcon sx={{fontSize: '18px'}} />}
-              {item === 'Copy' && <ContentCopyIcon sx={{fontSize: '18px'}} />}
-              {item === 'Delete' && <DeleteIcon sx={{fontSize: '18px'}} />}
-              {item === 'Paste' && <ContentPasteIcon sx={{fontSize: '18px'}} />}
-            </MenuItem>
-          </Tooltip>
+          <MenuItem
+            key={i}
+            sx={{display: 'flex', alignItems: 'center'}}
+            onClick={() => handleContextMenuClick(item)}>
+            {item === 'Settings' && <SettingsIcon sx={{fontSize: '14px'}} />}
+            {item === 'Cut' && <ContentCutIcon sx={{fontSize: '14px'}} />}
+            {item === 'Copy' && <ContentCopyIcon sx={{fontSize: '14px'}} />}
+            {item === 'Delete' && <DeleteIcon sx={{fontSize: '14px'}} />}
+            {item === 'Paste' && <ContentPasteIcon sx={{fontSize: '14px'}} />}
+            <Typography sx={{ml: 0.5}} fontSize='14px' variant='caption'>
+              {item}
+            </Typography>
+          </MenuItem>
         ))}
       </Menu>
       <ElementDrawer
