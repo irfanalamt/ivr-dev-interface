@@ -120,6 +120,58 @@ class Shape {
   getRightCoordinates() {
     return [this.x + this.width / 2, this.y];
   }
+
+  getRelativeExitCoordinates(shape2) {
+    if (['connector', 'endFlow', 'jumper'].includes(this.type)) {
+      return this.getCircularCoordinates(shape2.x, shape2.y);
+    }
+
+    let [x, y] = this.getBottomCoordinates();
+
+    if (this.y < shape2.y) {
+      if (shape2.getTopCoordinates()[1] < this.getBottomCoordinates()[1]) {
+        [x, y] =
+          this.x < shape2.x
+            ? this.getRightCoordinates()
+            : this.getLeftCoordinates();
+      }
+    } else {
+      [x, y] =
+        this.x < shape2.x
+          ? this.getRightCoordinates()
+          : this.getLeftCoordinates();
+    }
+
+    return [x, y];
+  }
+
+  getRelativeEntryCoordinates(shape1) {
+    if (['connector', 'endFlow', 'jumper'].includes(this.type)) {
+      return this.getCircularCoordinates(shape1.x, shape1.y);
+    }
+    let [x, y] = this.getTopCoordinates();
+
+    if (this.getTopCoordinates()[1] < shape1.getBottomCoordinates()[1]) {
+      let dxLeft = Math.abs(this.getLeftCoordinates()[0] - shape1.x);
+      let dxRight = Math.abs(this.getRightCoordinates()[0] - shape1.x);
+
+      [x, y] =
+        dxLeft < dxRight
+          ? this.getLeftCoordinates()
+          : this.getRightCoordinates();
+    }
+
+    return [x, y];
+  }
+  getCircularCoordinates(pointX, pointY) {
+    const angle = Math.atan2(pointY - this.y, pointX - this.x);
+    const radius = this.width / 2;
+    const x = this.x + radius * Math.cos(angle);
+    const y = this.y + radius * Math.sin(angle);
+
+    return [x, y];
+  }
+
   isMouseInShape(x, y) {
     const THRESHOLD = 4;
     const left = this.x - this.width / 2 - THRESHOLD;

@@ -198,8 +198,11 @@ function getConnectingLines(shapes) {
       continue;
     }
 
-    const [x1, y1] = shape.getBottomCoordinates();
-    const [x2, y2] = shape2.getTopCoordinates();
+    // const [x1, y1] = shape.getBottomCoordinates();
+    // const [x2, y2] = shape2.getTopCoordinates();
+
+    const [x1, y1] = shape.getRelativeExitCoordinates(shape2);
+    const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
 
     connections.push({x1, y1, x2, y2});
   }
@@ -226,8 +229,10 @@ function groupConnectionsByEndCoordinate(connections) {
 
 function modifyX2ValuesForConnectionsInGroups(groups) {
   Object.values(groups).forEach((group) => {
+    const numConnection = group.length;
+    const offset = parseInt((numConnection - 1) / 2) * 4;
     group.sort((a, b) => a.x1 - b.x1);
-    let x2 = group[0].x2;
+    let x2 = group[0].x2 - offset;
     group.forEach((connection) => {
       connection.x2 = x2;
       x2 += 4;

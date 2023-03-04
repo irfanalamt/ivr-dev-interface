@@ -200,7 +200,13 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
     if (connectingMode == 1) {
       const shape1 = connectingShapes.current.shape1;
-      const [x1, y1] = shape1.getBottomCoordinates();
+      let x1, y1;
+      if (['connector', 'endFlow', 'jumper'].includes(shape1.type)) {
+        [x1, y1] = shape1.getCircularCoordinates(realX, realY);
+      } else {
+        [x1, y1] = shape1.getBottomCoordinates();
+      }
+
       clearAndDraw();
       drawFilledArrow(contextRef.current, x1, y1, realX, realY);
     }
