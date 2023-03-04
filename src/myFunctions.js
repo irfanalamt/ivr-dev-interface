@@ -235,10 +235,41 @@ function modifyX2ValuesForConnectionsInGroups(groups) {
   });
 }
 
+function alignAllShapes(shapes, setShapes) {
+  const paletteOffset = 75;
+  const yAppbarOffset = 50;
+  const snapValue = 20;
+  const tolerance = 10;
+
+  const newShapes = shapes.map((shape) => {
+    const dx = calculateDelta(shape.x, paletteOffset, snapValue);
+    const dy = calculateDelta(shape.y, yAppbarOffset, snapValue);
+
+    if (Math.abs(dx) <= tolerance) {
+      shape.x += dx;
+    }
+
+    if (Math.abs(dy) <= tolerance) {
+      shape.y += dy;
+    }
+
+    return shape;
+  });
+
+  setShapes(newShapes);
+}
+
+function calculateDelta(coordinate, offset, snapValue) {
+  const multipleNumber = coordinate - offset;
+  const closestMultiple = Math.round(multipleNumber / snapValue) * snapValue;
+  return closestMultiple - multipleNumber;
+}
+
 export {
   replaceVarNameDollar,
   drawGridLines,
   drawGridLines2,
   drawFilledArrow,
   getConnectingLines,
+  alignAllShapes,
 };

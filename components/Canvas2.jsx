@@ -1,18 +1,18 @@
-import {Button, Menu, MenuItem, Tooltip, Typography} from '@mui/material';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import ContentCutIcon from '@mui/icons-material/ContentCut';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import DeleteIcon from '@mui/icons-material/Delete';
+import SettingsIcon from '@mui/icons-material/Settings';
+import {Menu, MenuItem, Typography} from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import Shape from '../newModels/Shape';
-import ElementDrawer from './ElementDrawer';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
+  alignAllShapes,
   drawFilledArrow,
-  drawGridLines,
   drawGridLines2,
   getConnectingLines,
 } from '../src/myFunctions';
+import ElementDrawer from './ElementDrawer';
 
 const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const [shapes, setShapes] = useState([]);
@@ -155,6 +155,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     e.preventDefault();
     // Reset dragging mode
     isDragging.current = false;
+    alignAllShapes(shapes, setShapes);
   }
 
   function handleMouseMove(e) {
