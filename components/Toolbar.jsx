@@ -15,13 +15,6 @@ const LightTooltip = styled(({className, ...props}) => (
 }));
 
 const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
-  const ToolBarButton = styled(Button)({
-    backgroundColor: selectedItemToolbar['setParams'] ? '#FFA500' : '#ECEFF1',
-    width: 40,
-    height: 40,
-    borderColor: '#ECEFF1',
-  });
-
   return (
     <Box
       sx={{
@@ -36,139 +29,227 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
         justifyContent: 'space-evenly',
       }}>
       <LightTooltip title='start / setParams' placement='right'>
-        <ToolBarButton
+        <Button
           size='small'
           variant='outlined'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'setParams')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'setParams')}
+          sx={{
+            backgroundColor: selectedItemToolbar['setParams']
+              ? '#FFA500'
+              : '#ECEFF1',
+            width: 40,
+            height: 40,
+            borderColor: '#ECEFF1',
+          }}>
           {selectedItemToolbar['setParams'] ? (
             <img src='/icons/setParamsBlack.png' alt='Icon' height={'22px'} />
           ) : (
             <img src='/icons/setParams.png' alt='Icon' height={'22px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='playMessage' placement='right'>
-        <ToolBarButton
+        <Button
           variant='outlined'
           onClick={(e) => handleSetSelectedItemToolbar(e, 'playMessage')}
+          sx={{
+            backgroundColor: selectedItemToolbar['playMessage']
+              ? '#FFA500'
+              : '#ECEFF1',
+            width: 40,
+            height: 40,
+            borderColor: '#ECEFF1',
+          }}
           size='small'>
           {selectedItemToolbar['playMessage'] ? (
             <img src='/icons/playMessageBlack.png' alt='Icon' height={'25px'} />
           ) : (
             <img src='/icons/playMessage.png' alt='Icon' height={'25px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='getDigits' placement='right'>
-        <ToolBarButton
+        <Button
           variant='outlined'
           size='small'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'getDigits')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'getDigits')}
+          sx={{
+            backgroundColor: selectedItemToolbar['getDigits']
+              ? '#FFA500'
+              : '#ECEFF1',
+            width: 40,
+            height: 40,
+            borderColor: '#ECEFF1',
+          }}>
           {selectedItemToolbar['getDigits'] ? (
             <img src='/icons/getDigitsBlack.png' alt='Icon' height={'22px'} />
           ) : (
             <img src='/icons/getDigits.png' alt='Icon' height={'22px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='playConfirm' placement='right'>
-        <ToolBarButton
+        <Button
           variant='outlined'
           size='small'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'playConfirm')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'playConfirm')}
+          sx={{
+            backgroundColor: selectedItemToolbar['playConfirm']
+              ? '#FFA500'
+              : '#ECEFF1',
+            width: 40,
+            height: 40,
+            borderColor: '#ECEFF1',
+          }}>
           {selectedItemToolbar['playConfirm'] ? (
             <img src='/icons/playConfirmBlack.png' alt='Icon' height={'25px'} />
           ) : (
             <img src='/icons/playConfirm.png' alt='Icon' height={'25px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='playMenu' placement='right'>
-        <ToolBarButton
+        <Button
           variant='outlined'
           size='small'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'playMenu')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'playMenu')}
+          sx={{
+            backgroundColor: selectedItemToolbar['playMenu']
+              ? '#FFA500'
+              : '#ECEFF1',
+            width: 40,
+            height: 40,
+            borderColor: '#ECEFF1',
+          }}>
           {selectedItemToolbar['playMenu'] ? (
             <img src='/icons/playMenuBlack.png' alt='Icon' height={'22px'} />
           ) : (
             <img src='/icons/playMenu.png' alt='Icon' height={'22px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='runScript' placement='right'>
-        <ToolBarButton
+        <Button
           variant='outlined'
           size='small'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'runScript')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'runScript')}
+          sx={{
+            backgroundColor: selectedItemToolbar['runScript']
+              ? '#FFA500'
+              : '#ECEFF1',
+            width: 40,
+            height: 40,
+            borderColor: '#ECEFF1',
+          }}>
           {selectedItemToolbar['runScript'] ? (
             <img src='/icons/runScriptBlack.png' alt='Icon' height={'25px'} />
           ) : (
             <img src='/icons/runScript.png' alt='Icon' height={'25px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='switch' placement='right'>
-        <ToolBarButton
+        <Button
           variant='outlined'
           size='small'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'switch')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'switch')}
+          sx={{
+            backgroundColor: selectedItemToolbar['switch']
+              ? '#FFA500'
+              : '#ECEFF1',
+            width: 40,
+            height: 40,
+            borderColor: '#ECEFF1',
+          }}>
           {selectedItemToolbar['switch'] ? (
             <img src='/icons/switchBlack.png' alt='Icon' height={'25px'} />
           ) : (
             <img src='/icons/switch.png' alt='Icon' height={'25px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='callAPI' placement='right'>
-        <ToolBarButton
+        <Button
           variant='outlined'
           size='small'
           onClick={(e) => handleSetSelectedItemToolbar(e, 'callAPI')}
+          sx={{
+            backgroundColor: selectedItemToolbar['callAPI']
+              ? '#FFA500'
+              : '#ECEFF1',
+            width: 40,
+            height: 40,
+            borderColor: '#ECEFF1',
+          }}
           color='info'>
           {selectedItemToolbar['callAPI'] ? (
             <img src='/icons/callAPIBlack.png' alt='Icon' height={'25px'} />
           ) : (
             <img src='/icons/callAPI.png' alt='Icon' height={'25px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='endFlow' placement='right'>
-        <ToolBarButton
+        <Button
           size='small'
           variant='outlined'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'endFlow')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'endFlow')}
+          sx={{
+            backgroundColor: selectedItemToolbar['endFlow']
+              ? '#FFA500'
+              : '#ECEFF1',
+            borderColor: '#ECEFF1',
+            width: 40,
+            height: 40,
+          }}>
           <CancelIcon
             sx={{
               fontSize: '25px',
               color: selectedItemToolbar['endFlow'] ? 'black' : '#607D8B',
             }}
           />
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='connector' placement='right'>
-        <ToolBarButton
+        <Button
           size='small'
           variant='outlined'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'connector')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'connector')}
+          sx={{
+            backgroundColor: selectedItemToolbar['connector']
+              ? '#FFA500'
+              : '#ECEFF1',
+            borderColor: '#ECEFF1',
+            width: 40,
+            height: 40,
+          }}>
           <ControlPointIcon
             sx={{
               fontSize: '25px',
               color: selectedItemToolbar['connector'] ? 'black' : '#607D8B',
             }}
           />
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
       <LightTooltip title='jumper' placement='right'>
-        <ToolBarButton
+        <Button
           size='small'
           variant='outlined'
-          onClick={(e) => handleSetSelectedItemToolbar(e, 'jumper')}>
+          onClick={(e) => handleSetSelectedItemToolbar(e, 'jumper')}
+          sx={{
+            backgroundColor: selectedItemToolbar['jumper']
+              ? '#FFA500'
+              : '#ECEFF1',
+            borderColor: '#ECEFF1',
+            width: 40,
+            height: 40,
+          }}>
           {selectedItemToolbar['jumper'] ? (
             <img src='/icons/jumperBlack.png' alt='Icon' height={'25px'} />
           ) : (
             <img src='/icons/jumper.png' alt='Icon' height={'25px'} />
           )}
-        </ToolBarButton>
+        </Button>
       </LightTooltip>
     </Box>
   );
