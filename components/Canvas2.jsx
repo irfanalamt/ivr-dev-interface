@@ -7,7 +7,12 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {drawFilledArrow, getConnectingLines} from '../src/myFunctions';
+import {
+  drawFilledArrow,
+  drawGridLines,
+  drawGridLines2,
+  getConnectingLines,
+} from '../src/myFunctions';
 
 const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const [shapes, setShapes] = useState([]);
@@ -52,6 +57,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   function clearAndDraw() {
     const ctx = contextRef.current;
     clearCanvas();
+    drawGridLines2(contextRef.current, canvasRef.current);
     shapes.forEach((shape) => {
       shape.drawShape(ctx);
     });
