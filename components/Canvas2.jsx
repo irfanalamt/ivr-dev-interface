@@ -125,7 +125,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
             connectingShapes.current.shape2 !== connectingShapes.current.shape1
           ) {
             connectingShapes.current.shape1.nextItem =
-              connectingShapes.current.shape2.id;
+              connectingShapes.current.shape2;
           }
 
           setConnectingMode(0);

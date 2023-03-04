@@ -154,7 +154,7 @@ function drawGridLines2(ctx, canvas) {
 }
 
 function drawFilledArrow(ctx, startX, startY, endX, endY) {
-  const arrowLength = 10;
+  const arrowLength = 9;
   const arrowAngle = Math.PI / 6;
   const arrowColor = '#424242';
   const lineWidth = 2;
@@ -192,7 +192,7 @@ function getConnectingLines(shapes) {
       continue;
     }
 
-    const shape2 = shapes.find((s) => s.id === shape.nextItem);
+    const shape2 = shape.nextItem;
 
     if (!shape2) {
       continue;
@@ -204,7 +204,35 @@ function getConnectingLines(shapes) {
     connections.push({x1, y1, x2, y2});
   }
 
+  return modifyConnections(connections);
+}
+
+function modifyConnections(connections) {
+  const groups = groupConnectionsByEndCoordinate(connections);
+  modifyX2ValuesForConnectionsInGroups(groups);
   return connections;
+}
+
+function groupConnectionsByEndCoordinate(connections) {
+  return connections.reduce((groups, connection) => {
+    const key = `${connection.x2},${connection.y2}`;
+    if (!groups[key]) {
+      groups[key] = [];
+    }
+    groups[key].push(connection);
+    return groups;
+  }, {});
+}
+
+function modifyX2ValuesForConnectionsInGroups(groups) {
+  Object.values(groups).forEach((group) => {
+    group.sort((a, b) => a.x1 - b.x1);
+    let x2 = group[0].x2;
+    group.forEach((connection) => {
+      connection.x2 = x2;
+      x2 += 4;
+    });
+  });
 }
 
 export {

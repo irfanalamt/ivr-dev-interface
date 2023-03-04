@@ -86,24 +86,25 @@ class Shape {
   }
 
   setTextAndId(shapeCount) {
-    const shapeTypeLetterMap = {
-      setParams: 'A',
-      runScript: 'B',
-      callAPI: 'C',
-      playMenu: 'D',
-      getDigits: 'E',
-      playMessage: 'F',
-      playConfirm: 'G',
-      switch: 'H',
-      endFlow: 'I',
-      connector: 'J',
-      jumper: 'K',
-      module: 'M',
-    };
-    const startCharacter = shapeTypeLetterMap[this.type] || 'X';
+    const shapeTypeLetterMap = new Map([
+      ['setParams', 'A'],
+      ['runScript', 'B'],
+      ['callAPI', 'C'],
+      ['playMenu', 'D'],
+      ['getDigits', 'E'],
+      ['playMessage', 'F'],
+      ['playConfirm', 'G'],
+      ['switch', 'H'],
+      ['endFlow', 'I'],
+      ['connector', 'J'],
+      ['jumper', 'K'],
+      ['module', 'M'],
+    ]);
+
+    const startCharacter = shapeTypeLetterMap.get(this.type) || 'X';
     const id = `${startCharacter}${shapeCount}`;
 
-    this.text += shapeCount;
+    this.text += shapeCount.toString();
     this.id = id;
   }
 
@@ -120,26 +121,34 @@ class Shape {
     return [this.x + this.width / 2, this.y];
   }
   isMouseInShape(x, y) {
-    const threshold = 4;
-    const shapeLeft = this.x - this.width / 2 - threshold;
-    const shapeRight = this.x + this.width / 2 + threshold;
-    const shapeTop = this.y - this.height / 2 - threshold;
-    const shapeBottom = this.y + this.height / 2 + threshold;
+    const THRESHOLD = 4;
+    const left = this.x - this.width / 2 - THRESHOLD;
+    const right = this.x + this.width / 2 + THRESHOLD;
+    const top = this.y - this.height / 2 - THRESHOLD;
+    const bottom = this.y + this.height / 2 + THRESHOLD;
 
-    return x > shapeLeft && x < shapeRight && y > shapeTop && y < shapeBottom;
+    return x > left && x < right && y > top && y < bottom;
   }
 
   isMouseNearExitPoint(x, y) {
-    const [exitX, exitY] = this.getBottomCoordinates();
-    const distance = Math.sqrt((x - exitX) ** 2 + (y - exitY) ** 2);
-    console.log('distance.....', distance);
+    let exitX, exitY;
+    if (['endFlow', 'connector', 'jumper'].includes(this.type)) {
+      [exitX, exitY] = [this.x, this.y];
+    } else {
+      // if true return {totalPoints:1,position:1,name:'default}
+      // starting from 1
+      // adjust for  menu, switch
 
-    // if true return {totalPoints:1,position:1,name:'default}
-    // starting from 1
-    // adjust for  menu, switch
-    if (distance <= 4) {
-      return {totalPoints: 1, position: 1, name: 'default'};
-    } else return false;
+      [exitX, exitY] = this.getBottomCoordinates();
+    }
+
+    // Calculate distance using the Pythagorean theorem
+    const distance = Math.hypot(x - exitX, y - exitY);
+
+    // Return an object with information about the exit point if the distance is less than or equal to 4, otherwise return false
+    return distance <= 4
+      ? {totalPoints: 1, position: 1, name: 'default'}
+      : false;
   }
 
   setSelected(bool) {
