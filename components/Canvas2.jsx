@@ -121,8 +121,13 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
         }
         if (connectingMode === 1) {
           connectingShapes.current.shape2 = shape;
-          connectingShapes.current.shape1.nextItem =
-            connectingShapes.current.shape2.id;
+          if (
+            connectingShapes.current.shape2 !== connectingShapes.current.shape1
+          ) {
+            connectingShapes.current.shape1.nextItem =
+              connectingShapes.current.shape2.id;
+          }
+
           setConnectingMode(0);
           connectingShapes.current = null;
           clearAndDraw();
@@ -357,12 +362,12 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
             key={i}
             sx={{display: 'flex', alignItems: 'center'}}
             onClick={() => handleContextMenuClick(item)}>
-            {item === 'Settings' && <SettingsIcon sx={{fontSize: '14px'}} />}
-            {item === 'Cut' && <ContentCutIcon sx={{fontSize: '14px'}} />}
-            {item === 'Copy' && <ContentCopyIcon sx={{fontSize: '14px'}} />}
-            {item === 'Delete' && <DeleteIcon sx={{fontSize: '14px'}} />}
-            {item === 'Paste' && <ContentPasteIcon sx={{fontSize: '14px'}} />}
-            <Typography sx={{ml: 0.5}} fontSize='14px' variant='caption'>
+            {item === 'Settings' && <SettingsIcon sx={{fontSize: '13px'}} />}
+            {item === 'Cut' && <ContentCutIcon sx={{fontSize: '13px'}} />}
+            {item === 'Copy' && <ContentCopyIcon sx={{fontSize: '13px'}} />}
+            {item === 'Delete' && <DeleteIcon sx={{fontSize: '13px'}} />}
+            {item === 'Paste' && <ContentPasteIcon sx={{fontSize: '13px'}} />}
+            <Typography sx={{ml: 0.5}} fontSize='13px' variant='caption'>
               {item}
             </Typography>
           </MenuItem>
