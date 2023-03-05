@@ -222,7 +222,6 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
         if (shape.isMouseInShape(realX, realY)) {
           canvasRef.current.style.cursor = 'pointer';
           if (shape.isMouseNearExitPoint(realX, realY)) {
-            console.log('near exit 🧠🧠');
             canvasRef.current.style.cursor = 'crosshair';
           }
           break;
@@ -317,41 +316,6 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
         handleContextCutPaste(realX, realY);
       }
     }
-
-    // if (item === 'Cut') {
-    //   // selectedShapes.current.forEach((shape) =>
-    //   //   stageGroup.current[pageNumber.current - 1].removeShape(shape.id)
-    //   // );
-    //   if (!multiSelectEndPoint.current) {
-    //     selectedShapes.current = [];
-    //     selectedShapes.current.push(currentShape.current);
-    //     currentShape.current.setSelected(true);
-    //   }
-    //   selectedShapes.current.cutPage = pageNumber.current;
-    //   contextMenuItem.current = 'Cut';
-    //   clearAndDraw();
-    //   return;
-    // }
-
-    // if (item === 'Copy') {
-    //   if (!multiSelectEndPoint.current) {
-    //     selectedShapes.current = [];
-    //     selectedShapes.current.push(currentShape.current);
-    //     currentShape.current.setSelected(true);
-    //   }
-    //   contextMenuItem.current = 'Copy';
-    //   clearAndDraw();
-    //   return;
-    // }
-
-    // if (item === 'Paste') {
-    //   if (contextMenuItem.current == 'Copy') {
-    //     handleContextCopyPaste(realX, realY);
-    //   } else if (contextMenuItem.current == 'Cut') {
-    //     handleContextCutPaste(realX, realY);
-    //   }
-    // }
-    // contextMenuItem.current = null;
   }
 
   function handleContextSettings() {

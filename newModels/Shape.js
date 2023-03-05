@@ -229,7 +229,7 @@ class Shape {
     this.selected = bool;
   }
   fillSelected(ctx) {
-    ctx.fillStyle = '#abd5f5';
+    ctx.fillStyle = '#B3E5FC';
     ctx.fill();
   }
 
