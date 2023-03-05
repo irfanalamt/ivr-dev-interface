@@ -194,6 +194,30 @@ class Shape {
     return [x, y];
   }
 
+  isInRectangle(startX, startY, width, height) {
+    let x1 = startX;
+    let y1 = startY;
+    let x2 = startX + width;
+    let y2 = startY + height;
+
+    // Swap coordinates if width or height is negative
+    if (width < 0) {
+      x1 = startX + width;
+      x2 = startX;
+    }
+    if (height < 0) {
+      y1 = startY + height;
+      y2 = startY;
+    }
+
+    // Check if point is inside the rectangle
+    if (this.x >= x1 && this.x <= x2 && this.y >= y1 && this.y <= y2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   isMouseInShape(x, y) {
     const THRESHOLD = 4;
     const left = this.x - this.width / 2 - THRESHOLD;
@@ -354,7 +378,7 @@ class Shape {
       this.height
     );
     if (this.selected) {
-      ctx.fillStyle = '#d4d7d8';
+      ctx.fillStyle = '#B3E5FC';
       ctx.fillRect(
         this.x - this.width / 2,
         this.y - this.height / 2,

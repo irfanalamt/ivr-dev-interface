@@ -184,6 +184,15 @@ function drawFilledArrow(ctx, startX, startY, endX, endY) {
   ctx.fill();
 }
 
+function drawMultiSelectRect(ctx, x, y, width, height) {
+  ctx.fillStyle = 'rgba(178, 223, 219, 0.3)';
+  ctx.lineWidth = 1;
+  ctx.fillRect(x, y, width, height);
+
+  ctx.strokeStyle = '#757575';
+  ctx.strokeRect(x, y, width, height);
+}
+
 function getConnectingLines(shapes) {
   const connections = [];
 
@@ -270,6 +279,30 @@ function calculateDelta(coordinate, offset, snapValue) {
   return closestMultiple - multipleNumber;
 }
 
+function isPointInRectangle(startX, startY, width, height, pointX, pointY) {
+  let x1 = startX;
+  let y1 = startY;
+  let x2 = startX + width;
+  let y2 = startY + height;
+
+  // Swap coordinates if width or height is negative
+  if (width < 0) {
+    x1 = startX + width;
+    x2 = startX;
+  }
+  if (height < 0) {
+    y1 = startY + height;
+    y2 = startY;
+  }
+
+  // Check if point is inside the rectangle
+  if (pointX >= x1 && pointX <= x2 && pointY >= y1 && pointY <= y2) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export {
   replaceVarNameDollar,
   drawGridLines,
@@ -277,4 +310,6 @@ export {
   drawFilledArrow,
   getConnectingLines,
   alignAllShapes,
+  isPointInRectangle,
+  drawMultiSelectRect,
 };

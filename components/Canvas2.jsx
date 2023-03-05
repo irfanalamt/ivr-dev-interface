@@ -10,7 +10,9 @@ import {
   alignAllShapes,
   drawFilledArrow,
   drawGridLines2,
+  drawMultiSelectRect,
   getConnectingLines,
+  isPointInRectangle,
 } from '../src/myFunctions';
 import ElementDrawer from './ElementDrawer';
 
@@ -49,7 +51,11 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const selectedShapes = useRef(null);
   const contextMenuItem = useRef(null);
 
-  let startX, startY;
+  const isMultipleSelectionDragging = useRef(false);
+  const isDrawnMultipleSelectionRectangle = useRef(null);
+
+  let startX = 0,
+    startY = 0;
 
   useEffect(() => {
     const context = canvasRef.current.getContext('2d');
@@ -61,11 +67,18 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     const ctx = contextRef.current;
     clearCanvas();
     drawGridLines2(contextRef.current, canvasRef.current);
+
     shapes.forEach((shape) => shape.drawShape(ctx));
     const connectionsArray = getConnectingLines(shapes);
     connectionsArray.forEach((c) =>
       drawFilledArrow(contextRef.current, c.x1, c.y1, c.x2, c.y2)
     );
+    if (isDrawnMultipleSelectionRectangle.current) {
+      console.log('is drawing multii📍');
+      const {x, y, width, height} = isDrawnMultipleSelectionRectangle.current;
+
+      drawMultiSelectRect(ctx, x, y, width, height);
+    }
   }
   function clearCanvas() {
     contextRef.current.clearRect(
@@ -111,6 +124,20 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       return;
     }
 
+    if (isDrawnMultipleSelectionRectangle.current) {
+      // check if mouse down outside rect; reset this
+      // if in, prepare to move the whole damn thing with the selected shapes.
+
+      const {x, y, width, height} = isDrawnMultipleSelectionRectangle.current;
+
+      if (isPointInRectangle(x, y, width, height, realX, realY)) {
+        // task2
+      } else {
+        // reset it
+        resetMultiSelect();
+      }
+    }
+
     for (const shape of shapes) {
       console.log('in loop', shape, realX, realY);
       if (shape.isMouseInShape(realX, realY)) {
@@ -153,6 +180,10 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       setConnectingMode(0);
       connectingShapes.current = null;
       resetSelectedElement();
+      // for multi select
+      isMultipleSelectionDragging.current = true;
+      startX = realX;
+      startY = realY;
     }
   }
 
@@ -160,6 +191,28 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     e.preventDefault();
     // Reset dragging mode
     isDragging.current = false;
+
+    //stop drawing
+    isMultipleSelectionDragging.current = false;
+
+    if (isDrawnMultipleSelectionRectangle.current) {
+      // if rect drawn, if shapes in multi rect-> set to selected
+      // no shapes selected-> reset multi selection
+
+      const {x, y, width, height} = isDrawnMultipleSelectionRectangle.current;
+      selectedShapes.current = shapes.filter((shape) =>
+        shape.isInRectangle(x, y, width, height)
+      );
+      if (selectedShapes.current.length) {
+        selectedShapes.current.forEach((shape) => shape.setSelected(true));
+        clearAndDraw();
+      } else {
+        // reset multi select if no shapes bound
+
+        resetMultiSelect();
+      }
+    }
+
     alignAllShapes(shapes, setShapes);
   }
 
@@ -203,7 +256,29 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       return;
     }
 
+    if (isMultipleSelectionDragging.current) {
+      if (!isDrawnMultipleSelectionRectangle.current) {
+        isDrawnMultipleSelectionRectangle.current = {
+          x: startX,
+          y: startY,
+          width: realX - startX,
+          height: realY - startY,
+        };
+      } else {
+        // rectangle already there
+
+        isDrawnMultipleSelectionRectangle.current.x = startX;
+        isDrawnMultipleSelectionRectangle.current.y = startY;
+        isDrawnMultipleSelectionRectangle.current.width = realX - startX;
+
+        isDrawnMultipleSelectionRectangle.current.height = realY - startY;
+      }
+
+      clearAndDraw();
+    }
+
     if (connectingMode == 1) {
+      // draw connecting arrow from shape1
       const shape1 = connectingShapes.current.shape1;
       let x1, y1;
       if (['connector', 'endFlow', 'jumper'].includes(shape1.type)) {
@@ -217,6 +292,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     }
 
     if (connectingMode === 0) {
+      // change cursor when in element and near exit point
       canvasRef.current.style.cursor = 'default';
       for (const shape of shapes) {
         if (shape.isMouseInShape(realX, realY)) {
@@ -279,8 +355,6 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     const {clientX, clientY} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
     setContextMenu(null);
-
-    console.log('item clicked: ' + item);
 
     if (item === 'Settings') {
       handleContextSettings();
@@ -365,6 +439,13 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       selectedShapes.current.forEach((shape) => shape.setSelected(false));
     }
     selectedShapes.current = null;
+    clearAndDraw();
+  }
+
+  function resetMultiSelect() {
+    selectedShapes.current.forEach((shape) => shape.setSelected(false));
+    selectedShapes.current = null;
+    isDrawnMultipleSelectionRectangle.current = null;
     clearAndDraw();
   }
 
