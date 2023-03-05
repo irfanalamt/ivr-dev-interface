@@ -46,6 +46,9 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
   const connectingShapes = useRef(null);
 
+  const selectedShapes = useRef(null);
+  const contextMenuItem = useRef(null);
+
   let startX, startY;
 
   useEffect(() => {
@@ -142,13 +145,15 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       }
     }
 
-    if (connectingMode == 1) {
-      // reset connection if clicked in workspace while connecting
-      connectingShapes.current.shape1.nextItem = null;
+    if (button === 0) {
+      if (connectingMode == 1) {
+        // reset connection if clicked in workspace while connecting
+        connectingShapes.current.shape1.nextItem = null;
+      }
+      setConnectingMode(0);
+      connectingShapes.current = null;
+      resetSelectedElement();
     }
-    setConnectingMode(0);
-    connectingShapes.current = null;
-    clearAndDraw();
   }
 
   function handleMouseUp(e) {
@@ -234,29 +239,46 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
     for (const shape of shapes) {
       if (shape.isMouseInShape(realX, realY)) {
-        let items = ['Settings', 'Cut', 'Copy', 'Delete'];
-        if (shape.type === 'connector') {
-          // no settings for connector
-          items.splice(0, 1);
-        }
+        if (!contextMenuItem.current) {
+          let items = ['Settings', 'Cut', 'Copy', 'Delete'];
+          if (shape.type === 'connector') {
+            // no settings for connector
+            items.splice(0, 1);
+          }
 
-        // contextMenuItem.current = null;
-        // clearAndDraw();
-        setContextMenu(
-          contextMenu === null
-            ? {
-                mouseX: realX,
-                mouseY: realY,
-                items: items,
-              }
-            : null
-        );
-        break;
+          setContextMenu(
+            contextMenu === null
+              ? {
+                  mouseX: realX,
+                  mouseY: realY,
+                  items: items,
+                }
+              : null
+          );
+        }
+        resetSelectedElement();
+        return;
       }
+    }
+
+    if (contextMenuItem.current) {
+      let items = ['Paste'];
+      setContextMenu(
+        contextMenu === null
+          ? {
+              mouseX: realX,
+              mouseY: realY,
+              items: items,
+            }
+          : null
+      );
     }
   }
 
-  function handleContextMenuClick(item) {
+  function handleContextMenuClick(e, item) {
+    e.preventDefault();
+    const {clientX, clientY} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
     setContextMenu(null);
 
     console.log('item clicked: ' + item);
@@ -269,6 +291,31 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     if (item === 'Delete') {
       handleContextDelete();
       return;
+    }
+
+    if (item === 'Cut') {
+      currentShape.current.setSelected(true);
+      contextMenuItem.current = 'Cut';
+      selectedShapes.current = [];
+      selectedShapes.current.push(currentShape.current);
+      clearAndDraw();
+      return;
+    }
+    if (item === 'Copy') {
+      currentShape.current.setSelected(true);
+      selectedShapes.current = [];
+      selectedShapes.current.push(currentShape.current);
+      contextMenuItem.current = 'Copy';
+      clearAndDraw();
+      return;
+    }
+
+    if (item === 'Paste') {
+      if (contextMenuItem.current == 'Copy') {
+        handleContextCopyPaste(realX, realY);
+      } else if (contextMenuItem.current == 'Cut') {
+        handleContextCutPaste(realX, realY);
+      }
     }
 
     // if (item === 'Cut') {
@@ -323,6 +370,39 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     deleteShape(currentShape.current);
     currentShape.current = null;
   }
+  function handleContextCopyPaste(realX, realY) {
+    const currShape = selectedShapes.current[0];
+    const offsetX = realX - currShape.x;
+    const offsetY = realY - currShape.y;
+
+    const newShape = currShape.copyShape(
+      shapeCount.current,
+      shapes,
+      offsetX,
+      offsetY
+    );
+
+    setShapes([...shapes, newShape]);
+    resetSelectedElement();
+  }
+  function handleContextCutPaste(realX, realY) {
+    const currShape = selectedShapes.current[0];
+    const offsetX = realX - currShape.x;
+    const offsetY = realY - currShape.y;
+    currShape.x += offsetX;
+    currShape.y += offsetY;
+
+    resetSelectedElement();
+  }
+
+  function resetSelectedElement() {
+    contextMenuItem.current = null;
+    if (selectedShapes.current) {
+      selectedShapes.current.forEach((shape) => shape.setSelected(false));
+    }
+    selectedShapes.current = null;
+    clearAndDraw();
+  }
 
   function handleCloseElementDrawer() {
     console.log('closee');
@@ -368,7 +448,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
           <MenuItem
             key={i}
             sx={{display: 'flex', alignItems: 'center'}}
-            onClick={() => handleContextMenuClick(item)}>
+            onClick={(e) => handleContextMenuClick(e, item)}>
             {item === 'Settings' && <SettingsIcon sx={{fontSize: '13px'}} />}
             {item === 'Cut' && <ContentCutIcon sx={{fontSize: '13px'}} />}
             {item === 'Copy' && <ContentCopyIcon sx={{fontSize: '13px'}} />}

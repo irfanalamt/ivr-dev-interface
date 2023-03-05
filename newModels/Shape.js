@@ -1,4 +1,4 @@
-import ApiIcon from '@mui/icons-material/Api';
+import {ContentCutOutlined} from '@mui/icons-material';
 
 class Shape {
   constructor(x, y, type, style = 'black') {
@@ -108,6 +108,28 @@ class Shape {
     this.id = id;
   }
 
+  copyShape(shapeCount, shapes, offsetX, offsetY) {
+    const {x, y, type, text} = this;
+    const count = ++shapeCount[type];
+    const newShape = new Shape(x + offsetX, y + offsetY, type);
+    newShape.setTextAndId(count);
+    const shapeNames = shapes.map((shape) => shape.text);
+    newShape.text = this.getUniqueName(text, shapeNames);
+
+    return newShape;
+  }
+
+  getUniqueName(oldName, shapeNames) {
+    let num = 1;
+    let newName = `${oldName}${num}`;
+    while (shapeNames.includes(newName)) {
+      num++;
+      newName = `${oldName}${num}`;
+    }
+
+    return newName;
+  }
+
   getBottomCoordinates() {
     return [this.x, this.y + this.height / 2];
   }
@@ -207,7 +229,7 @@ class Shape {
     this.selected = bool;
   }
   fillSelected(ctx) {
-    ctx.fillStyle = '#d4d7d8';
+    ctx.fillStyle = '#abd5f5';
     ctx.fill();
   }
 
