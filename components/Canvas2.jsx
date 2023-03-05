@@ -51,8 +51,10 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const selectedShapes = useRef(null);
   const contextMenuItem = useRef(null);
 
-  const isMultipleSelectionDragging = useRef(false);
-  const isDrawnMultipleSelectionRectangle = useRef(null);
+  const isMultiSelectMode = useRef(false);
+  const drawnMultiSelectRectangle = useRef(null);
+
+  const multiSelectDragStart = useRef(null);
 
   let startX = 0,
     startY = 0;
@@ -68,14 +70,14 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     clearCanvas();
     drawGridLines2(contextRef.current, canvasRef.current);
 
-    shapes.forEach((shape) => shape.drawShape(ctx));
     const connectionsArray = getConnectingLines(shapes);
     connectionsArray.forEach((c) =>
       drawFilledArrow(contextRef.current, c.x1, c.y1, c.x2, c.y2)
     );
-    if (isDrawnMultipleSelectionRectangle.current) {
+    shapes.forEach((shape) => shape.drawShape(ctx));
+    if (drawnMultiSelectRectangle.current) {
       console.log('is drawing multii📍');
-      const {x, y, width, height} = isDrawnMultipleSelectionRectangle.current;
+      const {x, y, width, height} = drawnMultiSelectRectangle.current;
 
       drawMultiSelectRect(ctx, x, y, width, height);
     }
@@ -117,25 +119,28 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     e.preventDefault();
     const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
+    if (button !== 0) return;
 
-    if (selectedItemToolbar && button === 0) {
+    if (selectedItemToolbar) {
       addNewShape(realX, realY, selectedItemToolbar);
       resetSelectedItemToolbar();
       return;
     }
 
-    if (isDrawnMultipleSelectionRectangle.current) {
+    if (drawnMultiSelectRectangle.current) {
       // check if mouse down outside rect; reset this
       // if in, prepare to move the whole damn thing with the selected shapes.
 
-      const {x, y, width, height} = isDrawnMultipleSelectionRectangle.current;
-
-      if (isPointInRectangle(x, y, width, height, realX, realY)) {
+      if (isPointInRectangle(realX, realY, drawnMultiSelectRectangle.current)) {
         // task2
+
+        multiSelectDragStart.current = {x: realX, y: realY};
       } else {
         // reset it
         resetMultiSelect();
       }
+
+      return;
     }
 
     for (const shape of shapes) {
@@ -149,7 +154,45 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
           setConnectingMode(1);
           return;
         }
-        if (connectingMode === 1) {
+
+        isDragging.current = true;
+        currentShape.current = shape;
+        startX = realX;
+        startY = realY;
+        return;
+      }
+    }
+
+    if (button === 0) {
+      resetSelectedElement();
+
+      if (connectingMode === 0) {
+        // for multi select
+        isMultiSelectMode.current = true;
+        startX = realX;
+        startY = realY;
+      }
+    }
+  }
+
+  function handleMouseUp(e) {
+    e.preventDefault();
+    const {clientX, clientY, button} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
+    // Reset dragging mode
+    isDragging.current = false;
+
+    //stop drawing
+    isMultiSelectMode.current = false;
+
+    if (multiSelectDragStart.current) {
+      multiSelectDragStart.current = false;
+      return;
+    }
+
+    if (connectingMode === 1) {
+      shapes.forEach((shape) => {
+        if (shape.isMouseInShape(realX, realY)) {
           connectingShapes.current.shape2 = shape;
           if (
             connectingShapes.current.shape2 !== connectingShapes.current.shape1
@@ -163,43 +206,42 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
           clearAndDraw();
           return;
         }
+      });
 
-        isDragging.current = true;
-        currentShape.current = shape;
-        startX = realX;
-        startY = realY;
-        return;
-      }
-    }
-
-    if (button === 0) {
-      if (connectingMode == 1) {
-        // reset connection if clicked in workspace while connecting
+      if (connectingShapes.current)
         connectingShapes.current.shape1.nextItem = null;
-      }
       setConnectingMode(0);
       connectingShapes.current = null;
-      resetSelectedElement();
-      // for multi select
-      isMultipleSelectionDragging.current = true;
-      startX = realX;
-      startY = realY;
     }
-  }
 
-  function handleMouseUp(e) {
-    e.preventDefault();
-    // Reset dragging mode
-    isDragging.current = false;
-
-    //stop drawing
-    isMultipleSelectionDragging.current = false;
-
-    if (isDrawnMultipleSelectionRectangle.current) {
+    if (drawnMultiSelectRectangle.current) {
       // if rect drawn, if shapes in multi rect-> set to selected
       // no shapes selected-> reset multi selection
 
-      const {x, y, width, height} = isDrawnMultipleSelectionRectangle.current;
+      const {x, y, width, height} = drawnMultiSelectRectangle.current;
+
+      let x1 = x;
+      let y1 = y;
+      let x2 = x + width;
+      let y2 = y + height;
+
+      // Swap coordinates if width or height is negative
+      if (width < 0) {
+        x1 = x + width;
+        x2 = startX;
+      }
+      if (height < 0) {
+        y1 = y + height;
+        y2 = y;
+      }
+
+      drawnMultiSelectRectangle.current = {
+        x: x1,
+        y: y1,
+        width: x2 - x1,
+        height: y2 - y1,
+      };
+
       selectedShapes.current = shapes.filter((shape) =>
         shape.isInRectangle(x, y, width, height)
       );
@@ -256,9 +298,27 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       return;
     }
 
-    if (isMultipleSelectionDragging.current) {
-      if (!isDrawnMultipleSelectionRectangle.current) {
-        isDrawnMultipleSelectionRectangle.current = {
+    if (multiSelectDragStart.current) {
+      let offsetX = realX - multiSelectDragStart.current.x;
+      let offsetY = realY - multiSelectDragStart.current.y;
+
+      drawnMultiSelectRectangle.current.x += offsetX;
+      drawnMultiSelectRectangle.current.y += offsetY;
+
+      selectedShapes.current.forEach((shape) => {
+        shape.x += offsetX;
+        shape.y += offsetY;
+      });
+
+      clearAndDraw();
+
+      multiSelectDragStart.current.x = realX;
+      multiSelectDragStart.current.y = realY;
+    }
+
+    if (isMultiSelectMode.current) {
+      if (!drawnMultiSelectRectangle.current) {
+        drawnMultiSelectRectangle.current = {
           x: startX,
           y: startY,
           width: realX - startX,
@@ -267,11 +327,11 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       } else {
         // rectangle already there
 
-        isDrawnMultipleSelectionRectangle.current.x = startX;
-        isDrawnMultipleSelectionRectangle.current.y = startY;
-        isDrawnMultipleSelectionRectangle.current.width = realX - startX;
+        drawnMultiSelectRectangle.current.x = startX;
+        drawnMultiSelectRectangle.current.y = startY;
+        drawnMultiSelectRectangle.current.width = realX - startX;
 
-        isDrawnMultipleSelectionRectangle.current.height = realY - startY;
+        drawnMultiSelectRectangle.current.height = realY - startY;
       }
 
       clearAndDraw();
@@ -312,9 +372,27 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     const {realX, realY} = getRealCoordinates(clientX, clientY);
     if (selectedItemToolbar) return;
 
+    if (drawnMultiSelectRectangle.current) {
+      if (isPointInRectangle(realX, realY, drawnMultiSelectRectangle.current)) {
+        let items = ['Cut', 'Copy', 'Delete'];
+        setContextMenu(
+          contextMenu === null
+            ? {
+                mouseX: realX,
+                mouseY: realY,
+                items: items,
+              }
+            : null
+        );
+      }
+
+      return;
+    }
+
     for (const shape of shapes) {
       if (shape.isMouseInShape(realX, realY)) {
         if (!contextMenuItem.current) {
+          currentShape.current = shape;
           let items = ['Settings', 'Cut', 'Copy', 'Delete'];
           if (shape.type === 'connector') {
             // no settings for connector
@@ -445,7 +523,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   function resetMultiSelect() {
     selectedShapes.current.forEach((shape) => shape.setSelected(false));
     selectedShapes.current = null;
-    isDrawnMultipleSelectionRectangle.current = null;
+    drawnMultiSelectRectangle.current = null;
     clearAndDraw();
   }
 

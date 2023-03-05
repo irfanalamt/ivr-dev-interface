@@ -238,13 +238,15 @@ function groupConnectionsByEndCoordinate(connections) {
 
 function modifyX2ValuesForConnectionsInGroups(groups) {
   Object.values(groups).forEach((group) => {
-    const numConnection = group.length;
-    const offset = parseInt((numConnection - 1) / 2) * 4;
     group.sort((a, b) => a.x1 - b.x1);
-    let x2 = group[0].x2 - offset;
-    group.forEach((connection) => {
-      connection.x2 = x2;
-      x2 += 4;
+    let numOfLeftPoints = 0;
+
+    group.forEach((con) => {
+      if (con.x1 < con.x2) numOfLeftPoints++;
+    });
+
+    group.forEach((connection, i) => {
+      connection.x2 += (i - numOfLeftPoints) * 4;
     });
   });
 }
@@ -279,11 +281,19 @@ function calculateDelta(coordinate, offset, snapValue) {
   return closestMultiple - multipleNumber;
 }
 
-function isPointInRectangle(startX, startY, width, height, pointX, pointY) {
+function isPointInRectangle(pointX, pointY, startX, startY, width, height) {
   let x1 = startX;
   let y1 = startY;
   let x2 = startX + width;
   let y2 = startY + height;
+
+  if (typeof startX === 'object') {
+    let rect = startX;
+    x1 = rect.x;
+    y1 = rect.y;
+    x2 = rect.x + rect.width;
+    y2 = rect.y + rect.height;
+  }
 
   // Swap coordinates if width or height is negative
   if (width < 0) {
