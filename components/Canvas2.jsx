@@ -612,8 +612,6 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   }
 
   function handleContextMultiCopyPaste(realX, realY) {
-    console.log('multi copy paste');
-
     const MIN_X = 80;
     const MAX_X = canvasRef.current.width;
     const MIN_Y = 60;
@@ -621,8 +619,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
     const {x, y, width, height} = drawnMultiSelectRectangle.current;
 
-    let offsetX = realX - x;
-    let offsetY = realY - y;
+    let offsetX = realX - (x + width / 2);
+    let offsetY = realY - (y + height / 2);
 
     let newX = x + offsetX;
     let newY = y + offsetY;
@@ -660,8 +658,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
     const {x, y, width, height} = drawnMultiSelectRectangle.current;
 
-    let offsetX = realX - x;
-    let offsetY = realY - y;
+    let offsetX = realX - (x + width / 2);
+    let offsetY = realY - (y + height / 2);
 
     let newX = x + offsetX;
     let newY = y + offsetY;
