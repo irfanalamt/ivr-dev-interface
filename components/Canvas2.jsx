@@ -740,8 +740,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
             ? 'crosshair'
             : 'default',
         }}
-        height={2 * window.innerHeight}
-        width={window.innerWidth - 20}
+        height={2 * window.screen.height}
+        width={window.screen.width - 20}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
@@ -751,6 +751,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       <Menu
         open={contextMenu !== null}
         onClose={handleContextMenuClick}
+        disableScrollLock={true}
         anchorReference='anchorPosition'
         anchorPosition={
           contextMenu !== null

@@ -730,6 +730,7 @@ class Shape {
     img.src = '/icons/switchBlack.png';
     this.resetContextForDrawingImage(ctx);
     ctx.drawImage(img, this.x + 15 - this.width / 2, this.y - 10, 22, 22);
+    this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 10, this.y);
 
     ctx.lineWidth = 1.5;
