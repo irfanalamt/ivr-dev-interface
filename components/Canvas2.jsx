@@ -740,8 +740,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
             ? 'crosshair'
             : 'default',
         }}
-        height={2 * window.screen.height}
-        width={window.screen.width - 20}
+        height={2 * window.screen.availHeight}
+        width={window.screen.availWidth - 20}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
