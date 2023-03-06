@@ -79,7 +79,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       console.log('is drawing multii📍');
       const {x, y, width, height} = drawnMultiSelectRectangle.current;
 
-      drawMultiSelectRect(ctx, x, y, width, height);
+      drawMultiSelectRect(ctx, x, y, width, height, contextMenuItem.current);
     }
   }
   function clearCanvas() {
@@ -129,7 +129,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
 
     if (drawnMultiSelectRectangle.current) {
       // check if mouse down outside rect; reset this
-      // if in, prepare to move the whole damn thing with the selected shapes.
+      // if in, prepare to move the whole thing with the selected shapes.
 
       if (isPointInRectangle(realX, realY, drawnMultiSelectRectangle.current)) {
         // task2
@@ -299,19 +299,71 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     }
 
     if (multiSelectDragStart.current) {
+      const MIN_X = 85;
+      const MAX_X = canvasRef.current.width;
+      const MIN_Y = 60;
+      const MAX_Y = canvasRef.current.height;
+
       let offsetX = realX - multiSelectDragStart.current.x;
       let offsetY = realY - multiSelectDragStart.current.y;
 
+      let newMultiSelectRectX = drawnMultiSelectRectangle.current.x + offsetX;
+      let newMultiSelectRectY = drawnMultiSelectRectangle.current.y + offsetY;
+
+      // Check if the new position of the multiselect rectangle is within bounds
+      if (newMultiSelectRectX < MIN_X) {
+        offsetX = MIN_X - drawnMultiSelectRectangle.current.x;
+      } else if (
+        newMultiSelectRectX + drawnMultiSelectRectangle.current.width >
+        MAX_X
+      ) {
+        offsetX =
+          MAX_X -
+          drawnMultiSelectRectangle.current.width -
+          drawnMultiSelectRectangle.current.x;
+      }
+
+      if (newMultiSelectRectY < MIN_Y) {
+        offsetY = MIN_Y - drawnMultiSelectRectangle.current.y;
+      } else if (
+        newMultiSelectRectY + drawnMultiSelectRectangle.current.height >
+        MAX_Y
+      ) {
+        offsetY =
+          MAX_Y -
+          drawnMultiSelectRectangle.current.height -
+          drawnMultiSelectRectangle.current.y;
+      }
+
+      // Update the position of the multiselect rectangle
       drawnMultiSelectRectangle.current.x += offsetX;
       drawnMultiSelectRectangle.current.y += offsetY;
 
+      // Update the position of the selected shapes, making sure they stay within bounds
       selectedShapes.current.forEach((shape) => {
-        shape.x += offsetX;
-        shape.y += offsetY;
+        let newShapeX = shape.x + offsetX;
+        let newShapeY = shape.y + offsetY;
+
+        if (newShapeX < MIN_X) {
+          newShapeX = MIN_X;
+        } else if (newShapeX + shape.width > MAX_X) {
+          newShapeX = MAX_X - shape.width;
+        }
+
+        if (newShapeY < MIN_Y) {
+          newShapeY = MIN_Y;
+        } else if (newShapeY + shape.height > MAX_Y) {
+          newShapeY = MAX_Y - shape.height;
+        }
+
+        shape.x = newShapeX;
+        shape.y = newShapeY;
       });
 
+      // Redraw the canvas
       clearAndDraw();
 
+      // Update the drag start position
       multiSelectDragStart.current.x = realX;
       multiSelectDragStart.current.y = realY;
     }
@@ -378,12 +430,28 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
         setContextMenu(
           contextMenu === null
             ? {
-                mouseX: realX,
-                mouseY: realY,
+                mouseX: clientX,
+                mouseY: clientY,
                 items: items,
               }
             : null
         );
+      } else {
+        if (
+          contextMenuItem.current == 'Cut' ||
+          contextMenuItem.current == 'Copy'
+        ) {
+          let items = ['Paste'];
+          setContextMenu(
+            contextMenu === null
+              ? {
+                  mouseX: clientX,
+                  mouseY: clientY,
+                  items: items,
+                }
+              : null
+          );
+        }
       }
 
       return;
@@ -402,8 +470,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
           setContextMenu(
             contextMenu === null
               ? {
-                  mouseX: realX,
-                  mouseY: realY,
+                  mouseX: clientX,
+                  mouseY: clientY,
                   items: items,
                 }
               : null
@@ -419,8 +487,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
       setContextMenu(
         contextMenu === null
           ? {
-              mouseX: realX,
-              mouseY: realY,
+              mouseX: clientX,
+              mouseY: clientY,
               items: items,
             }
           : null
@@ -434,38 +502,61 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     const {realX, realY} = getRealCoordinates(clientX, clientY);
     setContextMenu(null);
 
-    if (item === 'Settings') {
-      handleContextSettings();
-      return;
-    }
+    if (drawnMultiSelectRectangle.current) {
+      if (item === 'Delete') {
+        handleContextMultiDelete();
+        return;
+      }
+      if (item === 'Cut') {
+        contextMenuItem.current = 'Cut';
+        clearAndDraw();
+        return;
+      }
+      if (item === 'Copy') {
+        contextMenuItem.current = 'Copy';
+        clearAndDraw();
+        return;
+      }
+      if (item === 'Paste') {
+        if (contextMenuItem.current == 'Copy') {
+          handleContextMultiCopyPaste(realX, realY);
+        } else if (contextMenuItem.current == 'Cut') {
+          handleContextMultiCutPaste(realX, realY);
+        }
+      }
+    } else {
+      if (item === 'Settings') {
+        handleContextSettings();
+        return;
+      }
 
-    if (item === 'Delete') {
-      handleContextDelete();
-      return;
-    }
+      if (item === 'Delete') {
+        handleContextDelete();
+        return;
+      }
+      if (item === 'Cut') {
+        contextMenuItem.current = 'Cut';
+        currentShape.current.setSelected(true);
+        selectedShapes.current = [];
+        selectedShapes.current.push(currentShape.current);
+        clearAndDraw();
+        return;
+      }
+      if (item === 'Copy') {
+        currentShape.current.setSelected(true);
+        selectedShapes.current = [];
+        selectedShapes.current.push(currentShape.current);
+        contextMenuItem.current = 'Copy';
+        clearAndDraw();
+        return;
+      }
 
-    if (item === 'Cut') {
-      currentShape.current.setSelected(true);
-      contextMenuItem.current = 'Cut';
-      selectedShapes.current = [];
-      selectedShapes.current.push(currentShape.current);
-      clearAndDraw();
-      return;
-    }
-    if (item === 'Copy') {
-      currentShape.current.setSelected(true);
-      selectedShapes.current = [];
-      selectedShapes.current.push(currentShape.current);
-      contextMenuItem.current = 'Copy';
-      clearAndDraw();
-      return;
-    }
-
-    if (item === 'Paste') {
-      if (contextMenuItem.current == 'Copy') {
-        handleContextCopyPaste(realX, realY);
-      } else if (contextMenuItem.current == 'Cut') {
-        handleContextCutPaste(realX, realY);
+      if (item === 'Paste') {
+        if (contextMenuItem.current == 'Copy') {
+          handleContextCopyPaste(realX, realY);
+        } else if (contextMenuItem.current == 'Cut') {
+          handleContextCutPaste(realX, realY);
+        }
       }
     }
   }
@@ -511,6 +602,111 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     resetSelectedElement();
   }
 
+  function handleContextMultiDelete() {
+    const newShapes = shapes.filter(
+      (shape) => !selectedShapes.current.includes(shape)
+    );
+
+    setShapes(newShapes);
+    resetMultiSelect();
+  }
+
+  function handleContextMultiCopyPaste(realX, realY) {
+    console.log('multi copy paste');
+
+    const MIN_X = 80;
+    const MAX_X = canvasRef.current.width;
+    const MIN_Y = 60;
+    const MAX_Y = canvasRef.current.height;
+
+    const {x, y, width, height} = drawnMultiSelectRectangle.current;
+
+    let offsetX = realX - x;
+    let offsetY = realY - y;
+
+    let newX = x + offsetX;
+    let newY = y + offsetY;
+
+    // Check if new position is within bounds
+    if (newX < MIN_X) {
+      offsetX = MIN_X - x;
+      newX = MIN_X;
+    } else if (newX + width > MAX_X) {
+      offsetX = MAX_X - x - width;
+      newX = MAX_X - width;
+    }
+
+    if (newY < MIN_Y) {
+      offsetY = MIN_Y - y;
+      newY = MIN_Y;
+    } else if (newY + height > MAX_Y) {
+      offsetY = MAX_Y - y - height;
+      newY = MAX_Y - height;
+    }
+
+    const newShapes = selectedShapes.current.map((shape) =>
+      shape.copyShape(shapeCount.current, shapes, offsetX, offsetY)
+    );
+
+    contextMenuItem.current = null;
+    setShapes([...shapes, ...newShapes]);
+  }
+
+  function handleContextMultiCutPaste(realX, realY) {
+    const MIN_X = 80;
+    const MAX_X = canvasRef.current.width;
+    const MIN_Y = 60;
+    const MAX_Y = canvasRef.current.height;
+
+    const {x, y, width, height} = drawnMultiSelectRectangle.current;
+
+    let offsetX = realX - x;
+    let offsetY = realY - y;
+
+    let newX = x + offsetX;
+    let newY = y + offsetY;
+
+    // Check if new position is within bounds
+    if (newX < MIN_X) {
+      offsetX = MIN_X - x;
+      newX = MIN_X;
+    } else if (newX + width > MAX_X) {
+      offsetX = MAX_X - x - width;
+      newX = MAX_X - width;
+    }
+
+    if (newY < MIN_Y) {
+      offsetY = MIN_Y - y;
+      newY = MIN_Y;
+    } else if (newY + height > MAX_Y) {
+      offsetY = MAX_Y - y - height;
+      newY = MAX_Y - height;
+    }
+
+    drawnMultiSelectRectangle.current.x = newX;
+    drawnMultiSelectRectangle.current.y = newY;
+
+    selectedShapes.current.forEach((shape) => {
+      shape.x += offsetX;
+      shape.y += offsetY;
+
+      // Check if shape is within bounds
+      if (shape.x < MIN_X) {
+        shape.x = MIN_X;
+      } else if (shape.x + shape.width > MAX_X) {
+        shape.x = MAX_X - shape.width;
+      }
+
+      if (shape.y < MIN_Y) {
+        shape.y = MIN_Y;
+      } else if (shape.y + shape.height > MAX_Y) {
+        shape.y = MAX_Y - shape.height;
+      }
+    });
+    contextMenuItem.current = null;
+    clearAndDraw();
+  }
+
   function resetSelectedElement() {
     contextMenuItem.current = null;
     if (selectedShapes.current) {
@@ -524,6 +720,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     selectedShapes.current.forEach((shape) => shape.setSelected(false));
     selectedShapes.current = null;
     drawnMultiSelectRectangle.current = null;
+    contextMenuItem.current = null;
     clearAndDraw();
   }
 

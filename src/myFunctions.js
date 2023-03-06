@@ -184,8 +184,15 @@ function drawFilledArrow(ctx, startX, startY, endX, endY) {
   ctx.fill();
 }
 
-function drawMultiSelectRect(ctx, x, y, width, height) {
-  ctx.fillStyle = 'rgba(178, 223, 219, 0.3)';
+function drawMultiSelectRect(ctx, x, y, width, height, type = null) {
+  if (type == 'Cut') {
+    ctx.fillStyle = 'rgba(48, 120, 112, 0.3)';
+  } else if (type == 'Copy') {
+    ctx.fillStyle = 'rgba(183, 226, 247, 0.3)';
+  } else {
+    ctx.fillStyle = 'rgba(178, 223, 219, 0.3)';
+  }
+
   ctx.lineWidth = 1;
   ctx.fillRect(x, y, width, height);
 
