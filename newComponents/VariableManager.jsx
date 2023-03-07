@@ -149,7 +149,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
           </Button>
         </ListItem>
         <ListItem>
-          <Box sx={{mx: 'auto', display: currentVariable ? 'block' : 'none'}}>
+          <Box sx={{display: currentVariable ? 'block' : 'none'}}>
             <Button
               sx={{
                 backgroundColor: '#cfd8dc',
@@ -236,6 +236,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
             onClick={handleSave}
             endIcon={<SaveIcon />}
             variant='contained'
+            size='small'
             sx={{ml: 1}}>
             Save
           </Button>
@@ -254,7 +255,6 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
             }}
             size='small'
             multiline
-            minRows={2}
             disabled={!(mode == 'add' || mode == 'modify')}
           />
         </ListItem>
