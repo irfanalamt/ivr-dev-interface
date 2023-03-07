@@ -134,11 +134,10 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               </MenuItem>
             ))}
           </Select>
-        </ListItem>
-        <ListItem>
           <Button
             sx={{
-              mt: 1,
+              mt: 2,
+              ml: 1,
               backgroundColor: '#cfd8dc',
               color: 'black',
               '&:hover': {backgroundColor: '#dcedc8'},
@@ -148,6 +147,35 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
             endIcon={<AddIcon />}>
             Add
           </Button>
+        </ListItem>
+        <ListItem>
+          <Box sx={{mx: 'auto', display: currentVariable ? 'block' : 'none'}}>
+            <Button
+              sx={{
+                backgroundColor: '#cfd8dc',
+                color: 'black',
+                '&:hover': {backgroundColor: '#b3e5fc'},
+                display: mode !== 'modify' ? 'inline-flex' : 'none',
+              }}
+              onClick={() => setMode('modify')}
+              size='small'
+              endIcon={<EditIcon />}>
+              Modify
+            </Button>
+            <Button
+              sx={{
+                ml: 2,
+                backgroundColor: '#cfd8dc',
+                color: 'black',
+                '&:hover': {backgroundColor: '#f8bbd0'},
+                display: mode == 'modify' ? 'inline-flex' : 'none',
+              }}
+              onClick={handleDelete}
+              size='small'
+              endIcon={<DeleteIcon />}>
+              Delete
+            </Button>
+          </Box>
         </ListItem>
         <ListItem sx={{mt: 2}}>
           <Typography sx={{width: '100px'}} variant='subtitle2'>
@@ -229,34 +257,6 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
             minRows={2}
             disabled={!(mode == 'add' || mode == 'modify')}
           />
-        </ListItem>
-        <ListItem sx={{mt: 2}}>
-          <Box sx={{mx: 'auto', display: currentVariable ? 'block' : 'none'}}>
-            <Button
-              sx={{
-                backgroundColor: '#cfd8dc',
-                color: 'black',
-                '&:hover': {backgroundColor: '#b3e5fc'},
-              }}
-              onClick={() => setMode('modify')}
-              size='small'
-              endIcon={<EditIcon />}>
-              Modify
-            </Button>
-            <Button
-              sx={{
-                ml: 2,
-                backgroundColor: '#cfd8dc',
-                color: 'black',
-                '&:hover': {backgroundColor: '#f8bbd0'},
-                display: mode == 'modify' ? 'inline-flex' : 'none',
-              }}
-              onClick={handleDelete}
-              size='small'
-              endIcon={<DeleteIcon />}>
-              Delete
-            </Button>
-          </Box>
         </ListItem>
       </List>
     </Drawer>
