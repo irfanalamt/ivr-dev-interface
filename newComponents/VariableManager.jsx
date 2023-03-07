@@ -86,18 +86,9 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
       <List sx={{minWidth: 400}}>
         <ListItem>
           <IconButton
-            sx={{
-              ml: 'auto',
-              mr: 1,
-              backgroundColor: '#dcdcdc',
-              color: 'black',
-              '&:hover': {backgroundColor: '#c8e6c9'},
-            }}>
-            <SaveIcon sx={{fontSize: '22px'}} />
-          </IconButton>
-          <IconButton
             onClick={handleClose}
             sx={{
+              ml: 'auto',
               backgroundColor: '#dcdcdc',
               color: 'black',
               '&:hover': {backgroundColor: '#ffcdd2'},
