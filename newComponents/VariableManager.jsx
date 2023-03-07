@@ -112,9 +112,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
           </Typography>
         </ListItem>
         <ListItem>
-          <InputLabel sx={{pt: 2}} id='select-label'>
-            variable list
-          </InputLabel>
+          <InputLabel sx={{pt: 2}} id='select-label'></InputLabel>
           <Select
             labelId='select-label'
             value={currentVariable}
@@ -126,7 +124,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               setDescription(e.target.value.description);
               setMode('');
             }}
-            sx={{width: 200, ml: 1, mt: 2}}
+            sx={{width: 200, ml: '100px', mt: 2}}
             size='small'>
             {variables.map((v, i) => (
               <MenuItem key={i} value={v}>
@@ -137,45 +135,40 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
           <Button
             sx={{
               mt: 2,
-              ml: 1,
+              ml: 2,
               backgroundColor: '#cfd8dc',
               color: 'black',
               '&:hover': {backgroundColor: '#dcedc8'},
             }}
             onClick={handleAddNewVariable}
-            size='small'
-            endIcon={<AddIcon />}>
+            size='small'>
             Add
           </Button>
         </ListItem>
         <ListItem>
-          <Box sx={{display: currentVariable ? 'block' : 'none'}}>
-            <Button
-              sx={{
-                backgroundColor: '#cfd8dc',
-                color: 'black',
-                '&:hover': {backgroundColor: '#b3e5fc'},
-              }}
-              onClick={() => setMode('modify')}
-              size='small'
-              disabled={mode == 'modify'}
-              endIcon={<EditIcon />}>
-              Modify
-            </Button>
-            <Button
-              sx={{
-                ml: 2,
-                backgroundColor: '#cfd8dc',
-                color: 'black',
-                '&:hover': {backgroundColor: '#f8bbd0'},
-                display: mode == 'modify' ? 'inline-flex' : 'none',
-              }}
-              onClick={handleDelete}
-              size='small'
-              endIcon={<DeleteIcon />}>
-              Delete
-            </Button>
-          </Box>
+          <Button
+            sx={{
+              backgroundColor: '#cfd8dc',
+              color: 'black',
+              '&:hover': {backgroundColor: '#b3e5fc'},
+            }}
+            onClick={() => setMode('modify')}
+            size='small'
+            disabled={mode == 'modify' || !currentVariable}>
+            Modify
+          </Button>
+          <Button
+            sx={{
+              ml: 2,
+              backgroundColor: '#cfd8dc',
+              color: 'black',
+              '&:hover': {backgroundColor: '#f8bbd0'},
+            }}
+            onClick={handleDelete}
+            disabled={mode != 'modify' || !currentVariable}
+            size='small'>
+            Delete
+          </Button>
         </ListItem>
         <ListItem sx={{mt: 2}}>
           <Typography sx={{width: '100px'}} variant='subtitle2'>
@@ -234,10 +227,10 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
           />
           <Button
             onClick={handleSave}
-            endIcon={<SaveIcon />}
             variant='contained'
             size='small'
-            sx={{ml: 1}}>
+            disabled={!(mode == 'add' || mode == 'modify')}
+            sx={{ml: 2}}>
             Save
           </Button>
         </ListItem>
