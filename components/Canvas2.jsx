@@ -12,6 +12,7 @@ import {
   drawGridLines2,
   drawMultiSelectRect,
   getConnectingLines,
+  getScrollbarWidth,
   isPointInRectangle,
 } from '../src/myFunctions';
 import ElementDrawer from './ElementDrawer';
@@ -21,6 +22,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
   const [connectingMode, setConnectingMode] = useState(0);
+
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -64,6 +67,17 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     contextRef.current = context;
     clearAndDraw();
   }, [shapes]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    const canvasHeight = window.innerHeight - scrollbarWidth;
+
+    canvas.width = window.innerWidth;
+    canvas.height = canvasHeight;
+    clearAndDraw();
+  }, []);
 
   function clearAndDraw() {
     const ctx = contextRef.current;
@@ -740,8 +754,8 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
             ? 'crosshair'
             : 'default',
         }}
+        width={window.innerWidth}
         height={window.innerHeight * 2}
-        width={window.innerWidth - 20}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}

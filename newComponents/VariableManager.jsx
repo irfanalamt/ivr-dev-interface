@@ -124,7 +124,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               setDescription(e.target.value.description);
               setMode('');
             }}
-            sx={{width: 200, mt: 2, ml: 2}}
+            sx={{width: 200, mt: 2, ml: '100px'}}
             size='small'>
             {variables.map((v, i) => (
               <MenuItem key={i} value={v}>
@@ -136,7 +136,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
         <ListItem>
           <Button
             sx={{
-              ml: 2,
+              ml: '100px',
               backgroundColor: '#cfd8dc',
               color: 'black',
               '&:hover': {backgroundColor: '#dcedc8'},
