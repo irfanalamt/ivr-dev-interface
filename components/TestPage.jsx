@@ -6,7 +6,8 @@ import {
   BottomNavigationAction,
   Box,
 } from '@mui/material';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
+import VariableManager from '../newComponents/VariableManager';
 import BottomBar from './BottomBar';
 
 import CanvasTest from './Canvas2';
@@ -15,6 +16,9 @@ import MainToolbar from './Toolbar';
 
 function TestPage() {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
+  const [isVariableManagerOpen, setIsVariableManagerOpen] = useState(false);
+
+  const userVariables = useRef([]);
 
   function handleSetSelectedItemToolbar(e, name) {
     console.log('name: ' + name);
@@ -50,7 +54,15 @@ function TestPage() {
           resetSelectedItemToolbar={resetSelectedItemToolbar}
         />
       </div>
-      <BottomBar resetSelectedItemToolbar={resetSelectedItemToolbar} />
+      <BottomBar
+        openVariableManager={() => setIsVariableManagerOpen(true)}
+        resetSelectedItemToolbar={resetSelectedItemToolbar}
+      />
+      <VariableManager
+        isOpen={isVariableManagerOpen}
+        handleClose={() => setIsVariableManagerOpen(false)}
+        userVariables={userVariables.current}
+      />
     </Box>
   );
 }

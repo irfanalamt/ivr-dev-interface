@@ -29,9 +29,6 @@ const CanvasAppbar2 = ({resetSelectedItemToolbar}) => {
         alignItems: 'center',
       }}
       onClick={handleClick}>
-      <Avatar sx={{backgroundColor: '#bbdefb', ml: 2}}>
-        <ArchitectureIcon sx={{color: 'black'}} />
-      </Avatar>
       <Tooltip title='GUIDE'>
         <IconButton
           sx={{

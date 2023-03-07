@@ -24,10 +24,15 @@ import {
   Typography,
 } from '@mui/material';
 
-const BottomBar = ({resetSelectedItemToolbar}) => {
+const BottomBar = ({resetSelectedItemToolbar, openVariableManager}) => {
   function handleClick() {
     console.log('bottomBar clicked.');
     resetSelectedItemToolbar();
+  }
+
+  function handleVariableMangerClick() {
+    console.log('variable manger clicked.');
+    openVariableManager();
   }
 
   return (
@@ -72,6 +77,24 @@ const BottomBar = ({resetSelectedItemToolbar}) => {
         <InfoIcon sx={{mr: 0.5, color: '#ef5350'}} />
         infoMessage.current
       </Typography> */}
+      <Tooltip title='VARIABLE MANAGER' arrow>
+        <IconButton
+          onClick={handleVariableMangerClick}
+          sx={{
+            ml: '90px',
+            backgroundColor: '#5DA5DA',
+            '&:hover': {
+              backgroundColor: '#82CFFD',
+            },
+          }}>
+          <img
+            src='/icons/variableManager.png'
+            alt='Icon'
+            height={'16px'}
+            width={'16px'}
+          />
+        </IconButton>
+      </Tooltip>
       <Box sx={{ml: 'auto', display: 'flex', alignItems: 'center'}}>
         <Pagination
           count={2}
