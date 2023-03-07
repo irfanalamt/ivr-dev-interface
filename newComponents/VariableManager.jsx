@@ -155,10 +155,10 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
                 backgroundColor: '#cfd8dc',
                 color: 'black',
                 '&:hover': {backgroundColor: '#b3e5fc'},
-                display: mode !== 'modify' ? 'inline-flex' : 'none',
               }}
               onClick={() => setMode('modify')}
               size='small'
+              disabled={mode == 'modify'}
               endIcon={<EditIcon />}>
               Modify
             </Button>
