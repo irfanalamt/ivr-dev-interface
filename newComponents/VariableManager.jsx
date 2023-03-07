@@ -124,7 +124,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               setDescription(e.target.value.description);
               setMode('');
             }}
-            sx={{width: 200, ml: '100px', mt: 2}}
+            sx={{width: 200, mt: 2, ml: 2}}
             size='small'>
             {variables.map((v, i) => (
               <MenuItem key={i} value={v}>
@@ -132,28 +132,26 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               </MenuItem>
             ))}
           </Select>
+        </ListItem>
+        <ListItem>
           <Button
             sx={{
-              mt: 2,
               ml: 2,
               backgroundColor: '#cfd8dc',
               color: 'black',
               '&:hover': {backgroundColor: '#dcedc8'},
             }}
-            onClick={handleAddNewVariable}
-            size='small'>
+            onClick={handleAddNewVariable}>
             Add
           </Button>
-        </ListItem>
-        <ListItem>
           <Button
             sx={{
+              ml: 2,
               backgroundColor: '#cfd8dc',
               color: 'black',
               '&:hover': {backgroundColor: '#b3e5fc'},
             }}
             onClick={() => setMode('modify')}
-            size='small'
             disabled={mode == 'modify' || !currentVariable}>
             Modify
           </Button>
@@ -165,12 +163,11 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               '&:hover': {backgroundColor: '#f8bbd0'},
             }}
             onClick={handleDelete}
-            disabled={mode != 'modify' || !currentVariable}
-            size='small'>
+            disabled={mode != 'modify' || !currentVariable}>
             Delete
           </Button>
         </ListItem>
-        <ListItem sx={{mt: 2}}>
+        <ListItem sx={{mt: 4}}>
           <Typography sx={{width: '100px'}} variant='subtitle2'>
             Type:
           </Typography>
@@ -228,7 +225,6 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
           <Button
             onClick={handleSave}
             variant='contained'
-            size='small'
             disabled={!(mode == 'add' || mode == 'modify')}
             sx={{ml: 2}}>
             Save
