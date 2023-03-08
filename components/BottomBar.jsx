@@ -91,9 +91,9 @@ const BottomBar = ({
           onClick={handleVariableManagerClick}
           sx={{
             ml: '90px',
-            backgroundColor: '#5A7D7C',
+            backgroundColor: '#7FB5B5',
             '&:hover': {
-              backgroundColor: '#7FB5B5',
+              backgroundColor: '#A8CCCC',
             },
           }}>
           <img
@@ -110,9 +110,9 @@ const BottomBar = ({
           onClick={handlePromptListClick}
           sx={{
             ml: 4,
-            backgroundColor: '#5A7D7C',
+            backgroundColor: '#7FB5B5',
             '&:hover': {
-              backgroundColor: '#7FB5B5',
+              backgroundColor: '#A8CCCC',
             },
           }}>
           <img

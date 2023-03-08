@@ -81,6 +81,8 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
   function handleDelete() {
     const index = variables.findIndex((v) => v === currentVariable);
 
+    setErrorText('');
+
     if (index !== -1) {
       const updatedVariables = [...variables];
       updatedVariables.splice(index, 1);
@@ -105,6 +107,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
     setDefaultValue('');
     setDescription('');
     setSuccessText('');
+    setErrorText('');
   }
   function handleValidation(objType, value) {
     let errorM = -1;
@@ -195,7 +198,11 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               color: 'black',
               '&:hover': {backgroundColor: '#b3e5fc'},
             }}
-            onClick={() => setMode('modify')}
+            onClick={() => {
+              setMode('modify');
+              setSuccessText('');
+              setErrorText('');
+            }}
             disabled={mode == 'modify' || !currentVariable}>
             Modify
           </Button>
