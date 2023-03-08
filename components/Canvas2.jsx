@@ -72,10 +72,9 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
     const canvas = canvasRef.current;
     const scrollbarWidth =
       window.innerWidth - document.documentElement.clientWidth;
-    const canvasHeight = window.innerHeight - scrollbarWidth;
 
-    canvas.width = window.innerWidth;
-    canvas.height = canvasHeight;
+    canvas.width -= scrollbarWidth;
+
     clearAndDraw();
   }, []);
 
