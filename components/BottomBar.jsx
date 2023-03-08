@@ -24,15 +24,24 @@ import {
   Typography,
 } from '@mui/material';
 
-const BottomBar = ({resetSelectedItemToolbar, openVariableManager}) => {
+const BottomBar = ({
+  resetSelectedItemToolbar,
+  openVariableManager,
+  openPromptList,
+}) => {
   function handleClick() {
     console.log('bottomBar clicked.');
     resetSelectedItemToolbar();
   }
 
-  function handleVariableMangerClick() {
+  function handleVariableManagerClick() {
     console.log('variable manger clicked.');
     openVariableManager();
+  }
+
+  function handlePromptListClick() {
+    console.log('prompt list clicked');
+    openPromptList();
   }
 
   return (
@@ -79,16 +88,35 @@ const BottomBar = ({resetSelectedItemToolbar, openVariableManager}) => {
       </Typography> */}
       <Tooltip title='VARIABLE MANAGER' arrow>
         <IconButton
-          onClick={handleVariableMangerClick}
+          onClick={handleVariableManagerClick}
           sx={{
             ml: '90px',
-            backgroundColor: '#5DA5DA',
+            backgroundColor: '#5A7D7C',
             '&:hover': {
-              backgroundColor: '#82CFFD',
+              backgroundColor: '#7FB5B5',
             },
           }}>
           <img
             src='/icons/variableManager.png'
+            alt='Icon'
+            height={'16px'}
+            width={'16px'}
+          />
+        </IconButton>
+      </Tooltip>
+
+      <Tooltip title='PROMPT LIST' arrow>
+        <IconButton
+          onClick={handlePromptListClick}
+          sx={{
+            ml: 4,
+            backgroundColor: '#5A7D7C',
+            '&:hover': {
+              backgroundColor: '#7FB5B5',
+            },
+          }}>
+          <img
+            src='/icons/promptList.png'
             alt='Icon'
             height={'16px'}
             width={'16px'}

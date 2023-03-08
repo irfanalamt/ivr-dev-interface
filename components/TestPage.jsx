@@ -7,6 +7,7 @@ import {
   Box,
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
+import PromptList from '../newComponents/PromptList';
 import VariableManager from '../newComponents/VariableManager';
 import BottomBar from './BottomBar';
 
@@ -17,6 +18,7 @@ import MainToolbar from './Toolbar';
 function TestPage() {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [isVariableManagerOpen, setIsVariableManagerOpen] = useState(false);
+  const [isPromptListOpen, setIsPromptListOpen] = useState(false);
 
   const userVariables = useRef([]);
 
@@ -56,12 +58,17 @@ function TestPage() {
       </div>
       <BottomBar
         openVariableManager={() => setIsVariableManagerOpen(true)}
+        openPromptList={() => setIsPromptListOpen(true)}
         resetSelectedItemToolbar={resetSelectedItemToolbar}
       />
       <VariableManager
         isOpen={isVariableManagerOpen}
         handleClose={() => setIsVariableManagerOpen(false)}
         userVariables={userVariables.current}
+      />
+      <PromptList
+        isOpen={isPromptListOpen}
+        handleClose={() => setIsPromptListOpen(false)}
       />
     </Box>
   );
