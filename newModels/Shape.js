@@ -248,7 +248,13 @@ class Shape {
       ? {totalPoints: 1, position: 1, name: 'default'}
       : false;
   }
+  setUserValues(userValues) {
+    this.userValues = {...userValues};
+  }
 
+  setText(inputText) {
+    this.text = inputText;
+  }
   setSelected(bool) {
     this.selected = bool;
   }
