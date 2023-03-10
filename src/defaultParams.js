@@ -43,8 +43,18 @@ const defaultParams = [
   {name: 'interTimeout', value: 5},
   {name: 'menuTimeout', value: 5},
   {name: 'maxCallTime', value: 3600},
-  {name: 'invalidAction', value: 'Disconnect'},
-  {name: 'timeoutAction', value: 'Disconnect'},
+  {
+    name: 'invalidAction',
+    type: 'select',
+    optionList: ['Disconnect', 'Transfer'],
+    value: 'Disconnect',
+  },
+  {
+    name: 'timeoutAction',
+    type: 'select',
+    optionList: ['Disconnect', 'Transfer'],
+    value: 'Disconnect',
+  },
   {
     name: 'confirmOption',
     value: 1,
@@ -68,9 +78,17 @@ const defaultParams = [
     name: 'terminateMessage',
     value: 'std-terminate',
   },
+  {name: 'transferPrompt', value: 'std-to-transfer'},
+  {name: 'disconnectPrompt', value: 'std-to-disconnect'},
+  {name: 'previousMenuPrompt', value: 'std-to-previous-menu'},
+  {
+    name: 'mainMenuPrompt',
+    value: 'std-to-main-menu',
+  },
+
   {
     name: 'repeatInfoPrompt',
-    value: 'std-repeat-info',
+    value: 'std-to-repeat',
   },
   {
     name: 'confirmPrompt',
