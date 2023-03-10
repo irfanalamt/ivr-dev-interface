@@ -60,6 +60,7 @@ function TestPage() {
           toolBarObj={selectedItemToolbar}
           resetSelectedItemToolbar={resetSelectedItemToolbar}
           userVariables={userVariables}
+          openVariableManager={() => setIsVariableManagerOpen(true)}
         />
       </div>
       <BottomBar

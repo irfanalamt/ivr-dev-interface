@@ -9,6 +9,7 @@ const ElementDrawer = ({
   shapes,
   clearAndDraw,
   userVariables,
+  openVariableManager,
 }) => {
   if (!shape) return null;
 
@@ -22,6 +23,7 @@ const ElementDrawer = ({
             shapes={shapes}
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
+            openVariableManager={openVariableManager}
           />
         );
 

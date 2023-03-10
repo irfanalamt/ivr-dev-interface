@@ -19,11 +19,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import DeleteIcon from '@mui/icons-material/Delete';
 import defaultParams from '../src/defaultParams';
 import {useEffect, useRef, useState} from 'react';
 import {isNameUnique} from '../src/myFunctions';
 import {checkValidity} from '../src/helpers';
+import DrawerUserGuideDialog from '../components/DrawerUserGuideDialog';
 
 const SetParams = ({
   shape,
@@ -31,6 +33,7 @@ const SetParams = ({
   shapes,
   clearAndDraw,
   userVariables,
+  openVariableManager,
 }) => {
   const [name, setName] = useState(shape.text);
   const [selectedParameterIndex, setSelectedParameterIndex] = useState('');
@@ -40,6 +43,7 @@ const SetParams = ({
   );
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [openGuideDialog, setOpenGuideDialog] = useState(false);
 
   const errors = useRef({});
 
@@ -214,7 +218,7 @@ const SetParams = ({
       }
       case 'allowedDigits': {
         errors.current[currentParameter.name] = true;
-        const numberRegex = /^[0-9]+$/;
+        const numberRegex = /^[0-9#*]+$/;
         if (!input || !input.match(numberRegex)) return 'Enter a valid number.';
         else {
           errors.current[currentParameter.name] = undefined;
@@ -265,15 +269,48 @@ const SetParams = ({
           }
           &nbsp; Set Params
         </Typography>
-
         <IconButton
-          onClick={handleCloseDrawer}
           size='small'
+          onClick={openVariableManager}
           sx={{
             ml: 'auto',
             backgroundColor: '#424242',
             color: 'white',
+            '&:hover': {backgroundColor: '#26a69a'},
+            height: 30,
+            width: 30,
+          }}>
+          <img
+            src='/icons/variableManagerwhite.png'
+            alt='Icon'
+            height={'16px'}
+            width={'16px'}
+          />
+        </IconButton>
+
+        <IconButton
+          size='small'
+          onClick={() => setOpenGuideDialog(true)}
+          sx={{
+            ml: 1,
+            backgroundColor: '#424242',
+            color: 'white',
+            '&:hover': {backgroundColor: '#29b6f6'},
+            height: 30,
+            width: 30,
+          }}>
+          <QuestionMarkIcon sx={{fontSize: '20px'}} />
+        </IconButton>
+        <IconButton
+          onClick={handleCloseDrawer}
+          size='small'
+          sx={{
+            ml: 1,
+            backgroundColor: '#424242',
+            color: 'white',
             '&:hover': {backgroundColor: '#ef5350'},
+            height: 30,
+            width: 30,
           }}>
           <CloseIcon sx={{fontSize: '22px'}} />
         </IconButton>
@@ -283,7 +320,6 @@ const SetParams = ({
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            backgroundColor: '#F3F3F3',
           }}>
           <Typography sx={{ml: 2, mt: 1}} fontSize='large' variant='subtitle2'>
             ID
@@ -455,6 +491,11 @@ const SetParams = ({
             </ListItem>
           ))}
         </List>
+        <DrawerUserGuideDialog
+          open={openGuideDialog}
+          handleClose={() => setOpenGuideDialog(false)}
+          name={shape.type}
+        />
       </Box>
     </>
   );

@@ -10,8 +10,7 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 
 const DrawerUserGuideDialog = ({open, handleClose, name = ''}) => {
   const shapeToGuideMap = {
-    setParams: `The setParams block is used to set global parameters and start the IVR flow.-It should be the first block used in the IVR flow.
-    The parameter list contains all the call parameters with their default values set.-To update a parameter, select it and change the value.-Click the 'save' button beside the updated parameter to add it to the updated parameter list.`,
+    setParams: `The setParams block is the first block you need to use in the IVR flow. It is used to set global parameters and start the flow.-The parameter list contains all the call parameters and their default values. If you want to update a parameter, select it and change the value. Then, click the 'save' button beside the updated parameter to add it to the updated parameter list.-To use variables in the parameter list, start with a '$' symbol and enter the defined variable you want to use.`,
     runScript: `Use the runScript block to execute scripts and modify IVR variables.-Variables declared in the setVariables block can be used in the runScript block by adding a '$' before the variable name. For example, if the variable is named "marks," it should be referred to as "$marks".-The '$' symbol should only be used to refer to variables that have already been defined in the setVariables block.-To declare local variables, use 'let,' or 'const' before using them in the script.-The script must be written in valid JavaScript format.-Before saving, click the validate button to ensure there are no syntax errors.`,
     getDigits: `The getDigits block is used to collect one or more digits from the user, such as a phone number or account number.-The result variable is used to store the value entered by the user. All variables must be defined in the setVariables block before using them in the getDigits block.-In the message list tab, you can add any object by selecting the object type and clicking the add button.-In the parameters tab, there are two parameters: minDigits and maxDigits.-minDigits: is the minimum number of digits required from the user.-maxDigits: is the maximum number of digits required from the user.
    `,
@@ -37,17 +36,17 @@ const DrawerUserGuideDialog = ({open, handleClose, name = ''}) => {
           alignItems: 'center',
           boxShadow: 1,
           width: 'max-content',
-          px: 2,
+          backgroundColor: '#eceff1',
         }}>
         <HelpCenterIcon sx={{mr: 0.5}} />
         Guide
       </DialogTitle>
       <DialogContent>
         {items && (
-          <List dense>
+          <List>
             {items.map((item, i) => (
-              <ListItem key={i} dense disableGutters>
-                <Typography fontSize='medium' variant='body1'>
+              <ListItem key={i}>
+                <Typography fontSize='18px' variant='body2'>
                   • {item}
                 </Typography>
               </ListItem>

@@ -17,7 +17,12 @@ import {
 } from '../src/myFunctions';
 import ElementDrawer from './ElementDrawer';
 
-const CanvasTest = ({toolBarObj, resetSelectedItemToolbar, userVariables}) => {
+const CanvasTest = ({
+  toolBarObj,
+  resetSelectedItemToolbar,
+  userVariables,
+  openVariableManager,
+}) => {
   const [shapes, setShapes] = useState([]);
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
@@ -797,6 +802,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar, userVariables}) => {
         handleCloseDrawer={handleCloseElementDrawer}
         clearAndDraw={clearAndDraw}
         userVariables={userVariables}
+        openVariableManager={openVariableManager}
       />
     </>
   );
