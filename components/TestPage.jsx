@@ -38,8 +38,12 @@ function TestPage() {
     setSelectedItemToolbar({});
   }
 
+  function handleContextMenuPage(e) {
+    e.preventDefault();
+  }
+
   return (
-    <Box>
+    <Box onContextMenu={handleContextMenuPage}>
       <CanvasAppbar2 resetSelectedItemToolbar={resetSelectedItemToolbar} />
       <div style={{display: 'flex'}}>
         <div

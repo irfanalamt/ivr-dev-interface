@@ -113,7 +113,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
   function handleValidation(objType, value) {
     let errorM = -1;
     if (objType === 'name' && value) {
-      errorM = checkValidity('object', value);
+      errorM = checkValidity('name', value);
     } else if (objType === 'value') {
       errorM = checkValidity(type, value);
     }
@@ -138,7 +138,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
         handleClose();
       }}>
       <List sx={{backgroundColor: '#cfd8dc', boxShadow: 2}}>
-        <ListItem>
+        <ListItem disablePadding>
           <IconButton
             onClick={handleClose}
             sx={{
@@ -148,11 +148,12 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               '&:hover': {backgroundColor: '#ef5350'},
               height: 30,
               width: 30,
+              mr: 1,
             }}>
             <CloseIcon sx={{fontSize: '22px'}} />
           </IconButton>
         </ListItem>
-        <ListItem>
+        <ListItem disablePadding>
           <Typography
             sx={{mb: 1, display: 'flex', alignItems: 'center', mx: 'auto'}}
             variant='h5'>

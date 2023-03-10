@@ -272,7 +272,7 @@ const SetParams = ({
               width={'22px'}
             />
           }
-          &nbsp; Set Params
+          &nbsp;Set Params
         </Typography>
         <IconButton
           size='small'

@@ -642,6 +642,10 @@ export function checkValidity(name, value) {
       regex: /^[a-zA-z_]+[a-zA-z0-9_]*$/,
       error: 'Id not in valid format',
     },
+    name: {
+      regex: /^[a-zA-z_]+[a-zA-z0-9_]*$/,
+      error: 'name not in valid format',
+    },
     action: {
       regex: /^[a-zA-Z0-9]+$/,
       error: 'action not in valid format',
