@@ -281,7 +281,7 @@ const SetParams = ({
             width: 30,
           }}>
           <img
-            src='/icons/variableManagerwhite.png'
+            src='/icons/variableManagerWhite.png'
             alt='Icon'
             height={'16px'}
             width={'16px'}
