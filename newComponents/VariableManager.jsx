@@ -21,7 +21,7 @@ import {useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
 const VariableManager = ({isOpen, handleClose, userVariables}) => {
-  const [variables, setVariables] = useState(userVariables);
+  const [variables, setVariables] = useState(userVariables.current);
   const [currentVariable, setCurrentVariable] = useState('');
   const [type, setType] = useState('prompt');
   const [name, setName] = useState('');
@@ -129,7 +129,13 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
   }
 
   return (
-    <Drawer anchor='left' open={isOpen} onClose={handleClose}>
+    <Drawer
+      anchor='left'
+      open={isOpen}
+      onClose={() => {
+        userVariables.current = variables;
+        handleClose();
+      }}>
       <List sx={{minWidth: 400}}>
         <ListItem>
           <IconButton

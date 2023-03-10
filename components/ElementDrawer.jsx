@@ -8,6 +8,7 @@ const ElementDrawer = ({
   handleCloseDrawer,
   shapes,
   clearAndDraw,
+  userVariables,
 }) => {
   if (!shape) return null;
 
@@ -16,19 +17,18 @@ const ElementDrawer = ({
       case 'setParams':
         return (
           <SetParams
-            {...{
-              shape,
-              handleCloseDrawer,
-              shapes,
-              clearAndDraw,
-            }}
+            shape={shape}
+            handleCloseDrawer={handleCloseDrawer}
+            shapes={shapes}
+            clearAndDraw={clearAndDraw}
+            userVariables={userVariables}
           />
         );
 
       default:
         return (
           <Typography sx={{marginY: 3}} variant='h4'>
-            {shape.type}dsd
+            {shape.type}
           </Typography>
         );
     }

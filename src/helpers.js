@@ -640,7 +640,7 @@ export function checkValidity(name, value) {
   const types = {
     object: {
       regex: /^[a-zA-z_]+[a-zA-z0-9_]*$/,
-      error: 'name not in valid format',
+      error: 'Id not in valid format',
     },
     action: {
       regex: /^[a-zA-Z0-9]+$/,
@@ -685,7 +685,7 @@ export function checkValidity(name, value) {
   };
 
   if (!types[name]) return -1;
-  if (!value) return `${name} is required`;
+  if (!value) return `${name == 'object' ? 'Id' : name} is required`;
   if (!types[name].regex.test(value)) return types[name].error;
   return -1;
 }

@@ -5,6 +5,7 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Box,
+  Button,
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import PromptList from '../newComponents/PromptList';
@@ -21,6 +22,10 @@ function TestPage() {
   const [isPromptListOpen, setIsPromptListOpen] = useState(false);
 
   const userVariables = useRef([]);
+
+  useEffect(() => {
+    console.log('user vars changed:📍:', userVariables.current);
+  }, [userVariables.current]);
 
   function handleSetSelectedItemToolbar(e, name) {
     console.log('name: ' + name);
@@ -54,6 +59,7 @@ function TestPage() {
         <CanvasTest
           toolBarObj={selectedItemToolbar}
           resetSelectedItemToolbar={resetSelectedItemToolbar}
+          userVariables={userVariables}
         />
       </div>
       <BottomBar
@@ -64,7 +70,7 @@ function TestPage() {
       <VariableManager
         isOpen={isVariableManagerOpen}
         handleClose={() => setIsVariableManagerOpen(false)}
-        userVariables={userVariables.current}
+        userVariables={userVariables}
       />
       <PromptList
         isOpen={isPromptListOpen}

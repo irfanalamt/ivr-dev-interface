@@ -320,6 +320,16 @@ function isPointInRectangle(pointX, pointY, startX, startY, width, height) {
   }
 }
 
+function isNameUnique(name, shape, shapes) {
+  for (let i = 0; i < shapes.length; i++) {
+    const currentShape = shapes[i];
+    if (currentShape !== shape && currentShape.text === name) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export {
   replaceVarNameDollar,
   drawGridLines,
@@ -329,4 +339,5 @@ export {
   alignAllShapes,
   isPointInRectangle,
   drawMultiSelectRect,
+  isNameUnique,
 };

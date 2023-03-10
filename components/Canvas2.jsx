@@ -17,13 +17,11 @@ import {
 } from '../src/myFunctions';
 import ElementDrawer from './ElementDrawer';
 
-const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
+const CanvasTest = ({toolBarObj, resetSelectedItemToolbar, userVariables}) => {
   const [shapes, setShapes] = useState([]);
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
   const [connectingMode, setConnectingMode] = useState(0);
-
-  const [scrollbarWidth, setScrollbarWidth] = useState(0);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -798,6 +796,7 @@ const CanvasTest = ({toolBarObj, resetSelectedItemToolbar}) => {
         isOpen={isOpenElementDrawer}
         handleCloseDrawer={handleCloseElementDrawer}
         clearAndDraw={clearAndDraw}
+        userVariables={userVariables}
       />
     </>
   );

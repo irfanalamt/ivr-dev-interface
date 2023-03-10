@@ -22,8 +22,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import defaultParams from '../src/defaultParams';
 import {useEffect, useRef, useState} from 'react';
+import {isNameUnique} from '../src/myFunctions';
+import {checkValidity} from '../src/helpers';
 
-const SetParams = ({shape, handleCloseDrawer, shapes, clearAndDraw}) => {
+const SetParams = ({
+  shape,
+  handleCloseDrawer,
+  shapes,
+  clearAndDraw,
+  userVariables,
+}) => {
   const [name, setName] = useState(shape.text);
   const [selectedParameterIndex, setSelectedParameterIndex] = useState('');
   const [currentParameter, setCurrentParameter] = useState({});
@@ -50,6 +58,10 @@ const SetParams = ({shape, handleCloseDrawer, shapes, clearAndDraw}) => {
   }, [successText]);
 
   function handleSaveName() {
+    if (errors.current.name) {
+      setErrorText('Id not valid.');
+      return;
+    }
     shape.setText(name);
     clearAndDraw();
     setErrorText('');
@@ -65,7 +77,6 @@ const SetParams = ({shape, handleCloseDrawer, shapes, clearAndDraw}) => {
     );
 
     if (duplicate) {
-      console.log('duplicate found✨');
       currentParam.value = duplicate.value;
     }
 
@@ -73,14 +84,41 @@ const SetParams = ({shape, handleCloseDrawer, shapes, clearAndDraw}) => {
     setErrorText('');
   }
 
-  function handleFieldChange(e) {
-    console.log('yo:', e.target.value);
-    setCurrentParameter({...currentParameter, value: e.target.value});
-    if (!currentParameter.type) {
-      const valid = validateUserInput(e.target.value);
+  function handleNameChange(e) {
+    const {value} = e.target;
 
-      if (valid) setErrorText(valid);
-      else setErrorText('');
+    setName(value);
+
+    const isValidFormat = checkValidity('object', value);
+    if (isValidFormat !== -1) {
+      setErrorText(isValidFormat);
+      errors.current.name = true;
+      return;
+    }
+
+    const isUnique = isNameUnique(value, shape, shapes);
+    if (!isUnique) {
+      setErrorText('Id not unique.');
+      errors.current.name = true;
+    } else {
+      setErrorText('');
+      errors.current.name = undefined;
+    }
+  }
+
+  function handleFieldChange(e) {
+    const {value} = e.target;
+
+    setCurrentParameter({...currentParameter, value});
+    if (!currentParameter.type) {
+      if (value[0] === '$' && value.length > 1) {
+        validateVariableInput(value);
+      } else {
+        const valid = validateUserInput(value);
+
+        if (valid) setErrorText(valid);
+        else setErrorText('');
+      }
     }
   }
   function handleFieldChangeSwitch(e) {
@@ -183,6 +221,25 @@ const SetParams = ({shape, handleCloseDrawer, shapes, clearAndDraw}) => {
           return false;
         }
       }
+      default:
+        errors.current[currentParameter.name] = undefined;
+        return false;
+    }
+  }
+
+  function validateVariableInput(input) {
+    const inputWithoutDollar = input.slice(1);
+    const isValidName = userVariables.current.some(
+      (variable) => variable.name === inputWithoutDollar
+    );
+
+    if (isValidName) {
+      setErrorText('');
+      setSuccessText(`${inputWithoutDollar} is a valid variable.`);
+      errors.current[currentParameter.name] = undefined;
+    } else {
+      setErrorText(`${inputWithoutDollar} is not a valid variable.`);
+      errors.current[currentParameter.name] = true;
     }
   }
 
@@ -233,10 +290,11 @@ const SetParams = ({shape, handleCloseDrawer, shapes, clearAndDraw}) => {
           </Typography>
           <ListItem sx={{mt: -1}}>
             <TextField
-              onChange={(e) => setName(e.target.value)}
+              onChange={handleNameChange}
               value={name}
               sx={{minWidth: '220px'}}
               size='small'
+              error={errors.current.name}
             />
             <Button
               onClick={handleSaveName}
@@ -273,7 +331,7 @@ const SetParams = ({shape, handleCloseDrawer, shapes, clearAndDraw}) => {
                 value={selectedParameterIndex}
                 onChange={handleSelectedParameterIndexChange}
                 labelId='paramteter-label'
-                sx={{minWidth: '220px', backgroundColor: '#efefef'}}
+                sx={{minWidth: '220px', backgroundColor: '#f1f1f1'}}
                 size='small'>
                 {defaultParams.map((p, i) => (
                   <MenuItem value={i} key={i}>
