@@ -257,7 +257,12 @@ const SetParams = ({
           p: 1,
         }}>
         <Typography
-          sx={{display: 'flex', alignItems: 'center', fontSize: 'extra-large'}}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: 'extra-large',
+            height: 40,
+          }}
           variant='h5'>
           {
             <img
@@ -274,7 +279,7 @@ const SetParams = ({
           onClick={openVariableManager}
           sx={{
             ml: 'auto',
-            backgroundColor: '#424242',
+            backgroundColor: '#263238',
             color: 'white',
             '&:hover': {backgroundColor: '#26a69a'},
             height: 30,
@@ -293,7 +298,7 @@ const SetParams = ({
           onClick={() => setOpenGuideDialog(true)}
           sx={{
             ml: 1,
-            backgroundColor: '#424242',
+            backgroundColor: '#263238',
             color: 'white',
             '&:hover': {backgroundColor: '#29b6f6'},
             height: 30,
@@ -306,7 +311,7 @@ const SetParams = ({
           size='small'
           sx={{
             ml: 1,
-            backgroundColor: '#424242',
+            backgroundColor: '#263238',
             color: 'white',
             '&:hover': {backgroundColor: '#ef5350'},
             height: 30,

@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Divider,
   Drawer,
   IconButton,
   InputLabel,
@@ -136,22 +137,24 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
         userVariables.current = variables;
         handleClose();
       }}>
-      <List sx={{minWidth: 400}}>
+      <List sx={{backgroundColor: '#cfd8dc', boxShadow: 2}}>
         <ListItem>
           <IconButton
             onClick={handleClose}
             sx={{
               ml: 'auto',
-              backgroundColor: '#dcdcdc',
-              color: 'black',
-              '&:hover': {backgroundColor: '#ffcdd2'},
+              backgroundColor: '#263238',
+              color: 'white',
+              '&:hover': {backgroundColor: '#ef5350'},
+              height: 30,
+              width: 30,
             }}>
             <CloseIcon sx={{fontSize: '22px'}} />
           </IconButton>
         </ListItem>
         <ListItem>
           <Typography
-            sx={{mt: 1, display: 'flex', alignItems: 'center', mx: 'auto'}}
+            sx={{mb: 1, display: 'flex', alignItems: 'center', mx: 'auto'}}
             variant='h5'>
             {
               <img
@@ -164,177 +167,238 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
             &nbsp; VARIABLE MANAGER
           </Typography>
         </ListItem>
-        <ListItem>
-          <InputLabel sx={{pt: 2}} id='select-label'></InputLabel>
-          <Select
-            labelId='select-label'
-            value={currentVariable}
-            onChange={(e) => {
-              setCurrentVariable(e.target.value);
-              setType(e.target.value.type);
-              setName(e.target.value.name);
-              setDefaultValue(e.target.value.defaultValue);
-              setDescription(e.target.value.description);
-              setMode('');
-            }}
-            sx={{width: 200, mt: 2, ml: '100px'}}
-            size='small'>
-            {variables.map((v, i) => (
-              <MenuItem key={i} value={v}>
-                {v.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </ListItem>
-        <ListItem>
-          <Button
-            sx={{
-              ml: '100px',
-              backgroundColor: '#cfd8dc',
-              color: 'black',
-              '&:hover': {backgroundColor: '#dcedc8'},
-            }}
-            onClick={handleAddNewVariable}>
-            Add
-          </Button>
-          <Button
-            sx={{
-              ml: 2,
-              backgroundColor: '#cfd8dc',
-              color: 'black',
-              '&:hover': {backgroundColor: '#b3e5fc'},
-            }}
-            onClick={() => {
-              setMode('modify');
-              setSuccessText('');
-              setErrorText('');
-            }}
-            disabled={mode == 'modify' || !currentVariable}>
-            Modify
-          </Button>
-          <Button
-            sx={{
-              ml: 2,
-              backgroundColor: '#cfd8dc',
-              color: 'black',
-              '&:hover': {backgroundColor: '#f8bbd0'},
-            }}
-            onClick={handleDelete}
-            disabled={mode != 'modify' || !currentVariable}>
-            Delete
-          </Button>
-        </ListItem>
-        <ListItem sx={{mt: 4}}>
-          <Typography sx={{width: '100px'}} variant='subtitle2'>
-            Type:
-          </Typography>
-          <Select
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            size='small'
-            disabled={!(mode == 'add' || mode == 'modify')}
-            sx={{
-              minWidth: 100,
-              backgroundColor:
-                mode == 'add' || mode == 'modify' ? 'white' : '#f5f5f5',
-            }}>
-            <MenuItem value='prompt'>Prompt</MenuItem>
-            <MenuItem value='number'>Number</MenuItem>
-            <MenuItem value='string'>String</MenuItem>
-            <MenuItem value='boolean'>Boolean</MenuItem>
-            <MenuItem value='date'>Date</MenuItem>
-            <MenuItem value='day'>Day</MenuItem>
-            <MenuItem value='month'>Month</MenuItem>
-            <MenuItem value='time'>Time</MenuItem>
-          </Select>
-        </ListItem>
-        <ListItem>
-          <Typography sx={{width: '100px'}} variant='subtitle2'>
-            Name:
-          </Typography>
-          <TextField
-            value={name}
-            placeholder='required'
-            onChange={(e) => {
-              setName(e.target.value);
-              handleValidation('name', e.target.value);
-            }}
-            sx={{
-              width: 200,
-              backgroundColor:
-                mode == 'add' || mode == 'modify' ? 'white' : '#f5f5f5',
-            }}
-            size='small'
-            disabled={!(mode == 'add' || mode == 'modify')}
-          />
-        </ListItem>
-        <ListItem>
-          <Typography sx={{width: '100px'}} variant='subtitle2'>
-            Default Value:
-          </Typography>
-          <TextField
-            value={defaultValue}
-            placeholder='required'
-            onChange={(e) => {
-              setDefaultValue(e.target.value);
-              handleValidation('value', e.target.value);
-            }}
-            sx={{
-              width: 200,
-              backgroundColor:
-                mode == 'add' || mode == 'modify' ? 'white' : '#f5f5f5',
-            }}
-            size='small'
-            disabled={!(mode == 'add' || mode == 'modify')}
-          />
-          <Button
-            onClick={handleSave}
-            variant='contained'
-            disabled={!(mode == 'add' || mode == 'modify')}
-            sx={{ml: 2}}>
-            Save
-          </Button>
-        </ListItem>
-        <ListItem>
-          <Typography sx={{width: '100px'}} variant='subtitle2'>
-            Description:
-          </Typography>
-          <TextField
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            sx={{
-              width: 200,
-              backgroundColor:
-                mode == 'add' || mode == 'modify' ? 'white' : '#f5f5f5',
-            }}
-            size='small'
-            multiline
-            disabled={!(mode == 'add' || mode == 'modify')}
-          />
-        </ListItem>
       </List>
-      <Typography
-        sx={{
-          mx: 'auto',
-          color: 'green',
-          fontWeight: 'bold',
-          backgroundColor: '#e5f9e5',
-          px: 1,
-          borderRadius: 1,
-        }}>
-        {successText}
-      </Typography>
-      <Typography
-        sx={{
-          mx: 'auto',
-          color: 'red',
-          fontWeight: 'bold',
-          backgroundColor: '#fce8e6',
-          px: 1,
-          borderRadius: 1,
-        }}>
-        {errorText}
-      </Typography>
+      <Box sx={{backgroundColor: '#eeeeee', height: '100%'}}>
+        <List sx={{minWidth: 400}}>
+          <ListItem sx={{mt: 1}}>
+            <Box sx={{display: 'flex', flexDirection: 'column'}}>
+              <Typography fontSize='large' variant='subtitle1'>
+                Parameters
+              </Typography>
+              <Select
+                labelId='select-label'
+                value={currentVariable}
+                onChange={(e) => {
+                  setCurrentVariable(e.target.value);
+                  setType(e.target.value.type);
+                  setName(e.target.value.name);
+                  setDefaultValue(e.target.value.defaultValue);
+                  setDescription(e.target.value.description);
+                  setMode('');
+                }}
+                sx={{
+                  minWidth: 220,
+                  backgroundColor: '#f5f5f5',
+                }}
+                size='small'>
+                {variables.map((v, i) => (
+                  <MenuItem key={i} value={v}>
+                    {v.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Box>
+          </ListItem>
+
+          <ListItem>
+            <Button
+              sx={{
+                backgroundColor: '#424242',
+                color: 'white',
+                '&:hover': {backgroundColor: '#9ccc65'},
+              }}
+              variant='contained'
+              onClick={handleAddNewVariable}>
+              Add
+            </Button>
+            <Button
+              sx={{
+                ml: 2,
+                backgroundColor: '#424242',
+                color: 'white',
+                '&:hover': {backgroundColor: '#42a5f5'},
+              }}
+              variant='contained'
+              onClick={() => {
+                setMode('modify');
+                setSuccessText('');
+                setErrorText('');
+              }}
+              disabled={mode == 'modify' || !currentVariable}>
+              Modify
+            </Button>
+            <Button
+              sx={{
+                ml: 2,
+                backgroundColor: '#424242',
+                color: 'white',
+                '&:hover': {backgroundColor: '#ef5350'},
+              }}
+              variant='contained'
+              onClick={handleDelete}
+              disabled={mode != 'modify' || !currentVariable}>
+              Delete
+            </Button>
+          </ListItem>
+          <Divider sx={{mt: 1}} />
+          <Box sx={{py: 1}}>
+            <ListItem disablePadding>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  my: 1,
+                  px: 2,
+                }}>
+                <Typography sx={{width: '100px'}} variant='subtitle2'>
+                  Type
+                </Typography>
+                <Box sx={{display: 'flex', alignItems: 'center'}}>
+                  <Select
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    size='small'
+                    disabled={!(mode == 'add' || mode == 'modify')}
+                    sx={{
+                      minWidth: 100,
+                      backgroundColor:
+                        mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
+                    }}>
+                    <MenuItem value='prompt'>Prompt</MenuItem>
+                    <MenuItem value='number'>Number</MenuItem>
+                    <MenuItem value='string'>String</MenuItem>
+                    <MenuItem value='boolean'>Boolean</MenuItem>
+                    <MenuItem value='date'>Date</MenuItem>
+                    <MenuItem value='day'>Day</MenuItem>
+                    <MenuItem value='month'>Month</MenuItem>
+                    <MenuItem value='time'>Time</MenuItem>
+                  </Select>
+                  {successText && (
+                    <Typography
+                      sx={{
+                        mx: 'auto',
+                        color: 'green',
+                        ml: 2,
+                        backgroundColor: '#e5f9e5',
+                        px: 2,
+                        py: 0.5,
+                        borderRadius: 1,
+                        textAlign: 'center',
+                        width: 'max-content',
+                      }}
+                      variant='subtitle2'>
+                      {successText}
+                    </Typography>
+                  )}
+                  {errorText && (
+                    <Typography
+                      sx={{
+                        mx: 'auto',
+                        color: 'red',
+                        ml: 2,
+                        backgroundColor: '#fce8e6',
+                        px: 2,
+                        py: 0.5,
+                        textAlign: 'center',
+                        borderRadius: 1,
+                        width: 'max-content',
+                      }}
+                      variant='subtitle2'>
+                      {errorText}
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            </ListItem>
+            <ListItem disablePadding>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  px: 2,
+                  my: 1,
+                }}>
+                <Typography variant='subtitle2'>Name</Typography>
+                <TextField
+                  value={name}
+                  placeholder='required'
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    handleValidation('name', e.target.value);
+                  }}
+                  sx={{
+                    width: 200,
+                    backgroundColor:
+                      mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
+                  }}
+                  size='small'
+                  disabled={!(mode == 'add' || mode == 'modify')}
+                />
+              </Box>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  px: 2,
+                  my: 1,
+                }}>
+                <Typography variant='subtitle2'>Default Value</Typography>
+                <Box sx={{display: 'flex', alignItems: 'center'}}>
+                  <TextField
+                    value={defaultValue}
+                    placeholder='required'
+                    onChange={(e) => {
+                      setDefaultValue(e.target.value);
+                      handleValidation('value', e.target.value);
+                    }}
+                    sx={{
+                      width: 200,
+                      backgroundColor:
+                        mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
+                    }}
+                    size='small'
+                    disabled={!(mode == 'add' || mode == 'modify')}
+                  />
+                  <Button
+                    onClick={handleSave}
+                    variant='contained'
+                    disabled={!(mode == 'add' || mode == 'modify')}
+                    sx={{ml: 2}}>
+                    <SaveIcon />
+                  </Button>
+                </Box>
+              </Box>
+            </ListItem>
+            <ListItem disablePadding>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  px: 2,
+                  my: 1,
+                }}>
+                <Typography variant='subtitle2'>Description:</Typography>
+                <TextField
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  sx={{
+                    width: 200,
+                    backgroundColor:
+                      mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
+                  }}
+                  size='small'
+                  multiline
+                  disabled={!(mode == 'add' || mode == 'modify')}
+                />
+              </Box>
+            </ListItem>
+          </Box>
+          <Divider />
+        </List>
+      </Box>
     </Drawer>
   );
 };
