@@ -135,6 +135,13 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
       open={isOpen}
       onClose={() => {
         userVariables.current = variables;
+        setMode('');
+        setCurrentVariable('');
+        setName('');
+        setDefaultValue('');
+        setDescription('');
+        setSuccessText('');
+        setErrorText('');
         handleClose();
       }}>
       <List sx={{backgroundColor: '#cfd8dc', boxShadow: 2}}>
@@ -381,7 +388,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
                   px: 2,
                   my: 1,
                 }}>
-                <Typography variant='subtitle2'>Description:</Typography>
+                <Typography variant='subtitle2'>Description</Typography>
                 <TextField
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
