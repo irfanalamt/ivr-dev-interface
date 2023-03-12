@@ -239,9 +239,8 @@ const PlayMessage = ({
               sx={{
                 mt: 2,
                 py: 2,
-                backgroundColor: '#e0e0e0',
+                backgroundColor: '#e6e6e6',
                 borderTop: '1px solid #bdbdbd',
-                borderBottom: '1px solid #bdbdbd',
               }}>
               <Typography
                 sx={{width: '40%'}}
@@ -253,9 +252,8 @@ const PlayMessage = ({
             </ListItem>
             <ListItem
               sx={{
-                mt: 2,
                 py: 2,
-                backgroundColor: '#e0e0e0',
+                backgroundColor: '#e6e6e6',
                 borderTop: '1px solid #bdbdbd',
                 borderBottom: '1px solid #bdbdbd',
               }}>

@@ -33,7 +33,7 @@ const LogDrawer = () => {
             <TextField
               sx={{backgroundColor: '#f5f5f5'}}
               size='small'
-              minRows={2}
+              minRows={3}
               fullWidth
               multiline
             />
@@ -60,7 +60,7 @@ const LogDrawer = () => {
             <TextField
               sx={{backgroundColor: '#f5f5f5'}}
               size='small'
-              minRows={2}
+              minRows={3}
               fullWidth
               multiline
             />

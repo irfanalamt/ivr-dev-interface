@@ -387,10 +387,8 @@ const SetParams = ({
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              py: 2,
-              backgroundColor: '#fafafa',
+              pt: 2,
               my: 1,
-              boxShadow: 1,
             }}>
             {currentParameter.name ? (
               <>
@@ -464,6 +462,7 @@ const SetParams = ({
             )}
           </Box>
         </List>
+        <Divider sx={{mb: 1}} />
         <List>
           {modifiedParameters.map((p, i) => (
             <ListItem
