@@ -1,5 +1,7 @@
 import {Typography} from '@mui/material';
 import Drawer from '@mui/material/Drawer';
+import PlayConfirm from '../newComponents/PlayConfirm';
+import PlayMessage from '../newComponents/PlayMessage2';
 import SetParams from '../newComponents/SetParams2';
 
 const ElementDrawer = ({
@@ -18,6 +20,30 @@ const ElementDrawer = ({
       case 'setParams':
         return (
           <SetParams
+            shape={shape}
+            handleCloseDrawer={handleCloseDrawer}
+            shapes={shapes}
+            clearAndDraw={clearAndDraw}
+            userVariables={userVariables}
+            openVariableManager={openVariableManager}
+          />
+        );
+
+      case 'playMessage':
+        return (
+          <PlayMessage
+            shape={shape}
+            handleCloseDrawer={handleCloseDrawer}
+            shapes={shapes}
+            clearAndDraw={clearAndDraw}
+            userVariables={userVariables}
+            openVariableManager={openVariableManager}
+          />
+        );
+
+      case 'playConfirm':
+        return (
+          <PlayConfirm
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             shapes={shapes}

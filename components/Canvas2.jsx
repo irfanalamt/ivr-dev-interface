@@ -76,14 +76,15 @@ const CanvasTest = ({
     const scrollbarWidth =
       window.innerWidth - document.documentElement.clientWidth;
 
-    canvas.width -= scrollbarWidth;
+    canvas.width = window.innerWidth - scrollbarWidth;
 
     clearAndDraw();
-  }, []);
+  });
 
   function clearAndDraw() {
     const ctx = contextRef.current;
     clearCanvas();
+
     drawGridLines2(contextRef.current, canvasRef.current);
 
     const connectionsArray = getConnectingLines(shapes);
