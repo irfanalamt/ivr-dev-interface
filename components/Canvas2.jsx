@@ -79,7 +79,7 @@ const CanvasTest = ({
     canvas.width = window.innerWidth - scrollbarWidth;
 
     clearAndDraw();
-  });
+  }, []);
 
   function clearAndDraw() {
     const ctx = contextRef.current;
