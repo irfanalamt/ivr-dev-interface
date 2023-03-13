@@ -12,6 +12,7 @@ import {
   Tabs,
   TextField,
   Typography,
+  MenuItem,
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
@@ -35,6 +36,19 @@ const PlayConfirm = ({
   const [messageList, setMessageList] = useState(
     shape.userValues?.messageList ?? []
   );
+
+  const [confirmOption, setConfirmOption] = useState(
+    shape.userValues?.params.confirmOption ?? ''
+  );
+  const [cancelOption, setCancelOption] = useState(
+    shape.userValues?.params.cancelOption ?? ''
+  );
+  const [confirmPrompt, setConfirmPrompt] = useState(
+    shape.userValues?.params.confirmPrompt ?? ''
+  );
+  const [cancelPrompt, setCancelPrompt] = useState(
+    shape.userValues?.params.cancelPrompt ?? ''
+  );
   const errors = useRef({});
 
   useEffect(() => {
@@ -50,7 +64,11 @@ const PlayConfirm = ({
       setErrorText('Id not valid.');
       return;
     }
-    shape.setUserValues({messageList});
+    const validMessages = messageList.filter((m) => !m.error);
+    shape.setUserValues({
+      messageList: validMessages,
+      params: {confirmOption, cancelOption, confirmPrompt, cancelPrompt},
+    });
     console.log('🔥🔥', messageList);
     shape.setText(name);
     clearAndDraw();
@@ -229,7 +247,22 @@ const PlayConfirm = ({
                 variant='subtitle2'>
                 confirmOption:
               </Typography>
-              <Select sx={{width: 50}} size='small'></Select>
+              <Select
+                value={confirmOption}
+                onChange={(e) => setConfirmOption(e.target.value)}
+                size='small'>
+                <MenuItem value='X'>X</MenuItem>
+                <MenuItem value='0'>0</MenuItem>
+                <MenuItem value='1'>1</MenuItem>
+                <MenuItem value='2'>2</MenuItem>
+                <MenuItem value='3'>3</MenuItem>
+                <MenuItem value='4'>4</MenuItem>
+                <MenuItem value='5'>5</MenuItem>
+                <MenuItem value='6'>6</MenuItem>
+                <MenuItem value='7'>7</MenuItem>
+                <MenuItem value='8'>8</MenuItem>
+                <MenuItem value='9'>9</MenuItem>
+              </Select>
             </ListItem>
             <ListItem
               sx={{
@@ -243,7 +276,22 @@ const PlayConfirm = ({
                 variant='subtitle2'>
                 cancelOption:
               </Typography>
-              <Select sx={{width: 50}} size='small'></Select>
+              <Select
+                value={cancelOption}
+                onChange={(e) => setCancelOption(e.target.value)}
+                size='small'>
+                <MenuItem value='X'>X</MenuItem>
+                <MenuItem value='0'>0</MenuItem>
+                <MenuItem value='1'>1</MenuItem>
+                <MenuItem value='2'>2</MenuItem>
+                <MenuItem value='3'>3</MenuItem>
+                <MenuItem value='4'>4</MenuItem>
+                <MenuItem value='5'>5</MenuItem>
+                <MenuItem value='6'>6</MenuItem>
+                <MenuItem value='7'>7</MenuItem>
+                <MenuItem value='8'>8</MenuItem>
+                <MenuItem value='9'>9</MenuItem>
+              </Select>
             </ListItem>
             <ListItem
               sx={{
@@ -257,7 +305,12 @@ const PlayConfirm = ({
                 variant='subtitle2'>
                 confirmPrompt:
               </Typography>
-              <TextField sx={{ml: 1}} size='small' />
+              <TextField
+                value={confirmPrompt}
+                onChange={(e) => setConfirmPrompt(e.target.value)}
+                sx={{ml: 1}}
+                size='small'
+              />
             </ListItem>
             <ListItem
               sx={{
@@ -272,7 +325,12 @@ const PlayConfirm = ({
                 variant='subtitle2'>
                 cancelPrompt:
               </Typography>
-              <TextField sx={{ml: 1}} size='small' />
+              <TextField
+                value={cancelPrompt}
+                onChange={(e) => setCancelPrompt(e.target.value)}
+                sx={{ml: 1}}
+                size='small'
+              />
             </ListItem>
           </List>
         )}

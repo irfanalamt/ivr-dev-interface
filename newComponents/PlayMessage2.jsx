@@ -39,8 +39,12 @@ const PlayMessage = ({
     shape.userValues?.messageList ?? []
   );
 
-  const [interruptible, setInterruptible] = useState(true);
-  const [repeatOption, setRepeatOption] = useState('X');
+  const [interruptible, setInterruptible] = useState(
+    shape.userValues?.params.interruptible ?? true
+  );
+  const [repeatOption, setRepeatOption] = useState(
+    shape.userValues?.params.repeatOption || 'X'
+  );
 
   const errors = useRef({});
 
@@ -58,7 +62,11 @@ const PlayMessage = ({
       return;
     }
 
-    shape.setUserValues({messageList});
+    const validMessages = messageList.filter((m) => !m.error);
+    shape.setUserValues({
+      messageList: validMessages,
+      params: {interruptible, repeatOption},
+    });
     console.log('🔥🔥', messageList);
     shape.setText(name);
     clearAndDraw();
