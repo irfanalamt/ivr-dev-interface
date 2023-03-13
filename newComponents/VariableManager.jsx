@@ -292,7 +292,10 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
                   <Select
                     value={type}
-                    onChange={(e) => setType(e.target.value)}
+                    onChange={(e) => {
+                      setType(e.target.value);
+                      setDefaultValue('');
+                    }}
                     size='small'
                     disabled={!(mode == 'add' || mode == 'modify')}
                     sx={{
