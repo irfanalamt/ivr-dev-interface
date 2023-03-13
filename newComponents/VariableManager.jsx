@@ -1,23 +1,18 @@
+import CloseIcon from '@mui/icons-material/Close';
+import SaveIcon from '@mui/icons-material/Save';
 import {
   Box,
   Button,
   Divider,
   Drawer,
   IconButton,
-  InputLabel,
   List,
   ListItem,
   MenuItem,
   Select,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import SaveIcon from '@mui/icons-material/Save';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
@@ -33,6 +28,31 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
   const [errorText, setErrorText] = useState('');
 
   const errorObj = useRef({});
+
+  const DayValues = [
+    '1 Sunday',
+    '2 Monday',
+    '3 Tuesday',
+    '4 Wednesday',
+    '5 Thursday',
+    '6 Friday',
+    '7 Saturday',
+  ];
+
+  const MonthValues = [
+    '01 January',
+    '02 February',
+    '03 March',
+    '04 April',
+    '05 May',
+    '06 June',
+    '07 July',
+    '08 August',
+    '09 September',
+    '10 October',
+    '11 November',
+    '12 December',
+  ];
 
   function handleSave() {
     if (errorText !== '') return;
@@ -127,6 +147,14 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
 
     errorObj.current[objType] = true;
     setErrorText(errorM);
+  }
+
+  function getTextFieldPlaceholderValue(type) {
+    if (type === 'date') {
+      return 'yyyymmdd';
+    } else if (type === 'time') {
+      return 'hhmm';
+    } else return 'required';
   }
 
   return (
@@ -355,21 +383,52 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
                 }}>
                 <Typography variant='subtitle2'>Default Value</Typography>
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
-                  <TextField
-                    value={defaultValue}
-                    placeholder='required'
-                    onChange={(e) => {
-                      setDefaultValue(e.target.value);
-                      handleValidation('value', e.target.value);
-                    }}
-                    sx={{
-                      width: 200,
-                      backgroundColor:
-                        mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
-                    }}
-                    size='small'
-                    disabled={!(mode == 'add' || mode == 'modify')}
-                  />
+                  {['day', 'month'].includes(type) ? (
+                    <Select
+                      sx={{
+                        width: 200,
+                        backgroundColor:
+                          mode == 'add' || mode == 'modify'
+                            ? 'white'
+                            : '#e0e0e0',
+                      }}
+                      value={defaultValue}
+                      onChange={(e) => setDefaultValue(e.target.value)}
+                      disabled={!(mode == 'add' || mode == 'modify')}
+                      size='small'>
+                      {type == 'day' &&
+                        DayValues.map((d, i) => (
+                          <MenuItem value={i + 1} key={i}>
+                            {d}
+                          </MenuItem>
+                        ))}
+                      {type == 'month' &&
+                        MonthValues.map((d, i) => (
+                          <MenuItem value={i + 1} key={i}>
+                            {d}
+                          </MenuItem>
+                        ))}
+                    </Select>
+                  ) : (
+                    <TextField
+                      value={defaultValue}
+                      placeholder={getTextFieldPlaceholderValue(type)}
+                      onChange={(e) => {
+                        setDefaultValue(e.target.value);
+                        handleValidation('value', e.target.value);
+                      }}
+                      sx={{
+                        width: 200,
+                        backgroundColor:
+                          mode == 'add' || mode == 'modify'
+                            ? 'white'
+                            : '#e0e0e0',
+                      }}
+                      size='small'
+                      disabled={!(mode == 'add' || mode == 'modify')}
+                    />
+                  )}
+
                   <Button
                     onClick={handleSave}
                     variant='contained'

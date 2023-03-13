@@ -1,41 +1,18 @@
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
-  Button,
-  Divider,
-  Drawer,
-  FormControlLabel,
-  FormLabel,
-  IconButton,
-  InputLabel,
-  List,
+  Button, FormControlLabel, IconButton, List,
   ListItem,
   MenuItem,
   Select,
   Stack,
-  Switch,
-  Tab,
-  Tabs,
-  TextField,
-  Tooltip,
-  Typography,
+  Switch, TextField, Typography
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import SaveIcon from '@mui/icons-material/Save';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import {useState} from 'react';
-import {checkValidity} from '../src/helpers';
+import { useState } from 'react';
+import { checkValidity } from '../src/helpers';
 
-const MessageList = ({
-  updateMessageList,
-  userVariables,
-  currentMessageList,
-}) => {
+const MessageList = ({userVariables, messageList, setMessageList}) => {
   const [currentType, setCurrentType] = useState('Prompt');
-
-  const [messageList, setMessageList] = useState(currentMessageList ?? []);
 
   const messageListTypes = [
     'Prompt',
@@ -92,19 +69,24 @@ const MessageList = ({
 
     const newMessages = [...messageList];
     newMessages[index].useVariable = checked;
+    newMessages[index].item = '';
     setMessageList(newMessages);
   }
   function handleFieldChange(e, index) {
     const {value, name} = e.target;
-    let errorM = -1;
-    errorM = checkValidity(name.toLowerCase(), value);
+
     const newMessages = [...messageList];
     newMessages[index].item = value;
-    if (errorM != -1) {
-      newMessages[index].error = errorM;
-    } else {
-      newMessages[index].error = undefined;
+    if (name) {
+      let errorM = -1;
+      errorM = checkValidity(name.toLowerCase(), value);
+      if (errorM != -1) {
+        newMessages[index].error = errorM;
+      } else {
+        newMessages[index].error = undefined;
+      }
     }
+
     setMessageList(newMessages);
   }
 
@@ -120,11 +102,38 @@ const MessageList = ({
     console.log('this ⏳ ', name, ' changed', value);
   }
 
-  function handleSaveMessageList() {
-    const validMessages = messageList.filter((m) => !m.error);
+  function renderVariableOptions(type) {
+    const variableTypes = {
+      Prompt: 'prompt',
+      Number: 'number',
+      Ordinal: 'number',
+      Amount: 'number',
+      Digit: 'number',
+      Date: 'date',
+      Day: 'day',
+      Month: 'month',
+      Time: 'time',
+    };
 
-    updateMessageList(validMessages);
+    const variableType = variableTypes[type];
+
+    return userVariables.current
+      .filter((v) => v.type === variableType)
+      .map((v, i) => (
+        <MenuItem value={`$${v.name}`} key={i}>
+          {v.name}
+        </MenuItem>
+      ));
   }
+
+  function getTextFieldPlaceholderValue(type) {
+    if (type === 'Date') {
+      return 'yyyymmdd';
+    } else if (type === 'Time') {
+      return 'hhmm';
+    } else return '';
+  }
+
   return (
     <List sx={{backgroundColor: '#eeeeee'}}>
       <ListItem sx={{mb: 1}}>
@@ -188,13 +197,20 @@ const MessageList = ({
               </Box>
               <Box sx={{display: 'flex', alignItems: 'center'}}>
                 {m.useVariable ? (
-                  <Select value='' sx={{minWidth: 150, mr: 3}} size='small' />
+                  <Select
+                    value={m.useVariable ? m.item : ''}
+                    onChange={(e) => handleFieldChange(e, i)}
+                    sx={{minWidth: 150, mr: 3}}
+                    size='small'>
+                    {renderVariableOptions(m.type)}
+                  </Select>
                 ) : (
                   m.type !== 'Month' &&
                   m.type !== 'Day' && (
                     <TextField
                       name={m.type}
                       sx={{mr: 3, width: m.type !== 'Prompt' ? 150 : undefined}}
+                      placeholder={getTextFieldPlaceholderValue(m.type)}
                       size='small'
                       value={m.item}
                       onChange={(e) => handleFieldChange(e, i)}
@@ -210,7 +226,7 @@ const MessageList = ({
                     sx={{mr: 3, width: 150}}
                     size='small'>
                     {MonthValues.map((m, i) => (
-                      <MenuItem value={m} key={i}>
+                      <MenuItem value={i + 1} key={i}>
                         {m}
                       </MenuItem>
                     ))}
@@ -224,7 +240,7 @@ const MessageList = ({
                     sx={{mr: 3, width: 150}}
                     size='small'>
                     {DayValues.map((m, i) => (
-                      <MenuItem value={m} key={i}>
+                      <MenuItem value={i + 1} key={i}>
                         {m}
                       </MenuItem>
                     ))}
@@ -285,7 +301,7 @@ const MessageList = ({
                     labelPlacement='end'
                   />
                 )}
-                <Button
+                {/* <Button
                   sx={{
                     ml: 'auto',
                   }}
@@ -293,7 +309,7 @@ const MessageList = ({
                   variant='contained'
                   onClick={handleSaveMessageList}>
                   <SaveIcon />
-                </Button>
+                </Button> */}
               </Box>
               <Box sx={{mt: 1, display: 'flex', alignItems: 'center'}}>
                 <FormControlLabel
@@ -311,6 +327,7 @@ const MessageList = ({
 
                 <IconButton
                   color='error'
+                  size='small'
                   onClick={() => handleDeleteMessage(i)}
                   sx={{
                     ml: 'auto',

@@ -1,39 +1,26 @@
+import CloseIcon from '@mui/icons-material/Close';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import SaveIcon from '@mui/icons-material/Save';
 import {
   Box,
   Button,
   Divider,
-  Drawer,
-  FormControlLabel,
-  FormLabel,
   IconButton,
-  InputLabel,
   List,
   ListItem,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
-  Stack,
   Switch,
   Tab,
   Tabs,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import SaveIcon from '@mui/icons-material/Save';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import DeleteIcon from '@mui/icons-material/Delete';
-import defaultParams from '../src/defaultParams';
 import {useEffect, useRef, useState} from 'react';
-import {isNameUnique} from '../src/myFunctions';
 import {checkValidity} from '../src/helpers';
-import DrawerUserGuideDialog from '../components/DrawerUserGuideDialog';
-import MessageList from './MessageList2';
+import {isNameUnique} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
+import MessageList from './MessageList2';
 
 const PlayMessage = ({
   shape,
@@ -48,6 +35,12 @@ const PlayMessage = ({
   const [errorText, setErrorText] = useState('');
   const [tabValue, setTabValue] = useState(0);
   const [openGuideDialog, setOpenGuideDialog] = useState(false);
+  const [messageList, setMessageList] = useState(
+    shape.userValues?.messageList ?? []
+  );
+
+  const [interruptible, setInterruptible] = useState(true);
+  const [repeatOption, setRepeatOption] = useState('X');
 
   const errors = useRef({});
 
@@ -59,22 +52,18 @@ const PlayMessage = ({
     return () => clearTimeout(timeoutId);
   }, [successText]);
 
-  function updateMessageList(newMessageList) {
-    console.log('✨ updated:', newMessageList);
-    shape.setUserValues({
-      messageList: newMessageList,
-    });
-  }
-
   function handleSaveName() {
     if (errors.current.name) {
       setErrorText('Id not valid.');
       return;
     }
+
+    shape.setUserValues({messageList});
+    console.log('🔥🔥', messageList);
     shape.setText(name);
     clearAndDraw();
     setErrorText('');
-    setSuccessText('ID Updated.');
+    setSuccessText('Saved.');
   }
 
   function handleNameChange(e) {
@@ -228,9 +217,9 @@ const PlayMessage = ({
         </Tabs>
         {tabValue === 0 && (
           <MessageList
-            currentMessageList={shape.userValues?.messageList}
-            updateMessageList={updateMessageList}
             userVariables={userVariables}
+            messageList={messageList}
+            setMessageList={setMessageList}
           />
         )}
         {tabValue === 1 && (
@@ -248,7 +237,12 @@ const PlayMessage = ({
                 variant='subtitle2'>
                 interruptible:
               </Typography>
-              <Switch />
+              <Switch
+                checked={interruptible}
+                onChange={(e) => {
+                  setInterruptible(e.target.checked);
+                }}
+              />
             </ListItem>
             <ListItem
               sx={{
@@ -263,7 +257,24 @@ const PlayMessage = ({
                 variant='subtitle2'>
                 repeatOption:
               </Typography>
-              <Select sx={{width: 50}} size='small'></Select>
+              <Select
+                size='small'
+                value={repeatOption}
+                onChange={(e) => {
+                  setRepeatOption(e.target.value);
+                }}>
+                <MenuItem value='X'>X</MenuItem>
+                <MenuItem value='0'>0</MenuItem>
+                <MenuItem value='1'>1</MenuItem>
+                <MenuItem value='2'>2</MenuItem>
+                <MenuItem value='3'>3</MenuItem>
+                <MenuItem value='4'>4</MenuItem>
+                <MenuItem value='5'>5</MenuItem>
+                <MenuItem value='6'>6</MenuItem>
+                <MenuItem value='7'>7</MenuItem>
+                <MenuItem value='8'>8</MenuItem>
+                <MenuItem value='9'>9</MenuItem>
+              </Select>
             </ListItem>
           </List>
         )}

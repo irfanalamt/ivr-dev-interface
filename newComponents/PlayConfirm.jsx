@@ -1,35 +1,24 @@
+import CloseIcon from '@mui/icons-material/Close';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import SaveIcon from '@mui/icons-material/Save';
 import {
   Box,
   Button,
-  Divider,
-  Drawer,
-  FormLabel,
   IconButton,
-  InputLabel,
   List,
   ListItem,
-  MenuItem,
   Select,
-  Switch,
   Tab,
   Tabs,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import SaveIcon from '@mui/icons-material/Save';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import DeleteIcon from '@mui/icons-material/Delete';
-import defaultParams from '../src/defaultParams';
 import {useEffect, useRef, useState} from 'react';
-import {isNameUnique} from '../src/myFunctions';
 import {checkValidity} from '../src/helpers';
-import DrawerUserGuideDialog from '../components/DrawerUserGuideDialog';
-import MessageList from './MessageList2';
+import {isNameUnique} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
+import MessageList from './MessageList2';
+
 const PlayConfirm = ({
   shape,
   handleCloseDrawer,
@@ -43,7 +32,9 @@ const PlayConfirm = ({
   const [errorText, setErrorText] = useState('');
   const [tabValue, setTabValue] = useState(0);
   const [openGuideDialog, setOpenGuideDialog] = useState(false);
-
+  const [messageList, setMessageList] = useState(
+    shape.userValues?.messageList ?? []
+  );
   const errors = useRef({});
 
   useEffect(() => {
@@ -59,16 +50,12 @@ const PlayConfirm = ({
       setErrorText('Id not valid.');
       return;
     }
+    shape.setUserValues({messageList});
+    console.log('🔥🔥', messageList);
     shape.setText(name);
     clearAndDraw();
     setErrorText('');
-    setSuccessText('ID Updated.');
-  }
-  function updateMessageList(newMessageList) {
-    console.log('✨ updated:', newMessageList);
-    shape.setUserValues({
-      messageList: newMessageList,
-    });
+    setSuccessText('Saved.');
   }
 
   function handleNameChange(e) {
@@ -222,9 +209,9 @@ const PlayConfirm = ({
         </Tabs>
         {tabValue === 0 && (
           <MessageList
-            currentMessageList={shape.userValues?.messageList}
-            updateMessageList={updateMessageList}
             userVariables={userVariables}
+            messageList={messageList}
+            setMessageList={setMessageList}
           />
         )}
         {tabValue === 1 && (
