@@ -10,19 +10,19 @@ import {
   ListItem,
   MenuItem,
   Select,
-  Switch,
+  Stack,
   Tab,
   Tabs,
   TextField,
   Typography,
 } from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
 import MessageList from './MessageList2';
 
-const PlayMessage = ({
+const GetDigits = ({
   shape,
   handleCloseDrawer,
   shapes,
@@ -34,27 +34,20 @@ const PlayMessage = ({
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
   const [tabValue, setTabValue] = useState(0);
-  const [openGuideDialog, setOpenGuideDialog] = useState(false);
   const [messageList, setMessageList] = useState(
     shape.userValues?.messageList ?? []
   );
-
-  const [interruptible, setInterruptible] = useState(
-    shape.userValues?.params.interruptible ?? true
+  const [resultName, setResultName] = useState(
+    shape.userValues?.variableName ?? ''
   );
-  const [repeatOption, setRepeatOption] = useState(
-    shape.userValues?.params.repeatOption || 'X'
+  const [minDigits, setMinDigits] = useState(
+    shape.userValues?.params.minDigits ?? 1
+  );
+  const [maxDigits, setMaxDigits] = useState(
+    shape.userValues?.params.maxDigits ?? 20
   );
 
   const errors = useRef({});
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setSuccessText('');
-    }, 2000);
-
-    return () => clearTimeout(timeoutId);
-  }, [successText]);
 
   function handleSave() {
     if (errors.current.name) {
@@ -65,7 +58,8 @@ const PlayMessage = ({
     const validMessages = messageList.filter((m) => !m.error);
     shape.setUserValues({
       messageList: validMessages,
-      params: {interruptible, repeatOption},
+      variableName: resultName,
+      params: {minDigits, maxDigits},
     });
     console.log('🔥🔥', messageList);
     shape.setText(name);
@@ -95,6 +89,7 @@ const PlayMessage = ({
       errors.current.name = undefined;
     }
   }
+
   function handleTabChange(e, newValue) {
     setTabValue(newValue);
   }
@@ -119,13 +114,13 @@ const PlayMessage = ({
           variant='h5'>
           {
             <img
-              src='/icons/playMessageBlack.png'
+              src='/icons/getDigitsBlack.png'
               alt='Icon'
               height={'22px'}
               width={'22px'}
             />
           }
-          &nbsp;Play Message
+          &nbsp;Get Digits
         </Typography>
         <IconButton
           size='small'
@@ -198,6 +193,22 @@ const PlayMessage = ({
               <SaveIcon />
             </Button>
           </ListItem>
+          <Stack sx={{pl: 2, py: 1}}>
+            <Typography variant='subtitle2'>Result Variable</Typography>
+            <Select
+              value={resultName}
+              sx={{width: '220px'}}
+              onChange={(e) => setResultName(e.target.value)}
+              size='small'>
+              {userVariables.current
+                .filter((v) => v.type === 'number')
+                .map((v, i) => (
+                  <MenuItem value={`$${v.name}`} key={i}>
+                    {v.name}
+                  </MenuItem>
+                ))}
+            </Select>
+          </Stack>
           <ListItem sx={{height: 30}}>
             {successText && (
               <Typography sx={{mt: -1, color: 'green', mx: 'auto'}}>
@@ -243,14 +254,20 @@ const PlayMessage = ({
                 sx={{width: '40%'}}
                 fontSize='large'
                 variant='subtitle2'>
-                interruptible:
+                minDigits:
               </Typography>
-              <Switch
-                checked={interruptible}
+              <Select
+                value={minDigits}
                 onChange={(e) => {
-                  setInterruptible(e.target.checked);
+                  setMinDigits(e.target.value);
                 }}
-              />
+                size='small'>
+                {[...Array(21).keys()].slice(1).map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                ))}
+              </Select>
             </ListItem>
             <ListItem
               sx={{
@@ -263,25 +280,19 @@ const PlayMessage = ({
                 sx={{width: '40%'}}
                 fontSize='large'
                 variant='subtitle2'>
-                repeatOption:
+                maxDigits:
               </Typography>
               <Select
-                size='small'
-                value={repeatOption}
+                value={maxDigits}
                 onChange={(e) => {
-                  setRepeatOption(e.target.value);
-                }}>
-                <MenuItem value='X'>X</MenuItem>
-                <MenuItem value='0'>0</MenuItem>
-                <MenuItem value='1'>1</MenuItem>
-                <MenuItem value='2'>2</MenuItem>
-                <MenuItem value='3'>3</MenuItem>
-                <MenuItem value='4'>4</MenuItem>
-                <MenuItem value='5'>5</MenuItem>
-                <MenuItem value='6'>6</MenuItem>
-                <MenuItem value='7'>7</MenuItem>
-                <MenuItem value='8'>8</MenuItem>
-                <MenuItem value='9'>9</MenuItem>
+                  setMaxDigits(e.target.value);
+                }}
+                size='small'>
+                {[...Array(21).keys()].slice(1).map((el, i) => (
+                  <MenuItem key={i} value={el}>
+                    {el}
+                  </MenuItem>
+                ))}
               </Select>
             </ListItem>
           </List>
@@ -292,4 +303,4 @@ const PlayMessage = ({
   );
 };
 
-export default PlayMessage;
+export default GetDigits;
