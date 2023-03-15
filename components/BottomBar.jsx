@@ -95,6 +95,8 @@ const BottomBar = ({
             '&:hover': {
               backgroundColor: '#A8CCCC',
             },
+            height: '30px',
+            width: '30px',
           }}>
           <img
             src='/icons/variableManager.png'
@@ -114,6 +116,8 @@ const BottomBar = ({
             '&:hover': {
               backgroundColor: '#A8CCCC',
             },
+            height: '30px',
+            width: '30px',
           }}>
           <img
             src='/icons/promptList.png'

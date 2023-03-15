@@ -61,17 +61,28 @@ const PlayMessage = ({
       setErrorText('Id not valid.');
       return;
     }
+    shape.setText(name);
+    clearAndDraw();
 
-    const validMessages = messageList.filter((m) => !m.error);
+    let validMessages = [];
+    for (const message of messageList) {
+      if (message.error) {
+        break;
+      }
+      validMessages.push(message);
+    }
     shape.setUserValues({
       messageList: validMessages,
       params: {interruptible, repeatOption},
     });
-    console.log('🔥🔥', messageList);
-    shape.setText(name);
-    clearAndDraw();
-    setErrorText('');
-    setSuccessText('Saved.');
+
+    if (validMessages.length < messageList.length) {
+      setSuccessText('');
+      setErrorText('Save failed. Message list error.');
+    } else {
+      setErrorText('');
+      setSuccessText('Saved.');
+    }
   }
 
   function handleNameChange(e) {
@@ -267,6 +278,7 @@ const PlayMessage = ({
               </Typography>
               <Select
                 size='small'
+                sx={{backgroundColor: '#ededed'}}
                 value={repeatOption}
                 onChange={(e) => {
                   setRepeatOption(e.target.value);

@@ -71,16 +71,6 @@ const CanvasTest = ({
     clearAndDraw();
   }, [shapes]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const scrollbarWidth =
-      window.innerWidth - document.documentElement.clientWidth;
-
-    canvas.width = window.innerWidth - scrollbarWidth;
-
-    clearAndDraw();
-  }, []);
-
   function clearAndDraw() {
     const ctx = contextRef.current;
     clearCanvas();
@@ -133,6 +123,8 @@ const CanvasTest = ({
   }
 
   function handleMouseDown(e) {
+    console.log('canvas width:', canvasRef.current.width);
+    console.log('canvas height:', canvasRef.current.height);
     e.preventDefault();
     const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
@@ -357,7 +349,7 @@ const CanvasTest = ({
       drawnMultiSelectRectangle.current.y += offsetY;
 
       // Update the position of the selected shapes, making sure they stay within bounds
-      selectedShapes.current.forEach((shape) => {
+      selectedShapes.current?.forEach((shape) => {
         let newShapeX = shape.x + offsetX;
         let newShapeY = shape.y + offsetY;
 
@@ -757,8 +749,8 @@ const CanvasTest = ({
             ? 'crosshair'
             : 'default',
         }}
-        width={window.innerWidth}
-        height={window.innerHeight * 2}
+        width={2000}
+        height={2000}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}

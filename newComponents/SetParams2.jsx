@@ -333,7 +333,7 @@ const SetParams = ({
             <TextField
               onChange={handleNameChange}
               value={name}
-              sx={{minWidth: '220px'}}
+              sx={{minWidth: '220px', backgroundColor: '#f5f5f5'}}
               size='small'
               error={errors.current.name}
             />
@@ -372,7 +372,7 @@ const SetParams = ({
                 value={selectedParameterIndex}
                 onChange={handleSelectedParameterIndexChange}
                 labelId='paramteter-label'
-                sx={{minWidth: '220px', backgroundColor: '#f1f1f1'}}
+                sx={{minWidth: '220px', backgroundColor: '#f5f5f5'}}
                 size='small'>
                 {defaultParams.map((p, i) => (
                   <MenuItem value={i} key={i}>
@@ -398,7 +398,7 @@ const SetParams = ({
                 <ListItem>
                   {currentParameter.type === 'select' && (
                     <Select
-                      sx={{minWidth: '220px', backgroundColor: 'white'}}
+                      sx={{minWidth: '220px', backgroundColor: '#f5f5f5'}}
                       size='small'
                       value={currentParameter.value}
                       onChange={handleFieldChange}>
@@ -411,7 +411,7 @@ const SetParams = ({
                   )}
                   {!currentParameter.type && (
                     <TextField
-                      sx={{minWidth: '220px', backgroundColor: 'white'}}
+                      sx={{minWidth: '220px', backgroundColor: '#f5f5f5'}}
                       size='small'
                       name='name'
                       value={currentParameter.value}
@@ -444,7 +444,7 @@ const SetParams = ({
                 </Typography>
                 <ListItem>
                   <Select
-                    sx={{minWidth: '220px', backgroundColor: 'white'}}
+                    sx={{minWidth: '220px'}}
                     size='small'
                     value={''}
                     disabled

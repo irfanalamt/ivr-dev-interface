@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
@@ -49,23 +49,41 @@ const GetDigits = ({
 
   const errors = useRef({});
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSuccessText('');
+    }, 2000);
+
+    return () => clearTimeout(timeoutId);
+  }, [successText]);
+
   function handleSave() {
     if (errors.current.name) {
       setErrorText('Id not valid.');
       return;
     }
-
-    const validMessages = messageList.filter((m) => !m.error);
+    shape.setText(name);
+    clearAndDraw();
+    let validMessages = [];
+    for (const message of messageList) {
+      if (message.error) {
+        break;
+      }
+      validMessages.push(message);
+    }
     shape.setUserValues({
       messageList: validMessages,
       variableName: resultName,
       params: {minDigits, maxDigits},
     });
-    console.log('🔥🔥', messageList);
-    shape.setText(name);
-    clearAndDraw();
-    setErrorText('');
-    setSuccessText('Saved.');
+
+    if (validMessages.length < messageList.length) {
+      setSuccessText('');
+      setErrorText('Save failed. Message list error.');
+    } else {
+      setErrorText('');
+      setSuccessText('Saved.');
+    }
   }
 
   function handleNameChange(e) {
@@ -197,7 +215,7 @@ const GetDigits = ({
             <Typography variant='subtitle2'>Result Variable</Typography>
             <Select
               value={resultName}
-              sx={{width: '220px'}}
+              sx={{width: '220px', backgroundColor: '#f5f5f5'}}
               onChange={(e) => setResultName(e.target.value)}
               size='small'>
               {userVariables.current
@@ -258,6 +276,7 @@ const GetDigits = ({
               </Typography>
               <Select
                 value={minDigits}
+                sx={{backgroundColor: '#ededed'}}
                 onChange={(e) => {
                   setMinDigits(e.target.value);
                 }}
@@ -284,6 +303,7 @@ const GetDigits = ({
               </Typography>
               <Select
                 value={maxDigits}
+                sx={{backgroundColor: '#ededed'}}
                 onChange={(e) => {
                   setMaxDigits(e.target.value);
                 }}

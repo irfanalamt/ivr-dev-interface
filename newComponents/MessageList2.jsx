@@ -1,15 +1,20 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
-  Button, FormControlLabel, IconButton, List,
+  Button,
+  FormControlLabel,
+  IconButton,
+  List,
   ListItem,
   MenuItem,
   Select,
   Stack,
-  Switch, TextField, Typography
+  Switch,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import { checkValidity } from '../src/helpers';
+import {useState} from 'react';
+import {checkValidity} from '../src/helpers';
 
 const MessageList = ({userVariables, messageList, setMessageList}) => {
   const [currentType, setCurrentType] = useState('Prompt');
@@ -200,7 +205,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                   <Select
                     value={m.useVariable ? m.item : ''}
                     onChange={(e) => handleFieldChange(e, i)}
-                    sx={{minWidth: 150, mr: 3}}
+                    sx={{minWidth: 150, mr: 3, backgroundColor: '#f5f5f5'}}
                     size='small'>
                     {renderVariableOptions(m.type)}
                   </Select>
@@ -209,7 +214,11 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                   m.type !== 'Day' && (
                     <TextField
                       name={m.type}
-                      sx={{mr: 3, width: m.type !== 'Prompt' ? 150 : undefined}}
+                      sx={{
+                        mr: 3,
+                        width: m.type !== 'Prompt' ? 150 : undefined,
+                        backgroundColor: '#f5f5f5',
+                      }}
                       placeholder={getTextFieldPlaceholderValue(m.type)}
                       size='small'
                       value={m.item}
@@ -223,7 +232,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                     name={m.type}
                     value={m.item ?? ''}
                     onChange={(e) => handleFieldChange(e, i)}
-                    sx={{mr: 3, width: 150}}
+                    sx={{mr: 3, width: 150, backgroundColor: '#f5f5f5'}}
                     size='small'>
                     {MonthValues.map((m, i) => (
                       <MenuItem value={i + 1} key={i}>
@@ -237,7 +246,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                     name={m.type}
                     value={m.item ?? ''}
                     onChange={(e) => handleFieldChange(e, i)}
-                    sx={{mr: 3, width: 150}}
+                    sx={{mr: 3, width: 150, backgroundColor: '#f5f5f5'}}
                     size='small'>
                     {DayValues.map((m, i) => (
                       <MenuItem value={i + 1} key={i}>
@@ -250,26 +259,42 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                   <TextField
                     name='currency'
                     placeholder='currency'
-                    sx={{width: 100}}
+                    sx={{width: 100, backgroundColor: '#f5f5f5'}}
                     size='small'
                     value={m.currency}
                     onChange={(e) => handleNamedFieldChange(e, i)}
                   />
                 )}
                 {m.type === 'Date' && (
-                  <FormControlLabel
-                    control={
-                      <Switch
-                        name='playYear'
-                        checked={m.playYear}
-                        onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
-                        size='small'
-                        color='primary'
-                      />
-                    }
-                    label='playYear'
-                    labelPlacement='end'
-                  />
+                  <>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          name='playYear'
+                          checked={m.playYear}
+                          onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
+                          size='small'
+                          color='primary'
+                        />
+                      }
+                      label='playYear'
+                      labelPlacement='end'
+                    />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          sx={{ml: 1}}
+                          name='playDay'
+                          checked={m.playDay}
+                          onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
+                          size='small'
+                          color='primary'
+                        />
+                      }
+                      label='playDay'
+                      labelPlacement='end'
+                    />
+                  </>
                 )}
                 {m.type === 'Month' && (
                   <FormControlLabel
