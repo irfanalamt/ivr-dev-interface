@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -46,6 +47,8 @@ const GetDigits = ({
   const [maxDigits, setMaxDigits] = useState(
     shape.userValues?.params.maxDigits ?? 20
   );
+  const [optionalParam, setOptionalParam] = useState('');
+  const [addedOptionalParams, setAddedOptionalParams] = useState([]);
 
   const errors = useRef({});
 
@@ -56,6 +59,15 @@ const GetDigits = ({
 
     return () => clearTimeout(timeoutId);
   }, [successText]);
+
+  const optionalParamList = [
+    'terminator',
+    'maxRetries',
+    'invalidAction',
+    'timeoutAction',
+    'invalidPrompt',
+    'interruptible',
+  ];
 
   function handleSave() {
     if (errors.current.name) {
@@ -110,6 +122,81 @@ const GetDigits = ({
 
   function handleTabChange(e, newValue) {
     setTabValue(newValue);
+  }
+  function handleAddOptionalParam() {
+    if (!optionalParam) return;
+
+    setAddedOptionalParams((p) => {
+      const temp = [...p];
+      temp.push(optionalParam);
+      return temp;
+    });
+
+    setOptionalParam('');
+  }
+  function handleDeleteOptionalParam(index) {
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams.splice(index, 1);
+    setAddedOptionalParams(currentOptionalParams);
+  }
+
+  function renderComponentByType(param) {
+    console.log('renderComponent⏳', param);
+
+    switch (param) {
+      case 'terminator':
+        return (
+          <>
+            <Typography
+              sx={{width: '40%'}}
+              fontSize='large'
+              variant='subtitle2'>
+              terminator:
+            </Typography>
+            <Select sx={{backgroundColor: '#ededed'}} size='small'>
+              <MenuItem>X</MenuItem>
+              <MenuItem>#</MenuItem>
+              <MenuItem>*</MenuItem>
+              <MenuItem>0</MenuItem>
+              <MenuItem>1</MenuItem>
+              <MenuItem>2</MenuItem>
+              <MenuItem>3</MenuItem>
+              <MenuItem>4</MenuItem>
+              <MenuItem>5</MenuItem>
+              <MenuItem>6</MenuItem>
+              <MenuItem>7</MenuItem>
+              <MenuItem>8</MenuItem>
+              <MenuItem>9</MenuItem>
+            </Select>
+          </>
+        );
+
+      case 'maxRetries':
+        return (
+          <>
+            <Typography
+              sx={{width: '40%'}}
+              fontSize='large'
+              variant='subtitle2'>
+              maxRetries:
+            </Typography>
+            <Select sx={{backgroundColor: '#ededed'}} size='small'>
+              <MenuItem>0</MenuItem>
+              <MenuItem>1</MenuItem>
+              <MenuItem>2</MenuItem>
+              <MenuItem>3</MenuItem>
+              <MenuItem>4</MenuItem>
+              <MenuItem>5</MenuItem>
+              <MenuItem>6</MenuItem>
+              <MenuItem>7</MenuItem>
+              <MenuItem>8</MenuItem>
+              <MenuItem>9</MenuItem>
+            </Select>
+          </>
+        );
+      default:
+        return <Typography>{param}</Typography>;
+    }
   }
 
   return (
@@ -199,7 +286,7 @@ const GetDigits = ({
             <TextField
               onChange={handleNameChange}
               value={name}
-              sx={{minWidth: '220px'}}
+              sx={{minWidth: '220px', backgroundColor: '#f5f5f5'}}
               size='small'
               error={errors.current.name}
             />
@@ -315,6 +402,63 @@ const GetDigits = ({
                 ))}
               </Select>
             </ListItem>
+            <Stack sx={{pl: 2, py: 2, mt: 2, mb: 1}}>
+              <Typography>Optional Params</Typography>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Select
+                  labelId='select-label'
+                  value={optionalParam}
+                  onChange={(e) => setOptionalParam(e.target.value)}
+                  sx={{
+                    minWidth: 150,
+                    backgroundColor: '#f5f5f5',
+                  }}
+                  size='small'>
+                  {optionalParamList
+                    .filter((p) => !addedOptionalParams.includes(p))
+                    .map((p, i) => (
+                      <MenuItem value={p} key={i}>
+                        {p}
+                      </MenuItem>
+                    ))}
+                </Select>
+                <Button
+                  sx={{
+                    ml: 2,
+                    backgroundColor: '#bdbdbd',
+                    color: 'black',
+                    '&:hover': {backgroundColor: '#9ccc65'},
+                  }}
+                  onClick={handleAddOptionalParam}
+                  disabled={!optionalParam}
+                  variant='contained'>
+                  Add
+                </Button>
+              </Box>
+            </Stack>
+            {addedOptionalParams.map((p, i) => (
+              <ListItem
+                sx={{
+                  py: 2,
+                  backgroundColor: '#e6e6e6',
+                  borderTop: '1px solid #bdbdbd',
+                  borderBottom: '1px solid #bdbdbd',
+                }}
+                key={i}>
+                {renderComponentByType(p)}
+                <IconButton
+                  color='error'
+                  size='small'
+                  onClick={() => handleDeleteOptionalParam(i)}
+                  sx={{
+                    ml: 'auto',
+                    backgroundColor: '#cfcfcf',
+                    '&:hover': {backgroundColor: '#c7c1bd'},
+                  }}>
+                  <DeleteIcon sx={{color: '#424242'}} />
+                </IconButton>
+              </ListItem>
+            ))}
           </List>
         )}
         {tabValue === 2 && <LogDrawer />}
