@@ -187,7 +187,7 @@ const PlayConfirm = ({
           </Typography>
           <ListItem sx={{mt: -1}}>
             <TextField
-              sx={{minWidth: '220px'}}
+              sx={{minWidth: '220px', backgroundColor: '#f5f5f5'}}
               size='small'
               error={errors.current.name}
               onChange={handleNameChange}
@@ -249,6 +249,7 @@ const PlayConfirm = ({
               </Typography>
               <Select
                 value={confirmOption}
+                sx={{backgroundColor: '#ededed'}}
                 onChange={(e) => setConfirmOption(e.target.value)}
                 size='small'>
                 <MenuItem value='X'>X</MenuItem>
@@ -279,6 +280,7 @@ const PlayConfirm = ({
               <Select
                 value={cancelOption}
                 onChange={(e) => setCancelOption(e.target.value)}
+                sx={{backgroundColor: '#ededed'}}
                 size='small'>
                 <MenuItem value='X'>X</MenuItem>
                 <MenuItem value='0'>0</MenuItem>
@@ -308,7 +310,7 @@ const PlayConfirm = ({
               <TextField
                 value={confirmPrompt}
                 onChange={(e) => setConfirmPrompt(e.target.value)}
-                sx={{ml: 1}}
+                sx={{ml: 1, backgroundColor: '#ededed'}}
                 size='small'
               />
             </ListItem>
@@ -328,7 +330,7 @@ const PlayConfirm = ({
               <TextField
                 value={cancelPrompt}
                 onChange={(e) => setCancelPrompt(e.target.value)}
-                sx={{ml: 1}}
+                sx={{ml: 1, backgroundColor: '#ededed'}}
                 size='small'
               />
             </ListItem>

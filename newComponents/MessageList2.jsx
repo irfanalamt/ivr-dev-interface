@@ -141,40 +141,38 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
 
   return (
     <List sx={{backgroundColor: '#eeeeee'}}>
-      <ListItem sx={{mb: 1}}>
-        <Box sx={{display: 'flex', flexDirection: 'column'}}>
-          <Typography variant='subtitle1'>Type</Typography>
-          <Box sx={{display: 'flex', alignItems: 'center'}}>
-            <Select
-              labelId='select-label'
-              value={currentType}
-              onChange={(e) => setCurrentType(e.target.value)}
-              sx={{
-                minWidth: 150,
-                backgroundColor: '#f5f5f5',
-              }}
-              size='small'>
-              {messageListTypes.map((type, i) => (
-                <MenuItem value={type} key={i}>
-                  {type}
-                </MenuItem>
-              ))}
-            </Select>
-            <Button
-              sx={{
-                ml: 2,
-                backgroundColor: '#bdbdbd',
-                color: 'black',
-                '&:hover': {backgroundColor: '#9ccc65'},
-              }}
-              onClick={handleAddNewMessage}
-              disabled={!currentType}
-              variant='contained'>
-              Add
-            </Button>
-          </Box>
+      <Stack sx={{pl: 2, pb: 2}}>
+        <Typography variant='subtitle1'>Type</Typography>
+        <Box sx={{display: 'flex', alignItems: 'center'}}>
+          <Select
+            labelId='select-label'
+            value={currentType}
+            onChange={(e) => setCurrentType(e.target.value)}
+            sx={{
+              minWidth: 150,
+              backgroundColor: '#f5f5f5',
+            }}
+            size='small'>
+            {messageListTypes.map((type, i) => (
+              <MenuItem value={type} key={i}>
+                {type}
+              </MenuItem>
+            ))}
+          </Select>
+          <Button
+            sx={{
+              ml: 2,
+              backgroundColor: '#bdbdbd',
+              color: 'black',
+              '&:hover': {backgroundColor: '#9ccc65'},
+            }}
+            onClick={handleAddNewMessage}
+            disabled={!currentType}
+            variant='contained'>
+            Add
+          </Button>
         </Box>
-      </ListItem>
+      </Stack>
       <List>
         {messageList.map((m, i) => (
           <ListItem
