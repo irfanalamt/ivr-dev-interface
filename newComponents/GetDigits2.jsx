@@ -12,6 +12,7 @@ import {
   MenuItem,
   Select,
   Stack,
+  Switch,
   Tab,
   Tabs,
   TextField,
@@ -48,7 +49,9 @@ const GetDigits = ({
     shape.userValues?.params.maxDigits ?? 20
   );
   const [optionalParam, setOptionalParam] = useState('');
-  const [addedOptionalParams, setAddedOptionalParams] = useState([]);
+  const [addedOptionalParams, setAddedOptionalParams] = useState(
+    shape.userValues?.optionalParams ?? []
+  );
 
   const errors = useRef({});
 
@@ -87,6 +90,7 @@ const GetDigits = ({
       messageList: validMessages,
       variableName: resultName,
       params: {minDigits, maxDigits},
+      optionalParams: addedOptionalParams,
     });
 
     if (validMessages.length < messageList.length) {
@@ -128,7 +132,7 @@ const GetDigits = ({
 
     setAddedOptionalParams((p) => {
       const temp = [...p];
-      temp.push(optionalParam);
+      temp.push({name: optionalParam});
       return temp;
     });
 
@@ -140,60 +144,200 @@ const GetDigits = ({
     setAddedOptionalParams(currentOptionalParams);
   }
 
-  function renderComponentByType(param) {
+  function handleOptionalParamFieldChange(e, index) {
+    const {value} = e.target;
+
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams[index].value = value;
+    setAddedOptionalParams(currentOptionalParams);
+  }
+  function handleOptionalParamNamedFieldChange(e, index) {
+    const {value, name} = e.target;
+
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams[index][name] = value;
+    setAddedOptionalParams(currentOptionalParams);
+  }
+  function handleOptionalParamFieldChangeSwitch(e, index) {
+    const {checked} = e.target;
+
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams[index].value = checked;
+    setAddedOptionalParams(currentOptionalParams);
+  }
+
+  function renderComponentByType(param, index) {
     console.log('renderComponent⏳', param);
 
     switch (param) {
       case 'terminator':
         return (
-          <>
-            <Typography
-              sx={{width: '40%'}}
-              fontSize='large'
-              variant='subtitle2'>
-              terminator:
+          <Stack>
+            <Typography fontSize='large' variant='subtitle2'>
+              terminator
             </Typography>
-            <Select sx={{backgroundColor: '#ededed'}} size='small'>
-              <MenuItem>X</MenuItem>
-              <MenuItem>#</MenuItem>
-              <MenuItem>*</MenuItem>
-              <MenuItem>0</MenuItem>
-              <MenuItem>1</MenuItem>
-              <MenuItem>2</MenuItem>
-              <MenuItem>3</MenuItem>
-              <MenuItem>4</MenuItem>
-              <MenuItem>5</MenuItem>
-              <MenuItem>6</MenuItem>
-              <MenuItem>7</MenuItem>
-              <MenuItem>8</MenuItem>
-              <MenuItem>9</MenuItem>
+            <Select
+              sx={{backgroundColor: '#ededed', width: 100}}
+              value={addedOptionalParams[index].value ?? ''}
+              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              size='small'>
+              <MenuItem value='X'>X</MenuItem>
+              <MenuItem value='#'>#</MenuItem>
+              <MenuItem value='*'>*</MenuItem>
+              <MenuItem value='0'>0</MenuItem>
+              <MenuItem value='1'>1</MenuItem>
+              <MenuItem value='2'>2</MenuItem>
+              <MenuItem value='3'>3</MenuItem>
+              <MenuItem value='4'>4</MenuItem>
+              <MenuItem value='5'>5</MenuItem>
+              <MenuItem value='6'>6</MenuItem>
+              <MenuItem value='7'>7</MenuItem>
+              <MenuItem value='8'>8</MenuItem>
+              <MenuItem value='9'>9</MenuItem>
             </Select>
-          </>
+          </Stack>
         );
 
       case 'maxRetries':
         return (
-          <>
-            <Typography
-              sx={{width: '40%'}}
-              fontSize='large'
-              variant='subtitle2'>
-              maxRetries:
+          <Stack>
+            <Typography fontSize='large' variant='subtitle2'>
+              maxRetries
             </Typography>
-            <Select sx={{backgroundColor: '#ededed'}} size='small'>
-              <MenuItem>0</MenuItem>
-              <MenuItem>1</MenuItem>
-              <MenuItem>2</MenuItem>
-              <MenuItem>3</MenuItem>
-              <MenuItem>4</MenuItem>
-              <MenuItem>5</MenuItem>
-              <MenuItem>6</MenuItem>
-              <MenuItem>7</MenuItem>
-              <MenuItem>8</MenuItem>
-              <MenuItem>9</MenuItem>
+            <Select
+              sx={{backgroundColor: '#ededed'}}
+              value={addedOptionalParams[index].value ?? ''}
+              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              size='small'>
+              <MenuItem value='0'>0</MenuItem>
+              <MenuItem value='1'>1</MenuItem>
+              <MenuItem value='2'>2</MenuItem>
+              <MenuItem value='3'>3</MenuItem>
+              <MenuItem value='4'>4</MenuItem>
+              <MenuItem value='5'>5</MenuItem>
+              <MenuItem value='6'>6</MenuItem>
+              <MenuItem value='7'>7</MenuItem>
+              <MenuItem value='8'>8</MenuItem>
+              <MenuItem value='9'>9</MenuItem>
             </Select>
-          </>
+          </Stack>
         );
+
+      case 'invalidAction':
+        return (
+          <Stack>
+            <Typography fontSize='large' variant='subtitle2'>
+              invalidAction
+            </Typography>
+            <Stack direction='row'>
+              <Select
+                sx={{width: 150, backgroundColor: '#ededed'}}
+                value={addedOptionalParams[index].value ?? ''}
+                onChange={(e) => handleOptionalParamFieldChange(e, index)}
+                size='small'>
+                <MenuItem value='disconnect'>disconnect</MenuItem>
+                <MenuItem value='transfer'>transfer</MenuItem>
+                <MenuItem value='function'>function</MenuItem>
+              </Select>
+              {addedOptionalParams[index].value === 'transfer' && (
+                <TextField
+                  name='transferPoint'
+                  sx={{mx: 1, width: 200, backgroundColor: '#ededed'}}
+                  value={addedOptionalParams[index].transferPoint ?? ''}
+                  onChange={(e) =>
+                    handleOptionalParamNamedFieldChange(e, index)
+                  }
+                  placeholder='transferPoint'
+                  size='small'
+                />
+              )}
+              {addedOptionalParams[index].value === 'function' && (
+                <TextField
+                  sx={{mx: 1, width: 200, backgroundColor: '#ededed'}}
+                  name='functionName'
+                  value={addedOptionalParams[index].functionName ?? ''}
+                  onChange={(e) =>
+                    handleOptionalParamNamedFieldChange(e, index)
+                  }
+                  placeholder='functionName'
+                  size='small'
+                />
+              )}
+            </Stack>
+          </Stack>
+        );
+      case 'timeoutAction':
+        return (
+          <Stack>
+            <Typography fontSize='large' variant='subtitle2'>
+              timeoutAction
+            </Typography>
+            <Stack direction='row'>
+              <Select
+                sx={{width: 150, backgroundColor: '#ededed'}}
+                value={addedOptionalParams[index].value ?? ''}
+                onChange={(e) => handleOptionalParamFieldChange(e, index)}
+                size='small'>
+                <MenuItem value='disconnect'>disconnect</MenuItem>
+                <MenuItem value='transfer'>transfer</MenuItem>
+                <MenuItem value='function'>function</MenuItem>
+              </Select>
+              {addedOptionalParams[index].value === 'transfer' && (
+                <TextField
+                  sx={{mx: 1, width: 200, backgroundColor: '#ededed'}}
+                  placeholder='transferPoint'
+                  size='small'
+                  name='transferPoint'
+                  value={addedOptionalParams[index].transferPoint ?? ''}
+                  onChange={(e) =>
+                    handleOptionalParamNamedFieldChange(e, index)
+                  }
+                />
+              )}
+              {addedOptionalParams[index].value === 'function' && (
+                <TextField
+                  sx={{mx: 1, width: 200, backgroundColor: '#ededed'}}
+                  placeholder='functionName'
+                  size='small'
+                  name='functionName'
+                  value={addedOptionalParams[index].functionName ?? ''}
+                  onChange={(e) =>
+                    handleOptionalParamNamedFieldChange(e, index)
+                  }
+                />
+              )}
+            </Stack>
+          </Stack>
+        );
+      case 'invalidPrompt':
+        return (
+          <Stack sx={{width: '100%', mr: 1}}>
+            <Typography fontSize='large' variant='subtitle2'>
+              invalidPrompt
+            </Typography>
+            <TextField
+              sx={{backgroundColor: '#ededed'}}
+              value={addedOptionalParams[index].value ?? ''}
+              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              size='small'
+              fullWidth
+            />
+          </Stack>
+        );
+
+      case 'interruptible':
+        return (
+          <Stack>
+            <Typography fontSize='large' variant='subtitle2'>
+              interruptible
+            </Typography>
+            <Switch
+              checked={addedOptionalParams[index].value ?? true}
+              onChange={(e) => handleOptionalParamFieldChangeSwitch(e, index)}
+            />
+          </Stack>
+        );
+
       default:
         return <Typography>{param}</Typography>;
     }
@@ -348,22 +492,20 @@ const GetDigits = ({
         )}
         {tabValue === 1 && (
           <List>
-            <ListItem
+            <Stack
               sx={{
                 mt: 2,
-                py: 2,
+                px: 2,
+                py: 1,
                 backgroundColor: '#e6e6e6',
                 borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography
-                sx={{width: '40%'}}
-                fontSize='large'
-                variant='subtitle2'>
-                minDigits:
+              <Typography fontSize='large' variant='subtitle2'>
+                minDigits
               </Typography>
               <Select
                 value={minDigits}
-                sx={{backgroundColor: '#ededed'}}
+                sx={{backgroundColor: '#ededed', width: 100}}
                 onChange={(e) => {
                   setMinDigits(e.target.value);
                 }}
@@ -374,23 +516,21 @@ const GetDigits = ({
                   </MenuItem>
                 ))}
               </Select>
-            </ListItem>
-            <ListItem
+            </Stack>
+            <Stack
               sx={{
-                py: 2,
+                px: 2,
+                py: 1,
                 backgroundColor: '#e6e6e6',
                 borderTop: '1px solid #bdbdbd',
                 borderBottom: '1px solid #bdbdbd',
               }}>
-              <Typography
-                sx={{width: '40%'}}
-                fontSize='large'
-                variant='subtitle2'>
-                maxDigits:
+              <Typography fontSize='large' variant='subtitle2'>
+                maxDigits
               </Typography>
               <Select
                 value={maxDigits}
-                sx={{backgroundColor: '#ededed'}}
+                sx={{backgroundColor: '#ededed', width: 100}}
                 onChange={(e) => {
                   setMaxDigits(e.target.value);
                 }}
@@ -401,7 +541,7 @@ const GetDigits = ({
                   </MenuItem>
                 ))}
               </Select>
-            </ListItem>
+            </Stack>
             <Stack sx={{pl: 2, py: 2, mt: 2, mb: 1}}>
               <Typography>Optional Params</Typography>
               <Box sx={{display: 'flex', alignItems: 'center'}}>
@@ -415,9 +555,12 @@ const GetDigits = ({
                   }}
                   size='small'>
                   {optionalParamList
-                    .filter((p) => !addedOptionalParams.includes(p))
+                    .filter(
+                      (p) =>
+                        !addedOptionalParams.some((object) => object.name === p)
+                    )
                     .map((p, i) => (
-                      <MenuItem value={p} key={i}>
+                      <MenuItem key={i} value={p}>
                         {p}
                       </MenuItem>
                     ))}
@@ -439,13 +582,13 @@ const GetDigits = ({
             {addedOptionalParams.map((p, i) => (
               <ListItem
                 sx={{
-                  py: 2,
+                  py: 1,
                   backgroundColor: '#e6e6e6',
-                  borderTop: '1px solid #bdbdbd',
+                  borderTop: i === 0 && '1px solid #bdbdbd',
                   borderBottom: '1px solid #bdbdbd',
                 }}
                 key={i}>
-                {renderComponentByType(p)}
+                {renderComponentByType(p.name, i)}
                 <IconButton
                   color='error'
                   size='small'
@@ -454,6 +597,9 @@ const GetDigits = ({
                     ml: 'auto',
                     backgroundColor: '#cfcfcf',
                     '&:hover': {backgroundColor: '#c7c1bd'},
+                    alignSelf: 'end',
+                    height: 30,
+                    width: 30,
                   }}>
                   <DeleteIcon sx={{color: '#424242'}} />
                 </IconButton>

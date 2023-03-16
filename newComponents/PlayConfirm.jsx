@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
   MenuItem,
+  Stack,
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
@@ -234,22 +235,20 @@ const PlayConfirm = ({
         )}
         {tabValue === 1 && (
           <List>
-            <ListItem
+            <Stack
               sx={{
-                mt: 2,
-                py: 2,
+                mt: 1,
+                px: 2,
+                py: 1,
                 backgroundColor: '#e6e6e6',
                 borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography
-                sx={{width: '40%'}}
-                fontSize='large'
-                variant='subtitle2'>
-                confirmOption:
+              <Typography fontSize='large' variant='subtitle2'>
+                confirmOption
               </Typography>
               <Select
                 value={confirmOption}
-                sx={{backgroundColor: '#ededed'}}
+                sx={{backgroundColor: '#ededed', width: 100}}
                 onChange={(e) => setConfirmOption(e.target.value)}
                 size='small'>
                 <MenuItem value='X'>X</MenuItem>
@@ -264,23 +263,21 @@ const PlayConfirm = ({
                 <MenuItem value='8'>8</MenuItem>
                 <MenuItem value='9'>9</MenuItem>
               </Select>
-            </ListItem>
-            <ListItem
+            </Stack>
+            <Stack
               sx={{
-                py: 2,
+                px: 2,
+                py: 1,
                 backgroundColor: '#e6e6e6',
                 borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography
-                sx={{width: '40%'}}
-                fontSize='large'
-                variant='subtitle2'>
-                cancelOption:
+              <Typography fontSize='large' variant='subtitle2'>
+                cancelOption
               </Typography>
               <Select
                 value={cancelOption}
                 onChange={(e) => setCancelOption(e.target.value)}
-                sx={{backgroundColor: '#ededed'}}
+                sx={{backgroundColor: '#ededed', width: 100}}
                 size='small'>
                 <MenuItem value='X'>X</MenuItem>
                 <MenuItem value='0'>0</MenuItem>
@@ -294,46 +291,74 @@ const PlayConfirm = ({
                 <MenuItem value='8'>8</MenuItem>
                 <MenuItem value='9'>9</MenuItem>
               </Select>
-            </ListItem>
-            <ListItem
+            </Stack>
+
+            <Stack
               sx={{
-                py: 2,
+                px: 2,
+                py: 1,
                 backgroundColor: '#e6e6e6',
                 borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography
-                sx={{width: '40%'}}
-                fontSize='large'
-                variant='subtitle2'>
-                confirmPrompt:
+              <Typography fontSize='large' variant='subtitle2'>
+                cancelOption
+              </Typography>
+              <Select
+                value={cancelOption}
+                onChange={(e) => setCancelOption(e.target.value)}
+                sx={{backgroundColor: '#ededed', width: 100}}
+                size='small'>
+                <MenuItem value='X'>X</MenuItem>
+                <MenuItem value='0'>0</MenuItem>
+                <MenuItem value='1'>1</MenuItem>
+                <MenuItem value='2'>2</MenuItem>
+                <MenuItem value='3'>3</MenuItem>
+                <MenuItem value='4'>4</MenuItem>
+                <MenuItem value='5'>5</MenuItem>
+                <MenuItem value='6'>6</MenuItem>
+                <MenuItem value='7'>7</MenuItem>
+                <MenuItem value='8'>8</MenuItem>
+                <MenuItem value='9'>9</MenuItem>
+              </Select>
+            </Stack>
+            <Stack
+              sx={{
+                px: 2,
+                py: 1,
+                backgroundColor: '#e6e6e6',
+                borderTop: '1px solid #bdbdbd',
+              }}>
+              <Typography fontSize='large' variant='subtitle2'>
+                confirmPrompt
               </Typography>
               <TextField
                 value={confirmPrompt}
                 onChange={(e) => setConfirmPrompt(e.target.value)}
-                sx={{ml: 1, backgroundColor: '#ededed'}}
+                sx={{backgroundColor: '#ededed'}}
                 size='small'
+                fullWidth
               />
-            </ListItem>
-            <ListItem
+            </Stack>
+
+            <Stack
               sx={{
-                py: 2,
+                px: 2,
+                py: 1,
                 backgroundColor: '#e6e6e6',
                 borderTop: '1px solid #bdbdbd',
                 borderBottom: '1px solid #bdbdbd',
               }}>
-              <Typography
-                sx={{width: '40%'}}
-                fontSize='large'
-                variant='subtitle2'>
-                cancelPrompt:
+              <Typography fontSize='large' variant='subtitle2'>
+                cancelPrompt
               </Typography>
               <TextField
                 value={cancelPrompt}
                 onChange={(e) => setCancelPrompt(e.target.value)}
-                sx={{ml: 1, backgroundColor: '#ededed'}}
+                sx={{backgroundColor: '#ededed'}}
                 size='small'
+                fullWidth
               />
-            </ListItem>
+            </Stack>
           </List>
         )}
         {tabValue === 2 && <LogDrawer />}

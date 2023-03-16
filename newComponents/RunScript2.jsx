@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -20,10 +21,8 @@ import {
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
-import LogDrawer from './LogDrawer';
-import MessageList from './MessageList2';
 
-const PlayMessage = ({
+const RunScript = ({
   shape,
   handleCloseDrawer,
   shapes,
@@ -34,57 +33,8 @@ const PlayMessage = ({
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
-  const [tabValue, setTabValue] = useState(0);
-  const [openGuideDialog, setOpenGuideDialog] = useState(false);
-  const [messageList, setMessageList] = useState(
-    shape.userValues?.messageList ?? []
-  );
-
-  const [interruptible, setInterruptible] = useState(
-    shape.userValues?.params.interruptible ?? true
-  );
-  const [repeatOption, setRepeatOption] = useState(
-    shape.userValues?.params.repeatOption || 'X'
-  );
 
   const errors = useRef({});
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setSuccessText('');
-    }, 2000);
-
-    return () => clearTimeout(timeoutId);
-  }, [successText]);
-
-  function handleSave() {
-    if (errors.current.name) {
-      setErrorText('Id not valid.');
-      return;
-    }
-    shape.setText(name);
-    clearAndDraw();
-
-    let validMessages = [];
-    for (const message of messageList) {
-      if (message.error) {
-        break;
-      }
-      validMessages.push(message);
-    }
-    shape.setUserValues({
-      messageList: validMessages,
-      params: {interruptible, repeatOption},
-    });
-
-    if (validMessages.length < messageList.length) {
-      setSuccessText('');
-      setErrorText('Save failed. Message list error.');
-    } else {
-      setErrorText('');
-      setSuccessText('Saved.');
-    }
-  }
 
   function handleNameChange(e) {
     const {value} = e.target;
@@ -107,9 +57,6 @@ const PlayMessage = ({
       errors.current.name = undefined;
     }
   }
-  function handleTabChange(e, newValue) {
-    setTabValue(newValue);
-  }
 
   return (
     <>
@@ -131,13 +78,13 @@ const PlayMessage = ({
           variant='h5'>
           {
             <img
-              src='/icons/playMessageBlack.png'
+              src='/icons/runScriptBlack.png'
               alt='Icon'
               height={'22px'}
               width={'22px'}
             />
           }
-          &nbsp;Play Message
+          &nbsp;Run Script
         </Typography>
         <IconButton
           size='small'
@@ -186,11 +133,7 @@ const PlayMessage = ({
         </IconButton>
       </ListItem>
       <Box sx={{backgroundColor: '#eeeeee', height: '100%'}}>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-          }}>
+        <Stack>
           <Typography sx={{ml: 2, mt: 1}} fontSize='large' variant='subtitle2'>
             ID
           </Typography>
@@ -198,18 +141,19 @@ const PlayMessage = ({
             <TextField
               onChange={handleNameChange}
               value={name}
-              sx={{minWidth: '220px'}}
+              sx={{minWidth: '220px', backgroundColor: '#f5f5f5'}}
               size='small'
               error={errors.current.name}
             />
             <Button
-              onClick={handleSave}
+              //   onClick={handleSave}
               sx={{ml: 2}}
               size='small'
               variant='contained'>
               <SaveIcon />
             </Button>
           </ListItem>
+
           <ListItem sx={{height: 30}}>
             {successText && (
               <Typography sx={{mt: -1, color: 'green', mx: 'auto'}}>
@@ -224,81 +168,22 @@ const PlayMessage = ({
               </Typography>
             )}
           </ListItem>
-        </Box>
+        </Stack>
         <Divider />
-        <Tabs
-          sx={{backgroundColor: '#e0e0e0'}}
-          value={tabValue}
-          onChange={handleTabChange}
-          centered>
-          <Tab label='Message List' />
-          <Tab label='Parameters' />
-          <Tab label='Log' />
-        </Tabs>
-        {tabValue === 0 && (
-          <MessageList
-            userVariables={userVariables}
-            messageList={messageList}
-            setMessageList={setMessageList}
+        <ListItem sx={{px: 3, py: 2}}>
+          <TextField
+            sx={{
+              backgroundColor: '#f5f5f5',
+              fontFamily: 'monospace',
+            }}
+            multiline
+            minRows={10}
+            fullWidth
           />
-        )}
-        {tabValue === 1 && (
-          <List>
-            <Stack
-              sx={{
-                mt: 1,
-                px: 2,
-                py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
-              }}>
-              <Typography fontSize='large' variant='subtitle2'>
-                interruptible
-              </Typography>
-              <Switch
-                checked={interruptible}
-                onChange={(e) => {
-                  setInterruptible(e.target.checked);
-                }}
-              />
-            </Stack>
-            <Stack
-              sx={{
-                px: 2,
-                py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
-                borderBottom: '1px solid #bdbdbd',
-              }}>
-              <Typography fontSize='large' variant='subtitle2'>
-                repeatOption
-              </Typography>
-              <Select
-                size='small'
-                sx={{backgroundColor: '#ededed', width: 100}}
-                value={repeatOption}
-                onChange={(e) => {
-                  setRepeatOption(e.target.value);
-                }}>
-                <MenuItem value='X'>X</MenuItem>
-                <MenuItem value='0'>0</MenuItem>
-                <MenuItem value='1'>1</MenuItem>
-                <MenuItem value='2'>2</MenuItem>
-                <MenuItem value='3'>3</MenuItem>
-                <MenuItem value='4'>4</MenuItem>
-                <MenuItem value='5'>5</MenuItem>
-                <MenuItem value='6'>6</MenuItem>
-                <MenuItem value='7'>7</MenuItem>
-                <MenuItem value='8'>8</MenuItem>
-                <MenuItem value='9'>9</MenuItem>
-              </Select>
-            </Stack>
-          </List>
-        )}
-        {tabValue === 2 && <LogDrawer />}
+        </ListItem>
       </Box>
     </>
   );
 };
 
-export default PlayMessage;
+export default RunScript;
