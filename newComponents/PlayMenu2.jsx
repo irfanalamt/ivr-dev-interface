@@ -594,12 +594,18 @@ const PlayMenu = ({
                 }}
                 key={i}>
                 <Stack sx={{width: '100%', py: 1}}>
-                  <Avatar sx={{mx: 'auto'}}>
+                  <Avatar
+                    variant='rounded'
+                    sx={{
+                      mx: 'auto',
+                      border: '1px solid #424242',
+                      backgroundColor: '#eeeeee',
+                    }}>
                     <Typography sx={{color: 'black'}} variant='h6'>
                       {item.digit}
                     </Typography>
                   </Avatar>
-                  <Stack sx={{my: 0.5}}>
+                  <Stack sx={{my: 0.5, mt: 1}}>
                     <Typography variant='subtitle2'>
                       use default action
                     </Typography>
