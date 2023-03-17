@@ -14,6 +14,7 @@ import {
   Typography,
   MenuItem,
   Stack,
+  Divider,
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
@@ -217,6 +218,7 @@ const PlayConfirm = ({
             )}
           </ListItem>
         </Box>
+        <Divider />
         <Tabs
           sx={{backgroundColor: '#e0e0e0'}}
           value={tabValue}
@@ -226,6 +228,7 @@ const PlayConfirm = ({
           <Tab label='Parameters' />
           <Tab label='Log' />
         </Tabs>
+        <Divider />
         {tabValue === 0 && (
           <MessageList
             userVariables={userVariables}

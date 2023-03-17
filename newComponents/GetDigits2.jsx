@@ -128,14 +128,15 @@ const GetDigits = ({
     setTabValue(newValue);
   }
   function handleAddOptionalParam() {
-    if (!optionalParam) return;
+    if (!optionalParam) {
+      return;
+    }
 
-    setAddedOptionalParams((p) => {
-      const temp = [...p];
-      temp.push({name: optionalParam});
-      return temp;
-    });
-
+    const updatedOptionalParams = [
+      ...addedOptionalParams,
+      {name: optionalParam},
+    ];
+    setAddedOptionalParams(updatedOptionalParams);
     setOptionalParam('');
   }
   function handleDeleteOptionalParam(index) {
@@ -235,31 +236,18 @@ const GetDigits = ({
                 value={addedOptionalParams[index].value ?? ''}
                 onChange={(e) => handleOptionalParamFieldChange(e, index)}
                 size='small'>
-                <MenuItem value='disconnect'>disconnect</MenuItem>
-                <MenuItem value='transfer'>transfer</MenuItem>
-                <MenuItem value='function'>function</MenuItem>
+                <MenuItem value='disconnect'>Disconnect</MenuItem>
+                <MenuItem value='transfer'>Transfer</MenuItem>
               </Select>
               {addedOptionalParams[index].value === 'transfer' && (
                 <TextField
                   name='transferPoint'
-                  sx={{mx: 1, width: 200, backgroundColor: '#ededed'}}
+                  sx={{mx: 1, width: 150, backgroundColor: '#ededed'}}
                   value={addedOptionalParams[index].transferPoint ?? ''}
                   onChange={(e) =>
                     handleOptionalParamNamedFieldChange(e, index)
                   }
                   placeholder='transferPoint'
-                  size='small'
-                />
-              )}
-              {addedOptionalParams[index].value === 'function' && (
-                <TextField
-                  sx={{mx: 1, width: 200, backgroundColor: '#ededed'}}
-                  name='functionName'
-                  value={addedOptionalParams[index].functionName ?? ''}
-                  onChange={(e) =>
-                    handleOptionalParamNamedFieldChange(e, index)
-                  }
-                  placeholder='functionName'
                   size='small'
                 />
               )}
@@ -278,29 +266,16 @@ const GetDigits = ({
                 value={addedOptionalParams[index].value ?? ''}
                 onChange={(e) => handleOptionalParamFieldChange(e, index)}
                 size='small'>
-                <MenuItem value='disconnect'>disconnect</MenuItem>
-                <MenuItem value='transfer'>transfer</MenuItem>
-                <MenuItem value='function'>function</MenuItem>
+                <MenuItem value='disconnect'>Disconnect</MenuItem>
+                <MenuItem value='transfer'>Transfer</MenuItem>
               </Select>
               {addedOptionalParams[index].value === 'transfer' && (
                 <TextField
-                  sx={{mx: 1, width: 200, backgroundColor: '#ededed'}}
+                  sx={{mx: 1, width: 150, backgroundColor: '#ededed'}}
                   placeholder='transferPoint'
                   size='small'
                   name='transferPoint'
                   value={addedOptionalParams[index].transferPoint ?? ''}
-                  onChange={(e) =>
-                    handleOptionalParamNamedFieldChange(e, index)
-                  }
-                />
-              )}
-              {addedOptionalParams[index].value === 'function' && (
-                <TextField
-                  sx={{mx: 1, width: 200, backgroundColor: '#ededed'}}
-                  placeholder='functionName'
-                  size='small'
-                  name='functionName'
-                  value={addedOptionalParams[index].functionName ?? ''}
                   onChange={(e) =>
                     handleOptionalParamNamedFieldChange(e, index)
                   }
@@ -332,6 +307,7 @@ const GetDigits = ({
               interruptible
             </Typography>
             <Switch
+              sx={{mt: -1}}
               checked={addedOptionalParams[index].value ?? true}
               onChange={(e) => handleOptionalParamFieldChangeSwitch(e, index)}
             />
@@ -483,6 +459,7 @@ const GetDigits = ({
           <Tab label='Parameters' />
           <Tab label='Log' />
         </Tabs>
+        <Divider />
         {tabValue === 0 && (
           <MessageList
             userVariables={userVariables}

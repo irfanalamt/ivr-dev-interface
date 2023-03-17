@@ -235,6 +235,7 @@ const PlayMessage = ({
           <Tab label='Parameters' />
           <Tab label='Log' />
         </Tabs>
+        <Divider />
         {tabValue === 0 && (
           <MessageList
             userVariables={userVariables}
@@ -256,6 +257,7 @@ const PlayMessage = ({
                 interruptible
               </Typography>
               <Switch
+                sx={{mt: -1}}
                 checked={interruptible}
                 onChange={(e) => {
                   setInterruptible(e.target.checked);
