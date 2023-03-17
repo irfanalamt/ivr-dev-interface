@@ -466,7 +466,7 @@ const PlayMenu = ({
               <Typography fontSize='large' variant='subtitle2'>
                 ignoreBuffer
               </Typography>
-              <Switch sx={{mt: -1}} />
+              <Switch sx={{mt: -1, ml: -1}} />
             </Stack>
             <Stack
               sx={{
@@ -477,7 +477,7 @@ const PlayMenu = ({
               <Typography fontSize='large' variant='subtitle2'>
                 logDb
               </Typography>
-              <Switch sx={{mt: -1}} />
+              <Switch sx={{mt: -1, ml: -1}} />
             </Stack>
             <Divider />
             <Stack sx={{pl: 2, py: 2, mt: 2, mb: 1}}>
