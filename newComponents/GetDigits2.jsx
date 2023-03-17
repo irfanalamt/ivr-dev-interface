@@ -174,7 +174,7 @@ const GetDigits = ({
       case 'terminator':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               terminator
             </Typography>
             <Select
@@ -202,7 +202,7 @@ const GetDigits = ({
       case 'maxRetries':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               maxRetries
             </Typography>
             <Select
@@ -227,7 +227,7 @@ const GetDigits = ({
       case 'invalidAction':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               invalidAction
             </Typography>
             <Stack direction='row'>
@@ -257,7 +257,7 @@ const GetDigits = ({
       case 'timeoutAction':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               timeoutAction
             </Typography>
             <Stack direction='row'>
@@ -287,7 +287,7 @@ const GetDigits = ({
       case 'invalidPrompt':
         return (
           <Stack sx={{width: '100%', mr: 1}}>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               invalidPrompt
             </Typography>
             <TextField
@@ -303,7 +303,7 @@ const GetDigits = ({
       case 'interruptible':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               interruptible
             </Typography>
             <Switch
@@ -327,7 +327,7 @@ const GetDigits = ({
           display: 'flex',
           boxShadow: 2,
           p: 1,
-          minWidth: 400,
+          minWidth: 350,
         }}>
         <Typography
           sx={{
@@ -471,18 +471,16 @@ const GetDigits = ({
           <List>
             <Stack
               sx={{
-                mt: 2,
+                mt: 1,
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 minDigits
               </Typography>
               <Select
                 value={minDigits}
-                sx={{backgroundColor: '#ededed', width: 100}}
+                sx={{backgroundColor: '#f5f5f5', width: 100}}
                 onChange={(e) => {
                   setMinDigits(e.target.value);
                 }}
@@ -498,16 +496,13 @@ const GetDigits = ({
               sx={{
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
-                borderBottom: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 maxDigits
               </Typography>
               <Select
                 value={maxDigits}
-                sx={{backgroundColor: '#ededed', width: 100}}
+                sx={{backgroundColor: '#f5f5f5', width: 100}}
                 onChange={(e) => {
                   setMaxDigits(e.target.value);
                 }}

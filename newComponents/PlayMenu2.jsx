@@ -147,7 +147,7 @@ const PlayMenu = ({
       case 'invalidAction':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               invalidAction
             </Typography>
             <Stack direction='row'>
@@ -163,7 +163,7 @@ const PlayMenu = ({
               {addedOptionalParams[index].value === 'transfer' && (
                 <TextField
                   name='transferPoint'
-                  sx={{mx: 1, width: 150, backgroundColor: '#ededed'}}
+                  sx={{mx: 1, width: 150}}
                   value={addedOptionalParams[index].transferPoint ?? ''}
                   onChange={(e) =>
                     handleOptionalParamNamedFieldChange(e, index)
@@ -178,7 +178,7 @@ const PlayMenu = ({
       case 'timeoutAction':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               timeoutAction
             </Typography>
             <Stack direction='row'>
@@ -194,7 +194,7 @@ const PlayMenu = ({
               {addedOptionalParams[index].value === 'transfer' && (
                 <TextField
                   name='transferPoint'
-                  sx={{mx: 1, width: 150, backgroundColor: '#ededed'}}
+                  sx={{mx: 1, width: 150}}
                   value={addedOptionalParams[index].transferPoint ?? ''}
                   onChange={(e) =>
                     handleOptionalParamNamedFieldChange(e, index)
@@ -210,7 +210,7 @@ const PlayMenu = ({
       case 'maxRetries':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               maxRetries
             </Typography>
             <Select
@@ -234,7 +234,7 @@ const PlayMenu = ({
       case 'invalidPrompt':
         return (
           <Stack sx={{width: '100%', mr: 1}}>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               invalidPrompt
             </Typography>
             <TextField
@@ -249,7 +249,7 @@ const PlayMenu = ({
       case 'timeoutPrompt':
         return (
           <Stack sx={{width: '100%', mr: 1}}>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               timeoutPrompt
             </Typography>
             <TextField
@@ -264,11 +264,11 @@ const PlayMenu = ({
       case 'interruptible':
         return (
           <Stack>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               interruptible
             </Typography>
             <Switch
-              sx={{mt: -1}}
+              sx={{mt: -1, ml: -1}}
               checked={addedOptionalParams[index].value ?? true}
               onChange={(e) => handleOptionalParamFieldChangeSwitch(e, index)}
             />
@@ -277,7 +277,7 @@ const PlayMenu = ({
       case 'transferPoint':
         return (
           <Stack sx={{width: '100%', mr: 1}}>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               transferPoint
             </Typography>
             <TextField
@@ -292,7 +292,7 @@ const PlayMenu = ({
       case 'menuTimeout':
         return (
           <Stack sx={{width: '100%', mr: 1}}>
-            <Typography fontSize='large' variant='subtitle2'>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               menuTimeout
             </Typography>
             <TextField
@@ -315,7 +315,7 @@ const PlayMenu = ({
           display: 'flex',
           boxShadow: 2,
           p: 1,
-          minWidth: 400,
+          minWidth: 350,
         }}>
         <Typography
           sx={{
@@ -436,8 +436,8 @@ const PlayMenu = ({
                 px: 2,
                 py: 1,
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
-                description
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                Description
               </Typography>
               <TextField
                 sx={{backgroundColor: '#f5f5f5', width: 300}}
@@ -450,7 +450,7 @@ const PlayMenu = ({
                 px: 2,
                 py: 1,
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 previousMenuId
               </Typography>
               <TextField
@@ -463,7 +463,7 @@ const PlayMenu = ({
                 px: 2,
                 py: 1,
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 ignoreBuffer
               </Typography>
               <Switch sx={{mt: -1, ml: -1}} />
@@ -474,7 +474,7 @@ const PlayMenu = ({
                 pt: 1,
                 pb: 2,
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 logDb
               </Typography>
               <Switch sx={{mt: -1, ml: -1}} />
@@ -555,7 +555,7 @@ const PlayMenu = ({
                   value={itemDigit}
                   onChange={(e) => setItemDigit(e.target.value)}
                   sx={{
-                    minWidth: 150,
+                    minWidth: 100,
                     backgroundColor: '#f5f5f5',
                   }}
                   size='small'>
@@ -607,12 +607,12 @@ const PlayMenu = ({
                   </Avatar>
                   <Stack sx={{my: 0.5, mt: 1}}>
                     <Typography variant='subtitle2'>
-                      use default action
+                      Use Default Action
                     </Typography>
                     <Switch sx={{mt: -1, ml: -1}} />
                   </Stack>
                   <Stack sx={{my: 0.5}}>
-                    <Typography variant='subtitle2'>action</Typography>
+                    <Typography variant='subtitle2'>Action</Typography>
                     <TextField
                       sx={{
                         width: 200,
@@ -622,7 +622,7 @@ const PlayMenu = ({
                     />
                   </Stack>
                   <Stack sx={{my: 0.5}}>
-                    <Typography variant='subtitle2'>prompt</Typography>
+                    <Typography variant='subtitle2'>Prompt</Typography>
                     <TextField
                       sx={{
                         width: 300,
@@ -633,16 +633,18 @@ const PlayMenu = ({
                   </Stack>
                   <Box sx={{display: 'flex', my: 0.5}}>
                     <Stack sx={{my: 0.5}}>
-                      <Typography variant='subtitle2'>disable</Typography>
+                      <Typography variant='subtitle2'>Disabled</Typography>
                       <Switch sx={{mt: -1, ml: -1}} />
                     </Stack>
-                    <Stack sx={{my: 0.5, ml: 4}}>
-                      <Typography variant='subtitle2'>silent</Typography>
+                    <Stack sx={{my: 0.5, ml: 6}}>
+                      <Typography variant='subtitle2'>Silent</Typography>
                       <Switch sx={{mt: -1, ml: -1}} />
                     </Stack>
                   </Box>
                   <Stack>
-                    <Typography variant='subtitle2'>skip</Typography>
+                    <Typography variant='subtitle2'>
+                      Skip N Iterations
+                    </Typography>
                     <Box sx={{display: 'flex', alignItems: 'center'}}>
                       <Select
                         sx={{

@@ -119,7 +119,7 @@ const PlayMessage = ({
           display: 'flex',
           boxShadow: 2,
           p: 1,
-          minWidth: 400,
+          minWidth: 350,
         }}>
         <Typography
           sx={{
@@ -250,14 +250,12 @@ const PlayMessage = ({
                 mt: 1,
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 interruptible
               </Typography>
               <Switch
-                sx={{mt: -1}}
+                sx={{mt: -1, ml: -1}}
                 checked={interruptible}
                 onChange={(e) => {
                   setInterruptible(e.target.checked);
@@ -268,11 +266,8 @@ const PlayMessage = ({
               sx={{
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
-                borderBottom: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 repeatOption
               </Typography>
               <Select

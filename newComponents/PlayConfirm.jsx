@@ -243,15 +243,13 @@ const PlayConfirm = ({
                 mt: 1,
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 confirmOption
               </Typography>
               <Select
                 value={confirmOption}
-                sx={{backgroundColor: '#ededed', width: 100}}
+                sx={{backgroundColor: '#f5f5f5', width: 100}}
                 onChange={(e) => setConfirmOption(e.target.value)}
                 size='small'>
                 <MenuItem value='X'>X</MenuItem>
@@ -271,16 +269,14 @@ const PlayConfirm = ({
               sx={{
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 cancelOption
               </Typography>
               <Select
                 value={cancelOption}
                 onChange={(e) => setCancelOption(e.target.value)}
-                sx={{backgroundColor: '#ededed', width: 100}}
+                sx={{backgroundColor: '#f5f5f5', width: 100}}
                 size='small'>
                 <MenuItem value='X'>X</MenuItem>
                 <MenuItem value='0'>0</MenuItem>
@@ -300,16 +296,14 @@ const PlayConfirm = ({
               sx={{
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 cancelOption
               </Typography>
               <Select
                 value={cancelOption}
                 onChange={(e) => setCancelOption(e.target.value)}
-                sx={{backgroundColor: '#ededed', width: 100}}
+                sx={{backgroundColor: '#f5f5f5', width: 100}}
                 size='small'>
                 <MenuItem value='X'>X</MenuItem>
                 <MenuItem value='0'>0</MenuItem>
@@ -328,16 +322,14 @@ const PlayConfirm = ({
               sx={{
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 confirmPrompt
               </Typography>
               <TextField
                 value={confirmPrompt}
                 onChange={(e) => setConfirmPrompt(e.target.value)}
-                sx={{backgroundColor: '#ededed'}}
+                sx={{backgroundColor: '#f5f5f5'}}
                 size='small'
                 fullWidth
               />
@@ -347,17 +339,14 @@ const PlayConfirm = ({
               sx={{
                 px: 2,
                 py: 1,
-                backgroundColor: '#e6e6e6',
-                borderTop: '1px solid #bdbdbd',
-                borderBottom: '1px solid #bdbdbd',
               }}>
-              <Typography fontSize='large' variant='subtitle2'>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 cancelPrompt
               </Typography>
               <TextField
                 value={cancelPrompt}
                 onChange={(e) => setCancelPrompt(e.target.value)}
-                sx={{backgroundColor: '#ededed'}}
+                sx={{backgroundColor: '#f5f5f5'}}
                 size='small'
                 fullWidth
               />

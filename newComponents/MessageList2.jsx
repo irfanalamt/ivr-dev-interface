@@ -257,14 +257,14 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                   <TextField
                     name='currency'
                     placeholder='currency'
-                    sx={{width: 100, backgroundColor: '#f5f5f5'}}
+                    sx={{width: 100}}
                     size='small'
                     value={m.currency}
                     onChange={(e) => handleNamedFieldChange(e, i)}
                   />
                 )}
                 {m.type === 'Date' && (
-                  <>
+                  <Stack>
                     <FormControlLabel
                       control={
                         <Switch
@@ -281,7 +281,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                     <FormControlLabel
                       control={
                         <Switch
-                          sx={{ml: 1}}
+                          sx={{mt: 0.5}}
                           name='playDay'
                           checked={m.playDay}
                           onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
@@ -292,7 +292,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                       label='playDay'
                       labelPlacement='end'
                     />
-                  </>
+                  </Stack>
                 )}
                 {m.type === 'Month' && (
                   <FormControlLabel
@@ -324,15 +324,6 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                     labelPlacement='end'
                   />
                 )}
-                {/* <Button
-                  sx={{
-                    ml: 'auto',
-                  }}
-                  size='small'
-                  variant='contained'
-                  onClick={handleSaveMessageList}>
-                  <SaveIcon />
-                </Button> */}
               </Box>
               <Box sx={{mt: 1, display: 'flex', alignItems: 'center'}}>
                 <FormControlLabel
