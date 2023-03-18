@@ -1,5 +1,6 @@
 import {Typography} from '@mui/material';
 import Drawer from '@mui/material/Drawer';
+import CallApi from '../newComponents/CallApi2';
 import GetDigits from '../newComponents/GetDigits2';
 import PlayConfirm from '../newComponents/PlayConfirm';
 import PlayMenu from '../newComponents/PlayMenu2';
@@ -96,6 +97,18 @@ const ElementDrawer = ({
       case 'switch':
         return (
           <SwitchBlock
+            shape={shape}
+            handleCloseDrawer={handleCloseDrawer}
+            shapes={shapes}
+            clearAndDraw={clearAndDraw}
+            userVariables={userVariables}
+            openVariableManager={openVariableManager}
+          />
+        );
+
+      case 'callAPI':
+        return (
+          <CallApi
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             shapes={shapes}
