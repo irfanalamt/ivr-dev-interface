@@ -5,6 +5,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import {
   Box,
   Button,
+  Divider,
   IconButton,
   List,
   ListItem,
@@ -28,10 +29,10 @@ const SwitchBlock = ({
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
   const [actions, setActions] = useState(
-    shape.userValues?.actions ?? [{condition: 'condition1', action: 'action1'}]
+    shape.userValues?.actions ?? [{condition: '', action: ''}]
   );
   const [defaultAction, setDefaultAction] = useState(
-    shape.userValues?.defaultAction ?? 'default action'
+    shape.userValues?.defaultAction ?? 'default'
   );
 
   const errors = useRef({});
@@ -87,8 +88,8 @@ const SwitchBlock = ({
     const updatedActions = [...actions];
     const rowNumber = updatedActions.length + 1;
     updatedActions.push({
-      condition: `condition${rowNumber}`,
-      action: `action${rowNumber}`,
+      condition: '',
+      action: '',
     });
     setActions(updatedActions);
   }
@@ -113,7 +114,6 @@ const SwitchBlock = ({
           display: 'flex',
           boxShadow: 2,
           p: 1,
-          minWidth: 350,
         }}>
         <Typography
           sx={{
@@ -215,88 +215,87 @@ const SwitchBlock = ({
             )}
           </ListItem>
         </Stack>
-
-        <List>
-          <ListItem
-            sx={{
-              backgroundColor: '#e0e0e0',
-              border: '1px solid #bdbdbd',
-              mb: 2,
-            }}>
-            <Typography
-              variant='subtitle2'
-              sx={{
-                width: '70%',
-                fontSize: 'large',
-              }}>
-              Condition
-            </Typography>
-            <Typography variant='subtitle2' sx={{fontSize: 'large'}}>
-              Action
-            </Typography>
-          </ListItem>
-
+        <Divider />
+        <List sx={{backgroundColor: '#eeeeee'}}>
           {actions.map((row, i) => (
-            <ListItem key={i}>
-              <TextField
-                sx={{width: '70%', backgroundColor: '#f5f5f5'}}
-                size='small'
-                value={row.condition}
-                onChange={(e) =>
-                  handleActionFieldChange('condition', e.target.value, i)
-                }
-              />
-              <TextField
-                sx={{ml: 1, mr: i == 0 && '35px', backgroundColor: '#f5f5f5'}}
-                size='small'
-                value={row.action}
-                onChange={(e) =>
-                  handleActionFieldChange('action', e.target.value, i)
-                }
-              />
-              {i > 0 && (
-                <IconButton
-                  color='error'
+            <Stack sx={{px: 2, py: 1}} key={i}>
+              <Stack>
+                <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                  Condition
+                </Typography>
+                <TextField
+                  sx={{backgroundColor: '#f5f5f5', width: 350}}
                   size='small'
-                  onClick={() => handleDeleteAction(i)}
-                  sx={{
-                    ml: 1,
-                    backgroundColor: '#cfcfcf',
-                    '&:hover': {backgroundColor: '#c7c1bd'},
-                    height: 30,
-                    width: 30,
-                  }}>
-                  <DeleteIcon sx={{color: '#424242'}} />
-                </IconButton>
-              )}
-            </ListItem>
+                  value={row.condition}
+                  onChange={(e) =>
+                    handleActionFieldChange('condition', e.target.value, i)
+                  }
+                />
+              </Stack>
+              <Stack sx={{mt: 1}}>
+                <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                  Action
+                </Typography>
+                <Box sx={{display: 'flex', alignItems: 'center'}}>
+                  <TextField
+                    sx={{
+                      mr: i == 0 && '35px',
+                      backgroundColor: '#f5f5f5',
+                      width: 200,
+                    }}
+                    size='small'
+                    value={row.action}
+                    onChange={(e) =>
+                      handleActionFieldChange('action', e.target.value, i)
+                    }
+                  />
+
+                  {i > 0 && (
+                    <IconButton
+                      color='error'
+                      size='small'
+                      onClick={() => handleDeleteAction(i)}
+                      sx={{
+                        ml: 'auto',
+                        mr: 1,
+                        backgroundColor: '#cfcfcf',
+                        '&:hover': {backgroundColor: '#c7c1bd'},
+                        height: 30,
+                        width: 30,
+                      }}>
+                      <DeleteIcon sx={{color: '#424242'}} />
+                    </IconButton>
+                  )}
+                </Box>
+              </Stack>
+              <Divider sx={{mt: 4}} />
+            </Stack>
           ))}
-          <ListItem>
-            <TextField
-              sx={{width: '70%'}}
-              size='small'
-              value='default'
-              disabled
-            />
-            <TextField
-              sx={{ml: 1, mr: '35px', backgroundColor: '#f5f5f5'}}
-              value={defaultAction}
-              onChange={(e) => setDefaultAction(e.target.value)}
-              size='small'
-            />
-          </ListItem>
-          <Button
-            sx={{
-              backgroundColor: '#bdbdbd',
-              color: 'black',
-              '&:hover': {backgroundColor: '#9ccc65'},
-              ml: 2,
-              mt: 2,
-            }}
-            onClick={handleAddAction}
-            variant='contained'>
-            Add
-          </Button>
+          <Stack sx={{px: 2, py: 1}}>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+              Default Action
+            </Typography>
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <TextField
+                sx={{backgroundColor: '#f5f5f5', width: 200}}
+                value={defaultAction}
+                onChange={(e) => setDefaultAction(e.target.value)}
+                size='small'
+              />
+              <Button
+                sx={{
+                  backgroundColor: '#bdbdbd',
+                  color: 'black',
+                  '&:hover': {backgroundColor: '#9ccc65'},
+                  ml: 'auto',
+                  mr: 1,
+                }}
+                onClick={handleAddAction}
+                variant='contained'>
+                Add
+              </Button>
+            </Box>
+          </Stack>
         </List>
       </Box>
     </>

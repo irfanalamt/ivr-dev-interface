@@ -34,6 +34,9 @@ const CallApi = ({
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [inputVars, setInputVars] = useState([]);
+  const [outputVars, setOutputVars] = useState([]);
+
   const errors = useRef({});
 
   useEffect(() => {
@@ -77,6 +80,10 @@ const CallApi = ({
       errors.current.name = undefined;
     }
   }
+
+  function handleAddInputVariable() {}
+  function handleAddOutputVariable() {}
+
   return (
     <>
       <ListItem
@@ -224,6 +231,7 @@ const CallApi = ({
                 '&:hover': {backgroundColor: '#9ccc65'},
               }}
               size='small'
+              onClick={handleAddInputVariable}
               variant='contained'>
               Add
             </Button>
@@ -252,7 +260,8 @@ const CallApi = ({
                 '&:hover': {backgroundColor: '#9ccc65'},
               }}
               size='small'
-              variant='contained'>
+              variant='contained'
+              onClick={handleAddOutputVariable}>
               Add
             </Button>
           </Box>

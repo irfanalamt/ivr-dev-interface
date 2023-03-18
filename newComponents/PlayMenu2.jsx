@@ -394,7 +394,6 @@ const PlayMenu = ({
 
         <IconButton
           size='small'
-          onClick={() => setOpenGuideDialog(true)}
           sx={{
             ml: 1,
             backgroundColor: '#263238',
@@ -628,7 +627,7 @@ const PlayMenu = ({
             {items.map((item, i) => (
               <ListItem
                 sx={{
-                  backgroundColor: i % 2 == 0 ? '#e0e0e0' : '#eeeeee',
+                  backgroundColor: '#eeeeee',
                   borderBottom: '1px solid #bdbdbd',
                   borderTop: i == 0 && '1px solid #bdbdbd',
                 }}
@@ -637,9 +636,10 @@ const PlayMenu = ({
                   <Avatar
                     variant='rounded'
                     sx={{
-                      mx: 'auto',
+                      mb: 1,
                       border: '1px solid #424242',
-                      backgroundColor: i % 2 != 0 ? '#e0e0e0' : '#eeeeee',
+                      backgroundColor: '#f5f5f5',
+                      boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.05)',
                     }}>
                     <Typography sx={{color: 'black'}} variant='h6'>
                       {item.digit}
@@ -664,7 +664,7 @@ const PlayMenu = ({
                       <Select
                         sx={{
                           width: 150,
-                          backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
+                          backgroundColor: '#f5f5f5',
                         }}
                         value={item.action}
                         onChange={(e) =>
@@ -687,7 +687,7 @@ const PlayMenu = ({
                       <TextField
                         sx={{
                           width: 200,
-                          backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
+                          backgroundColor: '#f5f5f5',
                         }}
                         value={item.action}
                         onChange={(e) =>
@@ -702,7 +702,7 @@ const PlayMenu = ({
                     <TextField
                       sx={{
                         width: 300,
-                        backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
+                        backgroundColor: '#f5f5f5',
                       }}
                       value={item.prompt}
                       onChange={(e) =>
@@ -711,8 +711,18 @@ const PlayMenu = ({
                       size='small'
                     />
                   </Stack>
-                  <Box sx={{display: 'flex', my: 0.5}}>
+                  <Box sx={{display: 'flex', alignItems: 'center', my: 0.5}}>
                     <Stack sx={{my: 0.5}}>
+                      <Typography variant='subtitle2'>Skip</Typography>
+                      <Switch
+                        checked={item.skip}
+                        onChange={(e) =>
+                          handleItemFieldChange('skip', e.target.checked, i)
+                        }
+                        sx={{mt: -1, ml: -1}}
+                      />
+                    </Stack>
+                    <Stack sx={{my: 0.5, ml: 4}}>
                       <Typography variant='subtitle2'>Disabled</Typography>
                       <Switch
                         checked={item.disabled}
@@ -722,7 +732,7 @@ const PlayMenu = ({
                         sx={{mt: -1, ml: -1}}
                       />
                     </Stack>
-                    <Stack sx={{my: 0.5, ml: 6}}>
+                    <Stack sx={{my: 0.5, ml: 4}}>
                       <Typography variant='subtitle2'>Silent</Typography>
                       <Switch
                         checked={item.silent}
@@ -732,43 +742,48 @@ const PlayMenu = ({
                         sx={{mt: -1, ml: -1}}
                       />
                     </Stack>
+                    <IconButton
+                      color='error'
+                      size='small'
+                      onClick={() => handleDeleteItem(i)}
+                      sx={{
+                        ml: 'auto',
+                        backgroundColor: '#cfcfcf',
+                        '&:hover': {backgroundColor: '#c7c1bd'},
+                        height: 30,
+                        width: 30,
+                      }}>
+                      <DeleteIcon sx={{color: '#424242'}} />
+                    </IconButton>
                   </Box>
-                  <Stack>
-                    <Typography variant='subtitle2'>
-                      Skip N Iterations
-                    </Typography>
-                    <Box sx={{display: 'flex', alignItems: 'center'}}>
-                      <Select
-                        sx={{
-                          width: 100,
-                          backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
-                        }}
-                        value={item.skip}
-                        onChange={(e) =>
-                          handleItemFieldChange('skip', e.target.value, i)
-                        }
-                        size='small'>
-                        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((d, i) => (
-                          <MenuItem value={d} key={d}>
-                            {d}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      <IconButton
-                        color='error'
-                        size='small'
-                        onClick={() => handleDeleteItem(i)}
-                        sx={{
-                          ml: 'auto',
-                          backgroundColor: '#cfcfcf',
-                          '&:hover': {backgroundColor: '#c7c1bd'},
-                          height: 30,
-                          width: 30,
-                        }}>
-                        <DeleteIcon sx={{color: '#424242'}} />
-                      </IconButton>
-                    </Box>
-                  </Stack>
+                  {item.skip ? (
+                    <Stack>
+                      <Typography variant='subtitle2'>
+                        Skip N Iterations
+                      </Typography>
+                      <Box sx={{display: 'flex', alignItems: 'center'}}>
+                        <Select
+                          sx={{
+                            width: 100,
+                            backgroundColor:
+                              i % 2 !== 0 ? '#f5f5f5' : '#ededed',
+                          }}
+                          value={item.skip}
+                          onChange={(e) =>
+                            handleItemFieldChange('skip', e.target.value, i)
+                          }
+                          size='small'>
+                          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((d, i) => (
+                            <MenuItem value={d} key={d}>
+                              {d}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </Box>
+                    </Stack>
+                  ) : (
+                    <></>
+                  )}
                 </Stack>
               </ListItem>
             ))}
