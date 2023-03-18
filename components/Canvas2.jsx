@@ -574,7 +574,7 @@ const CanvasTest = ({
     const shape = currentShape.current;
 
     if (shape.type !== 'connector') {
-      console.log('Current shape: ' + JSON.stringify(shape, null, 2));
+      // console.log('Current shape: ' + JSON.stringify(shape, null, 2));
 
       shape.setSelected(true);
       setIsOpenElementDrawer(true);
@@ -732,7 +732,6 @@ const CanvasTest = ({
   }
 
   function handleCloseElementDrawer() {
-    console.log('closee');
     setIsOpenElementDrawer(false);
     currentShape.current.setSelected(false);
     clearAndDraw();

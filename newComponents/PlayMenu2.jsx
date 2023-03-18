@@ -22,6 +22,7 @@ import {
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
+import LogDrawer from './LogDrawer';
 
 const PlayMenu = ({
   shape,
@@ -40,7 +41,7 @@ const PlayMenu = ({
     shape.userValues?.optionalParams ?? []
   );
   const [itemDigit, setItemDigit] = useState('');
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState(shape.userValues?.items ?? []);
 
   const errors = useRef({});
 
@@ -54,6 +55,30 @@ const PlayMenu = ({
     'transferPoint',
     'menuTimeout',
   ];
+
+  function handleSave() {
+    if (errors.current.name) {
+      setErrorText('Id not valid.');
+      return;
+    }
+    shape.setText(name);
+    clearAndDraw();
+
+    shape.setUserValues({
+      items,
+    });
+
+    setErrorText('');
+    setSuccessText('Saved.');
+
+    // if (condition) {
+    //   setSuccessText('');
+    //   setErrorText('Save failed.');
+    // } else {
+    //   setErrorText('');
+    //   setSuccessText('Saved.');
+    // }
+  }
 
   function handleNameChange(e) {
     const {value} = e.target;
@@ -139,6 +164,11 @@ const PlayMenu = ({
   function handleDeleteItem(index) {
     const updatedItems = [...items];
     updatedItems.splice(index, 1);
+    setItems(updatedItems);
+  }
+  function handleItemFieldChange(name, value, index) {
+    const updatedItems = [...items];
+    updatedItems[index][name] = value;
     setItems(updatedItems);
   }
 
@@ -395,7 +425,7 @@ const PlayMenu = ({
               error={errors.current.name}
             />
             <Button
-              //   onClick={handleSave}
+              onClick={handleSave}
               sx={{ml: 2}}
               size='small'
               variant='contained'>
@@ -426,6 +456,7 @@ const PlayMenu = ({
           centered>
           <Tab label='General' />
           <Tab label='Items' />
+          <Tab label='Log' />
         </Tabs>
         <Divider />
         {tabValue === 0 && (
@@ -599,7 +630,7 @@ const PlayMenu = ({
                     sx={{
                       mx: 'auto',
                       border: '1px solid #424242',
-                      backgroundColor: '#eeeeee',
+                      backgroundColor: i % 2 != 0 ? '#e0e0e0' : '#eeeeee',
                     }}>
                     <Typography sx={{color: 'black'}} variant='h6'>
                       {item.digit}
@@ -609,17 +640,53 @@ const PlayMenu = ({
                     <Typography variant='subtitle2'>
                       Use Default Action
                     </Typography>
-                    <Switch sx={{mt: -1, ml: -1}} />
+                    <Switch
+                      checked={item.isDefault}
+                      onChange={(e) => {
+                        handleItemFieldChange('isDefault', e.target.checked, i);
+                        handleItemFieldChange('action', '', i);
+                      }}
+                      sx={{mt: -1, ml: -1}}
+                    />
                   </Stack>
                   <Stack sx={{my: 0.5}}>
                     <Typography variant='subtitle2'>Action</Typography>
-                    <TextField
-                      sx={{
-                        width: 200,
-                        backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
-                      }}
-                      size='small'
-                    />
+                    {item.isDefault ? (
+                      <Select
+                        sx={{
+                          width: 150,
+                          backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
+                        }}
+                        value={item.action}
+                        onChange={(e) =>
+                          handleItemFieldChange('action', e.target.value, i)
+                        }
+                        size='small'>
+                        {[
+                          'MainMenu',
+                          'PreviousMenu',
+                          'Disconnect',
+                          'Transfer',
+                          'Message',
+                        ].map((m, i) => (
+                          <MenuItem value={m} key={i}>
+                            {m}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    ) : (
+                      <TextField
+                        sx={{
+                          width: 200,
+                          backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
+                        }}
+                        value={item.action}
+                        onChange={(e) =>
+                          handleItemFieldChange('action', e.target.value, i)
+                        }
+                        size='small'
+                      />
+                    )}
                   </Stack>
                   <Stack sx={{my: 0.5}}>
                     <Typography variant='subtitle2'>Prompt</Typography>
@@ -628,17 +695,33 @@ const PlayMenu = ({
                         width: 300,
                         backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
                       }}
+                      value={item.prompt}
+                      onChange={(e) =>
+                        handleItemFieldChange('prompt', e.target.value, i)
+                      }
                       size='small'
                     />
                   </Stack>
                   <Box sx={{display: 'flex', my: 0.5}}>
                     <Stack sx={{my: 0.5}}>
                       <Typography variant='subtitle2'>Disabled</Typography>
-                      <Switch sx={{mt: -1, ml: -1}} />
+                      <Switch
+                        checked={item.disabled}
+                        onChange={(e) =>
+                          handleItemFieldChange('disabled', e.target.checked, i)
+                        }
+                        sx={{mt: -1, ml: -1}}
+                      />
                     </Stack>
                     <Stack sx={{my: 0.5, ml: 6}}>
                       <Typography variant='subtitle2'>Silent</Typography>
-                      <Switch sx={{mt: -1, ml: -1}} />
+                      <Switch
+                        checked={item.silent}
+                        onChange={(e) =>
+                          handleItemFieldChange('silent', e.target.checked, i)
+                        }
+                        sx={{mt: -1, ml: -1}}
+                      />
                     </Stack>
                   </Box>
                   <Stack>
@@ -651,6 +734,10 @@ const PlayMenu = ({
                           width: 100,
                           backgroundColor: i % 2 !== 0 ? '#f5f5f5' : '#ededed',
                         }}
+                        value={item.skip}
+                        onChange={(e) =>
+                          handleItemFieldChange('skip', e.target.value, i)
+                        }
                         size='small'>
                         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((d, i) => (
                           <MenuItem value={d} key={d}>
@@ -678,6 +765,7 @@ const PlayMenu = ({
             ))}
           </List>
         )}
+        {tabValue === 2 && <LogDrawer />}
       </Box>
     </>
   );

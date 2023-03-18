@@ -298,32 +298,6 @@ const PlayConfirm = ({
                 py: 1,
               }}>
               <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                cancelOption
-              </Typography>
-              <Select
-                value={cancelOption}
-                onChange={(e) => setCancelOption(e.target.value)}
-                sx={{backgroundColor: '#f5f5f5', width: 100}}
-                size='small'>
-                <MenuItem value='X'>X</MenuItem>
-                <MenuItem value='0'>0</MenuItem>
-                <MenuItem value='1'>1</MenuItem>
-                <MenuItem value='2'>2</MenuItem>
-                <MenuItem value='3'>3</MenuItem>
-                <MenuItem value='4'>4</MenuItem>
-                <MenuItem value='5'>5</MenuItem>
-                <MenuItem value='6'>6</MenuItem>
-                <MenuItem value='7'>7</MenuItem>
-                <MenuItem value='8'>8</MenuItem>
-                <MenuItem value='9'>9</MenuItem>
-              </Select>
-            </Stack>
-            <Stack
-              sx={{
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                 confirmPrompt
               </Typography>
               <TextField
