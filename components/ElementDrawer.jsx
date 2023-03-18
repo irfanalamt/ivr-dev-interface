@@ -6,6 +6,7 @@ import PlayMenu from '../newComponents/PlayMenu2';
 import PlayMessage from '../newComponents/PlayMessage2';
 import RunScript from '../newComponents/RunScript2';
 import SetParams from '../newComponents/SetParams2';
+import SwitchBlock from '../newComponents/SwitchBlock2';
 
 const ElementDrawer = ({
   shape,
@@ -83,6 +84,18 @@ const ElementDrawer = ({
       case 'runScript':
         return (
           <RunScript
+            shape={shape}
+            handleCloseDrawer={handleCloseDrawer}
+            shapes={shapes}
+            clearAndDraw={clearAndDraw}
+            userVariables={userVariables}
+            openVariableManager={openVariableManager}
+          />
+        );
+
+      case 'switch':
+        return (
+          <SwitchBlock
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             shapes={shapes}

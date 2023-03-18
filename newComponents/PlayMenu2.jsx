@@ -45,6 +45,14 @@ const PlayMenu = ({
 
   const errors = useRef({});
 
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSuccessText('');
+    }, 2000);
+
+    return () => clearTimeout(timeoutId);
+  }, [successText]);
+
   const optionalParamList = [
     'invalidAction',
     'timeoutAction',
@@ -338,7 +346,7 @@ const PlayMenu = ({
   }
 
   return (
-    <>
+    <Box sx={{overflowY: 'scroll', height: '100%'}}>
       <ListItem
         sx={{
           backgroundColor: '#cfd8dc',
@@ -459,6 +467,7 @@ const PlayMenu = ({
           <Tab label='Log' />
         </Tabs>
         <Divider />
+
         {tabValue === 0 && (
           <List>
             <Stack
@@ -767,7 +776,7 @@ const PlayMenu = ({
         )}
         {tabValue === 2 && <LogDrawer />}
       </Box>
-    </>
+    </Box>
   );
 };
 
