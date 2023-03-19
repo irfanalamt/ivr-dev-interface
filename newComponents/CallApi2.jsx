@@ -34,8 +34,8 @@ const CallApi = ({
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
-  const [inputVars, setInputVars] = useState([]);
-  const [outputVars, setOutputVars] = useState([]);
+  const [inputVars, setInputVars] = useState([{}]);
+  const [outputVars, setOutputVars] = useState([{}]);
 
   const errors = useRef({});
 
@@ -81,8 +81,28 @@ const CallApi = ({
     }
   }
 
-  function handleAddInputVariable() {}
-  function handleAddOutputVariable() {}
+  function handleAddInputVariable() {
+    const updatedInputVars = [...inputVars];
+    updatedInputVars.push({});
+    setInputVars(updatedInputVars);
+  }
+  function handleAddOutputVariable() {
+    const updatedOutputVars = [...outputVars];
+    updatedOutputVars.push({});
+    setOutputVars(updatedOutputVars);
+  }
+
+  function handleDeleteInputVar(index) {
+    const updatedInputVars = [...inputVars];
+    updatedInputVars.splice(index, 1);
+    setInputVars(updatedInputVars);
+  }
+
+  function handleDeleteOutputVar(index) {
+    const updatedOutputVars = [...outputVars];
+    updatedOutputVars.splice(index, 1);
+    setOutputVars(updatedOutputVars);
+  }
 
   return (
     <>
@@ -236,9 +256,44 @@ const CallApi = ({
               Add
             </Button>
           </Box>
-          <Select
-            sx={{width: 120, mt: 1, backgroundColor: '#f5f5f5'}}
-            size='small'></Select>
+          {inputVars.length == 0 && (
+            <Select
+              sx={{
+                width: 120,
+                my: 0.5,
+                backgroundColor: '#f5f5f5',
+                visibility: 'hidden',
+              }}
+              size='small'
+              disabled></Select>
+          )}
+          <Stack>
+            {inputVars.map((v, i) => (
+              <Box sx={{display: 'flex', alignItems: 'center', mt: 1}} key={i}>
+                <Select
+                  sx={{
+                    width: 120,
+                    my: 0.5,
+                    backgroundColor: '#f5f5f5',
+                  }}
+                  size='small'></Select>
+                <IconButton
+                  color='error'
+                  size='small'
+                  onClick={() => handleDeleteInputVar(i)}
+                  sx={{
+                    ml: 4,
+                    mr: 1,
+                    backgroundColor: '#cfcfcf',
+                    '&:hover': {backgroundColor: '#c7c1bd'},
+                    height: 30,
+                    width: 30,
+                  }}>
+                  <DeleteIcon sx={{color: '#424242'}} />
+                </IconButton>
+              </Box>
+            ))}
+          </Stack>
         </Stack>
         <Divider />
         <Stack
@@ -265,9 +320,44 @@ const CallApi = ({
               Add
             </Button>
           </Box>
-          <Select
-            sx={{width: 120, mt: 1, backgroundColor: '#f5f5f5'}}
-            size='small'></Select>
+          {outputVars.length == 0 && (
+            <Select
+              sx={{
+                width: 120,
+                my: 0.5,
+                backgroundColor: '#f5f5f5',
+                visibility: 'hidden',
+              }}
+              size='small'
+              disabled></Select>
+          )}
+          <Stack>
+            {outputVars.map((v, i) => (
+              <Box sx={{display: 'flex', alignItems: 'center', mt: 1}} key={i}>
+                <Select
+                  sx={{
+                    width: 120,
+                    my: 0.5,
+                    backgroundColor: '#f5f5f5',
+                  }}
+                  size='small'></Select>
+                <IconButton
+                  color='error'
+                  size='small'
+                  onClick={() => handleDeleteOutputVar(i)}
+                  sx={{
+                    ml: 4,
+                    mr: 1,
+                    backgroundColor: '#cfcfcf',
+                    '&:hover': {backgroundColor: '#c7c1bd'},
+                    height: 30,
+                    width: 30,
+                  }}>
+                  <DeleteIcon sx={{color: '#424242'}} />
+                </IconButton>
+              </Box>
+            ))}
+          </Stack>
         </Stack>
         <Divider />
       </Box>

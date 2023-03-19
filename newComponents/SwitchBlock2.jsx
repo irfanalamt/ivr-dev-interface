@@ -86,11 +86,12 @@ const SwitchBlock = ({
 
   function handleAddAction() {
     const updatedActions = [...actions];
-    const rowNumber = updatedActions.length + 1;
+
     updatedActions.push({
       condition: '',
       action: '',
     });
+
     setActions(updatedActions);
   }
 
