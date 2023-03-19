@@ -1,21 +1,16 @@
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
-  Avatar,
   Box,
   Button,
   Divider,
   IconButton,
-  List,
   ListItem,
   MenuItem,
   Select,
   Stack,
-  Switch,
-  Tab,
-  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
@@ -34,8 +29,13 @@ const CallApi = ({
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
-  const [inputVars, setInputVars] = useState([{}]);
-  const [outputVars, setOutputVars] = useState([{}]);
+  const [endpoint, setEndpoint] = useState(shape.userValues?.endpoint ?? '');
+  const [inputVars, setInputVars] = useState(
+    shape.userValues?.inputVars ?? [{}]
+  );
+  const [outputVars, setOutputVars] = useState(
+    shape.userValues?.outputVars ?? [{}]
+  );
 
   const errors = useRef({});
 
@@ -54,6 +54,8 @@ const CallApi = ({
     }
     shape.setText(name);
     clearAndDraw();
+
+    shape.setUserValues({endpoint, inputVars, outputVars});
 
     setErrorText('');
     setSuccessText('Saved.');
@@ -101,6 +103,17 @@ const CallApi = ({
   function handleDeleteOutputVar(index) {
     const updatedOutputVars = [...outputVars];
     updatedOutputVars.splice(index, 1);
+    setOutputVars(updatedOutputVars);
+  }
+
+  function handleChangeSelectInput(value, index) {
+    const updatedInputVars = [...inputVars];
+    updatedInputVars[index].name = value;
+    setInputVars(updatedInputVars);
+  }
+  function handleChangeSelectOutput(value, index) {
+    const updatedOutputVars = [...outputVars];
+    updatedOutputVars[index].name = value;
     setOutputVars(updatedOutputVars);
   }
 
@@ -228,6 +241,8 @@ const CallApi = ({
             placeholder='https://api.example.com/data'
             sx={{backgroundColor: '#f5f5f5'}}
             size='small'
+            value={endpoint}
+            onChange={(e) => setEndpoint(e.target.value)}
             fullWidth
           />
         </Stack>
@@ -276,7 +291,15 @@ const CallApi = ({
                     my: 0.5,
                     backgroundColor: '#f5f5f5',
                   }}
-                  size='small'></Select>
+                  value={v.name}
+                  onChange={(e) => handleChangeSelectInput(e.target.value, i)}
+                  size='small'>
+                  {userVariables.current.map((v, i) => (
+                    <MenuItem value={v.name} key={i}>
+                      {v.name}
+                    </MenuItem>
+                  ))}
+                </Select>
                 <IconButton
                   color='error'
                   size='small'
@@ -340,7 +363,15 @@ const CallApi = ({
                     my: 0.5,
                     backgroundColor: '#f5f5f5',
                   }}
-                  size='small'></Select>
+                  value={v.name}
+                  onChange={(e) => handleChangeSelectOutput(e.target.value, i)}
+                  size='small'>
+                  {userVariables.current.map((v, i) => (
+                    <MenuItem value={v.name} key={i}>
+                      {v.name}
+                    </MenuItem>
+                  ))}
+                </Select>
                 <IconButton
                   color='error'
                   size='small'
