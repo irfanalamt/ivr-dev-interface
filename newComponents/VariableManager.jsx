@@ -276,7 +276,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               Delete
             </Button>
           </ListItem>
-          <Divider sx={{mt: 1}} />
+          <Divider sx={{mt: 2}} />
           <Box sx={{py: 1}}>
             <ListItem disablePadding>
               <Box
@@ -466,7 +466,6 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
               </Box>
             </ListItem>
           </Box>
-          <Divider />
         </List>
       </Box>
     </Drawer>
