@@ -300,20 +300,22 @@ const CallApi = ({
                     </MenuItem>
                   ))}
                 </Select>
-                <IconButton
-                  color='error'
-                  size='small'
-                  onClick={() => handleDeleteInputVar(i)}
-                  sx={{
-                    ml: 4,
-                    mr: 1,
-                    backgroundColor: '#cfcfcf',
-                    '&:hover': {backgroundColor: '#c7c1bd'},
-                    height: 30,
-                    width: 30,
-                  }}>
-                  <DeleteIcon sx={{color: '#424242'}} />
-                </IconButton>
+                {i > 0 && (
+                  <IconButton
+                    color='error'
+                    size='small'
+                    onClick={() => handleDeleteInputVar(i)}
+                    sx={{
+                      ml: 4,
+                      mr: 1,
+                      backgroundColor: '#cfcfcf',
+                      '&:hover': {backgroundColor: '#c7c1bd'},
+                      height: 30,
+                      width: 30,
+                    }}>
+                    <DeleteIcon sx={{color: '#424242'}} />
+                  </IconButton>
+                )}
               </Box>
             ))}
           </Stack>
@@ -372,20 +374,22 @@ const CallApi = ({
                     </MenuItem>
                   ))}
                 </Select>
-                <IconButton
-                  color='error'
-                  size='small'
-                  onClick={() => handleDeleteOutputVar(i)}
-                  sx={{
-                    ml: 4,
-                    mr: 1,
-                    backgroundColor: '#cfcfcf',
-                    '&:hover': {backgroundColor: '#c7c1bd'},
-                    height: 30,
-                    width: 30,
-                  }}>
-                  <DeleteIcon sx={{color: '#424242'}} />
-                </IconButton>
+                {i > 0 && (
+                  <IconButton
+                    color='error'
+                    size='small'
+                    onClick={() => handleDeleteOutputVar(i)}
+                    sx={{
+                      ml: 4,
+                      mr: 1,
+                      backgroundColor: '#cfcfcf',
+                      '&:hover': {backgroundColor: '#c7c1bd'},
+                      height: 30,
+                      width: 30,
+                    }}>
+                    <DeleteIcon sx={{color: '#424242'}} />
+                  </IconButton>
+                )}
               </Box>
             ))}
           </Stack>

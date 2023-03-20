@@ -760,28 +760,7 @@ const PlayMenu = ({
                             </MenuItem>
                           ))}
                         </Select>
-                        {item.action === 'PreviousMenu' && (
-                          <Stack sx={{my: 0.5}}>
-                            <Typography variant='subtitle2'>
-                              Menu Name
-                            </Typography>
-                            <TextField
-                              size='small'
-                              sx={{
-                                width: 300,
-                                backgroundColor: '#f5f5f5',
-                              }}
-                              value={item.menuName ?? ''}
-                              onChange={(e) =>
-                                handleItemFieldChange(
-                                  'menuName',
-                                  e.target.value,
-                                  i
-                                )
-                              }
-                            />
-                          </Stack>
-                        )}
+
                         {item.action === 'Transfer' && (
                           <Stack sx={{my: 0.5}}>
                             <Typography variant='subtitle2'>
