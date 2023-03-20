@@ -1,5 +1,3 @@
-import {ContentCutOutlined} from '@mui/icons-material';
-
 class Shape {
   constructor(x, y, type, style = 'black') {
     this.x = x;
@@ -16,7 +14,9 @@ class Shape {
     this.exitPoints = [];
     this.functionString = '';
     this.setWidthAndHeight(type);
+    this.setImage(type);
   }
+
   setWidthAndHeight(type) {
     switch (type) {
       case 'runScript':
@@ -82,6 +82,24 @@ class Shape {
       default:
         this.width = 120;
         this.height = 40;
+    }
+  }
+
+  setImage(type) {
+    if (
+      [
+        'runScript',
+        'callAPI',
+        'setParams',
+        'playMenu',
+        'getDigits',
+        'playMessage',
+        'playConfirm',
+        'switch',
+      ].includes(type)
+    ) {
+      this.img = new Image(20, 20);
+      this.img.src = `/icons/${type}Black.png`;
     }
   }
 
@@ -393,11 +411,8 @@ class Shape {
       );
     }
 
-    const img = new Image(20, 20);
-    img.src = '/icons/runScriptBlack.png';
-
     this.resetContextForDrawingImage(ctx);
-    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.drawImage(this.img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
 
     this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 10, this.y);
@@ -437,10 +452,8 @@ class Shape {
     // fill color when selected
     this.selected && this.fillSelected(ctx);
 
-    const img = new Image(20, 20);
-    img.src = '/icons/callAPIBlack.png';
     this.resetContextForDrawingImage(ctx);
-    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.drawImage(this.img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 10, this.y);
 
@@ -476,10 +489,14 @@ class Shape {
     // fill color when selected
     this.selected && this.fillSelected(ctx);
 
-    const img = new Image(20, 20);
-    img.src = '/icons/setParamsBlack.png';
     this.resetContextForDrawingImage(ctx);
-    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10 - 2, 20, 20);
+    ctx.drawImage(
+      this.img,
+      this.x + 10 - this.width / 2,
+      this.y - 10 - 2,
+      20,
+      20
+    );
 
     this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 12, this.y - 2);
@@ -511,10 +528,8 @@ class Shape {
     // fill color when selected
     this.selected && this.fillSelected(ctx);
 
-    const img = new Image(20, 20);
-    img.src = '/icons/playMenuBlack.png';
     this.resetContextForDrawingImage(ctx);
-    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.drawImage(this.img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 10, this.y);
 
@@ -544,10 +559,14 @@ class Shape {
     // fill color when selected
     this.selected && this.fillSelected(ctx);
 
-    const img = new Image(18, 18);
-    img.src = '/icons/getDigitsBlack.png';
     this.resetContextForDrawingImage(ctx);
-    ctx.drawImage(img, this.x + 9 + 10 - this.width / 2, this.y - 9, 18, 18);
+    ctx.drawImage(
+      this.img,
+      this.x + 9 + 10 - this.width / 2,
+      this.y - 9,
+      18,
+      18
+    );
 
     this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 12, this.y);
@@ -592,10 +611,8 @@ class Shape {
     // fill color if selected
     this.selected && this.fillSelected(ctx);
 
-    const img = new Image(20, 20);
-    img.src = '/icons/playMessageBlack.png';
     this.resetContextForDrawingImage(ctx);
-    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.drawImage(this.img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
 
     this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 10, this.y);
@@ -638,10 +655,8 @@ class Shape {
     this.selected && this.fillSelected(ctx);
     this.style = '#4285F4';
 
-    const img = new Image(20, 20);
-    img.src = '/icons/playConfirmBlack.png';
     this.resetContextForDrawingImage(ctx);
-    ctx.drawImage(img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
+    ctx.drawImage(this.img, this.x + 10 - this.width / 2, this.y - 10, 20, 20);
     this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 10, this.y);
 
@@ -732,10 +747,9 @@ class Shape {
     ctx.lineWidth = 2;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    const img = new Image(22, 22);
-    img.src = '/icons/switchBlack.png';
+
     this.resetContextForDrawingImage(ctx);
-    ctx.drawImage(img, this.x + 15 - this.width / 2, this.y - 10, 22, 22);
+    ctx.drawImage(this.img, this.x + 15 - this.width / 2, this.y - 10, 22, 22);
     this.resetContextForText(ctx);
     ctx.fillText(this.text, this.x + 10, this.y);
 
