@@ -217,6 +217,20 @@ const SwitchBlock = ({
           </ListItem>
         </Stack>
         <Divider />
+        <Stack sx={{px: 2, py: 1, mb: 2}}>
+          <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+            Default Action
+          </Typography>
+          <Box sx={{display: 'flex', alignItems: 'center'}}>
+            <TextField
+              sx={{backgroundColor: '#f5f5f5', width: 200}}
+              value={defaultAction}
+              onChange={(e) => setDefaultAction(e.target.value)}
+              size='small'
+            />
+          </Box>
+        </Stack>
+        <Divider />
         <List sx={{backgroundColor: '#eeeeee'}}>
           {actions.map((row, i) => (
             <Stack sx={{px: 2, py: 1}} key={i}>
@@ -272,31 +286,20 @@ const SwitchBlock = ({
               <Divider sx={{mt: 4}} />
             </Stack>
           ))}
-          <Stack sx={{px: 2, py: 1}}>
-            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-              Default Action
-            </Typography>
-            <Box sx={{display: 'flex', alignItems: 'center'}}>
-              <TextField
-                sx={{backgroundColor: '#f5f5f5', width: 200}}
-                value={defaultAction}
-                onChange={(e) => setDefaultAction(e.target.value)}
-                size='small'
-              />
-              <Button
-                sx={{
-                  backgroundColor: '#bdbdbd',
-                  color: 'black',
-                  '&:hover': {backgroundColor: '#9ccc65'},
-                  ml: 'auto',
-                  mr: 1,
-                }}
-                onClick={handleAddAction}
-                variant='contained'>
-                Add
-              </Button>
-            </Box>
-          </Stack>
+          <ListItem>
+            <Button
+              sx={{
+                backgroundColor: '#bdbdbd',
+                color: 'black',
+                '&:hover': {backgroundColor: '#9ccc65'},
+                ml: 'auto',
+                mr: 1,
+              }}
+              onClick={handleAddAction}
+              variant='contained'>
+              Add
+            </Button>
+          </ListItem>
         </List>
       </Box>
     </>

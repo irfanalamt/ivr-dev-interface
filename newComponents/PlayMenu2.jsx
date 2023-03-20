@@ -76,6 +76,8 @@ const PlayMenu = ({
       items,
     });
 
+    console.log('🔥', JSON.stringify(items, null, 2));
+
     setErrorText('');
     setSuccessText('Saved.');
 
@@ -161,9 +163,9 @@ const PlayMenu = ({
       isDefault: false,
       action: '',
       prompt: '',
-      disable: false,
+      disabled: false,
       silent: false,
-      skip: 0,
+      skip: 1,
     });
     setItems(updatedItems);
     setItemDigit('');
@@ -178,6 +180,57 @@ const PlayMenu = ({
     const updatedItems = [...items];
     updatedItems[index][name] = value;
     setItems(updatedItems);
+  }
+
+  function clearItemError(index) {
+    const updatedItems = [...items];
+    updatedItems[index].error = undefined;
+    setItems(updatedItems);
+  }
+
+  function setItemError(index, error) {
+    const updatedItems = [...items];
+    updatedItems[index].error = error;
+    setItems(updatedItems);
+  }
+
+  function validatePrompt(value, index) {
+    const isVariableInput = value.startsWith('$') && value.length > 1;
+    const validationFn = isVariableInput
+      ? validateVariableInput
+      : validateUserInput;
+    const result = validationFn(value);
+
+    if (result === -1) {
+      clearItemError(index);
+    } else {
+      setItemError(index, result);
+    }
+  }
+
+  function validateVariableInput(input) {
+    const variableName = input.slice(1);
+    const isValidName = userVariables.current.some(
+      (variable) => variable.type === 'prompt' && variable.name === variableName
+    );
+    return isValidName ? -1 : `${variableName} is not a valid prompt variable.`;
+  }
+
+  function validateUserInput(input) {
+    const promptRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
+    return promptRegex.test(input) ? -1 : 'Prompt not in valid format.';
+  }
+
+  function getPlaceholderValue(action) {
+    if (action === 'MainMenu') return 'params.mainMenuPrompt';
+
+    if (action === 'PreviousMenu') return 'params.previousMenuPrompt';
+
+    if (action === 'Disconnect') return 'params.disconnectPrompt';
+
+    if (action === 'Transfer') return 'params.transferPrompt';
+
+    return '';
   }
 
   function renderComponentByType(param, index) {
@@ -633,18 +686,36 @@ const PlayMenu = ({
                 }}
                 key={i}>
                 <Stack sx={{width: '100%', py: 1}}>
-                  <Avatar
-                    variant='rounded'
-                    sx={{
-                      mb: 1,
-                      border: '1px solid #424242',
-                      backgroundColor: '#f5f5f5',
-                      boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.05)',
-                    }}>
-                    <Typography sx={{color: 'black'}} variant='h6'>
-                      {item.digit}
-                    </Typography>
-                  </Avatar>
+                  <Box sx={{display: 'flex', alignItems: 'center'}}>
+                    <Avatar
+                      variant='rounded'
+                      sx={{
+                        mb: 1,
+                        border: '1px solid #424242',
+                        backgroundColor: '#f5f5f5',
+                        boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.05)',
+                      }}>
+                      <Typography sx={{color: 'black'}} variant='h6'>
+                        {item.digit}
+                      </Typography>
+                    </Avatar>
+                    {item.error && (
+                      <Typography
+                        sx={{
+                          mx: 'auto',
+                          color: 'red',
+                          backgroundColor: '#fce8e6',
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: 1,
+                          width: 'max-content',
+                        }}
+                        variant='subtitle2'>
+                        {item.error}
+                      </Typography>
+                    )}
+                  </Box>
+
                   <Stack sx={{my: 0.5, mt: 1}}>
                     <Typography variant='subtitle2'>
                       Use Default Action
@@ -654,6 +725,10 @@ const PlayMenu = ({
                       onChange={(e) => {
                         handleItemFieldChange('isDefault', e.target.checked, i);
                         handleItemFieldChange('action', '', i);
+                        handleItemFieldChange('menuName', undefined, i);
+                        handleItemFieldChange('transferPoint', undefined, i);
+                        handleItemFieldChange('messagePrompt', undefined, i);
+                        handleItemFieldChange('prompt', '', i);
                       }}
                       sx={{mt: -1, ml: -1}}
                     />
@@ -661,28 +736,97 @@ const PlayMenu = ({
                   <Stack sx={{my: 0.5}}>
                     <Typography variant='subtitle2'>Action</Typography>
                     {item.isDefault ? (
-                      <Select
-                        sx={{
-                          width: 150,
-                          backgroundColor: '#f5f5f5',
-                        }}
-                        value={item.action}
-                        onChange={(e) =>
-                          handleItemFieldChange('action', e.target.value, i)
-                        }
-                        size='small'>
-                        {[
-                          'MainMenu',
-                          'PreviousMenu',
-                          'Disconnect',
-                          'Transfer',
-                          'Message',
-                        ].map((m, i) => (
-                          <MenuItem value={m} key={i}>
-                            {m}
-                          </MenuItem>
-                        ))}
-                      </Select>
+                      <>
+                        <Select
+                          sx={{
+                            width: 150,
+                            backgroundColor: '#f5f5f5',
+                            mb: 1,
+                          }}
+                          value={item.action}
+                          onChange={(e) =>
+                            handleItemFieldChange('action', e.target.value, i)
+                          }
+                          size='small'>
+                          {[
+                            'MainMenu',
+                            'PreviousMenu',
+                            'Disconnect',
+                            'Transfer',
+                            'Message',
+                          ].map((m, i) => (
+                            <MenuItem value={m} key={i}>
+                              {m}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        {item.action === 'PreviousMenu' && (
+                          <Stack sx={{my: 0.5}}>
+                            <Typography variant='subtitle2'>
+                              Menu Name
+                            </Typography>
+                            <TextField
+                              size='small'
+                              sx={{
+                                width: 300,
+                                backgroundColor: '#f5f5f5',
+                              }}
+                              value={item.menuName ?? ''}
+                              onChange={(e) =>
+                                handleItemFieldChange(
+                                  'menuName',
+                                  e.target.value,
+                                  i
+                                )
+                              }
+                            />
+                          </Stack>
+                        )}
+                        {item.action === 'Transfer' && (
+                          <Stack sx={{my: 0.5}}>
+                            <Typography variant='subtitle2'>
+                              Transfer Point
+                            </Typography>
+                            <TextField
+                              size='small'
+                              sx={{
+                                width: 300,
+                                backgroundColor: '#f5f5f5',
+                              }}
+                              value={item.transferPoint ?? ''}
+                              onChange={(e) =>
+                                handleItemFieldChange(
+                                  'transferPoint',
+                                  e.target.value,
+                                  i
+                                )
+                              }
+                            />
+                          </Stack>
+                        )}
+                        {item.action === 'Message' && (
+                          <Stack sx={{my: 0.5}}>
+                            <Typography variant='subtitle2'>
+                              Message Prompt
+                            </Typography>
+                            <TextField
+                              size='small'
+                              sx={{
+                                width: 300,
+                                backgroundColor: '#f5f5f5',
+                              }}
+                              value={item.messagePrompt ?? ''}
+                              onChange={(e) =>
+                                handleItemFieldChange(
+                                  'messagePrompt',
+                                  e.target.value,
+                                  i
+                                )
+                              }
+                            />
+                          </Stack>
+                        )}
+                      </>
                     ) : (
                       <TextField
                         sx={{
@@ -702,11 +846,33 @@ const PlayMenu = ({
                     <TextField
                       sx={{
                         width: 300,
-                        backgroundColor: '#f5f5f5',
+                        backgroundColor:
+                          item.isDefault &&
+                          [
+                            'MainMenu',
+                            'PreviousMenu',
+                            'Disconnect',
+                            'Transfer',
+                          ].includes(item.action)
+                            ? ''
+                            : '#f5f5f5',
                       }}
                       value={item.prompt}
-                      onChange={(e) =>
-                        handleItemFieldChange('prompt', e.target.value, i)
+                      onChange={(e) => {
+                        handleItemFieldChange('prompt', e.target.value, i);
+                        validatePrompt(e.target.value, i);
+                      }}
+                      placeholder={
+                        item.isDefault ? getPlaceholderValue(item.action) : ''
+                      }
+                      disabled={
+                        item.isDefault &&
+                        [
+                          'MainMenu',
+                          'PreviousMenu',
+                          'Disconnect',
+                          'Transfer',
+                        ].includes(item.action)
                       }
                       size='small'
                     />
@@ -715,9 +881,9 @@ const PlayMenu = ({
                     <Stack sx={{my: 0.5}}>
                       <Typography variant='subtitle2'>Skip</Typography>
                       <Switch
-                        checked={item.skip}
+                        checked={item.isSkip ?? false}
                         onChange={(e) =>
-                          handleItemFieldChange('skip', e.target.checked, i)
+                          handleItemFieldChange('isSkip', e.target.checked, i)
                         }
                         sx={{mt: -1, ml: -1}}
                       />
@@ -756,7 +922,7 @@ const PlayMenu = ({
                       <DeleteIcon sx={{color: '#424242'}} />
                     </IconButton>
                   </Box>
-                  {item.skip ? (
+                  {item.isSkip ? (
                     <Stack>
                       <Typography variant='subtitle2'>
                         Skip N Iterations
@@ -765,8 +931,7 @@ const PlayMenu = ({
                         <Select
                           sx={{
                             width: 100,
-                            backgroundColor:
-                              i % 2 !== 0 ? '#f5f5f5' : '#ededed',
+                            backgroundColor: '#f5f5f5',
                           }}
                           value={item.skip}
                           onChange={(e) =>
