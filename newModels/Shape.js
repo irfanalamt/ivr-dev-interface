@@ -55,8 +55,8 @@ class Shape {
         break;
 
       case 'endFlow':
-        this.width = 35;
-        this.height = 35;
+        this.width = 40;
+        this.height = 40;
         break;
 
       case 'connector':
@@ -96,6 +96,7 @@ class Shape {
         'playMessage',
         'playConfirm',
         'switch',
+        'endFlow',
       ].includes(type)
     ) {
       this.img = new Image(20, 20);
@@ -668,21 +669,30 @@ class Shape {
 
   drawEndCircle(ctx) {
     this.style = '#F8D7DA';
-    ctx.beginPath();
+    const radius = Math.abs(this.width * 0.5);
+    const x = this.x - radius;
+    const y = this.y - radius;
+    const size = 22;
 
-    ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+
     // fill color if selected
     this.selected && this.fillSelected(ctx);
+
     ctx.fillStyle = this.style;
     ctx.fill();
 
-    ctx.lineWidth = 1;
-    ctx.font = '25px sans-serif';
-    ctx.fillStyle = 'black';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('Χ', this.x, this.y + 2);
+    this.resetContextForDrawingImage(ctx);
+    ctx.drawImage(
+      this.img,
+      x + (radius - size / 2),
+      y + (radius - size / 2),
+      size,
+      size
+    );
   }
+
   drawSmallCircle(ctx) {
     this.style = '#AAAAAA';
     ctx.beginPath();

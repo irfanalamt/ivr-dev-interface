@@ -202,12 +202,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
             width: 40,
             height: 40,
           }}>
-          <CancelIcon
-            sx={{
-              fontSize: '25px',
-              color: selectedItemToolbar['endFlow'] ? 'black' : '#607D8B',
-            }}
-          />
+          {selectedItemToolbar['endFlow'] ? (
+            <img src='/icons/endFlowBlack.png' alt='Icon' height={'25px'} />
+          ) : (
+            <img src='/icons/endFlow.png' alt='Icon' height={'25px'} />
+          )}
         </Button>
       </LightTooltip>
       <LightTooltip title='connector' placement='right'>

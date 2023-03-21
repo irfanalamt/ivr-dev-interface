@@ -1,6 +1,7 @@
 import {Typography} from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import CallApi from '../newComponents/CallApi2';
+import EndFlow from '../newComponents/EndFlow2';
 import GetDigits from '../newComponents/GetDigits2';
 import PlayConfirm from '../newComponents/PlayConfirm';
 import PlayMenu from '../newComponents/PlayMenu2';
@@ -114,6 +115,15 @@ const ElementDrawer = ({
             shapes={shapes}
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
+            openVariableManager={openVariableManager}
+          />
+        );
+
+      case 'endFlow':
+        return (
+          <EndFlow
+            shape={shape}
+            handleCloseDrawer={handleCloseDrawer}
             openVariableManager={openVariableManager}
           />
         );
