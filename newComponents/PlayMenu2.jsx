@@ -42,6 +42,10 @@ const PlayMenu = ({
   );
   const [itemDigit, setItemDigit] = useState('');
   const [items, setItems] = useState(shape.userValues?.items ?? []);
+  const [description, setDescription] = useState(shape.userValues?.description);
+  const [previousMenuId, setPreviousMenuId] = useState(
+    shape.userValues?.previousMenuId
+  );
 
   const errors = useRef({});
 
@@ -54,6 +58,8 @@ const PlayMenu = ({
   }, [successText]);
 
   const optionalParamList = [
+    'ignoreBuffer',
+    'logDb',
     'invalidAction',
     'timeoutAction',
     'invalidPrompt',
@@ -74,6 +80,9 @@ const PlayMenu = ({
 
     shape.setUserValues({
       items,
+      description,
+      previousMenuId,
+      optionalParams: addedOptionalParams,
     });
 
     console.log('🔥', JSON.stringify(items, null, 2));
@@ -305,7 +314,7 @@ const PlayMenu = ({
               maxRetries
             </Typography>
             <Select
-              sx={{backgroundColor: '#ededed'}}
+              sx={{backgroundColor: '#ededed', width: 100}}
               value={addedOptionalParams[index].value ?? ''}
               onChange={(e) => handleOptionalParamFieldChange(e, index)}
               size='small'>
@@ -352,15 +361,20 @@ const PlayMenu = ({
             />
           </Stack>
         );
+      case 'ignoreBuffer':
+      case 'logDb':
       case 'interruptible':
         return (
           <Stack>
             <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-              interruptible
+              {param}
             </Typography>
             <Switch
               sx={{mt: -1, ml: -1}}
-              checked={addedOptionalParams[index].value ?? true}
+              checked={
+                addedOptionalParams[index].value ??
+                (param === 'interruptible' ? true : false)
+              }
               onChange={(e) => handleOptionalParamFieldChangeSwitch(e, index)}
             />
           </Stack>
@@ -382,17 +396,21 @@ const PlayMenu = ({
         );
       case 'menuTimeout':
         return (
-          <Stack sx={{width: '100%', mr: 1}}>
+          <Stack>
             <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               menuTimeout
             </Typography>
-            <TextField
-              sx={{backgroundColor: '#ededed', width: 200}}
+            <Select
+              sx={{backgroundColor: '#ededed', width: 100}}
               value={addedOptionalParams[index].value ?? ''}
               onChange={(e) => handleOptionalParamFieldChange(e, index)}
-              size='small'
-              fullWidth
-            />
+              size='small'>
+              {[...Array(28)].map((_, i) => (
+                <MenuItem key={i} value={`${i + 3}`}>
+                  {i + 3}
+                </MenuItem>
+              ))}
+            </Select>
           </Stack>
         );
     }
@@ -534,6 +552,8 @@ const PlayMenu = ({
               <TextField
                 sx={{backgroundColor: '#f5f5f5', width: 300}}
                 size='small'
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 multiline
               />
             </Stack>
@@ -548,28 +568,9 @@ const PlayMenu = ({
               <TextField
                 sx={{backgroundColor: '#f5f5f5', width: 200}}
                 size='small'
+                value={previousMenuId}
+                onChange={(e) => setPreviousMenuId(e.target.value)}
               />
-            </Stack>
-            <Stack
-              sx={{
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                ignoreBuffer
-              </Typography>
-              <Switch sx={{mt: -1, ml: -1}} />
-            </Stack>
-            <Stack
-              sx={{
-                px: 2,
-                pt: 1,
-                pb: 2,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                logDb
-              </Typography>
-              <Switch sx={{mt: -1, ml: -1}} />
             </Stack>
             <Divider />
             <Stack sx={{pl: 2, py: 2, mt: 2, mb: 1}}>

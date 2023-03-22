@@ -286,7 +286,7 @@ const GetDigits = ({
         );
       case 'invalidPrompt':
         return (
-          <Stack sx={{width: '100%', mr: 1}}>
+          <Stack sx={{width: '100%', mr: 2}}>
             <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
               invalidPrompt
             </Typography>

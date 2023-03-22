@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -40,11 +41,9 @@ const PlayMessage = ({
     shape.userValues?.messageList ?? []
   );
 
-  const [interruptible, setInterruptible] = useState(
-    shape.userValues?.params.interruptible ?? true
-  );
-  const [repeatOption, setRepeatOption] = useState(
-    shape.userValues?.params.repeatOption || 'X'
+  const [optionalParam, setOptionalParam] = useState('');
+  const [addedOptionalParams, setAddedOptionalParams] = useState(
+    shape.userValues?.optionalParams ?? []
   );
 
   const errors = useRef({});
@@ -56,6 +55,8 @@ const PlayMessage = ({
 
     return () => clearTimeout(timeoutId);
   }, [successText]);
+
+  const optionalParamList = ['interruptible', 'repeatOption'];
 
   function handleSave() {
     if (errors.current.name) {
@@ -74,7 +75,7 @@ const PlayMessage = ({
     }
     shape.setUserValues({
       messageList: validMessages,
-      params: {interruptible, repeatOption},
+      optionalParams: addedOptionalParams,
     });
 
     if (validMessages.length < messageList.length) {
@@ -109,6 +110,85 @@ const PlayMessage = ({
   }
   function handleTabChange(e, newValue) {
     setTabValue(newValue);
+  }
+
+  function handleAddOptionalParam() {
+    if (!optionalParam) {
+      return;
+    }
+
+    const updatedOptionalParams = [
+      ...addedOptionalParams,
+      {name: optionalParam},
+    ];
+    setAddedOptionalParams(updatedOptionalParams);
+    setOptionalParam('');
+  }
+  function handleDeleteOptionalParam(index) {
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams.splice(index, 1);
+    setAddedOptionalParams(currentOptionalParams);
+  }
+
+  function handleOptionalParamFieldChange(e, index) {
+    const {value} = e.target;
+
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams[index].value = value;
+    setAddedOptionalParams(currentOptionalParams);
+  }
+  function handleOptionalParamFieldChangeSwitch(e, index) {
+    const {checked} = e.target;
+
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams[index].value = checked;
+    setAddedOptionalParams(currentOptionalParams);
+  }
+
+  function renderComponentByType(param, index) {
+    switch (param) {
+      case 'interruptible':
+        return (
+          <Stack>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+              interruptible
+            </Typography>
+            <Switch
+              sx={{mt: -1}}
+              checked={addedOptionalParams[index].value ?? true}
+              onChange={(e) => handleOptionalParamFieldChangeSwitch(e, index)}
+            />
+          </Stack>
+        );
+      case 'repeatOption':
+        return (
+          <Stack>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+              repeatOption
+            </Typography>
+            <Select
+              sx={{backgroundColor: '#ededed', width: 100}}
+              value={addedOptionalParams[index].value ?? ''}
+              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              size='small'>
+              <MenuItem value='X'>X</MenuItem>
+              <MenuItem value='0'>0</MenuItem>
+              <MenuItem value='1'>1</MenuItem>
+              <MenuItem value='2'>2</MenuItem>
+              <MenuItem value='3'>3</MenuItem>
+              <MenuItem value='4'>4</MenuItem>
+              <MenuItem value='5'>5</MenuItem>
+              <MenuItem value='6'>6</MenuItem>
+              <MenuItem value='7'>7</MenuItem>
+              <MenuItem value='8'>8</MenuItem>
+              <MenuItem value='9'>9</MenuItem>
+            </Select>
+          </Stack>
+        );
+
+      default:
+        return <Typography>{param}</Typography>;
+    }
   }
 
   return (
@@ -245,51 +325,69 @@ const PlayMessage = ({
         )}
         {tabValue === 1 && (
           <List>
-            <Stack
-              sx={{
-                mt: 1,
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                interruptible
-              </Typography>
-              <Switch
-                sx={{mt: -1, ml: -1}}
-                checked={interruptible}
-                onChange={(e) => {
-                  setInterruptible(e.target.checked);
+            <Stack sx={{px: 2, py: 1, mb: 1}}>
+              <Typography>Optional Params</Typography>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Select
+                  labelId='select-label'
+                  value={optionalParam}
+                  onChange={(e) => setOptionalParam(e.target.value)}
+                  sx={{
+                    minWidth: 150,
+                    backgroundColor: '#f5f5f5',
+                  }}
+                  size='small'>
+                  {optionalParamList
+                    .filter(
+                      (p) =>
+                        !addedOptionalParams.some((object) => object.name === p)
+                    )
+                    .map((p, i) => (
+                      <MenuItem key={i} value={p}>
+                        {p}
+                      </MenuItem>
+                    ))}
+                </Select>
+                <Button
+                  sx={{
+                    ml: 2,
+                    backgroundColor: '#bdbdbd',
+                    color: 'black',
+                    '&:hover': {backgroundColor: '#9ccc65'},
+                  }}
+                  onClick={handleAddOptionalParam}
+                  disabled={!optionalParam}
+                  variant='contained'>
+                  Add
+                </Button>
+              </Box>
+            </Stack>
+            {addedOptionalParams.map((p, i) => (
+              <ListItem
+                sx={{
+                  py: 1,
+                  backgroundColor: '#e6e6e6',
+                  borderTop: i === 0 && '1px solid #bdbdbd',
+                  borderBottom: '1px solid #bdbdbd',
                 }}
-              />
-            </Stack>
-            <Stack
-              sx={{
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                repeatOption
-              </Typography>
-              <Select
-                size='small'
-                sx={{backgroundColor: '#f5f5f5', width: 100}}
-                value={repeatOption}
-                onChange={(e) => {
-                  setRepeatOption(e.target.value);
-                }}>
-                <MenuItem value='X'>X</MenuItem>
-                <MenuItem value='0'>0</MenuItem>
-                <MenuItem value='1'>1</MenuItem>
-                <MenuItem value='2'>2</MenuItem>
-                <MenuItem value='3'>3</MenuItem>
-                <MenuItem value='4'>4</MenuItem>
-                <MenuItem value='5'>5</MenuItem>
-                <MenuItem value='6'>6</MenuItem>
-                <MenuItem value='7'>7</MenuItem>
-                <MenuItem value='8'>8</MenuItem>
-                <MenuItem value='9'>9</MenuItem>
-              </Select>
-            </Stack>
+                key={i}>
+                {renderComponentByType(p.name, i)}
+                <IconButton
+                  color='error'
+                  size='small'
+                  onClick={() => handleDeleteOptionalParam(i)}
+                  sx={{
+                    ml: 'auto',
+                    backgroundColor: '#cfcfcf',
+                    '&:hover': {backgroundColor: '#c7c1bd'},
+                    alignSelf: 'end',
+                    height: 30,
+                    width: 30,
+                  }}>
+                  <DeleteIcon sx={{color: '#424242'}} />
+                </IconButton>
+              </ListItem>
+            ))}
           </List>
         )}
         {tabValue === 2 && <LogDrawer />}

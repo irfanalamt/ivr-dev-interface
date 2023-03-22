@@ -1,6 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -38,19 +39,11 @@ const PlayConfirm = ({
   const [messageList, setMessageList] = useState(
     shape.userValues?.messageList ?? []
   );
+  const [optionalParam, setOptionalParam] = useState('');
+  const [addedOptionalParams, setAddedOptionalParams] = useState(
+    shape.userValues?.optionalParams ?? []
+  );
 
-  const [confirmOption, setConfirmOption] = useState(
-    shape.userValues?.params.confirmOption ?? ''
-  );
-  const [cancelOption, setCancelOption] = useState(
-    shape.userValues?.params.cancelOption ?? ''
-  );
-  const [confirmPrompt, setConfirmPrompt] = useState(
-    shape.userValues?.params.confirmPrompt ?? ''
-  );
-  const [cancelPrompt, setCancelPrompt] = useState(
-    shape.userValues?.params.cancelPrompt ?? ''
-  );
   const errors = useRef({});
 
   useEffect(() => {
@@ -61,6 +54,13 @@ const PlayConfirm = ({
     return () => clearTimeout(timeoutId);
   }, [successText]);
 
+  const optionalParamList = [
+    'confirmOption',
+    'cancelOption',
+    'confirmPrompt',
+    'cancelPrompt',
+  ];
+
   function handleSaveName() {
     if (errors.current.name) {
       setErrorText('Id not valid.');
@@ -69,7 +69,7 @@ const PlayConfirm = ({
     const validMessages = messageList.filter((m) => !m.error);
     shape.setUserValues({
       messageList: validMessages,
-      params: {confirmOption, cancelOption, confirmPrompt, cancelPrompt},
+      optionalParams: addedOptionalParams,
     });
     console.log('🔥🔥', messageList);
     shape.setText(name);
@@ -102,6 +102,82 @@ const PlayConfirm = ({
 
   function handleTabChange(e, newValue) {
     setTabValue(newValue);
+  }
+
+  function handleAddOptionalParam() {
+    if (!optionalParam) {
+      return;
+    }
+
+    const updatedOptionalParams = [
+      ...addedOptionalParams,
+      {name: optionalParam},
+    ];
+    setAddedOptionalParams(updatedOptionalParams);
+    setOptionalParam('');
+  }
+  function handleDeleteOptionalParam(index) {
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams.splice(index, 1);
+    setAddedOptionalParams(currentOptionalParams);
+  }
+
+  function handleOptionalParamFieldChange(e, index) {
+    const {value} = e.target;
+
+    const currentOptionalParams = [...addedOptionalParams];
+    currentOptionalParams[index].value = value;
+    setAddedOptionalParams(currentOptionalParams);
+  }
+
+  function renderComponentByType(param, index) {
+    switch (param) {
+      case 'cancelOption':
+      case 'confirmOption':
+        return (
+          <Stack>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+              {param}
+            </Typography>
+            <Select
+              sx={{backgroundColor: '#ededed'}}
+              value={addedOptionalParams[index].value ?? ''}
+              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              size='small'>
+              <MenuItem value='X'>X</MenuItem>
+              <MenuItem value='0'>0</MenuItem>
+              <MenuItem value='1'>1</MenuItem>
+              <MenuItem value='2'>2</MenuItem>
+              <MenuItem value='3'>3</MenuItem>
+              <MenuItem value='4'>4</MenuItem>
+              <MenuItem value='5'>5</MenuItem>
+              <MenuItem value='6'>6</MenuItem>
+              <MenuItem value='7'>7</MenuItem>
+              <MenuItem value='8'>8</MenuItem>
+              <MenuItem value='9'>9</MenuItem>
+            </Select>
+          </Stack>
+        );
+
+      case 'cancelPrompt':
+      case 'confirmPrompt':
+        return (
+          <Stack sx={{width: '100%', mr: 2}}>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+              {param}
+            </Typography>
+            <TextField
+              sx={{backgroundColor: '#ededed'}}
+              value={addedOptionalParams[index].value ?? ''}
+              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              size='small'
+            />
+          </Stack>
+        );
+
+      default:
+        return <Typography>{param}</Typography>;
+    }
   }
 
   return (
@@ -238,93 +314,69 @@ const PlayConfirm = ({
         )}
         {tabValue === 1 && (
           <List>
-            <Stack
-              sx={{
-                mt: 1,
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                confirmOption
-              </Typography>
-              <Select
-                value={confirmOption}
-                sx={{backgroundColor: '#f5f5f5', width: 100}}
-                onChange={(e) => setConfirmOption(e.target.value)}
-                size='small'>
-                <MenuItem value='X'>X</MenuItem>
-                <MenuItem value='0'>0</MenuItem>
-                <MenuItem value='1'>1</MenuItem>
-                <MenuItem value='2'>2</MenuItem>
-                <MenuItem value='3'>3</MenuItem>
-                <MenuItem value='4'>4</MenuItem>
-                <MenuItem value='5'>5</MenuItem>
-                <MenuItem value='6'>6</MenuItem>
-                <MenuItem value='7'>7</MenuItem>
-                <MenuItem value='8'>8</MenuItem>
-                <MenuItem value='9'>9</MenuItem>
-              </Select>
+            <Stack sx={{px: 2, py: 1, mb: 1}}>
+              <Typography>Optional Params</Typography>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Select
+                  labelId='select-label'
+                  value={optionalParam}
+                  onChange={(e) => setOptionalParam(e.target.value)}
+                  sx={{
+                    minWidth: 150,
+                    backgroundColor: '#f5f5f5',
+                  }}
+                  size='small'>
+                  {optionalParamList
+                    .filter(
+                      (p) =>
+                        !addedOptionalParams.some((object) => object.name === p)
+                    )
+                    .map((p, i) => (
+                      <MenuItem key={i} value={p}>
+                        {p}
+                      </MenuItem>
+                    ))}
+                </Select>
+                <Button
+                  sx={{
+                    ml: 2,
+                    backgroundColor: '#bdbdbd',
+                    color: 'black',
+                    '&:hover': {backgroundColor: '#9ccc65'},
+                  }}
+                  onClick={handleAddOptionalParam}
+                  disabled={!optionalParam}
+                  variant='contained'>
+                  Add
+                </Button>
+              </Box>
             </Stack>
-            <Stack
-              sx={{
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                cancelOption
-              </Typography>
-              <Select
-                value={cancelOption}
-                onChange={(e) => setCancelOption(e.target.value)}
-                sx={{backgroundColor: '#f5f5f5', width: 100}}
-                size='small'>
-                <MenuItem value='X'>X</MenuItem>
-                <MenuItem value='0'>0</MenuItem>
-                <MenuItem value='1'>1</MenuItem>
-                <MenuItem value='2'>2</MenuItem>
-                <MenuItem value='3'>3</MenuItem>
-                <MenuItem value='4'>4</MenuItem>
-                <MenuItem value='5'>5</MenuItem>
-                <MenuItem value='6'>6</MenuItem>
-                <MenuItem value='7'>7</MenuItem>
-                <MenuItem value='8'>8</MenuItem>
-                <MenuItem value='9'>9</MenuItem>
-              </Select>
-            </Stack>
-
-            <Stack
-              sx={{
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                confirmPrompt
-              </Typography>
-              <TextField
-                value={confirmPrompt}
-                onChange={(e) => setConfirmPrompt(e.target.value)}
-                sx={{backgroundColor: '#f5f5f5'}}
-                size='small'
-                fullWidth
-              />
-            </Stack>
-
-            <Stack
-              sx={{
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                cancelPrompt
-              </Typography>
-              <TextField
-                value={cancelPrompt}
-                onChange={(e) => setCancelPrompt(e.target.value)}
-                sx={{backgroundColor: '#f5f5f5'}}
-                size='small'
-                fullWidth
-              />
-            </Stack>
+            {addedOptionalParams.map((p, i) => (
+              <ListItem
+                sx={{
+                  py: 1,
+                  backgroundColor: '#e6e6e6',
+                  borderTop: i === 0 && '1px solid #bdbdbd',
+                  borderBottom: '1px solid #bdbdbd',
+                }}
+                key={i}>
+                {renderComponentByType(p.name, i)}
+                <IconButton
+                  color='error'
+                  size='small'
+                  onClick={() => handleDeleteOptionalParam(i)}
+                  sx={{
+                    ml: 'auto',
+                    backgroundColor: '#cfcfcf',
+                    '&:hover': {backgroundColor: '#c7c1bd'},
+                    alignSelf: 'end',
+                    height: 30,
+                    width: 30,
+                  }}>
+                  <DeleteIcon sx={{color: '#424242'}} />
+                </IconButton>
+              </ListItem>
+            ))}
           </List>
         )}
         {tabValue === 2 && <LogDrawer />}
