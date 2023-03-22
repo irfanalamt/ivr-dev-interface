@@ -33,8 +33,38 @@ const RunScript = ({
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [functionString, setFunctionString] = useState(
+    shape.userValues?.script || ''
+  );
+  const [isFunctionError, setIsFunctionError] = useState(false);
 
   const errors = useRef({});
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSuccessText('');
+    }, 2000);
+
+    return () => clearTimeout(timeoutId);
+  }, [successText]);
+
+  function handleSave() {
+    if (errors.current.name) {
+      setErrorText('Id not valid');
+      return;
+    }
+    shape.setText(name);
+    clearAndDraw();
+
+    if (isFunctionError) {
+      setSuccessText('');
+      setErrorText('Save failed. Script not valid.');
+    } else {
+      setErrorText('');
+      setSuccessText('Saved.');
+      shape.setUserValues({script: functionString});
+    }
+  }
 
   function handleNameChange(e) {
     const {value} = e.target;
@@ -50,12 +80,53 @@ const RunScript = ({
 
     const isUnique = isNameUnique(value, shape, shapes);
     if (!isUnique) {
-      setErrorText('Id not unique.');
+      setErrorText('Id not unique');
       errors.current.name = true;
     } else {
       setErrorText('');
       errors.current.name = undefined;
     }
+  }
+  function getUserVariablesString() {
+    const variables = userVariables.current
+      .map(
+        (userVariable) => `let $${userVariable.name} = '${userVariable.value}';`
+      )
+      .join(' ');
+
+    if (!variables) return '';
+
+    return variables;
+  }
+
+  function getLogCode() {
+    const logValidationString = `class log{
+static trace(message){}
+static info(message){}
+static error(message){}
+    }`;
+
+    return logValidationString;
+  }
+
+  function validateFunctionString(script) {
+    const variablesCode = getUserVariablesString();
+    const logCode = getLogCode();
+    const bottomCode = script;
+
+    try {
+      eval(variablesCode + logCode + bottomCode);
+    } catch (error) {
+      setIsFunctionError(true);
+      setSuccessText('');
+      setErrorText(error.message);
+      return false;
+    }
+    setIsFunctionError(false);
+    setErrorText('');
+    setSuccessText('script valid');
+
+    return true;
   }
 
   return (
@@ -137,7 +208,7 @@ const RunScript = ({
           <Typography sx={{ml: 2, mt: 1}} fontSize='large' variant='subtitle2'>
             ID
           </Typography>
-          <ListItem sx={{mt: -1}}>
+          <ListItem sx={{mt: -1, mb: 1}}>
             <TextField
               onChange={handleNameChange}
               value={name}
@@ -146,7 +217,7 @@ const RunScript = ({
               error={errors.current.name}
             />
             <Button
-              //   onClick={handleSave}
+              onClick={handleSave}
               sx={{ml: 2}}
               size='small'
               variant='contained'>
@@ -169,16 +240,26 @@ const RunScript = ({
             )}
           </ListItem>
         </Stack>
-        <Divider />
-        <ListItem sx={{px: 3, py: 2}}>
+
+        <ListItem sx={{px: 3, py: 1}}>
           <TextField
             sx={{
               backgroundColor: '#f5f5f5',
               fontFamily: 'monospace',
+              backgroundColor: isFunctionError
+                ? '#ffebee'
+                : functionString.length > 2 && '#f1f8e9',
             }}
+            placeholder='Enter JavaScript code here'
             multiline
             minRows={10}
             fullWidth
+            inputProps={{spellCheck: 'false'}}
+            value={functionString}
+            onChange={(e) => {
+              setFunctionString(e.target.value);
+              validateFunctionString(e.target.value);
+            }}
           />
         </ListItem>
       </Box>
