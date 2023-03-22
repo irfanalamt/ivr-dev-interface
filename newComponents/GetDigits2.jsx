@@ -182,7 +182,6 @@ const GetDigits = ({
               value={addedOptionalParams[index].value ?? ''}
               onChange={(e) => handleOptionalParamFieldChange(e, index)}
               size='small'>
-              <MenuItem value='X'>X</MenuItem>
               <MenuItem value='#'>#</MenuItem>
               <MenuItem value='*'>*</MenuItem>
               <MenuItem value='0'>0</MenuItem>

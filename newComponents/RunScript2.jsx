@@ -89,24 +89,19 @@ const RunScript = ({
   }
   function getUserVariablesString() {
     const variables = userVariables.current
-      .map(
-        (userVariable) => `let $${userVariable.name} = '${userVariable.value}';`
-      )
+      .map(({name, value}) => `let $${name} = '${value}';`)
       .join(' ');
 
-    if (!variables) return '';
-
-    return variables;
+    return variables || '';
   }
 
   function getLogCode() {
-    const logValidationString = `class log{
-static trace(message){}
-static info(message){}
-static error(message){}
-    }`;
-
-    return logValidationString;
+    return `
+  class log {
+    static trace(message) {}
+    static info(message) {}
+    static error(message) {}
+  }`;
   }
 
   function validateFunctionString(script) {
@@ -244,11 +239,8 @@ static error(message){}
         <ListItem sx={{px: 3, py: 1}}>
           <TextField
             sx={{
-              backgroundColor: '#f5f5f5',
               fontFamily: 'monospace',
-              backgroundColor: isFunctionError
-                ? '#ffebee'
-                : functionString.length > 2 && '#f1f8e9',
+              backgroundColor: isFunctionError ? '#ffebee' : '#f5f5f5',
             }}
             placeholder='Enter JavaScript code here'
             multiline

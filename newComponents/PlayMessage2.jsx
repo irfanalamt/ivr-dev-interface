@@ -171,7 +171,6 @@ const PlayMessage = ({
               value={addedOptionalParams[index].value ?? ''}
               onChange={(e) => handleOptionalParamFieldChange(e, index)}
               size='small'>
-              <MenuItem value='X'>X</MenuItem>
               <MenuItem value='0'>0</MenuItem>
               <MenuItem value='1'>1</MenuItem>
               <MenuItem value='2'>2</MenuItem>
@@ -182,6 +181,8 @@ const PlayMessage = ({
               <MenuItem value='7'>7</MenuItem>
               <MenuItem value='8'>8</MenuItem>
               <MenuItem value='9'>9</MenuItem>
+              <MenuItem value='#'>#</MenuItem>
+              <MenuItem value='*'>*</MenuItem>
             </Select>
           </Stack>
         );
