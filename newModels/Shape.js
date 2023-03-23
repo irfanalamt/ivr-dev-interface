@@ -149,6 +149,26 @@ class Shape {
     return newName;
   }
 
+  getPeekMenuContent() {
+    if (this.type === 'playMessage' || this.type === 'playConfirm') {
+      if (this.userValues?.messageList) {
+        return {id: this.text, messages: this.userValues?.messageList};
+      }
+    }
+
+    if (this.type === 'getDigits') {
+      if (this.userValues?.messageList) {
+        return {
+          id: this.text,
+          messages: this.userValues?.messageList,
+          result: this.userValues?.variableName,
+          minDigits: this.userValues?.params.minDigits,
+          maxDigits: this.userValues?.params.maxDigits,
+        };
+      }
+    }
+  }
+
   getBottomCoordinates() {
     return [this.x, this.y + this.height / 2];
   }
@@ -668,7 +688,7 @@ class Shape {
   }
 
   drawEndCircle(ctx) {
-    this.style = '#F8D7DA';
+    this.style = this.userValues?.type === 'transfer' ? '#66bb6a' : '#ef5350';
     const radius = Math.abs(this.width * 0.5);
     const x = this.x - radius;
     const y = this.y - radius;

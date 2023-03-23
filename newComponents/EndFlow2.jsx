@@ -145,7 +145,7 @@ const EndFlow = ({shape, handleCloseDrawer, openVariableManager}) => {
                 Transfer Point
               </Typography>
               <TextField
-                sx={{width: 180}}
+                sx={{width: 180, backgroundColor: '#f5f5f5'}}
                 size='small'
                 value={transferPoint}
                 onChange={(e) => setTransferPoint(e.target.value)}
