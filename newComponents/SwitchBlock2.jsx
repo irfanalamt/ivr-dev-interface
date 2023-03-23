@@ -75,13 +75,17 @@ const SwitchBlock = ({
     shape.setText(name);
     clearAndDraw();
 
-    shape.setUserValues({
-      actions,
-      defaultAction,
-    });
-
-    setErrorText('');
-    setSuccessText('Saved.');
+    if (actions.some((a) => a.conditionError || a.actionError)) {
+      setSuccessText('');
+      setErrorText('Save failed. Validation error.');
+    } else {
+      shape.setUserValues({
+        actions,
+        defaultAction,
+      });
+      setErrorText('');
+      setSuccessText('Saved.');
+    }
   }
 
   function handleAddAction() {
@@ -105,6 +109,68 @@ const SwitchBlock = ({
     const updatedActions = [...actions];
     updatedActions.splice(index, 1);
     setActions(updatedActions);
+  }
+
+  function setConditionError(message, index) {
+    const updatedActions = [...actions];
+    updatedActions[index].conditionError = message;
+    setActions(updatedActions);
+  }
+  function clearConditionError(index) {
+    const updatedActions = [...actions];
+    updatedActions[index].conditionError = undefined;
+    setActions(updatedActions);
+  }
+  function setActionError(message, index) {
+    const updatedActions = [...actions];
+    updatedActions[index].actionError = message;
+    setActions(updatedActions);
+  }
+  function clearActionError(index) {
+    const updatedActions = [...actions];
+    updatedActions[index].actionError = undefined;
+    setActions(updatedActions);
+  }
+  function getUserVariablesString() {
+    const variables = userVariables.current
+      .map(
+        (userVariable) =>
+          `let $${userVariable.name} = '${userVariable.defaultValue}';`
+      )
+      .join(' ');
+
+    if (!variables) return '';
+
+    return variables;
+  }
+
+  function validateCondition(value, index) {
+    if (value.length === 0) {
+      clearConditionError(index);
+      return;
+    }
+    if (value.length < 2) return;
+
+    const topCode = getUserVariablesString();
+    const bottomCode = `let x = ${value};`;
+
+    try {
+      eval(topCode + bottomCode);
+      clearConditionError(index);
+    } catch (error) {
+      setConditionError(error.message, index);
+    }
+  }
+
+  function validateAction(value, index) {
+    const duplicateIndex = actions.findIndex(
+      (action, i) => action.action === value && i !== index
+    );
+    if (duplicateIndex >= 0) {
+      setActionError('action not unique', index);
+    } else {
+      clearActionError(index);
+    }
   }
 
   return (
@@ -208,9 +274,7 @@ const SwitchBlock = ({
               </Typography>
             )}
             {!successText && (
-              <Typography
-                fontSize='small'
-                sx={{mt: -1, color: 'red', mx: 'auto'}}>
+              <Typography sx={{mt: -1, color: 'red', mx: 'auto'}}>
                 {errorText}
               </Typography>
             )}
@@ -242,12 +306,17 @@ const SwitchBlock = ({
                   sx={{backgroundColor: '#f5f5f5', width: 350}}
                   size='small'
                   value={row.condition}
-                  onChange={(e) =>
-                    handleActionFieldChange('condition', e.target.value, i)
-                  }
+                  error={Boolean(row.conditionError)}
+                  onChange={(e) => {
+                    handleActionFieldChange('condition', e.target.value, i);
+                    validateCondition(e.target.value, i);
+                  }}
                 />
+                <Typography sx={{color: 'red', mx: 'auto'}}>
+                  {row.conditionError}&nbsp;
+                </Typography>
               </Stack>
-              <Stack sx={{mt: 1}}>
+              <Stack>
                 <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                   Action
                 </Typography>
@@ -260,9 +329,11 @@ const SwitchBlock = ({
                     }}
                     size='small'
                     value={row.action}
-                    onChange={(e) =>
-                      handleActionFieldChange('action', e.target.value, i)
-                    }
+                    error={Boolean(row.actionError)}
+                    onChange={(e) => {
+                      handleActionFieldChange('action', e.target.value, i);
+                      validateAction(e.target.value, i);
+                    }}
                   />
 
                   {i > 0 && (
@@ -282,8 +353,11 @@ const SwitchBlock = ({
                     </IconButton>
                   )}
                 </Box>
+                <Typography sx={{color: 'red', mx: 'auto'}}>
+                  {row.actionError}&nbsp;
+                </Typography>
               </Stack>
-              <Divider sx={{mt: 4}} />
+              <Divider sx={{mt: 1}} />
             </Stack>
           ))}
           <ListItem>
