@@ -3,6 +3,7 @@ import Drawer from '@mui/material/Drawer';
 import CallApi from '../newComponents/CallApi2';
 import EndFlow from '../newComponents/EndFlow2';
 import GetDigits from '../newComponents/GetDigits2';
+import Jumper from '../newComponents/Jumper2';
 import PlayConfirm from '../newComponents/PlayConfirm';
 import PlayMenu from '../newComponents/PlayMenu2';
 import PlayMessage from '../newComponents/PlayMessage2';
@@ -122,6 +123,15 @@ const ElementDrawer = ({
       case 'endFlow':
         return (
           <EndFlow
+            shape={shape}
+            handleCloseDrawer={handleCloseDrawer}
+            openVariableManager={openVariableManager}
+          />
+        );
+
+      case 'jumper':
+        return (
+          <Jumper
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             openVariableManager={openVariableManager}

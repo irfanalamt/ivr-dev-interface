@@ -311,6 +311,7 @@ const SwitchBlock = ({
                     handleActionFieldChange('condition', e.target.value, i);
                     validateCondition(e.target.value, i);
                   }}
+                  multiline
                 />
                 <Typography sx={{color: 'red', mx: 'auto'}}>
                   {row.conditionError}&nbsp;

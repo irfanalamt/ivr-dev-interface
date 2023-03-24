@@ -3,7 +3,7 @@ import ContentCutIcon from '@mui/icons-material/ContentCut';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
-import {Menu, MenuItem, Typography} from '@mui/material';
+import {Menu, MenuItem, Paper, Stack, Typography} from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import Shape from '../newModels/Shape';
 import {
@@ -12,7 +12,6 @@ import {
   drawGridLines2,
   drawMultiSelectRect,
   getConnectingLines,
-  getScrollbarWidth,
   isPointInRectangle,
 } from '../src/myFunctions';
 import ElementDrawer from './ElementDrawer';
@@ -26,6 +25,7 @@ const CanvasTest = ({
   const [shapes, setShapes] = useState([]);
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
+  const [openPeekMenu, setOpenPeekMenu] = useState(false);
   const [connectingMode, setConnectingMode] = useState(0);
 
   const canvasRef = useRef(null);
@@ -61,9 +61,10 @@ const CanvasTest = ({
   const drawnMultiSelectRectangle = useRef(null);
 
   const multiSelectDragStart = useRef(null);
+  const peekShape = useRef(null);
 
-  let startX = 0,
-    startY = 0;
+  const startX = useRef(0);
+  const startY = useRef(0);
 
   useEffect(() => {
     const context = canvasRef.current.getContext('2d');
@@ -166,8 +167,8 @@ const CanvasTest = ({
 
         isDragging.current = true;
         currentShape.current = shape;
-        startX = realX;
-        startY = realY;
+        startX.current = realX;
+        startY.current = realY;
         return;
       }
     }
@@ -178,8 +179,8 @@ const CanvasTest = ({
       if (connectingMode === 0) {
         // for multi select
         isMultiSelectMode.current = true;
-        startX = realX;
-        startY = realY;
+        startX.current = realX;
+        startY.current = realY;
       }
     }
   }
@@ -237,7 +238,7 @@ const CanvasTest = ({
       // Swap coordinates if width or height is negative
       if (width < 0) {
         x1 = x + width;
-        x2 = startX;
+        x2 = startX.current;
       }
       if (height < 0) {
         y1 = y + height;
@@ -281,8 +282,8 @@ const CanvasTest = ({
 
     if (isDragging.current) {
       const draggingShape = currentShape.current;
-      const dx = realX - startX;
-      const dy = realY - startY;
+      const dx = realX - startX.current;
+      const dy = realY - startY.current;
 
       const MIN_X = 85;
       const MAX_X = canvasRef.current.width;
@@ -301,8 +302,8 @@ const CanvasTest = ({
         draggingShape.y += dy || 0;
 
         clearAndDraw();
-        startX = realX;
-        startY = realY;
+        startX.current = realX;
+        startY.current = realY;
       }
       return;
     }
@@ -375,27 +376,29 @@ const CanvasTest = ({
       // Update the drag start position
       multiSelectDragStart.current.x = realX;
       multiSelectDragStart.current.y = realY;
+      return;
     }
 
     if (isMultiSelectMode.current) {
       if (!drawnMultiSelectRectangle.current) {
         drawnMultiSelectRectangle.current = {
-          x: startX,
-          y: startY,
-          width: realX - startX,
-          height: realY - startY,
+          x: startX.current,
+          y: startY.current,
+          width: realX - startX.current,
+          height: realY - startY.current,
         };
       } else {
         // rectangle already there
 
-        drawnMultiSelectRectangle.current.x = startX;
-        drawnMultiSelectRectangle.current.y = startY;
-        drawnMultiSelectRectangle.current.width = realX - startX;
+        drawnMultiSelectRectangle.current.x = startX.current;
+        drawnMultiSelectRectangle.current.y = startY.current;
+        drawnMultiSelectRectangle.current.width = realX - startX.current;
 
-        drawnMultiSelectRectangle.current.height = realY - startY;
+        drawnMultiSelectRectangle.current.height = realY - startY.current;
       }
 
       clearAndDraw();
+      return;
     }
 
     if (connectingMode == 1) {
@@ -415,9 +418,12 @@ const CanvasTest = ({
     if (connectingMode === 0) {
       // change cursor when in element and near exit point
       canvasRef.current.style.cursor = 'default';
+      setOpenPeekMenu(false);
       for (const shape of shapes) {
         if (shape.isMouseInShape(realX, realY)) {
           canvasRef.current.style.cursor = 'pointer';
+          // peekShape.current = shape;
+          setOpenPeekMenu(shape.getPeekMenuContent());
           if (shape.isMouseNearExitPoint(realX, realY)) {
             canvasRef.current.style.cursor = 'crosshair';
           }
@@ -796,6 +802,76 @@ const CanvasTest = ({
         userVariables={userVariables}
         openVariableManager={openVariableManager}
       />
+      {openPeekMenu && (
+        <Paper
+          elevation={3}
+          sx={{
+            position: 'fixed',
+            top: 60,
+            right: 10,
+            px: 2,
+            py: 1,
+            backgroundColor: '#BDC3C7',
+            color: '#34495E',
+          }}>
+          <Stack sx={{alignItems: 'center'}} direction='row'>
+            <Typography sx={{fontSize: 'small', mr: 0.5}} variant='subtitle2'>
+              ID:
+            </Typography>
+            <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
+              {openPeekMenu.id}
+            </Typography>
+          </Stack>
+          {openPeekMenu.result && (
+            <Stack sx={{alignItems: 'center'}} direction='row'>
+              <Typography sx={{fontSize: 'small', mr: 0.5}} variant='subtitle2'>
+                Result:
+              </Typography>
+              <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
+                {openPeekMenu.result}
+              </Typography>
+            </Stack>
+          )}
+          {openPeekMenu.minDigits && (
+            <>
+              <Stack sx={{alignItems: 'center'}} direction='row'>
+                <Typography
+                  sx={{fontSize: 'small', mr: 0.5}}
+                  variant='subtitle2'>
+                  MinDigits:
+                </Typography>
+                <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
+                  {openPeekMenu.minDigits}
+                </Typography>
+              </Stack>
+              <Stack sx={{alignItems: 'center'}} direction='row'>
+                <Typography
+                  sx={{fontSize: 'small', mr: 0.5}}
+                  variant='subtitle2'>
+                  MaxDigits:
+                </Typography>
+                <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
+                  {openPeekMenu.maxDigits}
+                </Typography>
+              </Stack>
+            </>
+          )}
+          <Stack>
+            {openPeekMenu.messages?.map((m, i) => (
+              <Stack key={i} sx={{alignItems: 'center'}} direction='row'>
+                <Typography
+                  sx={{fontSize: 'small', mr: 0.5}}
+                  variant='subtitle2'>
+                  {m.type}:
+                </Typography>
+                <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
+                  {m.item}
+                </Typography>
+              </Stack>
+            ))}
+          </Stack>
+        </Paper>
+      )}
     </>
   );
 };
