@@ -269,13 +269,33 @@ class Shape {
 
     if (['endFlow', 'connector', 'jumper'].includes(this.type)) {
       [exitX, exitY] = [this.x, this.y];
+      const distance = Math.hypot(x - exitX, y - exitY);
+
+      return distance <= 4
+        ? {totalPoints: 1, position: 1, name: 'default'}
+        : false;
     }
-
     let exitPointCount = 0;
-
     if (this.type === 'playMenu') {
-      exitPointCount =
-        this.userValues?.items?.filter((item) => !item.isDefault)?.length || 0;
+      const filteredItems = this.userValues?.items?.filter(
+        (item) => !item.isDefault
+      );
+      exitPointCount = filteredItems?.length || 0;
+
+      if (exitPointCount == 1) {
+        [exitX, exitY] = this.getBottomCoordinates();
+        const distance = Math.hypot(x - exitX, y - exitY);
+
+        return distance <= 4
+          ? {
+              totalPoints: 1,
+              position: 1,
+              name: filteredItems[0].action,
+              exitX,
+              exitY,
+            }
+          : false;
+      }
     } else if (this.type === 'switch') {
       exitPointCount = (this.userValues?.actions?.length || 0) + 1;
     } else {
@@ -287,7 +307,7 @@ class Shape {
       const distance = Math.hypot(x - exitX, y - exitY);
 
       return distance <= 4
-        ? {totalPoints: 1, position: 1, name: 'default'}
+        ? {totalPoints: 1, position: 1, name: 'default', exitX, exitY}
         : false;
     }
 
@@ -323,6 +343,8 @@ class Shape {
           totalPoints: exitPointCount,
           position: minPosition,
           name,
+          exitX,
+          exitY,
         };
       }
     }

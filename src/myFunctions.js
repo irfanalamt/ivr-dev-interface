@@ -204,23 +204,63 @@ function getConnectingLines(shapes) {
   const connections = [];
 
   for (const shape of shapes) {
-    if (!shape.nextItem) {
-      continue;
+    if (shape.type === 'playMenu') {
+      const filteredItems = shape.userValues?.items?.filter(
+        (item) => !item.isDefault
+      );
+
+      if (!filteredItems?.length) continue;
+
+      for (const [index, item] of filteredItems.entries()) {
+        const shape2 = item.nextItem;
+        if (!shape2) continue;
+
+        const [x1, y1] = shape.getBottomCoordinatesMultiExit(
+          index + 1,
+          filteredItems.length
+        );
+        const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+
+        connections.push({x1, y1, x2, y2});
+      }
+    } else if (shape.type === 'switch') {
+      const items = shape.userValues?.actions ?? [];
+
+      if (shape.userValues?.defaultActionNextItem) {
+        const [x1, y1] = shape.getBottomCoordinatesMultiExit(
+          items.length + 1,
+          items.length + 1
+        );
+        const [x2, y2] =
+          shape.userValues.defaultActionNextItem.getRelativeEntryCoordinates(
+            shape
+          );
+
+        connections.push({x1, y1, x2, y2});
+      }
+
+      for (const [index, item] of items.entries()) {
+        const shape2 = item.nextItem;
+        if (!shape2) continue;
+
+        const [x1, y1] = shape.getBottomCoordinatesMultiExit(
+          index + 1,
+          items.length + 1
+        );
+        const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+
+        connections.push({x1, y1, x2, y2});
+      }
+    } else {
+      const shape2 = shape.nextItem;
+      if (!shape2) {
+        continue;
+      }
+      const [x1, y1] = shape.getRelativeExitCoordinates(shape2);
+      const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+
+      connections.push({x1, y1, x2, y2});
     }
-
-    const shape2 = shape.nextItem;
-
-    if (!shape2) {
-      continue;
-    }
-
-    // const [x1, y1] = shape.getBottomCoordinates();
-    // const [x2, y2] = shape2.getTopCoordinates();
-
-    const [x1, y1] = shape.getRelativeExitCoordinates(shape2);
-    const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
-
-    connections.push({x1, y1, x2, y2});
   }
 
   return modifyConnections(connections);

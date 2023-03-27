@@ -28,6 +28,7 @@ const CanvasTest = ({
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
   const [openPeekMenu, setOpenPeekMenu] = useState(false);
   const [connectingMode, setConnectingMode] = useState(0);
+  const [exitPointTooltip, setExitPointTooltip] = useState(false);
 
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -205,11 +206,7 @@ const CanvasTest = ({
           if (
             connectingShapes.current.shape2 !== connectingShapes.current.shape1
           ) {
-            //check if first shape is multi exit; else do this
-
-            connectingShapes.current.shape1.nextItem =
-              connectingShapes.current.shape2;
-            console.log(connectingShapes.current.exitPoint);
+            connectShapes();
           }
 
           setConnectingMode(0);
@@ -218,9 +215,11 @@ const CanvasTest = ({
           return;
         }
       });
+      // reset selection
+      if (connectingShapes.current) {
+        resetConnection();
+      }
 
-      if (connectingShapes.current)
-        connectingShapes.current.shape1.nextItem = null;
       setConnectingMode(0);
       connectingShapes.current = null;
     }
@@ -274,6 +273,7 @@ const CanvasTest = ({
     const {clientX, clientY} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
     setOpenPeekMenu(false);
+    setExitPointTooltip(false);
 
     if (selectedItemToolbar) {
       clearAndDraw();
@@ -409,6 +409,11 @@ const CanvasTest = ({
       let x1, y1;
       if (['connector', 'endFlow', 'jumper'].includes(shape1.type)) {
         [x1, y1] = shape1.getCircularCoordinates(realX, realY);
+      } else if (shape1.type === 'playMenu' || shape1.type === 'switch') {
+        [x1, y1] = [
+          connectingShapes.current.exitPoint.exitX,
+          connectingShapes.current.exitPoint.exitY,
+        ];
       } else {
         [x1, y1] = shape1.getBottomCoordinates();
       }
@@ -429,11 +434,86 @@ const CanvasTest = ({
           const exitPoint = shape.isMouseNearExitPoint(realX, realY);
           if (exitPoint) {
             canvasRef.current.style.cursor = 'crosshair';
+            if (shape.type == 'playMenu' || shape.type == 'switch') {
+              setExitPointTooltip({
+                text: exitPoint.name,
+                mouseX: clientX,
+                mouseY: clientY + 20,
+              });
+            }
           }
 
           break;
         }
       }
+    }
+  }
+
+  function resetConnection() {
+    const {shape1} = connectingShapes.current;
+
+    if (shape1.type === 'playMenu') {
+      const exitPointName = connectingShapes.current.exitPoint.name;
+
+      const index = shape1.userValues?.items.findIndex(
+        (item) => item.action === exitPointName
+      );
+
+      if (index !== -1) {
+        shape1.userValues.items[index].nextItem = undefined;
+      }
+    } else if (shape1.type === 'switch') {
+      const {exitPoint} = connectingShapes.current;
+
+      if (exitPoint.position === exitPoint.totalPoints) {
+        shape1.userValues.defaultActionNextItem = undefined;
+      } else {
+        const exitPointName = exitPoint.name;
+
+        const index = shape1.userValues.actions.findIndex(
+          (a) => a.action === exitPointName
+        );
+
+        if (index !== -1) {
+          shape1.userValues.actions[index].nextItem = undefined;
+        }
+      }
+    } else {
+      shape1.nextItem = undefined;
+    }
+  }
+
+  function connectShapes() {
+    const {shape1, shape2} = connectingShapes.current;
+
+    if (shape1.type === 'playMenu') {
+      const exitPointName = connectingShapes.current.exitPoint.name;
+
+      const index = shape1.userValues?.items.findIndex(
+        (item) => item.action === exitPointName
+      );
+
+      if (index !== -1) {
+        shape1.userValues.items[index].nextItem = shape2;
+      }
+    } else if (shape1.type === 'switch') {
+      const {exitPoint} = connectingShapes.current;
+
+      if (exitPoint.position === exitPoint.totalPoints) {
+        shape1.userValues.defaultActionNextItem = shape2;
+      } else {
+        const exitPointName = exitPoint.name;
+
+        const index = shape1.userValues.actions.findIndex(
+          (a) => a.action === exitPointName
+        );
+
+        if (index !== -1) {
+          shape1.userValues.actions[index].nextItem = shape2;
+        }
+      }
+    } else {
+      shape1.nextItem = shape2;
     }
   }
 
@@ -823,6 +903,20 @@ const CanvasTest = ({
         openVariableManager={openVariableManager}
       />
       {openPeekMenu && <PeekMenu shape={openPeekMenu} />}
+      {exitPointTooltip && (
+        <Typography
+          sx={{
+            position: 'absolute',
+            top: exitPointTooltip.mouseY,
+            left: exitPointTooltip.mouseX,
+            px: 1,
+            backgroundColor: '#fdf5ef',
+            fontSize: 13,
+          }}
+          variant='caption'>
+          {exitPointTooltip.text}
+        </Typography>
+      )}
     </>
   );
 };
