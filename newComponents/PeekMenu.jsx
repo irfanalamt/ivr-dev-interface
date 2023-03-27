@@ -10,21 +10,19 @@ const PeekMenu = ({shape}) => {
         right: 10,
         px: 2,
         py: 1,
-        backgroundColor: '#fdf5ef',
-        color: 'black',
+        backgroundColor: '#cccccc',
+        color: '#000000',
         wordWrap: 'break-word',
       }}>
-      <Stack spacing={-0.4}>
+      <Stack spacing={-0.3}>
         {shape.userValues?.variableName ? (
-          <Typography sx={{fontSize: 'small'}} variant='subtitle2'>
+          <Typography variant='subtitle2'>
             {shape.userValues?.variableName} = getDigits[
             {`${shape.userValues?.params.minDigits}-${shape.userValues?.params.maxDigits}`}
             ]
           </Typography>
         ) : (
-          <Typography sx={{fontSize: 'small'}} variant='subtitle2'>
-            {shape.type}
-          </Typography>
+          <Typography variant='subtitle2'>{shape.type}</Typography>
         )}
         {['playMessage', 'playConfirm', 'getDigits'].includes(shape.type) && (
           <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
@@ -34,30 +32,27 @@ const PeekMenu = ({shape}) => {
         {shape.type === 'playMenu' &&
           shape.userValues?.items.map((m, i) => (
             <Box sx={{display: 'flex', alignItems: 'center'}} key={i}>
-              <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                {'['}
-              </Typography>
-              <Typography sx={{fontSize: 'small'}} variant='subtitle2'>
-                {`${m.digit}`}&nbsp;
+              <Typography sx={{fontSize: 'small', fontWeight: 'bold'}}>
+                {`${m.digit}: `}&nbsp;
               </Typography>
               <Typography sx={{fontSize: 'small'}} variant='subtitle2'>
                 {`${m.action}`}&nbsp;
               </Typography>
               <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                {` ${m.prompt}]`}
+                {` '${m.prompt}'`}
               </Typography>
             </Box>
           ))}
         {shape.type === 'switch' &&
           shape.userValues?.actions.map((a, i) => (
             <Box sx={{display: 'flex', alignItems: 'center'}} key={i}>
-              <Typography sx={{fontSize: 'small'}} variant='subtitle2'>
+              <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
                 {`${a.action}:`}&nbsp;
               </Typography>
               <Typography
                 key={i}
                 sx={{fontSize: 'small'}}
-                variant='subtitle1'>{` ${a.condition}`}</Typography>
+                variant='subtitle2'>{` ${a.condition}`}</Typography>
             </Box>
           ))}
       </Stack>

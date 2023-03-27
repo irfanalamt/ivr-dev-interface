@@ -271,30 +271,40 @@ class Shape {
       [exitX, exitY] = [this.x, this.y];
       const distance = Math.hypot(x - exitX, y - exitY);
 
-      return distance <= 4
-        ? {totalPoints: 1, position: 1, name: 'default'}
-        : false;
+      if (distance <= 4) {
+        return {
+          totalPoints: 1,
+          position: 1,
+          name: 'default',
+        };
+      } else {
+        return false;
+      }
     }
+
     let exitPointCount = 0;
+
     if (this.type === 'playMenu') {
       const filteredItems = this.userValues?.items?.filter(
         (item) => !item.isDefault
       );
       exitPointCount = filteredItems?.length || 0;
 
-      if (exitPointCount == 1) {
+      if (exitPointCount === 1) {
         [exitX, exitY] = this.getBottomCoordinates();
         const distance = Math.hypot(x - exitX, y - exitY);
 
-        return distance <= 4
-          ? {
-              totalPoints: 1,
-              position: 1,
-              name: filteredItems[0].action,
-              exitX,
-              exitY,
-            }
-          : false;
+        if (distance <= 4) {
+          return {
+            totalPoints: 1,
+            position: 1,
+            name: filteredItems[0].action,
+            exitX,
+            exitY,
+          };
+        } else {
+          return false;
+        }
       }
     } else if (this.type === 'switch') {
       exitPointCount = (this.userValues?.actions?.length || 0) + 1;
@@ -306,9 +316,17 @@ class Shape {
       [exitX, exitY] = this.getBottomCoordinates();
       const distance = Math.hypot(x - exitX, y - exitY);
 
-      return distance <= 4
-        ? {totalPoints: 1, position: 1, name: 'default', exitX, exitY}
-        : false;
+      if (distance <= 4) {
+        return {
+          totalPoints: 1,
+          position: 1,
+          name: 'default',
+          exitX,
+          exitY,
+        };
+      } else {
+        return false;
+      }
     }
 
     if (exitPointCount > 1) {
@@ -321,7 +339,6 @@ class Shape {
           i,
           exitPointCount
         );
-
         const distance = Math.hypot(x - pointX, y - pointY);
 
         if (distance < minDistance) {
@@ -339,6 +356,7 @@ class Shape {
           this.type === 'switch' && minPosition === exitPointCount
             ? 'default'
             : this.getExitPointNameAtPosition(minPosition);
+
         return {
           totalPoints: exitPointCount,
           position: minPosition,
@@ -346,6 +364,8 @@ class Shape {
           exitX,
           exitY,
         };
+      } else {
+        return false;
       }
     }
 

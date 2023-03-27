@@ -518,18 +518,26 @@ const CanvasTest = ({
   }
 
   function shouldDisplayPeekMenu(shape) {
-    if (['playMessage', 'playConfirm', 'getDigits'].includes(shape.type)) {
-      if (shape.userValues?.messageList.length > 0) {
-        setOpenPeekMenu(shape);
-      }
-    } else {
-      if (shape.type === 'playMenu') {
-        if (shape.userValues?.items.length > 0) setOpenPeekMenu(shape);
-      } else if (shape.type === 'switch') {
-        if (shape.userValues?.actions.length > 0) setOpenPeekMenu(shape);
-      } else {
-        setOpenPeekMenu(shape);
-      }
+    if (['setParams', 'runScript', 'connector'].includes(shape.type)) {
+      return;
+    }
+
+    if (
+      ['playMessage', 'playConfirm', 'getDigits'].includes(shape.type) &&
+      shape.userValues?.messageList.length > 0
+    ) {
+      setOpenPeekMenu(shape);
+      return;
+    }
+
+    if (shape.type === 'playMenu' && shape.userValues?.items.length > 0) {
+      setOpenPeekMenu(shape);
+      return;
+    }
+
+    if (shape.type === 'switch' && shape.userValues?.actions.length > 0) {
+      setOpenPeekMenu(shape);
+      return;
     }
   }
 
