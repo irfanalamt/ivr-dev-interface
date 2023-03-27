@@ -318,9 +318,9 @@ const SwitchBlock = ({
                 </Typography>
               </Stack>
               <Stack>
-                <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                {/* <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                   Action
-                </Typography>
+                </Typography> */}
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
                   <TextField
                     sx={{
@@ -328,6 +328,7 @@ const SwitchBlock = ({
                       backgroundColor: '#f5f5f5',
                       width: 200,
                     }}
+                    placeholder='action'
                     size='small'
                     value={row.action}
                     error={Boolean(row.actionError)}

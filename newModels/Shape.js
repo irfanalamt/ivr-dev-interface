@@ -149,36 +149,33 @@ class Shape {
     return newName;
   }
 
-  getPeekMenuContent() {
-    if (this.type === 'playMessage' || this.type === 'playConfirm') {
-      if (this.userValues?.messageList) {
-        return {id: this.text, messages: this.userValues?.messageList};
-      }
-    }
-
-    if (this.type === 'getDigits') {
-      if (this.userValues?.messageList) {
-        return {
-          id: this.text,
-          messages: this.userValues?.messageList,
-          result: this.userValues?.variableName,
-          minDigits: this.userValues?.params.minDigits,
-          maxDigits: this.userValues?.params.maxDigits,
-        };
-      }
-    }
-  }
-
   getBottomCoordinates() {
     return [this.x, this.y + this.height / 2];
+  }
+  getBottomCoordinatesMultiExit(position, totalPoints) {
+    const SPACING = 20;
+
+    const newXPosition = this.x + (position - (totalPoints + 1) / 2) * SPACING;
+
+    const newYPosition = this.y + this.height / 2;
+
+    return [newXPosition, newYPosition];
   }
   getTopCoordinates() {
     return [this.x, this.y - this.height / 2];
   }
   getLeftCoordinates() {
+    if (this.type === 'switch') {
+      return [this.x - this.width / 2 + this.height / 4, this.y];
+    }
+
     return [this.x - this.width / 2, this.y];
   }
   getRightCoordinates() {
+    if (this.type === 'switch') {
+      return [this.x + this.width / 2 - this.height / 4, this.y];
+    }
+
     return [this.x + this.width / 2, this.y];
   }
 
@@ -269,24 +266,88 @@ class Shape {
 
   isMouseNearExitPoint(x, y) {
     let exitX, exitY;
+
     if (['endFlow', 'connector', 'jumper'].includes(this.type)) {
       [exitX, exitY] = [this.x, this.y];
-    } else {
-      // if true return {totalPoints:1,position:1,name:'default}
-      // starting from 1
-      // adjust for  menu, switch
-
-      [exitX, exitY] = this.getBottomCoordinates();
     }
 
-    // Calculate distance using the Pythagorean theorem
-    const distance = Math.hypot(x - exitX, y - exitY);
+    let exitPointCount = 0;
 
-    // Return an object with information about the exit point if the distance is less than or equal to 4, otherwise return false
-    return distance <= 4
-      ? {totalPoints: 1, position: 1, name: 'default'}
-      : false;
+    if (this.type === 'playMenu') {
+      exitPointCount =
+        this.userValues?.items?.filter((item) => !item.isDefault)?.length || 0;
+    } else if (this.type === 'switch') {
+      exitPointCount = (this.userValues?.actions?.length || 0) + 1;
+    } else {
+      exitPointCount = 1;
+    }
+
+    if (exitPointCount === 1) {
+      [exitX, exitY] = this.getBottomCoordinates();
+      const distance = Math.hypot(x - exitX, y - exitY);
+
+      return distance <= 4
+        ? {totalPoints: 1, position: 1, name: 'default'}
+        : false;
+    }
+
+    if (exitPointCount > 1) {
+      let minDistance = Infinity;
+      let minPoint = null;
+      let minPosition = null;
+
+      for (let i = 1; i <= exitPointCount; i++) {
+        const [pointX, pointY] = this.getBottomCoordinatesMultiExit(
+          i,
+          exitPointCount
+        );
+
+        const distance = Math.hypot(x - pointX, y - pointY);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          minPoint = [pointX, pointY];
+          minPosition = i;
+        }
+      }
+
+      [exitX, exitY] = minPoint;
+      const distance = Math.hypot(x - exitX, y - exitY);
+
+      if (distance <= 4) {
+        const name =
+          this.type === 'switch' && minPosition === exitPointCount
+            ? 'default'
+            : this.getExitPointNameAtPosition(minPosition);
+        return {
+          totalPoints: exitPointCount,
+          position: minPosition,
+          name,
+        };
+      }
+    }
+
+    return false;
   }
+
+  getExitPointNameAtPosition(position) {
+    // Position starts from 1.
+    const {type, userValues} = this;
+
+    if (type === 'playMenu') {
+      const filteredItems = userValues?.items.filter((item) => !item.isDefault);
+      const selectedAction = filteredItems?.[position - 1]?.action;
+      return selectedAction ?? null;
+    }
+
+    if (type === 'switch') {
+      const selectedAction = userValues?.actions?.[position - 1]?.action;
+      return selectedAction ?? null;
+    }
+
+    return null;
+  }
+
   setUserValues(userValues) {
     this.userValues = {...userValues};
   }
@@ -336,21 +397,42 @@ class Shape {
 
   drawDotsTopAndBottom(ctx) {
     const dotRadius = 1.9;
-    const topCoordinates = this.getTopCoordinates();
-    const bottomCoordinates = this.getBottomCoordinates();
-
     ctx.fillStyle = this.style;
 
     // Draw top dot
     ctx.beginPath();
-    ctx.arc(...topCoordinates, dotRadius, 0, 2 * Math.PI);
+    ctx.arc(...this.getTopCoordinates(), dotRadius, 0, 2 * Math.PI);
     ctx.fill();
 
+    // Draw bottom dots
+    let exitPointCount = 0;
+    if (this.type === 'playMenu') {
+      exitPointCount = this.userValues?.items.filter(
+        (item) => !item.isDefault
+      ).length;
+    } else if (this.type === 'switch') {
+      exitPointCount = this.userValues?.actions.length + 1;
+    } else {
+      exitPointCount = 1; // single exit point only
+    }
+
     ctx.fillStyle = '#0d5bdd';
-    // Draw bottom dot
-    ctx.beginPath();
-    ctx.arc(...bottomCoordinates, dotRadius * 2, 0, 2 * Math.PI);
-    ctx.fill();
+    if (exitPointCount === 1) {
+      ctx.beginPath();
+      ctx.arc(...this.getBottomCoordinates(), dotRadius * 2, 0, 2 * Math.PI);
+      ctx.fill();
+    } else if (exitPointCount > 1) {
+      for (let i = 1; i <= exitPointCount; i++) {
+        ctx.beginPath();
+        ctx.arc(
+          ...this.getBottomCoordinatesMultiExit(i, exitPointCount),
+          dotRadius * 2,
+          0,
+          2 * Math.PI
+        );
+        ctx.fill();
+      }
+    }
   }
 
   drawShape(ctx) {

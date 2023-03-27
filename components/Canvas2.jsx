@@ -5,6 +5,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {Menu, MenuItem, Paper, Stack, Typography} from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
+import PeekMenu from '../newComponents/PeekMenu';
 import Shape from '../newModels/Shape';
 import {
   alignAllShapes,
@@ -61,7 +62,6 @@ const CanvasTest = ({
   const drawnMultiSelectRectangle = useRef(null);
 
   const multiSelectDragStart = useRef(null);
-  const peekShape = useRef(null);
 
   const startX = useRef(0);
   const startY = useRef(0);
@@ -124,8 +124,6 @@ const CanvasTest = ({
   }
 
   function handleMouseDown(e) {
-    console.log('canvas width:', canvasRef.current.width);
-    console.log('canvas height:', canvasRef.current.height);
     e.preventDefault();
     const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
@@ -207,8 +205,11 @@ const CanvasTest = ({
           if (
             connectingShapes.current.shape2 !== connectingShapes.current.shape1
           ) {
+            //check if first shape is multi exit; else do this
+
             connectingShapes.current.shape1.nextItem =
               connectingShapes.current.shape2;
+            console.log(connectingShapes.current.exitPoint);
           }
 
           setConnectingMode(0);
@@ -272,6 +273,7 @@ const CanvasTest = ({
     e.preventDefault();
     const {clientX, clientY} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
+    setOpenPeekMenu(false);
 
     if (selectedItemToolbar) {
       clearAndDraw();
@@ -418,17 +420,35 @@ const CanvasTest = ({
     if (connectingMode === 0) {
       // change cursor when in element and near exit point
       canvasRef.current.style.cursor = 'default';
-      setOpenPeekMenu(false);
+
       for (const shape of shapes) {
         if (shape.isMouseInShape(realX, realY)) {
           canvasRef.current.style.cursor = 'pointer';
-          // peekShape.current = shape;
-          setOpenPeekMenu(shape.getPeekMenuContent());
-          if (shape.isMouseNearExitPoint(realX, realY)) {
+          shouldDisplayPeekMenu(shape);
+
+          const exitPoint = shape.isMouseNearExitPoint(realX, realY);
+          if (exitPoint) {
             canvasRef.current.style.cursor = 'crosshair';
           }
+
           break;
         }
+      }
+    }
+  }
+
+  function shouldDisplayPeekMenu(shape) {
+    if (['playMessage', 'playConfirm', 'getDigits'].includes(shape.type)) {
+      if (shape.userValues?.messageList.length > 0) {
+        setOpenPeekMenu(shape);
+      }
+    } else {
+      if (shape.type === 'playMenu') {
+        if (shape.userValues?.items.length > 0) setOpenPeekMenu(shape);
+      } else if (shape.type === 'switch') {
+        if (shape.userValues?.actions.length > 0) setOpenPeekMenu(shape);
+      } else {
+        setOpenPeekMenu(shape);
       }
     }
   }
@@ -802,76 +822,7 @@ const CanvasTest = ({
         userVariables={userVariables}
         openVariableManager={openVariableManager}
       />
-      {openPeekMenu && (
-        <Paper
-          elevation={3}
-          sx={{
-            position: 'fixed',
-            top: 60,
-            right: 10,
-            px: 2,
-            py: 1,
-            backgroundColor: '#BDC3C7',
-            color: '#34495E',
-          }}>
-          <Stack sx={{alignItems: 'center'}} direction='row'>
-            <Typography sx={{fontSize: 'small', mr: 0.5}} variant='subtitle2'>
-              ID:
-            </Typography>
-            <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-              {openPeekMenu.id}
-            </Typography>
-          </Stack>
-          {openPeekMenu.result && (
-            <Stack sx={{alignItems: 'center'}} direction='row'>
-              <Typography sx={{fontSize: 'small', mr: 0.5}} variant='subtitle2'>
-                Result:
-              </Typography>
-              <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                {openPeekMenu.result}
-              </Typography>
-            </Stack>
-          )}
-          {openPeekMenu.minDigits && (
-            <>
-              <Stack sx={{alignItems: 'center'}} direction='row'>
-                <Typography
-                  sx={{fontSize: 'small', mr: 0.5}}
-                  variant='subtitle2'>
-                  MinDigits:
-                </Typography>
-                <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                  {openPeekMenu.minDigits}
-                </Typography>
-              </Stack>
-              <Stack sx={{alignItems: 'center'}} direction='row'>
-                <Typography
-                  sx={{fontSize: 'small', mr: 0.5}}
-                  variant='subtitle2'>
-                  MaxDigits:
-                </Typography>
-                <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                  {openPeekMenu.maxDigits}
-                </Typography>
-              </Stack>
-            </>
-          )}
-          <Stack>
-            {openPeekMenu.messages?.map((m, i) => (
-              <Stack key={i} sx={{alignItems: 'center'}} direction='row'>
-                <Typography
-                  sx={{fontSize: 'small', mr: 0.5}}
-                  variant='subtitle2'>
-                  {m.type}:
-                </Typography>
-                <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                  {m.item}
-                </Typography>
-              </Stack>
-            ))}
-          </Stack>
-        </Paper>
-      )}
+      {openPeekMenu && <PeekMenu shape={openPeekMenu} />}
     </>
   );
 };

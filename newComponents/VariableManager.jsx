@@ -209,7 +209,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
           <ListItem sx={{mt: 1}}>
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
               <Typography fontSize='large' variant='subtitle1'>
-                Parameters
+                Variables
               </Typography>
               <Select
                 labelId='select-label'
