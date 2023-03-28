@@ -152,15 +152,23 @@ class Shape {
   getBottomCoordinates() {
     return [this.x, this.y + this.height / 2];
   }
+
   getBottomCoordinatesMultiExit(position, totalPoints) {
     const SPACING = 20;
+    const isTwoPoints = totalPoints === 2;
+
+    if (isTwoPoints) {
+      return position === 1
+        ? [this.x - SPACING, this.y + this.height / 2]
+        : [this.x + SPACING, this.y + this.height / 2];
+    }
 
     const newXPosition = this.x + (position - (totalPoints + 1) / 2) * SPACING;
-
     const newYPosition = this.y + this.height / 2;
 
     return [newXPosition, newYPosition];
   }
+
   getTopCoordinates() {
     return [this.x, this.y - this.height / 2];
   }
