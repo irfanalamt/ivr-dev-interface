@@ -130,6 +130,20 @@ const PlayConfirm = ({
     setAddedOptionalParams(currentOptionalParams);
   }
 
+  function validatePrompt(value, index) {
+    const error = checkValidity('prompt', value);
+    const currentOptionalParams = [...addedOptionalParams];
+
+    if (error !== -1) {
+      currentOptionalParams[index].error =
+        value.length > 0 ? 'invalid format' : 'required';
+    } else {
+      delete currentOptionalParams[index].error;
+    }
+
+    setAddedOptionalParams(currentOptionalParams);
+  }
+
   function renderComponentByType(param, index) {
     switch (param) {
       case 'cancelOption':
@@ -164,14 +178,24 @@ const PlayConfirm = ({
       case 'confirmPrompt':
         return (
           <Stack sx={{width: '100%', mr: 2}}>
-            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-              {param}
-            </Typography>
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                {param}
+              </Typography>
+              <Typography sx={{mx: 'auto', color: 'red'}}>
+                {addedOptionalParams[index].error}
+              </Typography>
+            </Box>
+
             <TextField
               sx={{backgroundColor: '#ededed'}}
               value={addedOptionalParams[index].value ?? ''}
-              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              onChange={(e) => {
+                handleOptionalParamFieldChange(e, index);
+                validatePrompt(e.target.value, index);
+              }}
               size='small'
+              error={Boolean(addedOptionalParams[index].error)}
             />
           </Stack>
         );

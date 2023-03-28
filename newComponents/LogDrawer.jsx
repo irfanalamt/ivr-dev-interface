@@ -34,6 +34,7 @@ const LogDrawer = () => {
               sx={{backgroundColor: '#f5f5f5'}}
               size='small'
               minRows={3}
+              inputProps={{spellCheck: 'false'}}
               fullWidth
               multiline
             />
@@ -61,6 +62,7 @@ const LogDrawer = () => {
               sx={{backgroundColor: '#f5f5f5'}}
               size='small'
               minRows={3}
+              inputProps={{spellCheck: 'false'}}
               fullWidth
               multiline
             />

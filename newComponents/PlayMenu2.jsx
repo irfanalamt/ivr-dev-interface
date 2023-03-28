@@ -85,18 +85,8 @@ const PlayMenu = ({
       optionalParams: addedOptionalParams,
     });
 
-    console.log('🔥', JSON.stringify(items, null, 2));
-
     setErrorText('');
     setSuccessText('Saved.');
-
-    // if (condition) {
-    //   setSuccessText('');
-    //   setErrorText('Save failed.');
-    // } else {
-    //   setErrorText('');
-    //   setSuccessText('Saved.');
-    // }
   }
 
   function handleNameChange(e) {
@@ -191,15 +181,15 @@ const PlayMenu = ({
     setItems(updatedItems);
   }
 
-  function clearItemError(index) {
+  function clearItemError(index, type) {
     const updatedItems = [...items];
-    updatedItems[index].error = undefined;
+    updatedItems[index][`${type}Error`] = undefined;
     setItems(updatedItems);
   }
 
-  function setItemError(index, error) {
+  function setItemError(index, error, type) {
     const updatedItems = [...items];
-    updatedItems[index].error = error;
+    updatedItems[index][`${type}Error`] = error;
     setItems(updatedItems);
   }
 
@@ -211,9 +201,25 @@ const PlayMenu = ({
     const result = validationFn(value);
 
     if (result === -1) {
-      clearItemError(index);
+      clearItemError(index, 'prompt');
     } else {
-      setItemError(index, result);
+      setItemError(index, result, 'prompt');
+    }
+  }
+
+  function validateAction(value, index) {
+    const actionRegex = /^[a-zA-Z0-9_$][a-zA-Z0-9_$]*$/;
+    const isValid = actionRegex.test(value);
+    const isUnique = items.every(
+      (item, i) => i === index || item.action !== value
+    );
+
+    if (isValid && isUnique) {
+      clearItemError(index, 'action');
+    } else if (!isUnique) {
+      setItemError(index, 'Action not unique', 'action');
+    } else {
+      setItemError(index, 'Action not in valid format', 'action');
     }
   }
 
@@ -228,6 +234,20 @@ const PlayMenu = ({
   function validateUserInput(input) {
     const promptRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
     return promptRegex.test(input) ? -1 : 'Prompt not in valid format.';
+  }
+
+  function validateOptionalPrompt(value, index) {
+    const error = checkValidity('prompt', value);
+    const currentOptionalParams = [...addedOptionalParams];
+
+    if (error !== -1) {
+      currentOptionalParams[index].error =
+        value.length > 0 ? 'invalid format' : 'required';
+    } else {
+      delete currentOptionalParams[index].error;
+    }
+
+    setAddedOptionalParams(currentOptionalParams);
   }
 
   function getPlaceholderValue(action) {
@@ -334,14 +354,24 @@ const PlayMenu = ({
       case 'invalidPrompt':
         return (
           <Stack sx={{width: '100%', mr: 1}}>
-            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-              invalidPrompt
-            </Typography>
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                invalidPrompt
+              </Typography>
+              <Typography sx={{mx: 'auto', color: 'red'}}>
+                {addedOptionalParams[index].error}
+              </Typography>
+            </Box>
+
             <TextField
               sx={{backgroundColor: '#ededed'}}
               value={addedOptionalParams[index].value ?? ''}
-              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              onChange={(e) => {
+                handleOptionalParamFieldChange(e, index);
+                validateOptionalPrompt(e.target.value, index);
+              }}
               size='small'
+              error={Boolean(addedOptionalParams[index].error)}
               fullWidth
             />
           </Stack>
@@ -349,14 +379,23 @@ const PlayMenu = ({
       case 'timeoutPrompt':
         return (
           <Stack sx={{width: '100%', mr: 1}}>
-            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-              timeoutPrompt
-            </Typography>
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                timeoutPrompt
+              </Typography>
+              <Typography sx={{mx: 'auto', color: 'red'}}>
+                {addedOptionalParams[index].error}
+              </Typography>
+            </Box>
             <TextField
               sx={{backgroundColor: '#ededed'}}
               value={addedOptionalParams[index].value ?? ''}
-              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              onChange={(e) => {
+                handleOptionalParamFieldChange(e, index);
+                validateOptionalPrompt(e.target.value, index);
+              }}
               size='small'
+              error={Boolean(addedOptionalParams[index].error)}
               fullWidth
             />
           </Stack>
@@ -700,21 +739,19 @@ const PlayMenu = ({
                         {item.digit}
                       </Typography>
                     </Avatar>
-                    {item.error && (
-                      <Typography
-                        sx={{
-                          mx: 'auto',
-                          color: 'red',
-                          backgroundColor: '#fce8e6',
-                          px: 2,
-                          py: 0.5,
-                          borderRadius: 1,
-                          width: 'max-content',
-                        }}
-                        variant='subtitle2'>
-                        {item.error}
-                      </Typography>
-                    )}
+                    <Typography
+                      sx={{
+                        mx: 'auto',
+                        color: 'red',
+                        backgroundColor: '#fce8e6',
+                        px: 2,
+                        py: 0.5,
+                        borderRadius: 1,
+                        width: 'max-content',
+                      }}
+                      variant='subtitle2'>
+                      {item.actionError || item.promptError}
+                    </Typography>
                   </Box>
 
                   <Stack sx={{my: 0.5, mt: 1}}>
@@ -730,6 +767,8 @@ const PlayMenu = ({
                         handleItemFieldChange('transferPoint', undefined, i);
                         handleItemFieldChange('messagePrompt', undefined, i);
                         handleItemFieldChange('prompt', '', i);
+                        handleItemFieldChange('actionError', '', i);
+                        handleItemFieldChange('promptError', '', i);
                       }}
                       sx={{mt: -1, ml: -1}}
                     />
@@ -814,9 +853,11 @@ const PlayMenu = ({
                           backgroundColor: '#f5f5f5',
                         }}
                         value={item.action}
-                        onChange={(e) =>
-                          handleItemFieldChange('action', e.target.value, i)
-                        }
+                        onChange={(e) => {
+                          handleItemFieldChange('action', e.target.value, i);
+                          validateAction(e.target.value, i);
+                        }}
+                        error={Boolean(item.actionError)}
                         size='small'
                       />
                     )}
@@ -855,6 +896,7 @@ const PlayMenu = ({
                         ].includes(item.action)
                       }
                       size='small'
+                      error={Boolean(item.promptError)}
                     />
                   </Stack>
                   <Box sx={{display: 'flex', alignItems: 'center', my: 0.5}}>
