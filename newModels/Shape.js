@@ -255,20 +255,14 @@ class Shape {
 
     // Swap coordinates if width or height is negative
     if (width < 0) {
-      x1 = startX + width;
-      x2 = startX;
+      [x1, x2] = [x2, x1];
     }
     if (height < 0) {
-      y1 = startY + height;
-      y2 = startY;
+      [y1, y2] = [y2, y1];
     }
 
     // Check if point is inside the rectangle
-    if (this.x >= x1 && this.x <= x2 && this.y >= y1 && this.y <= y2) {
-      return true;
-    } else {
-      return false;
-    }
+    return this.x >= x1 && this.x <= x2 && this.y >= y1 && this.y <= y2;
   }
 
   isMouseInShape(x, y) {
@@ -483,22 +477,24 @@ class Shape {
     ctx.fill();
 
     // Draw bottom dots
-    let exitPointCount = 0;
+    let exitPointCount = 1; // default value for single exit point only
+
     if (this.type === 'playMenu') {
       exitPointCount =
         this.userValues?.items.filter((item) => !item.isDefault).length || 0;
     } else if (this.type === 'switch') {
       exitPointCount = this.userValues?.actions.length + 1 || 0;
-    } else {
-      exitPointCount = 1; // single exit point only
     }
 
     ctx.fillStyle = '#0d5bdd';
+
     if (exitPointCount === 1) {
+      // Draw bottom dot for single exit point only
       ctx.beginPath();
       ctx.arc(...this.getBottomCoordinates(), dotRadius * 2, 0, 2 * Math.PI);
       ctx.fill();
     } else if (exitPointCount > 1) {
+      // Draw bottom dots for multiple exit points
       for (let i = 1; i <= exitPointCount; i++) {
         ctx.beginPath();
         ctx.arc(

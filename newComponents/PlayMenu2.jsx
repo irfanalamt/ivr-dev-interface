@@ -78,8 +78,9 @@ const PlayMenu = ({
     shape.setText(name);
     clearAndDraw();
 
+    const validItems = items.filter((i) => i.action);
     shape.setUserValues({
-      items,
+      items: validItems,
       description,
       previousMenuId,
       optionalParams: addedOptionalParams,
