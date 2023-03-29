@@ -126,9 +126,13 @@ const CanvasTest = ({
 
   function handleMouseDown(e) {
     e.preventDefault();
+
     const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
-    if (button !== 0) return;
+
+    if (button !== 0) {
+      return;
+    }
 
     if (selectedItemToolbar) {
       addNewShape(realX, realY, selectedItemToolbar);
@@ -137,18 +141,12 @@ const CanvasTest = ({
     }
 
     if (drawnMultiSelectRectangle.current) {
-      // check if mouse down outside rect; reset this
-      // if in, prepare to move the whole thing with the selected shapes.
-
+      // Check if mouse down outside rect; reset this if inside.
       if (isPointInRectangle(realX, realY, drawnMultiSelectRectangle.current)) {
-        // task2
-
         multiSelectDragStart.current = {x: realX, y: realY};
       } else {
-        // reset it
         resetMultiSelect();
       }
-
       return;
     }
 
@@ -157,13 +155,10 @@ const CanvasTest = ({
       if (shape.isMouseInShape(realX, realY)) {
         const exitPoint = shape.isMouseNearExitPoint(realX, realY);
         if (exitPoint && connectingMode === 0) {
-          connectingShapes.current = {};
-          connectingShapes.current.shape1 = shape;
-          connectingShapes.current.exitPoint = exitPoint;
+          connectingShapes.current = {shape1: shape, exitPoint};
           setConnectingMode(1);
           return;
         }
-
         isDragging.current = true;
         currentShape.current = shape;
         startX.current = realX;
@@ -186,12 +181,14 @@ const CanvasTest = ({
 
   function handleMouseUp(e) {
     e.preventDefault();
+
     const {clientX, clientY, button} = e;
     const {realX, realY} = getRealCoordinates(clientX, clientY);
+
     // Reset dragging mode
     isDragging.current = false;
 
-    //stop drawing
+    // Stop drawing
     isMultiSelectMode.current = false;
 
     if (multiSelectDragStart.current) {
@@ -200,9 +197,12 @@ const CanvasTest = ({
     }
 
     if (connectingMode === 1) {
-      shapes.forEach((shape) => {
+      // Check if mouse is inside a shape
+      for (const shape of shapes) {
         if (shape.isMouseInShape(realX, realY)) {
           connectingShapes.current.shape2 = shape;
+
+          // If both shapes are different, connect them
           if (
             connectingShapes.current.shape2 !== connectingShapes.current.shape1
           ) {
@@ -214,8 +214,9 @@ const CanvasTest = ({
           clearAndDraw();
           return;
         }
-      });
-      // reset selection
+      }
+
+      // Reset selection
       if (connectingShapes.current) {
         resetConnection();
       }
@@ -225,9 +226,7 @@ const CanvasTest = ({
     }
 
     if (drawnMultiSelectRectangle.current) {
-      // if rect drawn, if shapes in multi rect-> set to selected
-      // no shapes selected-> reset multi selection
-
+      // If rectangle is drawn, check if any shapes are inside it
       const {x, y, width, height} = drawnMultiSelectRectangle.current;
 
       let x1 = x;
@@ -255,16 +254,18 @@ const CanvasTest = ({
       selectedShapes.current = shapes.filter((shape) =>
         shape.isInRectangle(x, y, width, height)
       );
+
+      // If there are selected shapes, set them as selected
       if (selectedShapes.current.length) {
         selectedShapes.current.forEach((shape) => shape.setSelected(true));
         clearAndDraw();
       } else {
-        // reset multi select if no shapes bound
-
+        // If there are no shapes bound, reset multi select
         resetMultiSelect();
       }
     }
 
+    // Align all shapes
     alignAllShapes(shapes, setShapes);
   }
 
@@ -488,13 +489,12 @@ const CanvasTest = ({
 
     if (shape1.type === 'playMenu') {
       const exitPointName = connectingShapes.current.exitPoint.name;
-
-      const index = shape1.userValues?.items.findIndex(
+      const item = shape1.userValues?.items.find(
         (item) => item.action === exitPointName
       );
 
-      if (index !== -1) {
-        shape1.userValues.items[index].nextItem = shape2;
+      if (item) {
+        item.nextItem = shape2;
       }
     } else if (shape1.type === 'switch') {
       const {exitPoint} = connectingShapes.current;
@@ -503,13 +503,12 @@ const CanvasTest = ({
         shape1.userValues.defaultActionNextItem = shape2;
       } else {
         const exitPointName = exitPoint.name;
-
-        const index = shape1.userValues.actions.findIndex(
+        const action = shape1.userValues.actions.find(
           (a) => a.action === exitPointName
         );
 
-        if (index !== -1) {
-          shape1.userValues.actions[index].nextItem = shape2;
+        if (action) {
+          action.nextItem = shape2;
         }
       }
     } else {
