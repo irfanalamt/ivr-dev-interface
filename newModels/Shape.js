@@ -155,18 +155,27 @@ class Shape {
 
   getBottomCoordinatesMultiExit(position, totalPoints) {
     const SPACING = 20;
-    const isTwoPoints = totalPoints === 2;
+    const isEvenPoints = totalPoints % 2 === 0;
 
-    if (isTwoPoints) {
-      return position === 1
-        ? [this.x - SPACING, this.y + this.height / 2]
-        : [this.x + SPACING, this.y + this.height / 2];
+    if (isEvenPoints) {
+      const halfPoints = totalPoints / 2;
+      if (position <= halfPoints) {
+        const xPosition = this.x - SPACING * position;
+        const yPosition = this.y + this.height / 2;
+
+        return [xPosition, yPosition];
+      } else {
+        const xPosition = this.x + SPACING * (position - halfPoints);
+        const yPosition = this.y + this.height / 2;
+
+        return [xPosition, yPosition];
+      }
     }
 
-    const newXPosition = this.x + (position - (totalPoints + 1) / 2) * SPACING;
-    const newYPosition = this.y + this.height / 2;
+    const xPosition = this.x + (position - (totalPoints + 1) / 2) * SPACING;
+    const yPosition = this.y + this.height / 2;
 
-    return [newXPosition, newYPosition];
+    return [xPosition, yPosition];
   }
 
   getTopCoordinates() {
@@ -362,7 +371,7 @@ class Shape {
       if (distance <= 4) {
         const name =
           this.type === 'switch' && minPosition === exitPointCount
-            ? 'default'
+            ? this.userValues.defaultAction
             : this.getExitPointNameAtPosition(minPosition);
 
         return {

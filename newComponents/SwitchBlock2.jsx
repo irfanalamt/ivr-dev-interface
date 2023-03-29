@@ -72,19 +72,25 @@ const SwitchBlock = ({
       setErrorText('Id not valid.');
       return;
     }
+
     shape.setText(name);
     clearAndDraw();
 
-    if (actions.some((a) => a.conditionError || a.actionError)) {
-      setSuccessText('');
+    const hasValidationErrors = actions.some(
+      (a) => a.conditionError || a.actionError
+    );
+
+    if (hasValidationErrors) {
       setErrorText('Save failed. Validation error.');
+      setSuccessText('');
     } else {
+      const validActions = actions.filter((a) => a.condition && a.action);
       shape.setUserValues({
-        actions,
+        actions: validActions,
         defaultAction,
       });
-      setErrorText('');
       setSuccessText('Saved.');
+      setErrorText('');
     }
   }
 
