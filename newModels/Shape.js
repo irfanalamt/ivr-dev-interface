@@ -454,6 +454,25 @@ class Shape {
     this.width = Math.max(width + additionalWidth, minWidth);
   }
 
+  setWidthfromExitPoints() {
+    const SPACING = 20;
+
+    let exitPointCount = 0;
+    let minWidth = 0;
+
+    if (this.type === 'switch') {
+      exitPointCount = (this.userValues?.actions?.length || 0) + 1;
+      minWidth = exitPointCount * SPACING + 2 * SPACING;
+    } else if (this.type === 'playMenu') {
+      exitPointCount =
+        (this.userValues?.items?.filter((item) => !item.isDefault)?.length ||
+          0) + 1;
+      minWidth = exitPointCount * SPACING + 2 * SPACING;
+    }
+
+    this.width = Math.max(minWidth, this.width);
+  }
+
   drawDotsTopAndBottom(ctx) {
     const dotRadius = 1.9;
     ctx.fillStyle = this.style;
@@ -466,11 +485,10 @@ class Shape {
     // Draw bottom dots
     let exitPointCount = 0;
     if (this.type === 'playMenu') {
-      exitPointCount = this.userValues?.items.filter(
-        (item) => !item.isDefault
-      ).length;
+      exitPointCount =
+        this.userValues?.items.filter((item) => !item.isDefault).length || 0;
     } else if (this.type === 'switch') {
-      exitPointCount = this.userValues?.actions.length + 1;
+      exitPointCount = this.userValues?.actions.length + 1 || 0;
     } else {
       exitPointCount = 1; // single exit point only
     }
@@ -671,6 +689,7 @@ class Shape {
   }
   drawHexagon(ctx) {
     this.setWidthFromText(ctx);
+    this.setWidthfromExitPoints();
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
@@ -892,6 +911,7 @@ class Shape {
   }
   drawPentagonSwitch(ctx) {
     this.setWidthFromText(ctx);
+    this.setWidthfromExitPoints();
     this.style = '#4285F4';
 
     ctx.beginPath();
