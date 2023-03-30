@@ -1,47 +1,38 @@
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
-import InfoIcon from '@mui/icons-material/Info';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import ContentCutIcon from '@mui/icons-material/ContentCut';
-import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SettingsIcon from '@mui/icons-material/Settings';
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import {
-  Alert,
-  BottomNavigation,
-  Box,
-  Button,
-  Drawer,
-  IconButton,
-  Menu,
-  MenuItem,
-  Pagination,
-  Snackbar,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import {Box, IconButton, Pagination, Tooltip} from '@mui/material';
 
 const BottomBar = ({
   resetSelectedItemToolbar,
   openVariableManager,
   openPromptList,
+  pageNumber,
+  pageCount,
+  setPageNumber,
+  setPageCount,
 }) => {
   function handleClick() {
-    console.log('bottomBar clicked.');
     resetSelectedItemToolbar();
   }
 
   function handleVariableManagerClick() {
-    console.log('variable manger clicked.');
     openVariableManager();
   }
 
   function handlePromptListClick() {
-    console.log('prompt list clicked');
     openPromptList();
+  }
+
+  function handlePageChange(event, value) {
+    setPageNumber(value);
+  }
+
+  function handleAddPage() {
+    setPageCount((p) => p + 1);
+  }
+  function handleRemovePage() {
+    if (pageCount == 1) return;
+    setPageCount((p) => p - 1);
   }
 
   return (
@@ -56,36 +47,6 @@ const BottomBar = ({
         alignItems: 'center',
       }}
       onClick={handleClick}>
-      {/* <Tooltip title='variables' arrow>
-        <Button>
-          <SettingsApplicationsIcon sx={{ml: 2}} />
-        </Button>
-      </Tooltip>
-      <Tooltip title='prompt list' arrow>
-        <Button>
-          <ListAltIcon sx={{ml: 2}} />
-        </Button>
-      </Tooltip>
-
-      <Tooltip title='module manager' arrow>
-        <Button>
-          <ViewModuleIcon sx={{ml: 2}} />
-        </Button>
-      </Tooltip> */}
-
-      {/* <Typography
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: '#b3e5fc',
-          borderRadius: 2,
-          ml: 2,
-          px: 1,
-        }}
-        variant='subtitle2'>
-        <InfoIcon sx={{mr: 0.5, color: '#ef5350'}} />
-        infoMessage.current
-      </Typography> */}
       <Tooltip title='VARIABLE MANAGER' arrow>
         <IconButton
           onClick={handleVariableManagerClick}
@@ -129,18 +90,24 @@ const BottomBar = ({
       </Tooltip>
       <Box sx={{ml: 'auto', display: 'flex', alignItems: 'center'}}>
         <Pagination
-          count={2}
           shape='rounded'
           hideNextButton={true}
           hidePrevButton={true}
+          count={pageCount}
+          page={pageNumber}
+          onChange={handlePageChange}
+          variant='outlined'
+          color='primary'
+          size='small'
+          sx={{'& .MuiPaginationItem-root': {margin: '0 4px'}}}
         />
         <Tooltip title='Add Page'>
-          <IconButton>
+          <IconButton onClick={handleAddPage}>
             <AddBoxIcon sx={{fontSize: 'large'}} />
           </IconButton>
         </Tooltip>
         <Tooltip title='Remove Page'>
-          <IconButton>
+          <IconButton onClick={handleRemovePage}>
             <IndeterminateCheckBoxIcon sx={{fontSize: 'large'}} />
           </IconButton>
         </Tooltip>

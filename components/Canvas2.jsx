@@ -22,6 +22,7 @@ const CanvasTest = ({
   resetSelectedItemToolbar,
   userVariables,
   openVariableManager,
+  pageNumber,
 }) => {
   const [shapes, setShapes] = useState([]);
   const [contextMenu, setContextMenu] = useState(null);
@@ -68,6 +69,10 @@ const CanvasTest = ({
   const startY = useRef(0);
 
   useEffect(() => {
+    if (contextRef.current) clearAndDraw();
+  }, [pageNumber]);
+
+  useEffect(() => {
     const context = canvasRef.current.getContext('2d');
     contextRef.current = context;
     clearAndDraw();
@@ -75,22 +80,38 @@ const CanvasTest = ({
 
   function clearAndDraw() {
     const ctx = contextRef.current;
+
     clearCanvas();
 
-    drawGridLines2(contextRef.current, canvasRef.current);
+    drawGridLines2(ctx, canvasRef.current);
 
-    const connectionsArray = getConnectingLines(shapes);
-    connectionsArray.forEach((c) =>
-      drawFilledArrow(contextRef.current, c.x1, c.y1, c.x2, c.y2)
+    // Get shapes on the current page
+    const shapesInPage = shapes.filter(
+      (shape) => shape.pageNumber === pageNumber
     );
-    shapes.forEach((shape) => shape.drawShape(ctx));
-    if (drawnMultiSelectRectangle.current) {
-      console.log('is drawing multii📍');
-      const {x, y, width, height} = drawnMultiSelectRectangle.current;
 
+    // Get connecting lines between shapes and draw arrows
+    const connectionsArray = getConnectingLines(shapesInPage);
+    connectionsArray.forEach((connection) => {
+      drawFilledArrow(
+        ctx,
+        connection.x1,
+        connection.y1,
+        connection.x2,
+        connection.y2
+      );
+    });
+
+    // Draw all shapes on the current page
+    shapesInPage.forEach((shape) => shape.drawShape(ctx));
+
+    // Draw the multi-select rectangle if it exists
+    if (drawnMultiSelectRectangle.current) {
+      const {x, y, width, height} = drawnMultiSelectRectangle.current;
       drawMultiSelectRect(ctx, x, y, width, height, contextMenuItem.current);
     }
   }
+
   function clearCanvas() {
     contextRef.current.clearRect(
       0,
@@ -103,7 +124,7 @@ const CanvasTest = ({
   function addNewShape(x, y, type) {
     // to add a new shape to state variable
     const count = shapeCount.current[type]++;
-    const newShape = new Shape(x, y, type);
+    const newShape = new Shape(x, y, type, pageNumber);
     newShape.setTextAndId(count);
     setShapes([...shapes, newShape]);
   }
@@ -151,7 +172,6 @@ const CanvasTest = ({
     }
 
     for (const shape of shapes) {
-      console.log('in loop', shape, realX, realY);
       if (shape.isMouseInShape(realX, realY)) {
         const exitPoint = shape.isMouseNearExitPoint(realX, realY);
         if (exitPoint && connectingMode === 0) {
@@ -278,7 +298,12 @@ const CanvasTest = ({
 
     if (selectedItemToolbar) {
       clearAndDraw();
-      const tempShape = new Shape(realX, realY, selectedItemToolbar);
+      const tempShape = new Shape(
+        realX,
+        realY,
+        selectedItemToolbar,
+        pageNumber
+      );
       tempShape.drawShape(contextRef.current);
       return;
     }

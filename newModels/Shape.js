@@ -1,5 +1,5 @@
 class Shape {
-  constructor(x, y, type, style = 'black') {
+  constructor(x, y, type, pageNumber, style = 'black') {
     this.x = x;
     this.y = y;
 
@@ -13,6 +13,7 @@ class Shape {
 
     this.exitPoints = [];
     this.functionString = '';
+    this.pageNumber = pageNumber;
     this.setWidthAndHeight(type);
     this.setImage(type);
   }

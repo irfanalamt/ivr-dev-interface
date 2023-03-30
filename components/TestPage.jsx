@@ -1,17 +1,8 @@
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  BottomNavigation,
-  BottomNavigationAction,
-  Box,
-  Button,
-} from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
+import {Box} from '@mui/material';
+import {useRef, useState} from 'react';
 import PromptList from '../newComponents/PromptList';
 import VariableManager from '../newComponents/VariableManager';
 import BottomBar from './BottomBar';
-
 import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
@@ -20,19 +11,13 @@ function TestPage() {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [isVariableManagerOpen, setIsVariableManagerOpen] = useState(false);
   const [isPromptListOpen, setIsPromptListOpen] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageCount, setPageCount] = useState(2);
 
   const userVariables = useRef([]);
 
-  useEffect(() => {
-    console.log('user vars changed:📍:', userVariables.current);
-  }, [userVariables.current]);
-
   function handleSetSelectedItemToolbar(e, name) {
-    console.log('name: ' + name);
-
     setSelectedItemToolbar((prev) => ({[name]: !prev[name]}));
-
-    console.log('yay:', selectedItemToolbar);
   }
   function resetSelectedItemToolbar() {
     setSelectedItemToolbar({});
@@ -65,12 +50,18 @@ function TestPage() {
           resetSelectedItemToolbar={resetSelectedItemToolbar}
           userVariables={userVariables}
           openVariableManager={() => setIsVariableManagerOpen(true)}
+          pageNumber={pageNumber}
+          pageCount={pageCount}
         />
       </div>
       <BottomBar
         openVariableManager={() => setIsVariableManagerOpen(true)}
         openPromptList={() => setIsPromptListOpen(true)}
         resetSelectedItemToolbar={resetSelectedItemToolbar}
+        pageNumber={pageNumber}
+        setPageNumber={setPageNumber}
+        pageCount={pageCount}
+        setPageCount={setPageCount}
       />
       <VariableManager
         isOpen={isVariableManagerOpen}
