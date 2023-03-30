@@ -58,7 +58,6 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
   function handleAddNewMessage() {
     setMessageList((prev) => [...prev, {type: currentType, item: ''}]);
     setCurrentType('');
-    console.log('🧠', currentType);
   }
 
   function handleDeleteMessage(index) {
@@ -69,8 +68,6 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
 
   function handleFieldChangeSwitch(e, index) {
     const {checked} = e.target;
-
-    console.log('checked🔥', checked);
 
     const newMessages = [...messageList];
     newMessages[index].useVariable = checked;
@@ -98,13 +95,17 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
   function handleNamedFieldChangeSwitch(e, index) {
     const {checked, name} = e.target;
 
-    console.log('this ⏳ ', name, ' changed', checked);
+    const newMessages = [...messageList];
+    newMessages[index][name] = checked;
+    setMessageList(newMessages);
   }
 
   function handleNamedFieldChange(e, index) {
     const {value, name} = e.target;
 
-    console.log('this ⏳ ', name, ' changed', value);
+    const newMessages = [...messageList];
+    newMessages[index][name] = value;
+    setMessageList(newMessages);
   }
 
   function renderVariableOptions(type) {
@@ -269,7 +270,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                       control={
                         <Switch
                           name='playYear'
-                          checked={m.playYear}
+                          checked={m.playYear ?? false}
                           onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
                           size='small'
                           color='primary'
@@ -283,7 +284,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                         <Switch
                           sx={{mt: 0.5}}
                           name='playDay'
-                          checked={m.playDay}
+                          checked={m.playDay ?? false}
                           onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
                           size='small'
                           color='primary'
@@ -299,7 +300,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                     control={
                       <Switch
                         name='isHijri'
-                        checked={m.isHijri}
+                        checked={m.isHijri ?? false}
                         onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
                         size='small'
                         color='primary'
@@ -314,7 +315,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                     control={
                       <Switch
                         name='is24'
-                        checked={m.is24}
+                        checked={m.is24 ?? false}
                         onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
                         size='small'
                         color='primary'

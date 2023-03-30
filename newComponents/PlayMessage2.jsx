@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
-import {isNameUnique} from '../src/myFunctions';
+import {isNameUnique, replaceVarNameDollar} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
 import MessageList from './MessageList2';
 
@@ -57,6 +57,7 @@ const PlayMessage = ({
   }, [successText]);
 
   const optionalParamList = ['interruptible', 'repeatOption'];
+  const optionalParamValues = {interruptible: true, repeatOption: ''};
 
   function handleSave() {
     if (errors.current.name) {
@@ -73,6 +74,7 @@ const PlayMessage = ({
       }
       validMessages.push(message);
     }
+
     shape.setUserValues({
       messageList: validMessages,
       optionalParams: addedOptionalParams,
@@ -84,7 +86,25 @@ const PlayMessage = ({
     } else {
       setErrorText('');
       setSuccessText('Saved.');
+      generateJS();
     }
+  }
+
+  function generateJS() {
+    const functionName = name ? name : `playMessage${shape.id}`;
+    const paramsString = addedOptionalParams
+      .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+      .join(', ');
+    const messageListString = replaceVarNameDollar(JSON.stringify(messageList));
+
+    const codeString = `this.${functionName} = async function() {
+      const msgList = ${messageListString};
+      const params = { ${paramsString} };
+      await IVR.playMessage('${functionName}', msgList, params);
+    };`;
+
+    console.log('codeString', codeString);
+    shape.setFunctionString(codeString);
   }
 
   function handleNameChange(e) {
@@ -119,7 +139,7 @@ const PlayMessage = ({
 
     const updatedOptionalParams = [
       ...addedOptionalParams,
-      {name: optionalParam},
+      {name: optionalParam, value: optionalParamValues[optionalParam]},
     ];
     setAddedOptionalParams(updatedOptionalParams);
     setOptionalParam('');

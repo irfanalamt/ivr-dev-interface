@@ -392,6 +392,9 @@ class Shape {
   setUserValues(userValues) {
     this.userValues = {...userValues};
   }
+  setFunctionString(text) {
+    this.functionString = text;
+  }
 
   setText(inputText) {
     this.text = inputText;
