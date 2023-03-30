@@ -4,7 +4,7 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
 import {Menu, MenuItem, Paper, Stack, Typography} from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import PeekMenu from '../newComponents/PeekMenu';
 import Shape from '../newModels/Shape';
 import {
@@ -68,6 +68,11 @@ const CanvasTest = ({
   const startX = useRef(0);
   const startY = useRef(0);
 
+  const shapesInPage = useMemo(
+    () => shapes.filter((shape) => shape.pageNumber === pageNumber),
+    [pageNumber, shapes]
+  );
+
   useEffect(() => {
     if (contextRef.current) clearAndDraw();
   }, [pageNumber]);
@@ -86,12 +91,10 @@ const CanvasTest = ({
     drawGridLines2(ctx, canvasRef.current);
 
     // Get shapes on the current page
-    const shapesInPage = shapes.filter(
-      (shape) => shape.pageNumber === pageNumber
-    );
+    const shapesToDraw = shapesInPage;
 
     // Get connecting lines between shapes and draw arrows
-    const connectionsArray = getConnectingLines(shapesInPage);
+    const connectionsArray = getConnectingLines(shapesToDraw);
     connectionsArray.forEach((connection) => {
       drawFilledArrow(
         ctx,
@@ -103,7 +106,7 @@ const CanvasTest = ({
     });
 
     // Draw all shapes on the current page
-    shapesInPage.forEach((shape) => shape.drawShape(ctx));
+    shapesToDraw.forEach((shape) => shape.drawShape(ctx));
 
     // Draw the multi-select rectangle if it exists
     if (drawnMultiSelectRectangle.current) {
