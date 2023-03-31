@@ -7,6 +7,7 @@ import {
   FormControlLabel,
   IconButton,
   ListItem,
+  MenuItem,
   Radio,
   RadioGroup,
   Select,
@@ -14,18 +15,86 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
+import {checkValidity} from '../src/helpers';
 
-const Jumper = ({shape, handleCloseDrawer, openVariableManager}) => {
+const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
   const [type, setType] = useState(shape.userValues?.type ?? 'exit');
-  const [name, setName] = useState(shape.userValues?.name ?? shape.text);
+  const [name, setName] = useState(shape.userValues?.name || shape.text);
+
+  const [exitName, setExitName] = useState(shape.userValues?.exitName ?? '');
+
+  const [successText, setSuccessText] = useState('');
+  const [errorText, setErrorText] = useState('');
+
+  const errors = useRef({});
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setSuccessText('');
+    }, 2000);
+
+    return () => clearTimeout(timeoutId);
+  }, [successText]);
+
+  const allExitJumpers = useMemo(
+    () =>
+      shapes.filter(
+        (shape) => shape.type === 'jumper' && shape.userValues?.type === 'exit'
+      ),
+    [shapes]
+  );
+
+  const allUnusedExitJumpers = allExitJumpers.filter(
+    (s) =>
+      !shapes.some(
+        (sh) =>
+          sh.userValues?.exitName === s.userValues?.name &&
+          sh.userValues?.type === 'entry' &&
+          sh !== shape
+      )
+  );
 
   function handleSave() {
+    if (errors.current.name) {
+      setErrorText('Id not valid');
+      return;
+    }
+
     shape.setUserValues({
       type,
       name,
+      exitName,
     });
+    setErrorText('');
+    setSuccessText('Saved.');
   }
+
+  function validateExitId(value) {
+    const isValidFormat = checkValidity('object', value);
+    if (isValidFormat !== -1) {
+      setErrorText(isValidFormat);
+      errors.current.name = true;
+      return;
+    }
+
+    const isUnique = isExitIdUnique(value);
+    if (isUnique) {
+      setErrorText('');
+      delete errors.current.name;
+    } else {
+      setErrorText('Id not unique');
+      errors.current.name = true;
+    }
+  }
+
+  function isExitIdUnique(name) {
+    return !allExitJumpers.some(
+      (currentShape) =>
+        currentShape !== shape && currentShape.userValues?.name === name
+    );
+  }
+
   return (
     <>
       <ListItem
@@ -112,6 +181,9 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager}) => {
               value={type}
               onChange={(e) => {
                 setType(e.target.value);
+                if (e.target.value === 'exit') {
+                  setExitName('');
+                }
               }}>
               <FormControlLabel value='exit' control={<Radio />} label='Exit' />
               <FormControlLabel
@@ -129,23 +201,43 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager}) => {
               <SaveIcon />
             </Button>
           </Box>
-
-          <Typography sx={{fontSize: '1rem', mt: 4}} variant='subtitle2'>
-            ID
+          <ListItem sx={{height: 30}}>
+            {successText && (
+              <Typography sx={{color: 'green', mx: 'auto'}}>
+                {successText}
+              </Typography>
+            )}
+            {!successText && (
+              <Typography sx={{color: 'red', mx: 'auto'}}>
+                {errorText}
+              </Typography>
+            )}
+          </ListItem>
+          <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+            {type === 'entry' && 'Exit'} ID
           </Typography>
           {type === 'exit' ? (
             <TextField
               sx={{width: '220px', backgroundColor: '#f5f5f5'}}
               size='small'
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                validateExitId(e.target.value);
+              }}
             />
           ) : (
             <Select
               sx={{width: '180px', backgroundColor: '#f5f5f5'}}
               size='small'
-              value={name}
-              onChange={(e) => setName(e.target.value)}></Select>
+              value={exitName}
+              onChange={(e) => setExitName(e.target.value)}>
+              {allUnusedExitJumpers.map((s, i) => (
+                <MenuItem value={s.userValues.name} key={i}>
+                  {s.userValues.name}
+                </MenuItem>
+              ))}
+            </Select>
           )}
         </Stack>
       </Box>

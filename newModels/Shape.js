@@ -879,13 +879,12 @@ class Shape {
   }
 
   drawTriangle(ctx) {
-    this.style = '#FF5733';
+    this.style = this.userValues?.type === 'entry' ? '#d4e157' : '#ffa726';
 
     ctx.beginPath();
 
     ctx.arc(this.x, this.y, Math.abs(this.width * 0.5), 0, Math.PI * 2);
-    // fill color if selected
-    this.selected && this.fillSelected(ctx);
+
     ctx.fillStyle = this.style;
     ctx.fill();
 

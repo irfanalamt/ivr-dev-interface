@@ -133,6 +133,7 @@ const ElementDrawer = ({
         return (
           <Jumper
             shape={shape}
+            shapes={shapes}
             handleCloseDrawer={handleCloseDrawer}
             openVariableManager={openVariableManager}
           />
