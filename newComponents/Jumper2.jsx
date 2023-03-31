@@ -46,13 +46,15 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
   );
 
   const allUnusedExitJumpers = allExitJumpers.filter(
-    (s) =>
-      !shapes.some(
-        (sh) =>
-          sh.userValues?.exitName === s.userValues?.name &&
-          sh.userValues?.type === 'entry' &&
-          sh !== shape
-      )
+    (exitJumper) =>
+      !shapes.some((shape) => {
+        const isSameExitName =
+          shape.userValues?.exitName === exitJumper.userValues?.name;
+        const isEntryType = shape.userValues?.type === 'entry';
+        const isNotCurrentShape = shape !== currentShape;
+
+        return isSameExitName && isEntryType && isNotCurrentShape;
+      })
   );
 
   function handleSave() {
@@ -214,7 +216,7 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
             )}
           </ListItem>
           <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-            {type === 'entry' && 'Exit'} ID
+            ID
           </Typography>
           {type === 'exit' ? (
             <TextField
