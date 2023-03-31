@@ -63,7 +63,26 @@ const RunScript = ({
       setErrorText('');
       setSuccessText('Saved.');
       shape.setUserValues({script: functionString});
+      generateJS();
     }
+  }
+
+  function generateJS() {
+    const functionName = name ? name : `runScript${shape.id}`;
+    const newReplacedString = replaceDollarString(functionString);
+    const ivrReplacedString = replaceLogWithIvrLog(newReplacedString);
+
+    const codeString = `this.${functionName} = async function(){${ivrReplacedString}};`;
+
+    console.log('codeString📍', codeString);
+    shape.setFunctionString(codeString);
+  }
+
+  function replaceDollarString(str) {
+    return str.replace(/\$([a-zA-Z])/g, 'this.$1');
+  }
+  function replaceLogWithIvrLog(str) {
+    return str.replace(/log/g, 'IVR.log');
   }
 
   function handleNameChange(e) {

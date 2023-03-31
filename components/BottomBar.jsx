@@ -96,7 +96,6 @@ const BottomBar = ({
           count={pageCount}
           page={pageNumber}
           onChange={handlePageChange}
-          variant='outlined'
           color='primary'
           size='small'
           sx={{'& .MuiPaginationItem-root': {margin: '0 4px'}}}

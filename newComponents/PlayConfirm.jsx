@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
-import {isNameUnique} from '../src/myFunctions';
+import {isNameUnique, replaceVarNameDollar} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
 import MessageList from './MessageList2';
 
@@ -66,16 +66,47 @@ const PlayConfirm = ({
       setErrorText('Id not valid.');
       return;
     }
-    const validMessages = messageList.filter((m) => !m.error);
+
+    shape.setText(name);
+    clearAndDraw();
+
+    let validMessages = [];
+    for (const message of messageList) {
+      if (message.error) {
+        break;
+      }
+      validMessages.push(message);
+    }
     shape.setUserValues({
       messageList: validMessages,
       optionalParams: addedOptionalParams,
     });
-    console.log('🔥🔥', messageList);
-    shape.setText(name);
-    clearAndDraw();
-    setErrorText('');
-    setSuccessText('Saved.');
+
+    if (validMessages.length < messageList.length) {
+      setSuccessText('');
+      setErrorText('Save failed. Message list error.');
+    } else {
+      setErrorText('');
+      setSuccessText('Saved.');
+      generateJS();
+    }
+  }
+
+  function generateJS() {
+    const functionName = name ? name : `playConfirm${shape.id}`;
+    const paramsString = addedOptionalParams
+      .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+      .join(', ');
+    const messageListString = replaceVarNameDollar(JSON.stringify(messageList));
+
+    const codeString = `this.${functionName} = async function() {
+      const msgList = ${messageListString};
+      const params = { ${paramsString} };
+      await IVR.playConfirm('${functionName}', msgList, params);
+    };`;
+
+    console.log('codeString📍', codeString);
+    shape.setFunctionString(codeString);
   }
 
   function handleNameChange(e) {

@@ -865,7 +865,7 @@ const CanvasTest = ({
   }
 
   function resetMultiSelect() {
-    selectedShapes.current.forEach((shape) => shape.setSelected(false));
+    selectedShapes.current?.forEach((shape) => shape.setSelected(false));
     selectedShapes.current = null;
     drawnMultiSelectRectangle.current = null;
     contextMenuItem.current = null;

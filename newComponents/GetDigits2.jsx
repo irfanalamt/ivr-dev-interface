@@ -20,7 +20,7 @@ import {
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
-import {isNameUnique} from '../src/myFunctions';
+import {isNameUnique, replaceVarNameDollar} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
 import MessageList from './MessageList2';
 
@@ -99,7 +99,29 @@ const GetDigits = ({
     } else {
       setErrorText('');
       setSuccessText('Saved.');
+      generateJS();
     }
+  }
+
+  function generateJS() {
+    const functionName = name ? name : `getDigits${shape.id}`;
+    const paramsString =
+      `minDigits:${minDigits},maxDigits:${maxDigits},` +
+      addedOptionalParams
+        .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+        .join(', ');
+    const messageListString = replaceVarNameDollar(JSON.stringify(messageList));
+
+    const codeString = `this.${functionName} = async function() {
+      const msgList = ${messageListString};
+      const params = { ${paramsString} };
+      this.${
+        resultName || 'default'
+      } = await IVR.getDigits('${functionName}',msgList,params);
+    };`;
+
+    console.log('codeString', codeString);
+    shape.setFunctionString(codeString);
   }
 
   function handleNameChange(e) {
