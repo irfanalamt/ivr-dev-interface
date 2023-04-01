@@ -59,6 +59,24 @@ const CallApi = ({
 
     setErrorText('');
     setSuccessText('Saved.');
+    generateJS();
+  }
+
+  function generateJS() {
+    const functionName = name ? name : `callAPI${shape.id}`;
+    const inputVarsString = `{${inputVars
+      .filter((el) => el.name)
+      .map((el) => `${el.name}:this.${el.name}`)
+      .join(',')}}`;
+    const outputVarsString = outputVars
+      .filter((el) => el.name)
+      .map((el) => `this.${el.name}=outputVars.${el.name};`)
+      .join('');
+
+    const codeString = `this.${functionName}=async function(){let endpoint = ${endpoint};let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI('${name}',endpoint,inputVars);${outputVarsString}};`;
+
+    console.log('codeString📍', codeString);
+    shape.setFunctionString(codeString);
   }
 
   function handleNameChange(e) {
@@ -271,17 +289,7 @@ const CallApi = ({
               Add
             </Button>
           </Box>
-          {inputVars.length == 0 && (
-            <Select
-              sx={{
-                width: 120,
-                my: 0.5,
-                backgroundColor: '#f5f5f5',
-                visibility: 'hidden',
-              }}
-              size='small'
-              disabled></Select>
-          )}
+
           <Stack>
             {inputVars.map((v, i) => (
               <Box sx={{display: 'flex', alignItems: 'center', mt: 1}} key={i}>
@@ -291,7 +299,7 @@ const CallApi = ({
                     my: 0.5,
                     backgroundColor: '#f5f5f5',
                   }}
-                  value={v.name}
+                  value={v.name ?? ''}
                   onChange={(e) => handleChangeSelectInput(e.target.value, i)}
                   size='small'>
                   {userVariables.current.map((v, i) => (
@@ -345,17 +353,7 @@ const CallApi = ({
               Add
             </Button>
           </Box>
-          {outputVars.length == 0 && (
-            <Select
-              sx={{
-                width: 120,
-                my: 0.5,
-                backgroundColor: '#f5f5f5',
-                visibility: 'hidden',
-              }}
-              size='small'
-              disabled></Select>
-          )}
+
           <Stack>
             {outputVars.map((v, i) => (
               <Box sx={{display: 'flex', alignItems: 'center', mt: 1}} key={i}>
@@ -365,7 +363,7 @@ const CallApi = ({
                     my: 0.5,
                     backgroundColor: '#f5f5f5',
                   }}
-                  value={v.name}
+                  value={v.name ?? ''}
                   onChange={(e) => handleChangeSelectOutput(e.target.value, i)}
                   size='small'>
                   {userVariables.current.map((v, i) => (
