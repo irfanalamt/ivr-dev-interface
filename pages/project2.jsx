@@ -1,6 +1,6 @@
 import dynamic from 'next/dynamic';
 
-const DynamicCanvas = dynamic(() => import('../components/TestPage'), {
+const DynamicCanvas = dynamic(() => import('../components/ProjectPage'), {
   ssr: false,
 });
 

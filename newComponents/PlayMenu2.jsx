@@ -88,6 +88,29 @@ const PlayMenu = ({
 
     setErrorText('');
     setSuccessText('Saved.');
+    generateJS();
+  }
+
+  function generateJS() {
+    const functionName = name || `playMenu${shape.id}`;
+    const paramsString = addedOptionalParams
+      .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+      .join(', ');
+
+    const modifiedItems = items.map(
+      ({actionError, promptError, isDefault, ...rest}) => rest
+    );
+
+    const menuString = `{menuId: ${name}${
+      paramsString ? ',' : ''
+    }${paramsString}, items: ${JSON.stringify(modifiedItems)}}`;
+
+    const codeString = `this.${functionName} = async function() {
+      let menu =${menuString};await IVR.playMenu(menu);
+    };`;
+
+    console.log('codeString 📍', codeString);
+    shape.setFunctionString(codeString);
   }
 
   function handleNameChange(e) {

@@ -23,8 +23,10 @@ const CanvasTest = ({
   userVariables,
   openVariableManager,
   pageNumber,
+  shapes,
+  setShapes,
+  shapeCount,
 }) => {
-  const [shapes, setShapes] = useState([]);
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
   const [openPeekMenu, setOpenPeekMenu] = useState(false);
@@ -38,20 +40,6 @@ const CanvasTest = ({
     ? Object.keys(toolBarObj)[0]
     : null;
 
-  const shapeCount = useRef({
-    setParams: 1,
-    runScript: 1,
-    callAPI: 1,
-    playMenu: 1,
-    getDigits: 1,
-    playMessage: 1,
-    playConfirm: 1,
-    switch: 1,
-    endFlow: 1,
-    connector: 1,
-    jumper: 1,
-    module: 1,
-  });
   const currentShape = useRef(null);
   const isDragging = useRef(false);
 

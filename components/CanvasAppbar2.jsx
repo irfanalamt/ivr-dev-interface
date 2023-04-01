@@ -14,7 +14,10 @@ import {
   Typography,
 } from '@mui/material';
 
-const CanvasAppbar2 = ({resetSelectedItemToolbar}) => {
+const CanvasAppbar2 = ({
+  resetSelectedItemToolbar,
+  handleGenerateConfigFile,
+}) => {
   function handleClick() {
     console.log('appBar clicked.');
     resetSelectedItemToolbar();
@@ -98,7 +101,8 @@ const CanvasAppbar2 = ({resetSelectedItemToolbar}) => {
               mx: 1,
             }}
             size='small'
-            variant='contained'>
+            variant='contained'
+            onClick={handleGenerateConfigFile}>
             <SaveAltIcon sx={{fontSize: 'large'}} />
           </Button>
         </Tooltip>
