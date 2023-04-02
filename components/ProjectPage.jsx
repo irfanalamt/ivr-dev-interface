@@ -77,11 +77,11 @@ function ProjectPage() {
       return;
     }
 
-    const isStartPresent = findIsStartPresent(shapes);
-    if (!isStartPresent) {
+    const startShape = checkForStartShape(shapes);
+    if (!startShape) {
       setShowSnackbar({
         message:
-          'Start element missing. Add setParams element to begin control flow.',
+          "Start element missing. Please add a setParams element with Id set to 'start' to initiate control flow.",
         type: 'error',
       });
       return;
@@ -96,7 +96,12 @@ function ProjectPage() {
       return;
     }
 
-    //TODO: traverse elements func
+    const allFunctionStringsAndDriverFunctions = traverseAndReturnStrings(
+      shapes,
+      startShape
+    );
+
+    //TODO:
     // multi exit elements script driver function generation
     // add all params and uservars
     // return in specified format
@@ -112,9 +117,78 @@ function ProjectPage() {
     return false;
   }
 
-  function findIsStartPresent(shapes) {
-    return shapes.some((shape) => shape.type === 'setParams');
+  function checkForStartShape(shapes) {
+    const startShape = shapes.find(
+      (shape) => shape.type === 'setParams' && shape.text === 'start'
+    );
+
+    return startShape;
   }
+
+  function traverseAndReturnStrings(shapes, startShape) {
+    // const mainMenuCode = generateMainMenuCode(startShape);
+    const visitedShapes = new Set();
+    const shapeStack = [startShape];
+
+    while (shapeStack.length > 0) {
+      const currentShape = shapeStack.pop();
+      if (visitedShapes.has(currentShape)) continue;
+
+      visitedShapes.add(currentShape);
+      console.log(' ➡️' + currentShape.text);
+      const nextShapes = getNextShapes(currentShape);
+
+      nextShapes.forEach((shape) => {
+        shapeStack.push(shape);
+      });
+    }
+  }
+  function getNextShapes(shape) {
+    let nextShapes = [];
+
+    if (shape.type === 'playMenu') {
+      shape.userValues?.items?.forEach((item) => {
+        if (item.nextItem) {
+          nextShapes.push(item.nextItem);
+        }
+      });
+    } else if (shape.type === 'switch') {
+      shape.userValues?.actions?.forEach((action) => {
+        if (action.nextItem) {
+          nextShapes.push(action.nextItem);
+        }
+      });
+      if (shape.userValues?.defaultActionNextItem) {
+        nextShapes.push(shape.userValues.defaultActionNextItem);
+      }
+    } else if (
+      shape.type === 'jumper' &&
+      shape.userValues?.type === 'entry' &&
+      shape.nextItem
+    ) {
+      nextShapes.push(shape.nextItem);
+    } else if (shape.type === 'jumper' && shape.userValues?.type === 'exit') {
+      const correspondingEntryJumper = findEntryJumper(shape, shapes);
+      if (correspondingEntryJumper) {
+        nextShapes.push(correspondingEntryJumper);
+      }
+    } else if (shape.nextItem) {
+      nextShapes.push(shape.nextItem);
+    }
+
+    return nextShapes;
+  }
+
+  function findEntryJumper(exitJumper, shapes) {
+    return shapes.find(
+      (shape) =>
+        shape.type === 'jumper' &&
+        shape.userValues?.type === 'entry' &&
+        shape.userValues.exitName === exitJumper.userValues.name
+    );
+  }
+
+  function generateMainMenuCode(startShape) {}
 
   return (
     <Box onContextMenu={handleContextMenuPage}>

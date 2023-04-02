@@ -172,6 +172,7 @@ const CanvasTest = ({
         }
         isDragging.current = true;
         currentShape.current = shape;
+        console.log('📍', shape);
         startX.current = realX;
         startY.current = realY;
         return;

@@ -47,11 +47,11 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
 
   const allUnusedExitJumpers = allExitJumpers.filter(
     (exitJumper) =>
-      !shapes.some((shape) => {
+      !shapes.some((el) => {
         const isSameExitName =
-          shape.userValues?.exitName === exitJumper.userValues?.name;
-        const isEntryType = shape.userValues?.type === 'entry';
-        const isNotCurrentShape = shape !== currentShape;
+          el.userValues?.exitName === exitJumper.userValues?.name;
+        const isEntryType = el.userValues?.type === 'entry';
+        const isNotCurrentShape = el !== shape;
 
         return isSameExitName && isEntryType && isNotCurrentShape;
       })
