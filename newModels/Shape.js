@@ -16,6 +16,7 @@ class Shape {
     this.pageNumber = pageNumber;
     this.setWidthAndHeight(type);
     this.setImage(type);
+    this.setInitialValue();
   }
 
   setWidthAndHeight(type) {
@@ -102,6 +103,11 @@ class Shape {
     ) {
       this.img = new Image(20, 20);
       this.img.src = `/icons/${type}Black.png`;
+    }
+  }
+  setInitialValue() {
+    if (this.type === 'endFlow') {
+      this.setUserValues({type: 'disconnect'});
     }
   }
 

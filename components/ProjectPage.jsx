@@ -6,6 +6,8 @@ import BottomBar from './BottomBar';
 import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
+const prettier = require('prettier');
+const babelParser = require('@babel/parser');
 
 function ProjectPage() {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
@@ -47,7 +49,6 @@ function ProjectPage() {
     const jsString = generateJS();
     if (!jsString) return;
 
-    return;
     const fileName = 'ivr.js';
     const fileType = 'application/javascript';
 
@@ -87,22 +88,84 @@ function ProjectPage() {
       return;
     }
 
-    // const isDefaultValuesPresent = findIsDefaultValuesPresent(shapes);
-    // if (isDefaultValuesPresent) {
-    //   setShowSnackbar({
-    //     message: `Default values detected in page ${isDefaultValuesPresent.pageNumber}. Please update ${isDefaultValuesPresent.text}.`,
-    //     type: 'error',
-    //   });
-    //   return;
-    // }
+    const isDefaultValuesPresent = findIsDefaultValuesPresent(shapes);
+    if (isDefaultValuesPresent) {
+      setShowSnackbar({
+        message: `Default values detected in page ${isDefaultValuesPresent.pageNumber}. Please update ${isDefaultValuesPresent.text}.`,
+        type: 'error',
+      });
+      return;
+    }
+
+    const globalParamsString =
+      `function ivrName(IVR){
+       IVR.params = {
+        maxRetries: 3,
+        maxRepeats: 3,
+        lang: "bcxEn",
+        currency: "SAR",
+        terminator: "#",
+        firstTimeout: 10,
+        interTimeout: 5,
+        menuTimeout: 5,
+        maxCallTime: 3600,
+        invalidAction: "Disconnect",
+        timeoutAction: "Disconnect",
+        confirmOption: 1,
+        cancelOption: 2,
+        invalidPrompt: "std-invalid",
+        timeoutPrompt: "std-timeout",
+        cancelPrompt: "std-cancel",
+        goodbyeMessage: "std-goodbye",
+        terminateMessage: "std-terminate",
+        transferPrompt: "std-to-transfer",
+        disconnectPrompt: "std-to-disconnect",
+        previousMenuPrompt: "std-to-previous-menu",
+        mainMenuPrompt: "std-to-main-menu",
+        repeatInfoPrompt: "std-to-repeat",
+        confirmPrompt: "std-confirm",
+        hotkeyMainMenu: "X",
+        hotkeyPreviousMenu: "X",
+        hotkeyTransfer: "X",
+        transferPoint: "",
+        invalidTransferPoint: "",
+        timeoutTransferPoint: "",
+        allowedDigits: "1234567890",
+        logDB: false
+  };` + '\n \n';
+
+    const allVariablesString = generateInitVariablesJS();
 
     const allFunctionStringsAndDriverFunctions =
       traverseAndReturnString(startShape);
 
-    //TODO:
-    // multi exit elements script driver function generation
-    // add all params and uservars
-    // return in specified format
+    const endProjectBraces = `} \n\n `;
+    const endExportString = `module.exports = {ivrName}`;
+
+    const finalCodeString =
+      globalParamsString +
+      allVariablesString +
+      allFunctionStringsAndDriverFunctions +
+      endProjectBraces +
+      endExportString;
+
+    return formatCode(finalCodeString);
+  }
+
+  function formatCode(code) {
+    return prettier.format(code, {
+      parser: 'babel',
+      parser: (text, options) => babelParser.parse(text, options),
+      singleQuote: true,
+    });
+  }
+
+  function generateInitVariablesJS() {
+    const codeString = userVariables.current
+      .map((v) => `this.${v.name}=${v.defaultValue};`)
+      .join('');
+
+    return codeString;
   }
 
   function findIsDefaultValuesPresent(shapes) {
@@ -124,7 +187,7 @@ function ProjectPage() {
   }
 
   function traverseAndReturnString(startShape) {
-    // const mainMenuCode = generateMainMenuCode(startShape);
+    const mainMenuCode = generateMainMenuCode(startShape);
     const visitedShapes = new Set();
     const shapeStack = [startShape];
 
@@ -134,12 +197,14 @@ function ProjectPage() {
 
       visitedShapes.add(currentShape);
       console.log(' ➡️' + currentShape.text);
+      //TODO: generate code & driver fns for current shape
       const nextShapes = getNextShapes(currentShape);
 
       nextShapes.forEach((shape) => {
         shapeStack.push(shape);
       });
     }
+    return mainMenuCode;
   }
 
   function getNextShapes(shape) {
@@ -187,7 +252,58 @@ function ProjectPage() {
     );
   }
 
-  function generateMainMenuCode(startShape) {}
+  function generateMainMenuCode(startShape) {
+    const shapesTillMenuOrSwitch = getShapesTillMenuOrSwitch(startShape);
+
+    const mainMenuString = `this.ivrMain = async function(){
+try{${shapesTillMenuOrSwitch.map(getDriverFunctionShapeCode).join('')}}
+catch(err) { IVR.error('Error in ivrMain', err); }
+    };`;
+
+    return mainMenuString;
+  }
+
+  function getShapesTillMenuOrSwitch(startShape) {
+    // return shapes that would have some code in final script
+    // avoid connector, jumper
+    // and multi exit elements
+    const typesToIgnore = ['playMenu', 'switch', 'connector', 'jumper'];
+
+    let shapesArray = [];
+    if (!typesToIgnore.includes(startShape.type)) {
+      shapesArray.push(startShape);
+    }
+
+    let nextShape = getNextShapeForSingleExit(startShape);
+
+    while (nextShape) {
+      if (!typesToIgnore.includes(nextShape.type)) {
+        shapesArray.push(nextShape);
+      }
+      nextShape = getNextShapeForSingleExit(nextShape);
+      if (!nextShape) break;
+    }
+    return shapesArray;
+  }
+  function getDriverFunctionShapeCode(shape) {
+    if (shape.type === 'endFlow') {
+      if (shape.userValues?.type === 'disconnect') {
+        return 'IVR.doDisconnect();';
+      } else if (shape.userValues?.transferPoint) {
+        return `IVR.doTransfer('${shape.userValues.transferPoint}');`;
+      }
+    } else {
+      return `await this.${shape.text}();`;
+    }
+  }
+
+  function getNextShapeForSingleExit(shape) {
+    if (shape.type === 'jumper' && shape.userValues?.type === 'exit') {
+      return findEntryJumper(shape, shapes);
+    } else if (shape.nextItem) {
+      return shape.nextItem;
+    }
+  }
 
   return (
     <Box onContextMenu={handleContextMenuPage}>
