@@ -554,6 +554,10 @@ const CanvasTest = ({
   function connectShapes() {
     const {shape1, shape2} = connectingShapes.current;
 
+    if (shape1.type === 'jumper' && shape1.userValues?.type !== 'entry') return;
+
+    if (shape2.type === 'jumper' && shape2.userValues?.type === 'entry') return;
+
     if (shape1.type === 'playMenu') {
       const exitPointName = connectingShapes.current.exitPoint.name;
       const item = shape1.userValues?.items.find(
