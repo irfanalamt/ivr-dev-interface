@@ -121,12 +121,62 @@ const CanvasTest = ({
   }
 
   function deleteShape(shapeToDelete) {
+    if (
+      shapeToDelete.type === 'jumper' &&
+      shapeToDelete.userValues?.type === 'exit'
+    ) {
+      deleteMatchingEntryJumper(shapeToDelete);
+    }
+
     const index = shapes.indexOf(shapeToDelete);
     if (index !== -1) {
-      const newShapes = [...shapes];
-      newShapes.splice(index, 1);
-      setShapes(newShapes);
+      clearShapesWithNextItem(shapeToDelete);
+      setShapes((prevShapes) => {
+        const newShapes = [...prevShapes];
+        newShapes.splice(index, 1);
+        return newShapes;
+      });
     }
+  }
+
+  function deleteMatchingEntryJumper(exitJumper) {
+    const index = shapes.findIndex(
+      (shape) =>
+        shape.type === 'jumper' &&
+        shape.userValues?.type === 'entry' &&
+        shape.userValues.exitItem === exitJumper
+    );
+
+    if (index !== -1) {
+      setShapes((prevShapes) => {
+        const newShapes = [...prevShapes];
+        newShapes.splice(index, 1);
+        return newShapes;
+      });
+    }
+  }
+
+  function clearShapesWithNextItem(deletedShape) {
+    shapes.forEach((shape) => {
+      if (shape.type === 'playMenu') {
+        shape.userValues?.items?.forEach((item) => {
+          if (item.nextItem === deletedShape) {
+            delete item.nextItem;
+          }
+        });
+      } else if (shape.type === 'switch') {
+        shape.userValues?.actions?.forEach((action) => {
+          if (action.nextItem === deletedShape) {
+            delete action.nextItem;
+          }
+        });
+        if (shape.userValues?.defaultActionNextItem === deletedShape) {
+          delete shape.userValues.defaultActionNextItem;
+        }
+      } else {
+        if (shape.nextItem === deletedShape) delete shape.nextItem;
+      }
+    });
   }
 
   function getRealCoordinates(clientX, clientY) {

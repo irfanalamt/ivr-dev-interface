@@ -22,7 +22,7 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
   const [type, setType] = useState(shape.userValues?.type ?? 'exit');
   const [name, setName] = useState(shape.userValues?.name || shape.text);
 
-  const [exitName, setExitName] = useState(shape.userValues?.exitName ?? '');
+  const [exitItem, setExitItem] = useState(shape.userValues?.exitItem ?? '');
 
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
@@ -48,12 +48,11 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
   const allUnusedExitJumpers = allExitJumpers.filter(
     (exitJumper) =>
       !shapes.some((el) => {
-        const isSameExitName =
-          el.userValues?.exitName === exitJumper.userValues?.name;
+        const isSameExitItem = el.userValues?.exitItem === exitJumper;
         const isEntryType = el.userValues?.type === 'entry';
         const isNotCurrentShape = el !== shape;
 
-        return isSameExitName && isEntryType && isNotCurrentShape;
+        return isSameExitItem && isEntryType && isNotCurrentShape;
       })
   );
 
@@ -66,7 +65,7 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
     shape.setUserValues({
       type,
       name,
-      exitName,
+      exitItem,
     });
     setErrorText('');
     setSuccessText('Saved.');
@@ -184,7 +183,7 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
               onChange={(e) => {
                 setType(e.target.value);
                 if (e.target.value === 'exit') {
-                  setExitName('');
+                  setExitItem('');
                 }
               }}>
               <FormControlLabel value='exit' control={<Radio />} label='Exit' />
@@ -232,10 +231,10 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
             <Select
               sx={{width: '180px', backgroundColor: '#f5f5f5'}}
               size='small'
-              value={exitName}
-              onChange={(e) => setExitName(e.target.value)}>
+              value={exitItem}
+              onChange={(e) => setExitItem(e.target.value)}>
               {allUnusedExitJumpers.map((s, i) => (
-                <MenuItem value={s.userValues.name} key={i}>
+                <MenuItem value={s} key={i}>
                   {s.userValues.name}
                 </MenuItem>
               ))}

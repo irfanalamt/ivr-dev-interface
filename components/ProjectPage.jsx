@@ -87,14 +87,14 @@ function ProjectPage() {
       return;
     }
 
-    const isDefaultValuesPresent = findIsDefaultValuesPresent(shapes);
-    if (isDefaultValuesPresent) {
-      setShowSnackbar({
-        message: `Default values detected in page ${isDefaultValuesPresent.pageNumber}. Please update ${isDefaultValuesPresent.text}.`,
-        type: 'error',
-      });
-      return;
-    }
+    // const isDefaultValuesPresent = findIsDefaultValuesPresent(shapes);
+    // if (isDefaultValuesPresent) {
+    //   setShowSnackbar({
+    //     message: `Default values detected in page ${isDefaultValuesPresent.pageNumber}. Please update ${isDefaultValuesPresent.text}.`,
+    //     type: 'error',
+    //   });
+    //   return;
+    // }
 
     const allFunctionStringsAndDriverFunctions =
       traverseAndReturnString(startShape);
@@ -183,7 +183,7 @@ function ProjectPage() {
       (shape) =>
         shape.type === 'jumper' &&
         shape.userValues?.type === 'entry' &&
-        shape.userValues.exitName === exitJumper.userValues.name
+        shape.userValues.exitItem === exitJumper
     );
   }
 
