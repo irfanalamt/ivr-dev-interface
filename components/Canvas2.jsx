@@ -212,7 +212,7 @@ const CanvasTest = ({
       return;
     }
 
-    for (const shape of shapes) {
+    for (const shape of shapesInPage) {
       if (shape.isMouseInShape(realX, realY)) {
         const exitPoint = shape.isMouseNearExitPoint(realX, realY);
         if (exitPoint && connectingMode === 0) {
@@ -260,7 +260,7 @@ const CanvasTest = ({
 
     if (connectingMode === 1) {
       // Check if mouse is inside a shape
-      for (const shape of shapes) {
+      for (const shape of shapesInPage) {
         if (shape.isMouseInShape(realX, realY)) {
           connectingShapes.current.shape2 = shape;
 
@@ -313,7 +313,7 @@ const CanvasTest = ({
         height: y2 - y1,
       };
 
-      selectedShapes.current = shapes.filter((shape) =>
+      selectedShapes.current = shapesInPage.filter((shape) =>
         shape.isInRectangle(x, y, width, height)
       );
 
@@ -494,7 +494,7 @@ const CanvasTest = ({
       // change cursor when in element and near exit point
       canvasRef.current.style.cursor = 'default';
 
-      for (const shape of shapes) {
+      for (const shape of shapesInPage) {
         if (shape.isMouseInShape(realX, realY)) {
           canvasRef.current.style.cursor = 'pointer';
           shouldDisplayPeekMenu(shape);
@@ -650,7 +650,7 @@ const CanvasTest = ({
       return;
     }
 
-    for (const shape of shapes) {
+    for (const shape of shapesInPage) {
       if (shape.isMouseInShape(realX, realY)) {
         if (!contextMenuItem.current) {
           currentShape.current = shape;
