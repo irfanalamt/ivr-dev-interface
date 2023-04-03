@@ -134,7 +134,7 @@ function ProjectPage() {
         logDB: false
   };` + '\n \n';
 
-    const allVariablesString = generateInitVariablesJS();
+    const allVariablesString = generateInitVariablesJS() + '\n \n';
 
     const allFunctionStringsAndDriverFunctions =
       traverseAndReturnString(startShape);
@@ -190,6 +190,7 @@ function ProjectPage() {
     const mainMenuCode = generateMainMenuCode(startShape);
     const visitedShapes = new Set();
     const shapeStack = [startShape];
+    let codeAndDrivers = '';
 
     while (shapeStack.length > 0) {
       const currentShape = shapeStack.pop();
@@ -198,13 +199,45 @@ function ProjectPage() {
       visitedShapes.add(currentShape);
       console.log(' ➡️' + currentShape.text);
       //TODO: generate code & driver fns for current shape
+      codeAndDrivers += generateCode(currentShape);
+
       const nextShapes = getNextShapes(currentShape);
 
       nextShapes.forEach((shape) => {
         shapeStack.push(shape);
       });
     }
-    return mainMenuCode;
+    return mainMenuCode + codeAndDrivers;
+  }
+
+  function generateCode(shape) {
+    if (shape.type === 'playMenu') {
+      return generateMenuCode(shape);
+    }
+    if (shape.type === 'switch') {
+      return generateSwitchCode(shape);
+    }
+    const typesToInclude = [
+      'setParams',
+      'playMessage',
+      'playConfirm',
+      'getDigits',
+      'runScript',
+      'callAPI',
+    ];
+    if (typesToInclude.includes(shape.type)) {
+      return shape.functionString;
+    }
+  }
+
+  function generateMenuCode(shape) {
+    //TODO: all driver function based on connected items
+
+    return shape.functionString;
+  }
+  function generateSwitchCode(shape) {
+    //TODO: return driver function based on all conditions and connected action
+    return '';
   }
 
   function getNextShapes(shape) {
@@ -264,9 +297,7 @@ catch(err) { IVR.error('Error in ivrMain', err); }
   }
 
   function getShapesTillMenuOrSwitch(startShape) {
-    // return shapes that would have some code in final script
-    // avoid connector, jumper
-    // and multi exit elements
+    // Avoid shapes that are not relevant for final script
     const typesToIgnore = ['playMenu', 'switch', 'connector', 'jumper'];
 
     let shapesArray = [];
