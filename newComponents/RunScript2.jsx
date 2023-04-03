@@ -63,7 +63,7 @@ const RunScript = ({
       setErrorText('');
       setSuccessText('Saved.');
       shape.setUserValues({script: functionString});
-      generateJS();
+      if (functionString.length > 1) generateJS();
     }
   }
 

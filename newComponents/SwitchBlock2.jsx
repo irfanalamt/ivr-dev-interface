@@ -91,6 +91,7 @@ const SwitchBlock = ({
       });
       setSuccessText('Saved.');
       setErrorText('');
+      if (validActions.length > 0) shape.setFunctionString('switch valid');
     }
   }
 

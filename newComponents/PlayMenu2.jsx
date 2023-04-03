@@ -88,7 +88,7 @@ const PlayMenu = ({
 
     setErrorText('');
     setSuccessText('Saved.');
-    generateJS();
+    if (validItems.length > 0) generateJS();
   }
 
   function generateJS() {

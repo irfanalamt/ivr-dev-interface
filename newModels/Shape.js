@@ -125,6 +125,14 @@ class Shape {
     const id = `${startCharacter}${shapeCount}`;
 
     this.text += shapeCount.toString();
+    if (this.text == 'setParams1') {
+      this.text = 'start';
+      this.setFunctionString(`this.start = async function() {
+        const newParams = {  };
+        await IVR.setCallParams('start', newParams);
+      };`);
+    }
+
     this.id = id;
   }
 

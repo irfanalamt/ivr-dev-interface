@@ -59,7 +59,8 @@ const CallApi = ({
 
     setErrorText('');
     setSuccessText('Saved.');
-    generateJS();
+    if (endpoint.length > 1 && inputVars[0].name && outputVars[0].name)
+      generateJS();
   }
 
   function generateJS() {

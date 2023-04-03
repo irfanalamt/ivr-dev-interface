@@ -88,7 +88,7 @@ const BottomBar = ({
           />
         </IconButton>
       </Tooltip>
-      <Box sx={{ml: 'auto', display: 'flex', alignItems: 'center'}}>
+      <Box sx={{ml: 5, display: 'flex', alignItems: 'center'}}>
         <Pagination
           shape='rounded'
           hideNextButton={true}

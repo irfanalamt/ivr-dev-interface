@@ -96,10 +96,8 @@ function ProjectPage() {
       return;
     }
 
-    const allFunctionStringsAndDriverFunctions = traverseAndReturnStrings(
-      shapes,
-      startShape
-    );
+    const allFunctionStringsAndDriverFunctions =
+      traverseAndReturnString(startShape);
 
     //TODO:
     // multi exit elements script driver function generation
@@ -109,7 +107,7 @@ function ProjectPage() {
 
   function findIsDefaultValuesPresent(shapes) {
     for (let shape of shapes) {
-      const typesToIgnore = ['connector', 'jumper', 'switch', 'endFlow'];
+      const typesToIgnore = ['connector', 'jumper', 'endFlow'];
       if (!typesToIgnore.includes(shape.type) && !shape.functionString) {
         return shape;
       }
@@ -125,7 +123,7 @@ function ProjectPage() {
     return startShape;
   }
 
-  function traverseAndReturnStrings(shapes, startShape) {
+  function traverseAndReturnString(startShape) {
     // const mainMenuCode = generateMainMenuCode(startShape);
     const visitedShapes = new Set();
     const shapeStack = [startShape];
@@ -143,6 +141,7 @@ function ProjectPage() {
       });
     }
   }
+
   function getNextShapes(shape) {
     let nextShapes = [];
 
@@ -246,7 +245,7 @@ function ProjectPage() {
           anchorOrigin={{vertical: 'top', horizontal: 'right'}}
           sx={{mt: 5, mr: 1}}
           open={Boolean(showSnackbar)}
-          autoHideDuration={2500}
+          autoHideDuration={5000}
           onClose={() => setShowSnackbar(false)}>
           <Alert severity={showSnackbar.type}>{showSnackbar.message}</Alert>
         </Snackbar>

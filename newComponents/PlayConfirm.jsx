@@ -88,7 +88,7 @@ const PlayConfirm = ({
     } else {
       setErrorText('');
       setSuccessText('Saved.');
-      generateJS();
+      if (validMessages.length > 0) generateJS();
     }
   }
 
