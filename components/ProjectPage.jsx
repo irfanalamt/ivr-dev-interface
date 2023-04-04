@@ -231,10 +231,30 @@ function ProjectPage() {
   }
 
   function generateMenuCode(shape) {
-    //TODO: all driver function based on connected items
+    let driverFunctionsString = '';
+    const items = shape.userValues?.items;
 
-    return shape.functionString;
+    if (!items.length) {
+      return shape.functionString;
+    }
+
+    items.forEach((item) => {
+      if (item.nextItem) {
+        const shapesTillMenuOrSwitch = getShapesTillMenuOrSwitch(item.nextItem);
+        const code = `this.${shape.text}_${item.action}=async function(){
+          try{${shapesTillMenuOrSwitch
+            .map(getDriverFunctionShapeCode)
+            .join('')}}catch(err){ IVR.error('Error in ${shape.text}_${
+          item.action
+        }', err);}
+                    };`;
+        driverFunctionsString += code;
+      }
+    });
+
+    return shape.functionString + driverFunctionsString;
   }
+
   function generateSwitchCode(shape) {
     //TODO: return driver function based on all conditions and connected action
     return '';
