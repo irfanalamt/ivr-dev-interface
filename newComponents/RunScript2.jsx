@@ -108,7 +108,7 @@ const RunScript = ({
   }
   function getUserVariablesString() {
     const variables = userVariables.current
-      .map(({name, value}) => `let $${name} = '${value}';`)
+      .map(({name, defaultValue}) => `let $${name} = '${defaultValue}';`)
       .join(' ');
 
     return variables || '';

@@ -6,6 +6,7 @@ import BottomBar from './BottomBar';
 import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
+import {replaceDollarString} from '../src/myFunctions';
 const prettier = require('prettier');
 const babelParser = require('@babel/parser');
 
@@ -162,7 +163,13 @@ function ProjectPage() {
 
   function generateInitVariablesJS() {
     const codeString = userVariables.current
-      .map((v) => `this.${v.name}=${v.defaultValue};`)
+      .map((v) => {
+        const defaultValue =
+          v.type === 'number' || v.type === 'boolean'
+            ? v.defaultValue
+            : `'${v.defaultValue}'`;
+        return `this.${v.name}=${defaultValue};`;
+      })
       .join('');
 
     return codeString;
@@ -198,7 +205,7 @@ function ProjectPage() {
 
       visitedShapes.add(currentShape);
       console.log(' ➡️' + currentShape.text);
-      //TODO: generate code & driver fns for current shape
+
       codeAndDrivers += generateCode(currentShape);
 
       const nextShapes = getNextShapes(currentShape);
@@ -256,8 +263,39 @@ function ProjectPage() {
   }
 
   function generateSwitchCode(shape) {
-    //TODO: return driver function based on all conditions and connected action
-    return '';
+    const actions = shape.userValues?.actions;
+
+    if (!actions.length) {
+      return '';
+    }
+
+    let ifCode = '';
+    shape.userValues?.actions?.forEach((action) => {
+      if (action.nextItem) {
+        const actionFlowShapes = getShapesTillMenuOrSwitch(action.nextItem);
+        ifCode += `${!ifCode ? 'if' : 'else if'}(${replaceDollarString(
+          action.condition
+        )}){${actionFlowShapes.map(getDriverFunctionShapeCode).join('')}}`;
+      }
+    });
+
+    const defaultNextItem = shape.userValues.defaultActionNextItem;
+    const defaultFlowShapes = getShapesTillMenuOrSwitch(defaultNextItem);
+    const elseFlowShapesCode = defaultFlowShapes
+      ? defaultFlowShapes.map(getDriverFunctionShapeCode).join('')
+      : '';
+    const elseCode = `else{${elseFlowShapesCode}}`;
+
+    const outerCode = `this.${shape.text}= async function(){
+      try{
+        ${ifCode + elseCode}
+      }catch(err){
+        IVR.error('Error in ${shape.text}', err);
+      }
+
+    };`;
+
+    return outerCode;
   }
 
   function getNextShapes(shape) {
@@ -318,6 +356,7 @@ catch(err) { IVR.error('Error in ivrMain', err); }
 
   function getShapesTillMenuOrSwitch(startShape) {
     // Avoid shapes that are not relevant for final script
+    if (!startShape) return;
     const typesToIgnore = ['playMenu', 'switch', 'connector', 'jumper'];
 
     let shapesArray = [];

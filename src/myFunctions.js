@@ -18,6 +18,9 @@ function replaceVarNameDollar(str) {
   }
   return strOut;
 }
+function replaceDollarString(str) {
+  return str.replace(/\$([a-zA-Z])/g, 'this.$1');
+}
 
 function drawGridLines(ctx, canvas) {
   const canvasHeight = canvas.height;
@@ -390,4 +393,5 @@ export {
   isPointInRectangle,
   drawMultiSelectRect,
   isNameUnique,
+  replaceDollarString,
 };
