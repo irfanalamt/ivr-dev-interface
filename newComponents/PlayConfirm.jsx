@@ -97,7 +97,12 @@ const PlayConfirm = ({
     const paramsString = addedOptionalParams
       .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
       .join(', ');
-    const messageListString = replaceVarNameDollar(JSON.stringify(messageList));
+    const modifiedMessageList = messageList.map(
+      ({useVariable, ...rest}) => rest
+    );
+    const messageListString = replaceVarNameDollar(
+      JSON.stringify(modifiedMessageList)
+    );
 
     const codeString = `this.${functionName} = async function() {
       const msgList = ${messageListString};

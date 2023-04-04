@@ -104,6 +104,13 @@ const GetDigits = ({
     }
   }
 
+  function deleteDollar(str) {
+    if (str.charAt(0) === '$') {
+      return str.slice(1);
+    }
+    return str;
+  }
+
   function generateJS() {
     const functionName = name ? name : `getDigits${shape.id}`;
     const paramsString =
@@ -111,13 +118,19 @@ const GetDigits = ({
       addedOptionalParams
         .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
         .join(', ');
-    const messageListString = replaceVarNameDollar(JSON.stringify(messageList));
+    const modifiedMessageList = messageList.map(
+      ({useVariable, ...rest}) => rest
+    );
+    const messageListString = replaceVarNameDollar(
+      JSON.stringify(modifiedMessageList)
+    );
+    const resultNameString = deleteDollar(resultName);
 
     const codeString = `this.${functionName} = async function() {
       const msgList = ${messageListString};
       const params = { ${paramsString} };
       this.${
-        resultName || 'default'
+        resultNameString || 'default'
       } = await IVR.getDigits('${functionName}',msgList,params);
     };`;
 
