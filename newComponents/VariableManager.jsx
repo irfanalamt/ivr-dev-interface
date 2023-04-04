@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
 const VariableManager = ({isOpen, handleClose, userVariables}) => {
@@ -28,6 +28,10 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
   const [errorText, setErrorText] = useState('');
 
   const errorObj = useRef({});
+
+  useEffect(() => {
+    userVariables.current = variables;
+  }, [variables]);
 
   const DayValues = [
     '1 Sunday',
@@ -162,7 +166,6 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
       anchor='left'
       open={isOpen}
       onClose={() => {
-        userVariables.current = variables;
         setMode('');
         setCurrentVariable('');
         setName('');
