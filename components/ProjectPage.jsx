@@ -14,10 +14,15 @@ function ProjectPage() {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [isVariableManagerOpen, setIsVariableManagerOpen] = useState(false);
   const [isPromptListOpen, setIsPromptListOpen] = useState(false);
-  const [pageNumber, setPageNumber] = useState(1);
-  const [pageCount, setPageCount] = useState(2);
+
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [shapes, setShapes] = useState([]);
+  const [tabs, setTabs] = useState([
+    {id: 1, label: 'Page 1'},
+    {id: 2, label: 'Page 2'},
+  ]);
+  const [activeTab, setActiveTab] = useState(tabs[0].id);
+
   const shapeCount = useRef({
     setParams: 1,
     runScript: 1,
@@ -34,6 +39,43 @@ function ProjectPage() {
   });
 
   const userVariables = useRef([]);
+
+  function handleTabDoubleClick(tabId) {
+    const tabIdx = tabs.findIndex((tab) => tab.id === tabId);
+    const updatedTabs = tabs.map((tab, idx) => ({
+      ...tab,
+      isEditMode: idx === tabIdx,
+    }));
+
+    setTabs(updatedTabs);
+  }
+  function handleLabelChange(tabId) {
+    const updatedTabs = tabs.map((tab) =>
+      tab.id === tabId ? {...tab, isEditMode: false} : tab
+    );
+    setTabs(updatedTabs);
+  }
+
+  function handleAddTab() {
+    const newTab = {id: Date.now(), label: `Page${tabs.length + 1}`};
+    setTabs([...tabs, newTab]);
+  }
+  function handleChangeTab(id) {
+    setActiveTab(id);
+  }
+  function handleDeleteTab(id) {
+    if (tabs.length === 1) return;
+
+    setTabs((prevTabs) => {
+      const filteredTabs = prevTabs.filter((tab) => tab.id !== id);
+
+      if (id === activeTab) {
+        setActiveTab(filteredTabs[0].id);
+      }
+
+      return filteredTabs;
+    });
+  }
 
   function handleSetSelectedItemToolbar(e, name) {
     setSelectedItemToolbar((prev) => ({[name]: !prev[name]}));
@@ -421,8 +463,7 @@ catch(err) { IVR.error('Error in ivrMain', err); }
           resetSelectedItemToolbar={resetSelectedItemToolbar}
           userVariables={userVariables}
           openVariableManager={() => setIsVariableManagerOpen(true)}
-          pageNumber={pageNumber}
-          pageCount={pageCount}
+          pageNumber={activeTab}
           shapes={shapes}
           setShapes={setShapes}
           shapeCount={shapeCount}
@@ -432,10 +473,14 @@ catch(err) { IVR.error('Error in ivrMain', err); }
         openVariableManager={() => setIsVariableManagerOpen(true)}
         openPromptList={() => setIsPromptListOpen(true)}
         resetSelectedItemToolbar={resetSelectedItemToolbar}
-        pageNumber={pageNumber}
-        setPageNumber={setPageNumber}
-        pageCount={pageCount}
-        setPageCount={setPageCount}
+        tabs={tabs}
+        setTabs={setTabs}
+        activeTab={activeTab}
+        handleChangeTab={handleChangeTab}
+        handleAddTab={handleAddTab}
+        handleTabDoubleClick={handleTabDoubleClick}
+        handleLabelChange={handleLabelChange}
+        handleDeleteTab={handleDeleteTab}
       />
       <VariableManager
         isOpen={isVariableManagerOpen}

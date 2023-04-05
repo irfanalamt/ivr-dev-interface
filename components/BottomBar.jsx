@@ -1,16 +1,55 @@
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
-import {Box, IconButton, Pagination, Tooltip} from '@mui/material';
+import DoneIcon from '@mui/icons-material/Done';
+import {
+  Box,
+  Button,
+  IconButton,
+  Menu,
+  MenuItem,
+  Pagination,
+  Tab,
+  Tabs,
+  TextField,
+  Tooltip,
+} from '@mui/material';
+import {useRef, useState} from 'react';
 
 const BottomBar = ({
   resetSelectedItemToolbar,
   openVariableManager,
   openPromptList,
-  pageNumber,
-  pageCount,
-  setPageNumber,
-  setPageCount,
+  tabs,
+  setTabs,
+  activeTab,
+  handleChangeTab,
+  handleAddTab,
+  handleTabDoubleClick,
+  handleLabelChange,
+  handleDeleteTab,
 }) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const tabRef = useRef(null);
+
+  const menuItems = [
+    {
+      label: 'Rename',
+      onClick: (id) => {
+        handleChangeTab(id);
+        handleTabDoubleClick(id);
+        setMenuOpen(false);
+      },
+    },
+    {
+      label: 'Delete',
+      onClick: (id) => {
+        handleDeleteTab(id);
+        setMenuOpen(false);
+      },
+    },
+  ];
+
   function handleClick() {
     resetSelectedItemToolbar();
   }
@@ -21,18 +60,6 @@ const BottomBar = ({
 
   function handlePromptListClick() {
     openPromptList();
-  }
-
-  function handlePageChange(event, value) {
-    setPageNumber(value);
-  }
-
-  function handleAddPage() {
-    setPageCount((p) => p + 1);
-  }
-  function handleRemovePage() {
-    if (pageCount == 1) return;
-    setPageCount((p) => p - 1);
   }
 
   return (
@@ -89,28 +116,86 @@ const BottomBar = ({
         </IconButton>
       </Tooltip>
       <Box sx={{ml: 5, display: 'flex', alignItems: 'center'}}>
-        <Pagination
-          shape='rounded'
-          hideNextButton={true}
-          hidePrevButton={true}
-          count={pageCount}
-          page={pageNumber}
-          onChange={handlePageChange}
-          color='primary'
-          size='small'
-          sx={{'& .MuiPaginationItem-root': {margin: '0 4px'}}}
-        />
+        <Tabs value={activeTab} onChange={(e, id) => handleChangeTab(id)}>
+          {tabs.map((tab) => (
+            <Tab
+              sx={{
+                minHeight: 35,
+                maxHeight: 35,
+                mt: 0.9,
+                backgroundColor: tab.id === activeTab && '#EFF7FD',
+              }}
+              key={tab.id}
+              disableRipple={tab.isEditMode}
+              label={
+                tab.isEditMode ? (
+                  <Box sx={{display: 'flex'}}>
+                    <TextField
+                      ref={tabRef}
+                      value={tab.label}
+                      size='small'
+                      variant='standard'
+                      autoFocus
+                      onChange={(e) =>
+                        setTabs(
+                          tabs.map((t) =>
+                            t.id === tab.id ? {...t, label: e.target.value} : t
+                          )
+                        )
+                      }
+                    />
+                    <Tooltip
+                      onClick={() => handleLabelChange(tab.id)}
+                      color='success'
+                      sx={{mr: -1}}
+                      size='small'>
+                      <DoneIcon />
+                    </Tooltip>
+                  </Box>
+                ) : (
+                  <span
+                    onContextMenu={(e) => {
+                      setMenuOpen({
+                        id: tab.id,
+                        clientY: e.clientY - 100,
+                        clientX: e.clientX,
+                      });
+                    }}
+                    onDoubleClick={() => handleTabDoubleClick(tab.id)}>
+                    {tab.label}
+                  </span>
+                )
+              }
+              value={tab.id}
+            />
+          ))}
+        </Tabs>
         <Tooltip title='Add Page'>
-          <IconButton onClick={handleAddPage}>
-            <AddBoxIcon sx={{fontSize: 'large'}} />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title='Remove Page'>
-          <IconButton onClick={handleRemovePage}>
-            <IndeterminateCheckBoxIcon sx={{fontSize: 'large'}} />
+          <IconButton sx={{ml: 2}} size='small' onClick={handleAddTab}>
+            <AddBoxIcon />
           </IconButton>
         </Tooltip>
       </Box>
+      {menuOpen && (
+        <Menu
+          open={Boolean(menuOpen)}
+          disableScrollLock={true}
+          onClose={() => setMenuOpen(false)}
+          anchorReference='anchorPosition'
+          anchorPosition={
+            menuOpen
+              ? {top: menuOpen.clientY, left: menuOpen.clientX}
+              : undefined
+          }>
+          {menuItems.map((item) => (
+            <MenuItem
+              key={item.label}
+              onClick={() => item.onClick(menuOpen.id)}>
+              {item.label}
+            </MenuItem>
+          ))}
+        </Menu>
+      )}
     </Box>
   );
 };
