@@ -1,13 +1,10 @@
-import AddBoxIcon from '@mui/icons-material/AddBox';
-import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DoneIcon from '@mui/icons-material/Done';
 import {
   Box,
-  Button,
   IconButton,
   Menu,
   MenuItem,
-  Pagination,
   Tab,
   Tabs,
   TextField,
@@ -115,9 +112,13 @@ const BottomBar = ({
           />
         </IconButton>
       </Tooltip>
-      <Box sx={{ml: 5, display: 'flex', alignItems: 'center'}}>
-        <Tabs value={activeTab} onChange={(e, id) => handleChangeTab(id)}>
-          {tabs.map((tab) => (
+      <Box sx={{ml: 2, display: 'flex', alignItems: 'center', maxWidth: '80%'}}>
+        <Tabs
+          value={activeTab}
+          onChange={(e, id) => handleChangeTab(id)}
+          variant='scrollable'
+          scrollButtons>
+          {tabs.map((tab, i) => (
             <Tab
               onContextMenu={(e) => {
                 if (!tab.isEditMode)
@@ -131,10 +132,24 @@ const BottomBar = ({
                 if (!tab.isEditMode) handleTabDoubleClick(tab.id);
               }}
               sx={{
-                minHeight: 35,
-                maxHeight: 35,
+                minHeight: 33,
+                maxHeight: 33,
                 mt: 0.9,
                 backgroundColor: tab.id === activeTab && '#EFF7FD',
+                borderBottom:
+                  tab.id === activeTab &&
+                  !tab.isEditMode &&
+                  '3px solid #0071C5',
+                backgroundColor: tab.id === activeTab && '#EFF7FD',
+                borderRight:
+                  tab.id === activeTab
+                    ? '1px solid #0071C5'
+                    : '1px solid #b7b7b7',
+                backgroundColor: tab.id === activeTab && '#EFF7FD',
+                borderLeft:
+                  tab.id === activeTab
+                    ? '1px solid #0071C5'
+                    : i === 0 && '1px solid #b7b7b7',
               }}
               key={tab.id}
               disableRipple={tab.isEditMode}
@@ -172,8 +187,8 @@ const BottomBar = ({
           ))}
         </Tabs>
         <Tooltip title='Add Page'>
-          <IconButton sx={{ml: 2}} size='small' onClick={handleAddTab}>
-            <AddBoxIcon />
+          <IconButton size='small' onClick={handleAddTab}>
+            <AddCircleIcon />
           </IconButton>
         </Tooltip>
       </Box>
