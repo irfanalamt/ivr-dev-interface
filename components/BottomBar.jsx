@@ -119,6 +119,17 @@ const BottomBar = ({
         <Tabs value={activeTab} onChange={(e, id) => handleChangeTab(id)}>
           {tabs.map((tab) => (
             <Tab
+              onContextMenu={(e) => {
+                if (!tab.isEditMode)
+                  setMenuOpen({
+                    id: tab.id,
+                    clientY: e.clientY - 100,
+                    clientX: e.clientX,
+                  });
+              }}
+              onDoubleClick={() => {
+                if (!tab.isEditMode) handleTabDoubleClick(tab.id);
+              }}
               sx={{
                 minHeight: 35,
                 maxHeight: 35,
@@ -153,17 +164,7 @@ const BottomBar = ({
                     </Tooltip>
                   </Box>
                 ) : (
-                  <span
-                    onContextMenu={(e) => {
-                      setMenuOpen({
-                        id: tab.id,
-                        clientY: e.clientY - 100,
-                        clientX: e.clientX,
-                      });
-                    }}
-                    onDoubleClick={() => handleTabDoubleClick(tab.id)}>
-                    {tab.label}
-                  </span>
+                  <span>{tab.label}</span>
                 )
               }
               value={tab.id}
