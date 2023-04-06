@@ -779,7 +779,8 @@ const CanvasTest = ({
       shapeCount.current,
       shapes,
       offsetX,
-      offsetY
+      offsetY,
+      pageNumber
     );
 
     setShapes([...shapes, newShape]);
@@ -791,7 +792,9 @@ const CanvasTest = ({
     const offsetY = realY - currShape.y;
     currShape.x += offsetX;
     currShape.y += offsetY;
+    currShape.pageNumber = pageNumber;
 
+    setShapes([...shapes, currShape]);
     resetSelectedElement();
   }
 
@@ -836,7 +839,7 @@ const CanvasTest = ({
     }
 
     const newShapes = selectedShapes.current.map((shape) =>
-      shape.copyShape(shapeCount.current, shapes, offsetX, offsetY)
+      shape.copyShape(shapeCount.current, shapes, offsetX, offsetY, pageNumber)
     );
 
     contextMenuItem.current = null;

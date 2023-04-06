@@ -142,10 +142,10 @@ class Shape {
     this.id = id;
   }
 
-  copyShape(shapeCount, shapes, offsetX, offsetY) {
+  copyShape(shapeCount, shapes, offsetX, offsetY, pageNumber) {
     const {x, y, type, text} = this;
     const count = ++shapeCount[type];
-    const newShape = new Shape(x + offsetX, y + offsetY, type);
+    const newShape = new Shape(x + offsetX, y + offsetY, type, pageNumber);
     newShape.setTextAndId(count);
     const shapeNames = shapes.map((shape) => shape.text);
     newShape.text = this.getUniqueName(text, shapeNames);
