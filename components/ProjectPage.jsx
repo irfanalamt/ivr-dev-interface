@@ -57,14 +57,44 @@ function ProjectPage() {
   }
 
   function handleAddTab() {
+    const lastTab = tabs[tabs.length - 1];
+    const shapeCount = getShapeCountInPageNumber(lastTab.id);
+
+    if (!shapeCount) {
+      setShowSnackbar({
+        message: `New page creation failed: ${lastTab.label} is empty.`,
+        type: 'error',
+      });
+      return;
+    }
+
     const newTab = {id: Date.now(), label: `Page${tabs.length + 1}`};
     setTabs([...tabs, newTab]);
   }
   function handleChangeTab(id) {
     setActiveTab(id);
   }
+  function getShapeCountInPageNumber(id) {
+    return shapes.filter((shape) => shape.pageNumber === id).length;
+  }
   function handleDeleteTab(id) {
-    if (tabs.length === 1) return;
+    if (tabs.length === 1) {
+      setShowSnackbar({
+        message: `Cannot delete page.`,
+        type: 'error',
+      });
+      return;
+    }
+
+    const shapeCount = getShapeCountInPageNumber(id);
+
+    if (shapeCount) {
+      setShowSnackbar({
+        message: `Cannot delete page: ${shapeCount} elements found.`,
+        type: 'error',
+      });
+      return;
+    }
 
     setTabs((prevTabs) => {
       const filteredTabs = prevTabs.filter((tab) => tab.id !== id);
