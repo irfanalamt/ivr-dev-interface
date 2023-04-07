@@ -90,7 +90,9 @@ function ProjectPage() {
 
     if (shapeCount) {
       setShowSnackbar({
-        message: `Cannot delete page: ${shapeCount} elements found.`,
+        message: `Cannot delete page: ${shapeCount} element${
+          shapeCount === 1 ? '' : 's'
+        } found.`,
         type: 'error',
       });
       return;
@@ -515,10 +517,14 @@ catch(err) { IVR.error('Error in ivrMain', err); }
         handleClose={() => setIsVariableManagerOpen(false)}
         userVariables={userVariables}
       />
-      <PromptList
-        isOpen={isPromptListOpen}
-        handleClose={() => setIsPromptListOpen(false)}
-      />
+      {isPromptListOpen && (
+        <PromptList
+          isOpen={isPromptListOpen}
+          handleClose={() => setIsPromptListOpen(false)}
+          shapes={shapes}
+        />
+      )}
+
       {showSnackbar && (
         <Snackbar
           anchorOrigin={{vertical: 'top', horizontal: 'right'}}
