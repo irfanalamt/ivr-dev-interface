@@ -1,9 +1,6 @@
 import {
   Box,
-  Button,
-  Dialog,
   TextField,
-  Tooltip,
   Typography,
   Table,
   TableBody,
@@ -18,10 +15,6 @@ import {
   IconButton,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import SaveIcon from '@mui/icons-material/Save';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {useEffect, useState} from 'react';
 
 const PromptList = ({isOpen, handleClose, shapes}) => {
@@ -123,69 +116,49 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
           </Typography>
         </ListItem>
       </List>
-      <Box sx={{backgroundColor: '#eeeeee', height: '100%'}}>
-        <Typography sx={{mx: 'auto', mt: 1, color: 'red'}}>
-          {errorText}
-        </Typography>
+      <Box sx={{backgroundColor: '#eeeeee', height: '100%', p: 2}}>
+        {errorText && (
+          <Typography variant='body1' color='error' gutterBottom>
+            {errorText}
+          </Typography>
+        )}
         {promptArray?.length > 0 ? (
           <>
             <ListItem>
               <FormControlLabel
-                sx={{ml: 'auto', mr: 1, mb: 1}}
+                sx={{ml: 'auto', mr: 1}}
                 control={
                   <Switch
                     checked={showUsedIn}
                     onClick={() => setShowUsedIn(!showUsedIn)}
+                    color='primary'
                     size='small'
                   />
                 }
                 label={showUsedIn ? 'Hide UsedIn' : 'Show UsedIn'}
               />
             </ListItem>
-
-            <Table
-              sx={{minWidth: 600, mb: 2, backgroundColor: '#fafafa'}}
-              size='small'
-              aria-label='promptList-table'>
+            <Table sx={{backgroundColor: '#fafafa'}}>
               <TableHead>
                 <TableRow>
                   <TableCell
                     align='center'
-                    sx={{
-                      width: '20%',
-                      border: '0.5px solid #bdbdbd',
-                      fontSize: 'medium',
-                    }}>
-                    PromptName
+                    sx={{width: '20%', fontWeight: 'bold'}}>
+                    Prompt Name
                   </TableCell>
-                  <TableCell
-                    sx={{
-                      width: '40%',
-                      border: '0.5px solid #bdbdbd',
-                      fontSize: 'medium',
-                    }}>
+                  <TableCell sx={{width: '40%', fontWeight: 'bold'}}>
                     Description
                   </TableCell>
                   {showUsedIn && (
-                    <TableCell
-                      sx={{
-                        fontSize: 'medium',
-                        border: '0.5px solid #bdbdbd',
-                      }}>
-                      UsedIn
-                    </TableCell>
+                    <TableCell sx={{fontWeight: 'bold'}}>Used In</TableCell>
                   )}
                 </TableRow>
               </TableHead>
               <TableBody>
                 {promptArray?.map((row, i) => (
                   <TableRow key={i}>
-                    <TableCell
-                      sx={{borderRight: '0.5px solid #bdbdbd'}}
-                      align='center'>
-                      <Typography variant='subtitle2'>{row.prompt}</Typography>
-                    </TableCell>
-                    <TableCell sx={{borderRight: '0.5px solid #bdbdbd'}}>
+                    <TableCell align='center'>{row.prompt}</TableCell>
+                    <TableCell>
                       <TextField
                         value={row.description}
                         onChange={(e) => handleDescriptionChange(e, i)}
@@ -194,7 +167,10 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
                         variant='standard'
                         InputProps={{
                           disableUnderline: true,
+                          spellCheck: false,
+                          sx: {backgroundColor: '#fcfcfc'},
                         }}
+                        fullWidth
                       />
                     </TableCell>
                     {showUsedIn && (
@@ -209,8 +185,10 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
           </>
         ) : (
           <Typography
-            sx={{mx: 'auto', textAlign: 'center', my: 10}}
-            variant='body1'>
+            variant='body1'
+            align='center'
+            fontSize='large'
+            sx={{my: 5}}>
             No prompts added
           </Typography>
         )}
