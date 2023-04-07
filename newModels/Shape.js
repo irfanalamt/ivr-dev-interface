@@ -108,6 +108,8 @@ class Shape {
   setInitialValue() {
     if (this.type === 'endFlow') {
       this.setUserValues({type: 'disconnect'});
+    } else if (this.type === 'jumper') {
+      this.setUserValues({type: 'entry'});
     }
   }
 

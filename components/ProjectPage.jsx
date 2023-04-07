@@ -307,6 +307,8 @@ function ProjectPage() {
     if (typesToInclude.includes(shape.type)) {
       return shape.functionString;
     }
+
+    return '';
   }
 
   function generateMenuCode(shape) {
@@ -390,29 +392,21 @@ function ProjectPage() {
       }
     } else if (
       shape.type === 'jumper' &&
+      shape.userValues?.type === 'exit' &&
+      shape.userValues?.nextItem
+    ) {
+      nextShapes.push(shape.userValues.nextItem);
+    } else if (
+      shape.type === 'jumper' &&
       shape.userValues?.type === 'entry' &&
       shape.nextItem
     ) {
       nextShapes.push(shape.nextItem);
-    } else if (shape.type === 'jumper' && shape.userValues?.type === 'exit') {
-      const correspondingEntryJumper = findEntryJumper(shape, shapes);
-      if (correspondingEntryJumper) {
-        nextShapes.push(correspondingEntryJumper);
-      }
     } else if (shape.nextItem) {
       nextShapes.push(shape.nextItem);
     }
 
     return nextShapes;
-  }
-
-  function findEntryJumper(exitJumper, shapes) {
-    return shapes.find(
-      (shape) =>
-        shape.type === 'jumper' &&
-        shape.userValues?.type === 'entry' &&
-        shape.userValues.exitItem === exitJumper
-    );
   }
 
   function generateMainMenuCode(startShape) {
@@ -429,7 +423,7 @@ catch(err) { IVR.error('Error in ivrMain', err); }
   function getShapesTillMenuOrSwitch(startShape) {
     // Avoid shapes that are not relevant for final script
     if (!startShape) return;
-    const typesToIgnore = ['playMenu', 'switch', 'connector', 'jumper'];
+    const typesToIgnore = ['connector', 'jumper'];
 
     let shapesArray = [];
     if (!typesToIgnore.includes(startShape.type)) {
@@ -460,11 +454,15 @@ catch(err) { IVR.error('Error in ivrMain', err); }
   }
 
   function getNextShapeForSingleExit(shape) {
-    if (shape.type === 'jumper' && shape.userValues?.type === 'exit') {
-      return findEntryJumper(shape, shapes);
+    if (
+      shape.type === 'jumper' &&
+      shape.userValues?.type === 'exit' &&
+      shape.userValues.nextItem
+    ) {
+      return shape.userValues.nextItem;
     } else if (shape.nextItem) {
       return shape.nextItem;
-    }
+    } else return null;
   }
 
   return (

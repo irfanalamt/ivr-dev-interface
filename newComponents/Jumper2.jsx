@@ -19,10 +19,10 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
 const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
-  const [type, setType] = useState(shape.userValues?.type ?? 'exit');
+  const [type, setType] = useState(shape.userValues?.type ?? 'entry');
   const [name, setName] = useState(shape.userValues?.name || shape.text);
 
-  const [exitItem, setExitItem] = useState(shape.userValues?.exitItem ?? '');
+  const [nextItem, setNextItem] = useState(shape.userValues?.nextItem ?? '');
 
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
@@ -37,23 +37,13 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
     return () => clearTimeout(timeoutId);
   }, [successText]);
 
-  const allExitJumpers = useMemo(
+  const allEntryJumpers = useMemo(
     () =>
       shapes.filter(
-        (shape) => shape.type === 'jumper' && shape.userValues?.type === 'exit'
+        (s) =>
+          s.type === 'jumper' && s.userValues?.type === 'entry' && s !== shape
       ),
     [shapes]
-  );
-
-  const allUnusedExitJumpers = allExitJumpers.filter(
-    (exitJumper) =>
-      !shapes.some((el) => {
-        const isSameExitItem = el.userValues?.exitItem === exitJumper;
-        const isEntryType = el.userValues?.type === 'entry';
-        const isNotCurrentShape = el !== shape;
-
-        return isSameExitItem && isEntryType && isNotCurrentShape;
-      })
   );
 
   function handleSave() {
@@ -65,13 +55,13 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
     shape.setUserValues({
       type,
       name,
-      exitItem,
+      nextItem,
     });
     setErrorText('');
     setSuccessText('Saved.');
   }
 
-  function validateExitId(value) {
+  function validateEntryId(value) {
     const isValidFormat = checkValidity('object', value);
     if (isValidFormat !== -1) {
       setErrorText(isValidFormat);
@@ -79,7 +69,7 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
       return;
     }
 
-    const isUnique = isExitIdUnique(value);
+    const isUnique = isEntryIdUnique(value);
     if (isUnique) {
       setErrorText('');
       delete errors.current.name;
@@ -89,8 +79,8 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
     }
   }
 
-  function isExitIdUnique(name) {
-    return !allExitJumpers.some(
+  function isEntryIdUnique(name) {
+    return !allEntryJumpers.some(
       (currentShape) =>
         currentShape !== shape && currentShape.userValues?.name === name
     );
@@ -182,17 +172,17 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
               value={type}
               onChange={(e) => {
                 setType(e.target.value);
-                if (e.target.value === 'exit') {
-                  setExitItem('');
+                if (e.target.value === 'entry') {
+                  setNextItem('');
                 }
               }}>
-              <FormControlLabel value='exit' control={<Radio />} label='Exit' />
               <FormControlLabel
                 sx={{ml: 1}}
                 value='entry'
                 control={<Radio />}
                 label='Entry'
               />
+              <FormControlLabel value='exit' control={<Radio />} label='Exit' />
             </RadioGroup>
             <Button
               onClick={handleSave}
@@ -217,23 +207,23 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
           <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
             ID
           </Typography>
-          {type === 'exit' ? (
+          {type === 'entry' ? (
             <TextField
               sx={{width: '220px', backgroundColor: '#f5f5f5'}}
               size='small'
               value={name}
               onChange={(e) => {
                 setName(e.target.value);
-                validateExitId(e.target.value);
+                validateEntryId(e.target.value);
               }}
             />
           ) : (
             <Select
               sx={{width: '180px', backgroundColor: '#f5f5f5'}}
               size='small'
-              value={exitItem}
-              onChange={(e) => setExitItem(e.target.value)}>
-              {allUnusedExitJumpers.map((s, i) => (
+              value={nextItem}
+              onChange={(e) => setNextItem(e.target.value)}>
+              {allEntryJumpers.map((s, i) => (
                 <MenuItem value={s} key={i}>
                   {s.userValues.name}
                 </MenuItem>
