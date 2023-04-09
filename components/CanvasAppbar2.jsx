@@ -18,6 +18,7 @@ const CanvasAppbar2 = ({
   resetSelectedItemToolbar,
   handleGenerateConfigFile,
   ivrName,
+  saveToDb,
 }) => {
   function handleClick() {
     console.log('appBar clicked.');
@@ -63,6 +64,7 @@ const CanvasAppbar2 = ({
               color: 'black',
               '&:hover': {backgroundColor: '#81c784'},
             }}
+            onClick={saveToDb}
             variant='contained'
             color='success'>
             <SaveIcon sx={{fontSize: 'large'}} />

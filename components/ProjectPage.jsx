@@ -14,6 +14,7 @@ import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import IvrDialog from './IvrDialog';
 import MainToolbar from './Toolbar';
+import axios from 'axios';
 
 function ProjectPage() {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
@@ -246,12 +247,25 @@ function ProjectPage() {
     return formatCode(finalCodeString);
   }
 
+  async function saveToDb() {
+    try {
+      const response = await axios.post('/api/saveProject2', {
+        name: 'Irfan',
+        isHappy: true,
+      });
+      return response.data;
+    } catch (err) {
+      console.log('Failed to insert document', err);
+    }
+  }
+
   return (
     <Box onContextMenu={handleContextMenuPage}>
       <CanvasAppbar2
         resetSelectedItemToolbar={resetSelectedItemToolbar}
         handleGenerateConfigFile={handleGenerateConfigFile}
         ivrName={ivrName}
+        saveToDb={saveToDb}
       />
       <div style={{display: 'flex'}}>
         <div
