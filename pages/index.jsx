@@ -24,21 +24,21 @@ const Home = () => {
           px: 3,
           boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
+        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
+          <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
+        </Avatar>
         <Typography
+          variant='h5'
+          component='div'
           sx={{
-            mr: 'auto',
             fontFamily: 'Roboto',
             display: 'flex',
             alignItems: 'center',
             color: '#424242',
-          }}
-          variant='h4'>
-          <Avatar sx={{backgroundColor: '#bbdefb', mx: 1}}>
-            <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
-          </Avatar>
+          }}>
           IVR Studio
         </Typography>
-        <Stack direction='row' spacing={2}>
+        <Stack sx={{ml: 'auto'}} direction='row' spacing={2}>
           <Button
             onClick={() => router.push('/login')}
             variant='outlined'
@@ -53,6 +53,7 @@ const Home = () => {
           </Button>
         </Stack>
       </Box>
+
       <Container sx={{py: 8}} maxWidth='sm'>
         <Typography variant='h4' align='center' color='primary' gutterBottom>
           IVR Studio

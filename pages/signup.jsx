@@ -13,7 +13,7 @@ import ArchitectureIcon from '@mui/icons-material/Architecture';
 
 const Signup = () => {
   return (
-    <Container maxWidth='md'>
+    <Container>
       <Box
         sx={{
           display: 'flex',
