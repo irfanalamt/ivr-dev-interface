@@ -17,6 +17,7 @@ import {
 const CanvasAppbar2 = ({
   resetSelectedItemToolbar,
   handleGenerateConfigFile,
+  ivrName,
 }) => {
   function handleClick() {
     console.log('appBar clicked.');
@@ -51,7 +52,8 @@ const CanvasAppbar2 = ({
           alignItems: 'center',
         }}>
         <Typography sx={{mr: 3, color: 'black'}} variant='subtitle1'>
-          ivrName
+          {ivrName.name}
+          {ivrName.name && `_${ivrName.version}`}
         </Typography>
         <Tooltip title='SAVE'>
           <IconButton

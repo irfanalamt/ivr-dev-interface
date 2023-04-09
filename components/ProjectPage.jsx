@@ -1,5 +1,5 @@
 import {Alert, Box, Snackbar} from '@mui/material';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import PromptList from '../newComponents/PromptList';
 import VariableManager from '../newComponents/VariableManager';
 import BottomBar from './BottomBar';
@@ -7,6 +7,7 @@ import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
 import {replaceDollarString} from '../src/myFunctions';
+import IvrDialog from './IvrDialog';
 const prettier = require('prettier');
 const babelParser = require('@babel/parser');
 
@@ -22,6 +23,14 @@ function ProjectPage() {
     {id: 2, label: 'Page 2'},
   ]);
   const [activeTab, setActiveTab] = useState(tabs[0].id);
+  const [ivrName, setIvrName] = useState({name: '', version: 1});
+  const [isIvrDialogOpen, setIsIvrDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (!ivrName.name) {
+      setIsIvrDialogOpen(true);
+    }
+  }, []);
 
   const shapeCount = useRef({
     setParams: 1,
@@ -119,12 +128,15 @@ function ProjectPage() {
   function handleContextMenuPage(e) {
     e.preventDefault();
   }
+  function handleDialogInputChange(event, type) {
+    setIvrName({...ivrName, [type]: event.target.value});
+  }
 
   function handleGenerateConfigFile() {
     const jsString = generateJS();
     if (!jsString) return;
 
-    const fileName = 'ivr.js';
+    const fileName = `${ivrName.name}_${ivrName.version}.js`;
     const fileType = 'application/javascript';
 
     // Create a Blob object from the JS string
@@ -172,8 +184,10 @@ function ProjectPage() {
       return;
     }
 
+    const functionName = `${ivrName.name}_${ivrName.version}`;
+
     const globalParamsString =
-      `function ivrName(IVR){
+      `function ${functionName}(IVR){
        IVR.params = {
         maxRetries: 3,
         maxRepeats: 3,
@@ -215,7 +229,7 @@ function ProjectPage() {
       traverseAndReturnString(startShape);
 
     const endProjectBraces = `} \n\n `;
-    const endExportString = `module.exports = {ivrName}`;
+    const endExportString = `module.exports = {${functionName}}`;
 
     const finalCodeString =
       globalParamsString +
@@ -472,6 +486,7 @@ catch(err) { IVR.error('Error in ivrMain', err); }
       <CanvasAppbar2
         resetSelectedItemToolbar={resetSelectedItemToolbar}
         handleGenerateConfigFile={handleGenerateConfigFile}
+        ivrName={ivrName}
       />
       <div style={{display: 'flex'}}>
         <div
@@ -524,6 +539,13 @@ catch(err) { IVR.error('Error in ivrMain', err); }
           shapes={shapes}
         />
       )}
+
+      <IvrDialog
+        isOpen={isIvrDialogOpen}
+        handleClose={() => setIsIvrDialogOpen(false)}
+        ivrName={ivrName}
+        handleInputChange={handleDialogInputChange}
+      />
 
       {showSnackbar && (
         <Snackbar
