@@ -1,11 +1,7 @@
-import dynamic from 'next/dynamic';
-
-const DynamicCanvas = dynamic(() => import('../components/ProjectPage'), {
-  ssr: false,
-});
+import ProjectPage from '../components/ProjectPage';
 
 const testWorkSpace = () => {
-  return <DynamicCanvas />;
+  return <ProjectPage />;
 };
 
 export default testWorkSpace;
