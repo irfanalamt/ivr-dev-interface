@@ -383,6 +383,29 @@ function isNameUnique(name, shape, shapes) {
   return true;
 }
 
+function validateUserName(name) {
+  if (name.length < 4 || name.length > 20) {
+    return false;
+  }
+
+  if (!/^[a-zA-Z0-9_]+(\s*[a-zA-Z0-9_]+)*$/.test(name)) {
+    return false;
+  }
+
+  // Check if the name starts with a letter
+  if (!/^[a-zA-Z]/.test(name)) {
+    return false;
+  }
+
+  // If all the checks pass
+  return true;
+}
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
 export {
   replaceVarNameDollar,
   drawGridLines,
@@ -394,4 +417,6 @@ export {
   drawMultiSelectRect,
   isNameUnique,
   replaceDollarString,
+  validateUserName,
+  validateEmail,
 };
