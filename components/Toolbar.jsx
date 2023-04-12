@@ -81,6 +81,7 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
         <LightTooltip key={i} title={tooltipTitle} placement='right'>
           {icon ? (
             <Button
+              key={i}
               size='small'
               variant='outlined'
               onClick={(e) => handleSetSelectedItemToolbar(e, actionName)}
