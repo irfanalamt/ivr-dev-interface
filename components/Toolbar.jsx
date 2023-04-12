@@ -14,11 +14,12 @@ const LightTooltip = styled(({className, ...props}) => (
 }));
 
 const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
-  function renderButton(icon, iconName, actionName) {
+  function renderButton(icon, iconName, actionName, key) {
     const isSelected = selectedItemToolbar[actionName];
 
     return (
       <Button
+        key={key}
         size='small'
         variant='outlined'
         onClick={(e) => handleSetSelectedItemToolbar(e, actionName)}
@@ -100,7 +101,7 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
               {icon}
             </Button>
           ) : (
-            renderButton(icon, actionName, actionName)
+            renderButton(icon, actionName, actionName, i)
           )}
         </LightTooltip>
       ))}
