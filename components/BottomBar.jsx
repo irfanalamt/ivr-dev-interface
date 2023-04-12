@@ -61,9 +61,9 @@ const BottomBar = ({
 
   return (
     <Box
-      style={{
+      sx={{
         height: 35,
-        backgroundColor: '#CCCCCC',
+        bgcolor: 'grey.300',
         position: 'fixed',
         bottom: 0,
         width: '100%',
@@ -76,9 +76,9 @@ const BottomBar = ({
           onClick={handleVariableManagerClick}
           sx={{
             ml: '90px',
-            backgroundColor: '#7FB5B5',
+            bgcolor: '#7FB5B5',
             '&:hover': {
-              backgroundColor: '#A8CCCC',
+              bgcolor: '#A8CCCC',
             },
             height: '30px',
             width: '30px',
@@ -97,9 +97,9 @@ const BottomBar = ({
           onClick={handlePromptListClick}
           sx={{
             ml: 4,
-            backgroundColor: '#7FB5B5',
+            bgcolor: '#7FB5B5',
             '&:hover': {
-              backgroundColor: '#A8CCCC',
+              bgcolor: '#A8CCCC',
             },
             height: '30px',
             width: '30px',
@@ -112,12 +112,12 @@ const BottomBar = ({
           />
         </IconButton>
       </Tooltip>
-      <Box sx={{ml: 2, display: 'flex', alignItems: 'center', maxWidth: '80%'}}>
+      <Box sx={{ml: 4, display: 'flex', alignItems: 'center', maxWidth: '80%'}}>
         <Tabs
           value={activeTab}
           onChange={(e, id) => handleChangeTab(id)}
           variant='scrollable'
-          scrollButtons>
+          scrollButtons='auto'>
           {tabs.map((tab, i) => (
             <Tab
               onContextMenu={(e) => {
@@ -135,21 +135,20 @@ const BottomBar = ({
                 minHeight: 33,
                 maxHeight: 33,
                 mt: 0.9,
-                backgroundColor: tab.id === activeTab && '#EFF7FD',
+                bgcolor: tab.id === activeTab && 'divider',
                 borderBottom:
                   tab.id === activeTab &&
                   !tab.isEditMode &&
-                  '3px solid #0071C5',
-                backgroundColor: tab.id === activeTab && '#EFF7FD',
+                  '3px solid primary.main',
                 borderRight:
                   tab.id === activeTab
-                    ? '1px solid #0071C5'
-                    : '1px solid #b7b7b7',
-                backgroundColor: tab.id === activeTab && '#EFF7FD',
+                    ? '1px solid primary.main'
+                    : '1px solid grey.400',
+                bgcolor: tab.id === activeTab && 'divider',
                 borderLeft:
                   tab.id === activeTab
-                    ? '1px solid #0071C5'
-                    : i === 0 && '1px solid #b7b7b7',
+                    ? '1px solid primary.main'
+                    : i === 0 && '1px solid grey.400',
               }}
               key={tab.id}
               disableRipple={tab.isEditMode}
@@ -162,6 +161,7 @@ const BottomBar = ({
                       size='small'
                       variant='standard'
                       autoFocus
+                      InputProps={{spellCheck: 'false'}}
                       onChange={(e) =>
                         setTabs(
                           tabs.map((t) =>
@@ -187,7 +187,7 @@ const BottomBar = ({
           ))}
         </Tabs>
         <Tooltip title='Add Page'>
-          <IconButton size='small' onClick={handleAddTab}>
+          <IconButton sx={{ml: 1}} size='small' onClick={handleAddTab}>
             <AddCircleIcon />
           </IconButton>
         </Tooltip>
@@ -215,5 +215,4 @@ const BottomBar = ({
     </Box>
   );
 };
-
 export default BottomBar;
