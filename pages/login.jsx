@@ -160,7 +160,7 @@ const LoginPage = () => {
             alignItems: 'center',
             mt: 2,
           }}>
-          Don't have an account?{' '}
+          {`Don't have an account?`}{' '}
           <Button
             variant='text'
             color='primary'
