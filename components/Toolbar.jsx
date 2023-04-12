@@ -76,8 +76,8 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
           />,
         ],
         ['jumper', 'Jumper'],
-      ].map(([actionName, tooltipTitle, icon]) => (
-        <LightTooltip key={actionName} title={tooltipTitle} placement='right'>
+      ].map(([actionName, tooltipTitle, icon], i) => (
+        <LightTooltip key={i} title={tooltipTitle} placement='right'>
           {icon ? (
             <Button
               size='small'
