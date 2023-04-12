@@ -191,7 +191,7 @@ const Signup = () => {
             variant='text'
             color='primary'
             sx={{marginLeft: '4px'}}
-            href='/signup'>
+            href='/login'>
             Login
           </Button>
         </Typography>
