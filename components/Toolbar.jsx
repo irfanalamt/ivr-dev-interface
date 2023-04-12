@@ -78,10 +78,10 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
         ],
         ['jumper', 'Jumper'],
       ].map(([actionName, tooltipTitle, icon], i) => (
-        <LightTooltip key={i} title={tooltipTitle} placement='right'>
+        <LightTooltip key={actionName} title={tooltipTitle} placement='right'>
           {icon ? (
             <Button
-              key={i}
+              key={actionName}
               size='small'
               variant='outlined'
               onClick={(e) => handleSetSelectedItemToolbar(e, actionName)}
