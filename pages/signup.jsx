@@ -1,13 +1,12 @@
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import React from 'react';
 import {
-  Avatar,
   Box,
-  Button,
-  Container,
-  Stack,
-  TextField,
-  Tooltip,
+  Avatar,
   Typography,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {useEffect, useState} from 'react';
@@ -24,14 +23,6 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
 
   const [errorText, setErrorText] = useState('');
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setErrorText('');
-    }, 4000);
-
-    return () => clearTimeout(timeoutId);
-  }, [errorText]);
 
   function handleChange(name, value) {
     setFormState((prevState) => ({...prevState, [name]: value}));
@@ -67,147 +58,162 @@ const Signup = () => {
     //TODO: hash password, send user data to API; save user to DB
   }
 
-  return (
-    <SignupForm
-      formState={formState}
-      errors={errors}
-      errorText={errorText}
-      onChange={handleChange}
-      onSubmit={handleSignup}
-    />
-  );
-};
-
-const SignupForm = ({formState, errors, errorText, onChange, onSubmit}) => {
-  return (
-    <Container>
-      <Header />
-      <Content
-        formState={formState}
-        errors={errors}
-        errorText={errorText}
-        onChange={onChange}
-        onSubmit={onSubmit}
-      />
-    </Container>
-  );
-};
-
-const Header = () => (
-  <Box
-    sx={{
-      display: 'flex',
-      backgroundColor: '#f5f5f5',
-      alignItems: 'center',
-      height: 64,
-      px: 3,
-      boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
-    }}>
-    <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
-      <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
-    </Avatar>
-    <Typography
-      variant='h5'
-      component='div'
-      sx={{
-        fontFamily: 'Roboto',
-        display: 'flex',
-        alignItems: 'center',
-        color: '#424242',
-      }}>
-      IVR Studio
-    </Typography>
-  </Box>
-);
-
-const Content = ({formState, errors, errorText, onChange, onSubmit}) => {
-  const {name, email, password, confirmPassword} = formState;
+  function handleCloseSnackbar(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setErrorText('');
+  }
 
   return (
     <Box
       sx={{
-        marginTop: 5,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
+        height: '100vh',
       }}>
-      <Avatar sx={{backgroundColor: '#3f51b5', marginBottom: 2}}>
-        <LockOutlinedIcon />
-      </Avatar>
-      <Typography component='h1' variant='h5' sx={{marginBottom: 2}}>
-        Sign up
-      </Typography>
-      <Stack>
+      <Box
+        sx={{
+          display: 'flex',
+          backgroundColor: '#f5f5f5',
+          alignItems: 'center',
+          height: 64,
+          px: 3,
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+        }}>
+        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
+          <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
+        </Avatar>
+        <Typography
+          variant='h5'
+          component='div'
+          sx={{
+            fontFamily: 'Roboto',
+            display: 'flex',
+            alignItems: 'center',
+            color: '#424242',
+          }}>
+          IVR Studio
+        </Typography>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: 360,
+          mt: 2,
+          px: 4,
+          py: 4,
+          boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+          borderRadius: 4,
+          backgroundColor: '#ffffff',
+        }}>
+        <Typography variant='h5' component='div' sx={{mb: 3}}>
+          Sign Up
+        </Typography>
         <TextField
-          margin='normal'
           fullWidth
-          id='name'
+          margin='normal'
           label='Name'
-          name='name'
-          autoComplete='name'
-          autoFocus
-          size='small'
-          value={name}
-          onChange={(e) => onChange('name', e.target.value)}
+          variant='outlined'
+          sx={{backgroundColor: '#ffffff'}}
+          value={formState.name}
+          onChange={(e) => handleChange('name', e.target.value)}
           error={errors.name}
-          sx={{marginBottom: 1}}
         />
         <TextField
-          margin='normal'
           fullWidth
-          id='email'
-          label='Email Address'
-          name='email'
-          autoComplete='email'
-          size='small'
-          value={email}
-          onChange={(e) => onChange('email', e.target.value)}
+          margin='normal'
+          label='Email'
+          variant='outlined'
+          sx={{backgroundColor: '#ffffff'}}
+          value={formState.email}
+          onChange={(e) => handleChange('email', e.target.value)}
           error={errors.email}
-          sx={{marginBottom: 1}}
         />
         <TextField
-          margin='normal'
           fullWidth
-          name='password'
+          margin='normal'
           label='Password'
           type='password'
-          id='password'
-          size='small'
-          value={password}
-          onChange={(e) => onChange('password', e.target.value)}
-          sx={{marginBottom: 2}}
+          variant='outlined'
+          sx={{backgroundColor: '#ffffff'}}
+          value={formState.password}
+          onChange={(e) => handleChange('password', e.target.value)}
         />
         <TextField
-          margin='normal'
           fullWidth
-          name='confirmPassword'
+          margin='normal'
           label='Confirm Password'
           type='password'
-          id='confirmPassword'
-          size='small'
-          value={confirmPassword}
-          onChange={(e) => onChange('confirmPassword', e.target.value)}
-          sx={{marginBottom: 2}}
+          variant='outlined'
+          sx={{backgroundColor: '#ffffff'}}
+          value={formState.confirmPassword}
+          onChange={(e) => handleChange('confirmPassword', e.target.value)}
         />
         <Button
-          type='submit'
           fullWidth
           variant='contained'
-          onClick={onSubmit}
           sx={{
-            backgroundColor: '#3f51b5',
-            color: '#fff',
-            '&:hover': {backgroundColor: '#2c3e50'},
-          }}>
+            mt: 2,
+            mb: 1,
+          }}
+          onClick={handleSignup}>
           Sign Up
         </Button>
-      </Stack>
-      <Typography
-        sx={{textAlign: 'center', mt: 1}}
-        variant='body1'
-        color='error'>
-        {errorText}
-      </Typography>
+        <Button
+          fullWidth
+          variant='text'
+          sx={{
+            mt: 1,
+            mb: 1,
+          }}
+          href='/'>
+          Continue as Guest
+        </Button>
+        <Typography
+          variant='body2'
+          component='div'
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            mt: 2,
+          }}>
+          Already have an account?{' '}
+          <Button
+            variant='text'
+            color='primary'
+            sx={{marginLeft: '4px'}}
+            href='/signup'>
+            Login
+          </Button>
+        </Typography>
+      </Box>
+      {errorText && (
+        <Snackbar
+          sx={{mb: 2}}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={errorText !== ''}
+          autoHideDuration={3500}
+          onClose={handleCloseSnackbar}>
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity='error'
+            sx={{width: '100%'}}>
+            {errorText}
+          </Alert>
+        </Snackbar>
+      )}
     </Box>
   );
 };
