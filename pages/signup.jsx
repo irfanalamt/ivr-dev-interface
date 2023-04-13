@@ -11,6 +11,8 @@ import {
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {useEffect, useState} from 'react';
 import {validateEmail, validateUserName} from '../src/myFunctions';
+import bcrypt from 'bcryptjs';
+import axios from 'axios';
 
 const Signup = () => {
   const [formState, setFormState] = useState({
@@ -23,6 +25,7 @@ const Signup = () => {
   const [errors, setErrors] = useState({});
 
   const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   function handleChange(name, value) {
     setFormState((prevState) => ({...prevState, [name]: value}));
@@ -54,8 +57,20 @@ const Signup = () => {
 
     setErrorText('');
 
-    // all fields are filled and validated at this point
-    //TODO: hash password, send user data to API; save user to DB
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const data = {name, email, password: hashedPassword};
+
+    sendSignupData(data);
+  }
+  function sendSignupData(data) {
+    axios
+      .post('/api/user', data)
+      .then((response) => {
+        setSuccessText(response.data.message);
+      })
+      .catch((error) => {
+        setErrorText(error.response.data.message);
+      });
   }
 
   function handleCloseSnackbar(event, reason) {
@@ -211,6 +226,24 @@ const Signup = () => {
             severity='error'
             sx={{width: '100%'}}>
             {errorText}
+          </Alert>
+        </Snackbar>
+      )}{' '}
+      {successText && (
+        <Snackbar
+          sx={{mb: 2}}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={successText !== ''}
+          autoHideDuration={3500}
+          onClose={() => setSuccessText('')}>
+          <Alert
+            onClose={() => setSuccessText('')}
+            severity='success'
+            sx={{width: '100%'}}>
+            {successText}
           </Alert>
         </Snackbar>
       )}
