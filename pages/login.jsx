@@ -11,8 +11,10 @@ import {
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {validateEmail} from '../src/myFunctions';
 import axios from 'axios';
+import {useRouter} from 'next/router';
 
-const LoginPage = () => {
+const LoginPage = ({updateUser}) => {
+  const router = useRouter();
   const [formState, setFormState] = useState({
     email: '',
     password: '',
@@ -67,6 +69,10 @@ const LoginPage = () => {
       localStorage.setItem('token', token);
       if (response.data) {
         setSuccessText('Login successful.');
+        updateUser(token);
+        setTimeout(() => {
+          router.push('/');
+        }, [2500]);
       }
       return true;
     } catch (error) {

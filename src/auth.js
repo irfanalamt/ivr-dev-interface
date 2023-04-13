@@ -2,14 +2,14 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
 async function createToken(payload) {
-  const token = await jwt.sign(payload, process.env.JWT_SECRET, {
+  const token = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: '1d',
   });
   return token;
 }
 
 async function verifyToken(token) {
-  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
   return decoded;
 }
 
@@ -36,7 +36,7 @@ async function authenticateUser(email, password, users) {
     throw new Error('Incorrect password.');
   }
 
-  const token = await createToken({username: user.name});
+  const token = await createToken({name: user.name, email: user.email});
   return token;
 }
 

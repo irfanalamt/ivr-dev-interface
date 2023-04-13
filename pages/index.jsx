@@ -2,7 +2,7 @@ import {Avatar, Box, Button, Container, Stack, Typography} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {useRouter} from 'next/router';
 
-const Home = () => {
+const Home = ({user, updateUser}) => {
   const router = useRouter();
 
   function handleNewProject() {
@@ -11,6 +11,10 @@ const Home = () => {
 
   function handleOpenSavedProjects() {
     router.push('/saved-projects2');
+  }
+  function handleLogout() {
+    localStorage.removeItem('token');
+    updateUser(null);
   }
 
   return (
@@ -38,20 +42,44 @@ const Home = () => {
           }}>
           IVR Studio
         </Typography>
-        <Stack sx={{ml: 'auto'}} direction='row' spacing={2}>
-          <Button
-            onClick={() => router.push('/login')}
-            variant='outlined'
-            color='info'>
-            Login
-          </Button>
-          <Button
-            onClick={() => router.push('/signup')}
-            variant='contained'
-            color='info'>
-            Signup
-          </Button>
-        </Stack>
+        {user ? (
+          <Stack
+            sx={{ml: 'auto', alignItems: 'center'}}
+            direction='row'
+            spacing={2}>
+            <Typography sx={{ml: 'auto'}} variant='subtitle1'>
+              Welcome {user.name}
+            </Typography>
+            <Button
+              sx={{
+                backgroundColor: '#f44336',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: '#e53935',
+                },
+              }}
+              onClick={handleLogout}
+              variant='outlined'
+              color='secondary'>
+              Logout
+            </Button>
+          </Stack>
+        ) : (
+          <Stack sx={{ml: 'auto'}} direction='row' spacing={2}>
+            <Button
+              onClick={() => router.push('/login')}
+              variant='outlined'
+              color='info'>
+              Login
+            </Button>
+            <Button
+              onClick={() => router.push('/signup')}
+              variant='contained'
+              color='info'>
+              Signup
+            </Button>
+          </Stack>
+        )}
       </Box>
 
       <Container sx={{py: 8}} maxWidth='sm'>
