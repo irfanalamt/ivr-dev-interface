@@ -24,11 +24,11 @@ const Home = ({user, updateUser}) => {
           display: 'flex',
           backgroundColor: '#f5f5f5',
           alignItems: 'center',
-          height: 64,
+          height: 65,
           px: 3,
-          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
         }}>
-        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
+        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 2}}>
           <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
         </Avatar>
         <Typography
@@ -47,20 +47,10 @@ const Home = ({user, updateUser}) => {
             sx={{ml: 'auto', alignItems: 'center'}}
             direction='row'
             spacing={2}>
-            <Typography sx={{ml: 'auto'}} variant='subtitle1'>
-              Welcome {user.name}
+            <Typography sx={{ml: 'auto'}} variant='body1'>
+              Welcome <b>{user.name}</b>
             </Typography>
-            <Button
-              sx={{
-                backgroundColor: '#f44336',
-                color: 'white',
-                '&:hover': {
-                  backgroundColor: '#e53935',
-                },
-              }}
-              onClick={handleLogout}
-              variant='outlined'
-              color='secondary'>
+            <Button onClick={handleLogout} variant='outlined' color='warning'>
               Logout
             </Button>
           </Stack>
@@ -82,24 +72,24 @@ const Home = ({user, updateUser}) => {
         )}
       </Box>
 
-      <Container sx={{py: 8}} maxWidth='sm'>
-        <Typography variant='h4' align='center' color='primary' gutterBottom>
+      <Container sx={{py: 10}} maxWidth='sm'>
+        <Typography variant='h3' align='center' color='primary' gutterBottom>
           IVR Studio
         </Typography>
         <Typography variant='h5' align='center' color='textSecondary' paragraph>
           Easily design personalized IVR flows using our intuitive, visual
           editor.
         </Typography>
-        <Stack sx={{pt: 4}} direction='row' spacing={2} justifyContent='center'>
+        <Stack sx={{pt: 6}} direction='row' spacing={2} justifyContent='center'>
           <Button
-            sx={{textAlign: 'center'}}
+            sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
             variant='contained'
             color='primary'
             onClick={handleNewProject}>
             Start new project
           </Button>
           <Button
-            sx={{textAlign: 'center'}}
+            sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
             variant='outlined'
             color='secondary'
             onClick={handleOpenSavedProjects}>
