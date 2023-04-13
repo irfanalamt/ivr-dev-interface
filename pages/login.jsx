@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {validateEmail} from '../src/myFunctions';
+import axios from 'axios';
 
 const LoginPage = () => {
   const [formState, setFormState] = useState({
@@ -18,6 +19,7 @@ const LoginPage = () => {
   });
   const [errors, setErrors] = useState({});
   const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
   function handleChange(name, value) {
     setFormState((prevState) => ({...prevState, [name]: value}));
@@ -55,8 +57,22 @@ const LoginPage = () => {
 
     setErrorText('');
 
-    // all fields are filled and validated at this point
-    //TODO: send to api, check in db if user present
+    sendLoginData({email, password});
+  }
+
+  async function sendLoginData(data) {
+    try {
+      const response = await axios.post('/api/login', data);
+      const {token} = response.data;
+      localStorage.setItem('token', token);
+      if (response.data) {
+        setSuccessText('Login successful.');
+      }
+      return true;
+    } catch (error) {
+      setErrorText(error.response.data.message);
+      return false;
+    }
   }
 
   return (
@@ -185,6 +201,24 @@ const LoginPage = () => {
             severity='error'
             sx={{width: '100%'}}>
             {errorText}
+          </Alert>
+        </Snackbar>
+      )}
+      {successText && (
+        <Snackbar
+          sx={{mb: 2}}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={successText !== ''}
+          autoHideDuration={3500}
+          onClose={() => setSuccessText('')}>
+          <Alert
+            onClose={() => setSuccessText('')}
+            severity='success'
+            sx={{width: '100%'}}>
+            {successText}
           </Alert>
         </Snackbar>
       )}
