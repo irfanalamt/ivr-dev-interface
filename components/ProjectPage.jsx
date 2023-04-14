@@ -1,4 +1,5 @@
 import {Alert, Box, Snackbar} from '@mui/material';
+import axios from 'axios';
 import {useEffect, useRef, useState} from 'react';
 import PromptList from '../newComponents/PromptList';
 import VariableManager from '../newComponents/VariableManager';
@@ -12,11 +13,10 @@ import {
 import BottomBar from './BottomBar';
 import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
-import IvrDialog from './IvrDialog';
 import MainToolbar from './Toolbar';
-import axios from 'axios';
+import Shape from '../newModels/Shape';
 
-function ProjectPage() {
+function ProjectPage({ivrName, user}) {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [isVariableManagerOpen, setIsVariableManagerOpen] = useState(false);
   const [isPromptListOpen, setIsPromptListOpen] = useState(false);
@@ -28,14 +28,6 @@ function ProjectPage() {
     {id: 2, label: 'Page 2'},
   ]);
   const [activeTab, setActiveTab] = useState(tabs[0].id);
-  const [ivrName, setIvrName] = useState({name: '', version: 1});
-  const [isIvrDialogOpen, setIsIvrDialogOpen] = useState(false);
-
-  useEffect(() => {
-    if (!ivrName.name) {
-      setIsIvrDialogOpen(true);
-    }
-  }, []);
 
   const shapeCount = useRef({
     setParams: 1,
@@ -53,6 +45,48 @@ function ProjectPage() {
   });
 
   const userVariables = useRef([]);
+
+  useEffect(() => {
+    fetchProjectFromDB();
+  }, []);
+
+  function fetchProjectFromDB() {
+    const token = localStorage.getItem('token');
+    const storedIvrName = JSON.parse(localStorage.getItem('ivrName'));
+
+    if (storedIvrName && storedIvrName.name) {
+      axios
+        .get('/api/getProject2', {
+          params: {
+            name: `${storedIvrName.name}_${storedIvrName.version}`,
+          },
+          headers: {Authorization: token},
+        })
+        .then((response) => {
+          console.log(response.data);
+          const {shapes, tabs, userVariables: newUserVariables} = response.data;
+
+          const newShapes = shapes.map((shape) => {
+            const count = shapeCount.current[shape.type]++;
+            const newShape = new Shape(
+              shape.x,
+              shape.y,
+              shape.type,
+              shape.pageNumber
+            );
+            newShape.setTextAndId(count);
+            return newShape;
+          });
+          newUserVariables.forEach((v) => userVariables.current.push(v));
+
+          setShapes(newShapes);
+          setTabs(tabs);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }
 
   function handleTabDoubleClick(tabId) {
     const tabIdx = tabs.findIndex((tab) => tab.id === tabId);
@@ -132,9 +166,6 @@ function ProjectPage() {
 
   function handleContextMenuPage(e) {
     e.preventDefault();
-  }
-  function handleDialogInputChange(event, type) {
-    setIvrName({...ivrName, [type]: event.target.value});
   }
 
   function handleGenerateConfigFile() {
@@ -249,9 +280,21 @@ function ProjectPage() {
 
   async function saveToDb() {
     try {
-      const response = await axios.post('/api/saveProject2', {
-        name: 'Irfan',
-        isHappy: true,
+      const token = localStorage.getItem('token');
+      const data = {
+        email: user?.name ?? 'guest',
+        name: `${ivrName.name}_${ivrName.version}`,
+        shapes,
+        tabs,
+        shapeCount: shapeCount.current,
+        userVariables: userVariables.current,
+        token,
+      };
+      const response = await axios.post('/api/saveProject2', data);
+
+      setShowSnackbar({
+        message: `Project saved successfully.`,
+        type: 'success',
       });
       return response.data;
     } catch (err) {
@@ -318,13 +361,6 @@ function ProjectPage() {
           shapes={shapes}
         />
       )}
-
-      <IvrDialog
-        isOpen={isIvrDialogOpen}
-        handleClose={() => setIsIvrDialogOpen(false)}
-        ivrName={ivrName}
-        handleInputChange={handleDialogInputChange}
-      />
 
       {showSnackbar && (
         <Snackbar

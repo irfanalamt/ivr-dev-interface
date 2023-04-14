@@ -6,6 +6,7 @@ const Home = ({user, updateUser}) => {
   const router = useRouter();
 
   function handleNewProject() {
+    localStorage.removeItem('ivrName');
     router.push('/project2');
   }
 
