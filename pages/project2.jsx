@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import ProjectPage from '../components/ProjectPage';
 import IvrDialog from '../components/IvrDialog';
 
-const testWorkSpace = () => {
+const TestWorkSpace = () => {
   const [isIvrDialogOpen, setIsIvrDialogOpen] = useState(false);
   const [ivrName, setIvrName] = useState({name: '', version: 1});
 
@@ -16,15 +16,15 @@ const testWorkSpace = () => {
     }
   }, []);
 
-  function handleDialogInputChange(event, type) {
-    setIvrName({...ivrName, [type]: event.target.value});
-  }
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       localStorage.setItem('ivrName', JSON.stringify(ivrName));
     }
   }, [ivrName]);
+
+  const handleDialogInputChange = (event, type) => {
+    setIvrName({...ivrName, [type]: event.target.value});
+  };
 
   return (
     <>
@@ -39,4 +39,4 @@ const testWorkSpace = () => {
   );
 };
 
-export default testWorkSpace;
+export default TestWorkSpace;
