@@ -1,35 +1,105 @@
-import {Avatar, Box, Button, Container, Stack, Typography} from '@mui/material';
+import React, {useState} from 'react';
+import {
+  Box,
+  Avatar,
+  Typography,
+  TextField,
+  Button,
+  Snackbar,
+  Alert,
+  Stack,
+} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import {validateEmail} from '../src/myFunctions';
+import axios from 'axios';
 import {useRouter} from 'next/router';
 
-const Home = ({user, updateUser}) => {
+const IndexPage = ({updateUser}) => {
   const router = useRouter();
+  const [formState, setFormState] = useState({
+    email: '',
+    password: '',
+  });
+  const [errors, setErrors] = useState({});
+  const [errorText, setErrorText] = useState('');
+  const [successText, setSuccessText] = useState('');
 
-  function handleNewProject() {
-    localStorage.removeItem('ivrName');
-    router.push('/project2');
+  function handleChange(name, value) {
+    setFormState((prevState) => ({...prevState, [name]: value}));
+
+    if (name === 'email') {
+      const isValid = validateEmail(value);
+      setErrors((prevErrors) => ({...prevErrors, [name]: !isValid}));
+    }
   }
 
-  function handleOpenSavedProjects() {
-    router.push('/saved-projects2');
+  function handleCloseSnackbar(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setErrorText('');
   }
-  function handleLogout() {
-    localStorage.removeItem('token');
-    updateUser(null);
+
+  function handleLogin() {
+    const {email, password} = formState;
+
+    if (!email || !password) {
+      setErrorText('Please complete all required fields to sign up.');
+      return;
+    }
+
+    if (Object.values(errors).some((error) => error)) {
+      setErrorText('Invalid email format. Please review and resubmit.');
+      return;
+    }
+
+    if (password.length < 3) {
+      setErrorText('Password must be at least 3 characters.');
+      return;
+    }
+
+    setErrorText('');
+
+    sendLoginData({email, password});
+  }
+
+  async function sendLoginData(data) {
+    try {
+      const response = await axios.post('/api/login', data);
+      const {token} = response.data;
+      localStorage.setItem('token', token);
+      if (response.data) {
+        setSuccessText('Login successful.');
+        updateUser(token);
+        setTimeout(() => {
+          router.push('/home');
+        }, [2500]);
+      }
+      return true;
+    } catch (error) {
+      setErrorText(error.response?.data.message);
+      return false;
+    }
   }
 
   return (
-    <Container>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100vh',
+        backgroundImage: 'linear-gradient(45deg, #f5f5f5, #e0e0e0)',
+      }}>
       <Box
         sx={{
           display: 'flex',
           backgroundColor: '#f5f5f5',
           alignItems: 'center',
-          height: 65,
+          height: 64,
           px: 3,
-          borderBottom: '1px solid rgba(0, 0, 0, 0.1)',
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
-        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 2}}>
+        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
           <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
         </Avatar>
         <Typography
@@ -43,63 +113,162 @@ const Home = ({user, updateUser}) => {
           }}>
           IVR Studio
         </Typography>
-        {user ? (
-          <Stack
-            sx={{ml: 'auto', alignItems: 'center'}}
-            direction='row'
-            spacing={2}>
-            <Typography sx={{ml: 'auto'}} variant='body1'>
-              Welcome <b>{user.name}</b>
-            </Typography>
-            <Button onClick={handleLogout} variant='outlined' color='warning'>
-              Logout
-            </Button>
-          </Stack>
-        ) : (
-          <Stack sx={{ml: 'auto'}} direction='row' spacing={2}>
-            <Button
-              onClick={() => router.push('/login')}
-              variant='outlined'
-              color='info'>
-              Login
-            </Button>
-            <Button
-              onClick={() => router.push('/signup')}
-              variant='contained'
-              color='info'>
-              Signup
-            </Button>
-          </Stack>
-        )}
       </Box>
-
-      <Container sx={{py: 10}} maxWidth='sm'>
-        <Typography variant='h3' align='center' color='primary' gutterBottom>
-          IVR Studio
-        </Typography>
-        <Typography variant='h5' align='center' color='textSecondary' paragraph>
-          Easily design personalized IVR flows using our intuitive, visual
-          editor.
-        </Typography>
-        <Stack sx={{pt: 6}} direction='row' spacing={2} justifyContent='center'>
-          <Button
-            sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
-            variant='contained'
-            color='primary'
-            onClick={handleNewProject}>
-            Start new project
-          </Button>
-          <Button
-            sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 'calc(100% - 150px)',
+        }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '50%',
+            maxWidth: 360,
+            mt: 8,
+            px: 4,
+            py: 6,
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+            borderRadius: 4,
+            backgroundColor: '#ffffff',
+          }}>
+          <Typography variant='h5' component='div' sx={{mb: 3}}>
+            Login
+          </Typography>
+          <TextField
+            fullWidth
+            margin='normal'
+            label='Email'
             variant='outlined'
-            color='secondary'
-            onClick={handleOpenSavedProjects}>
-            Open project
+            sx={{backgroundColor: '#ffffff'}}
+            value={formState.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            error={errors.email}
+            autoFocus
+          />
+          <TextField
+            fullWidth
+            margin='normal'
+            label='Password'
+            type='password'
+            variant='outlined'
+            sx={{backgroundColor: '#ffffff'}}
+            value={formState.password}
+            onChange={(e) => handleChange('password', e.target.value)}
+          />
+          <Button
+            fullWidth
+            variant='contained'
+            sx={{
+              mt: 2,
+              mb: 1,
+              backgroundColor: '#2196f3',
+              color: '#ffffff',
+            }}
+            onClick={handleLogin}>
+            Sign In
           </Button>
-        </Stack>
-      </Container>
-    </Container>
+          <Button
+            fullWidth
+            variant='text'
+            sx={{
+              mt: 1,
+              mb: 1,
+            }}
+            href='/project2'>
+            Continue as Guest
+          </Button>
+          <Typography
+            variant='body2'
+            component='div'
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              mt: 2,
+            }}>
+            {`Don't have an account?`}
+            <Button
+              variant='text'
+              color='primary'
+              sx={{marginLeft: '4px'}}
+              href='/signup'>
+              Sign Up
+            </Button>
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '35%',
+            px: 5,
+            py: 8,
+            mt: 10,
+            alignSelf: 'start',
+          }}>
+          <Typography variant='h4' component='div' sx={{mb: 3}}>
+            Welcome to IVR Studio
+          </Typography>
+          <Typography
+            variant='h5'
+            component='div'
+            sx={{mb: 3, textAlign: 'center'}}>
+            Easily design personalized IVR flows using our intuitive, visual
+            editor.
+          </Typography>
+          <Stack spacing={1}>
+            <Typography>✔️ Integrated validation functionality</Typography>
+            <Typography>✔️ JavaScript support</Typography>
+            <Typography>✔️ Seamless API integration capabilities</Typography>
+            <Typography>✔️ Multi-language support</Typography>
+          </Stack>
+        </Box>
+      </Box>
+      {errorText && (
+        <Snackbar
+          sx={{mb: 2}}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={errorText !== ''}
+          autoHideDuration={3500}
+          onClose={handleCloseSnackbar}>
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity='error'
+            sx={{width: '100%'}}>
+            {errorText}
+          </Alert>
+        </Snackbar>
+      )}
+      {successText && (
+        <Snackbar
+          sx={{mb: 2}}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          open={successText !== ''}
+          autoHideDuration={3500}
+          onClose={() => setSuccessText('')}>
+          <Alert
+            onClose={() => setSuccessText('')}
+            severity='success'
+            sx={{width: '100%'}}>
+            {successText}
+          </Alert>
+        </Snackbar>
+      )}
+    </Box>
   );
 };
 
-export default Home;
+export default IndexPage;
