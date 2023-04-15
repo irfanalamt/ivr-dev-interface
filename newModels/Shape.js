@@ -166,6 +166,50 @@ class Shape {
     return newName;
   }
 
+  prepareForDb() {
+    const newShape = {
+      text: this.text,
+      x: this.x,
+      y: this.y,
+      type: this.type,
+      pageNumber: this.pageNumber,
+      name: this.name,
+      userValues: this.userValues
+        ? this.addNextItemIdUserValues(this.userValues)
+        : null,
+      nextItemId: this.nextItem?.id || null,
+      id: this.id,
+    };
+
+    return newShape;
+  }
+
+  addNextItemIdUserValues(userValues) {
+    if (this.type === 'playMenu') {
+      userValues.items?.forEach((item) => {
+        if (item.nextItem) {
+          item.nextItemId = item.nextItem.id;
+        }
+      });
+
+      return JSON.stringify(userValues);
+    } else if (this.type === 'switch') {
+      userValues.actions?.forEach((action) => {
+        if (action.nextItem) {
+          action.nextItemId = action.nextItem.id;
+        }
+      });
+      if (userValues.defaultActionNextItem) {
+        userValues.defaultActionNextItemId =
+          userValues.defaultActionNextItem.id;
+      }
+
+      return JSON.stringify(userValues);
+    } else {
+      return JSON.stringify(userValues);
+    }
+  }
+
   getBottomCoordinates() {
     return [this.x, this.y + this.height / 2];
   }

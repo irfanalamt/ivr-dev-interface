@@ -64,28 +64,86 @@ function ProjectPage({ivrName, user}) {
         })
         .then((response) => {
           console.log(response.data);
-          const {shapes, tabs, userVariables: newUserVariables} = response.data;
+          const {
+            shapes,
+            tabs,
+            userVariables: newUserVariables,
+            shapeCount: newShapeCount,
+          } = response.data;
 
-          const newShapes = shapes.map((shape) => {
-            const count = shapeCount.current[shape.type]++;
-            const newShape = new Shape(
-              shape.x,
-              shape.y,
-              shape.type,
-              shape.pageNumber
-            );
-            newShape.setTextAndId(count);
-            return newShape;
-          });
-          newUserVariables.forEach((v) => userVariables.current.push(v));
+          shapeCount.current = newShapeCount;
+
+          const newShapes = createShapesFromResponse(shapes);
 
           setShapes(newShapes);
+
+          updateNextItems(newShapes);
+
+          newUserVariables.forEach((v) => userVariables.current.push(v));
+
           setTabs(tabs);
         })
         .catch((error) => {
           console.error(error);
         });
     }
+  }
+
+  function createShapesFromResponse(shapes) {
+    return shapes.map((shape) => {
+      const newShape = new Shape(
+        shape.x,
+        shape.y,
+        shape.type,
+        shape.pageNumber
+      );
+      newShape.text = shape.text;
+      newShape.id = shape.id;
+      newShape.nextItemId = shape.nextItemId;
+      if (shape.userValues) {
+        newShape.setUserValues(JSON.parse(shape.userValues));
+      }
+
+      return newShape;
+    });
+  }
+
+  function updateNextItems(newShapes) {
+    newShapes.forEach((shape) => {
+      if (shape.type === 'playMenu') {
+        updatePlayMenuNextItems(shape, newShapes);
+      } else if (shape.type === 'switch') {
+        updateSwitchNextItems(shape, newShapes);
+      } else if (shape.nextItemId) {
+        shape.nextItem = getShapeById(shape.nextItemId, newShapes);
+      }
+    });
+  }
+
+  function updatePlayMenuNextItems(shape, newShapes) {
+    shape.userValues.items.forEach((item) => {
+      if (item.nextItemId) {
+        item.nextItem = getShapeById(item.nextItemId, newShapes);
+      }
+    });
+  }
+
+  function updateSwitchNextItems(shape, newShapes) {
+    shape.userValues.actions?.forEach((action) => {
+      if (action.nextItemId) {
+        action.nextItem = getShapeById(action.nextItemId, newShapes);
+      }
+    });
+    if (shape.userValues.defaultActionNextItemId) {
+      shape.userValues.defaultActionNextItem = getShapeById(
+        shape.userValues.defaultActionNextItemId,
+        newShapes
+      );
+    }
+  }
+
+  function getShapeById(id, shapes) {
+    return shapes.find((shape) => shape.id === id);
   }
 
   function handleTabDoubleClick(tabId) {
@@ -279,27 +337,53 @@ function ProjectPage({ivrName, user}) {
   }
 
   async function saveToDb() {
+    const shapesForDb = prepareShapesForDb(shapes);
+
     try {
       const token = localStorage.getItem('token');
-      const data = {
-        email: user?.name ?? 'guest',
-        name: `${ivrName.name}_${ivrName.version}`,
-        shapes,
+      const data = createRequestData(
+        user,
+        ivrName,
+        shapesForDb,
         tabs,
-        shapeCount: shapeCount.current,
-        userVariables: userVariables.current,
-        token,
-      };
+        shapeCount,
+        userVariables,
+        token
+      );
       const response = await axios.post('/api/saveProject2', data);
 
       setShowSnackbar({
-        message: `Project saved successfully.`,
+        message: 'Project saved successfully.',
         type: 'success',
       });
       return response.data;
     } catch (err) {
       console.log('Failed to insert document', err);
     }
+  }
+
+  function prepareShapesForDb(shapes) {
+    return shapes.map((shape) => shape.prepareForDb());
+  }
+
+  function createRequestData(
+    user,
+    ivrName,
+    shapes,
+    tabs,
+    shapeCount,
+    userVariables,
+    token
+  ) {
+    return {
+      email: user?.name ?? 'guest',
+      name: `${ivrName.name}_${ivrName.version}`,
+      shapes: shapes,
+      tabs: tabs,
+      shapeCount: shapeCount.current,
+      userVariables: userVariables.current,
+      token: token,
+    };
   }
 
   return (
