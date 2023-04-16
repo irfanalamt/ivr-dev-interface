@@ -8,7 +8,7 @@ const TestWorkSpace = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const storedIvrName = localStorage.getItem('ivrName');
+      const storedIvrName = sessionStorage.getItem('ivrName');
       setIvrName(
         storedIvrName ? JSON.parse(storedIvrName) : {name: '', version: 1}
       );
@@ -18,7 +18,7 @@ const TestWorkSpace = () => {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      localStorage.setItem('ivrName', JSON.stringify(ivrName));
+      sessionStorage.setItem('ivrName', JSON.stringify(ivrName));
     }
   }, [ivrName]);
 
