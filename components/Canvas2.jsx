@@ -517,6 +517,19 @@ const CanvasTest = ({
     }
   }
 
+  function handleDoubleClick(e) {
+    const {clientX, clientY} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
+
+    for (const shape of shapesInPage) {
+      if (shape.isMouseInShape(realX, realY)) {
+        currentShape.current = shape;
+        setIsOpenElementDrawer(true);
+        return;
+      }
+    }
+  }
+
   function resetConnection() {
     const {shape1} = connectingShapes.current;
 
@@ -940,6 +953,7 @@ const CanvasTest = ({
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
+        onDoubleClick={handleDoubleClick}
         onContextMenu={handleContextMenu}
         ref={canvasRef}
       />

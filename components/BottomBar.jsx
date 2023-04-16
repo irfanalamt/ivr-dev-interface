@@ -80,14 +80,14 @@ const BottomBar = ({
             '&:hover': {
               bgcolor: '#A8CCCC',
             },
-            height: '30px',
-            width: '30px',
+            height: '28px',
+            width: '28px',
           }}>
           <img
             src='/icons/variableManager.png'
             alt='Icon'
-            height={'16px'}
-            width={'16px'}
+            height={'15px'}
+            width={'15px'}
           />
         </IconButton>
       </Tooltip>
@@ -101,14 +101,14 @@ const BottomBar = ({
             '&:hover': {
               bgcolor: '#A8CCCC',
             },
-            height: '30px',
-            width: '30px',
+            height: '28px',
+            width: '28px',
           }}>
           <img
             src='/icons/promptList.png'
             alt='Icon'
-            height={'16px'}
-            width={'16px'}
+            height={'15px'}
+            width={'15px'}
           />
         </IconButton>
       </Tooltip>
@@ -117,7 +117,7 @@ const BottomBar = ({
           value={activeTab}
           onChange={(e, id) => handleChangeTab(id)}
           variant='scrollable'
-          scrollButtons='auto'>
+          scrollButtons>
           {tabs.map((tab, i) => (
             <Tab
               onContextMenu={(e) => {
