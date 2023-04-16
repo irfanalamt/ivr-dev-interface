@@ -8,6 +8,7 @@ import {
   Container,
   Grid,
   Typography,
+  CircularProgress,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -18,6 +19,7 @@ import {useRouter} from 'next/router';
 const SavedProjects2 = ({user}) => {
   const router = useRouter();
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -25,9 +27,11 @@ const SavedProjects2 = ({user}) => {
       .get('/api/getProjects2', {headers: {Authorization: token}})
       .then((response) => {
         modifyResponseDate(response.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false);
       });
   }, []);
 
@@ -106,32 +110,50 @@ const SavedProjects2 = ({user}) => {
         <Typography sx={{mb: 2, color: '#6E6E6E'}} variant='h6'>
           Saved Projects
         </Typography>
-        <Grid container spacing={3}>
-          {projects.map((project, i) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
-              <Card
-                sx={{height: '100%', display: 'flex', flexDirection: 'column'}}>
-                <CardContent sx={{flexGrow: 1}}>
-                  <Typography variant='h6' component='div'>
-                    {project.name}
-                  </Typography>
-                  <Typography color='textSecondary'>{project.date}</Typography>
-                </CardContent>
-                <CardActions>
-                  <Button sx={{ml: 'auto'}} variant='outlined' color='error'>
-                    Delete
-                  </Button>
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={() => handleOpenProject(project.name)}>
-                    Open
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+        {loading ? (
+          <Box sx={{display: 'flex', justifyContent: 'center', mt: 3}}>
+            <CircularProgress />
+          </Box>
+        ) : projects.length === 0 ? (
+          <Typography
+            sx={{mt: 4, fontSize: 'large', textAlign: 'center'}}
+            variant='subtitle2'>
+            No projects found.
+          </Typography>
+        ) : (
+          <Grid container spacing={3}>
+            {projects.map((project, i) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+                <Card
+                  sx={{
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}>
+                  <CardContent sx={{flexGrow: 1}}>
+                    <Typography variant='h6' component='div'>
+                      {project.name}
+                    </Typography>
+                    <Typography color='textSecondary'>
+                      {project.date}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button sx={{ml: 'auto'}} variant='outlined' color='error'>
+                      Delete
+                    </Button>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => handleOpenProject(project.name)}>
+                      Open
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        )}
       </Container>
     </Box>
   );
