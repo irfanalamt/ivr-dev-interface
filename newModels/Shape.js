@@ -101,7 +101,7 @@ class Shape {
         'endFlow',
       ].includes(type)
     ) {
-      this.img = new Image(20, 20);
+      this.img = new Image(15, 15);
       this.img.src = `/icons/${type}Black.png`;
     }
   }
@@ -695,12 +695,6 @@ class Shape {
     ctx.beginPath();
     ctx.translate(this.x, this.y);
 
-    // ctx.moveTo(this.width / 2, -this.height / 2);
-    // ctx.lineTo(this.width / 2, this.height / 3);
-    // ctx.lineTo(0, this.height / 2);
-    // ctx.lineTo(-this.width / 2, this.height / 3);
-    // ctx.lineTo(-this.width / 2, -this.height / 2);
-
     ctx.moveTo(this.width / 2, -this.height / 2);
     ctx.lineTo(this.width / 2, this.height / 3);
     ctx.lineTo(0, this.height / 2);
@@ -857,7 +851,7 @@ class Shape {
 
     ctx.moveTo(this.width * 0.5 - this.height * 0.5, this.height * 0.5);
     ctx.lineTo(-(this.width * 0.5 - this.height * 0.5), this.height * 0.5);
-    // ctx.lineTo(-this.width * 0.5, -this.height * 0.5);
+
     ctx.arc(
       -(this.width * 0.5 - this.height * 0.5),
       0,
@@ -994,7 +988,6 @@ class Shape {
     ctx.strokeStyle = this.style;
     ctx.stroke();
     this.drawDotsTopAndBottom(ctx);
-    // this.drawExitPointsSwitch(ctx);
   }
 
   drawModule(ctx) {
