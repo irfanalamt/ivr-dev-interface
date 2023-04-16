@@ -1,4 +1,3 @@
-import ArchitectureIcon from '@mui/icons-material/Architecture';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SaveIcon from '@mui/icons-material/Save';
@@ -6,7 +5,6 @@ import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import {
   AppBar,
-  Avatar,
   Box,
   Button,
   IconButton,
@@ -19,6 +17,7 @@ const CanvasAppbar2 = ({
   handleGenerateConfigFile,
   ivrName,
   saveToDb,
+  openIvrDialog,
 }) => {
   function handleClick() {
     console.log('appBar clicked.');
@@ -78,7 +77,8 @@ const CanvasAppbar2 = ({
               color: 'black',
               '&:hover': {backgroundColor: '#9575cd'},
             }}
-            variant='contained'>
+            variant='contained'
+            onClick={openIvrDialog}>
             <SaveAsIcon sx={{fontSize: 'large'}} />
           </IconButton>
         </Tooltip>

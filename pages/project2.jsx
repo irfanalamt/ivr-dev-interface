@@ -28,9 +28,12 @@ const TestWorkSpace = () => {
 
   return (
     <>
-      <ProjectPage ivrName={ivrName} />
+      <ProjectPage
+        ivrName={ivrName}
+        openIvrDialog={() => setIsIvrDialogOpen(true)}
+      />
       <IvrDialog
-        isOpen={isIvrDialogOpen}
+        isOpen={Boolean(isIvrDialogOpen)}
         handleClose={() => setIsIvrDialogOpen(false)}
         ivrName={ivrName}
         handleInputChange={handleDialogInputChange}

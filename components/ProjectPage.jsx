@@ -16,7 +16,7 @@ import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
 import Shape from '../newModels/Shape';
 
-function ProjectPage({ivrName, user}) {
+function ProjectPage({ivrName, user, openIvrDialog}) {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [isVariableManagerOpen, setIsVariableManagerOpen] = useState(false);
   const [isPromptListOpen, setIsPromptListOpen] = useState(false);
@@ -393,6 +393,7 @@ function ProjectPage({ivrName, user}) {
         handleGenerateConfigFile={handleGenerateConfigFile}
         ivrName={ivrName}
         saveToDb={saveToDb}
+        openIvrDialog={openIvrDialog}
       />
       <div style={{display: 'flex'}}>
         <div
