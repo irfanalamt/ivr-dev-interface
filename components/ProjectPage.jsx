@@ -52,7 +52,7 @@ function ProjectPage({ivrName, user}) {
 
   function fetchProjectFromDB() {
     const token = localStorage.getItem('token');
-    const storedIvrName = JSON.parse(localStorage.getItem('ivrName'));
+    const storedIvrName = JSON.parse(sessionStorage.getItem('ivrName'));
 
     if (storedIvrName && storedIvrName.name) {
       axios
@@ -121,7 +121,7 @@ function ProjectPage({ivrName, user}) {
   }
 
   function updatePlayMenuNextItems(shape, newShapes) {
-    shape.userValues.items.forEach((item) => {
+    shape.userValues?.items?.forEach((item) => {
       if (item.nextItemId) {
         item.nextItem = getShapeById(item.nextItemId, newShapes);
       }
@@ -129,12 +129,12 @@ function ProjectPage({ivrName, user}) {
   }
 
   function updateSwitchNextItems(shape, newShapes) {
-    shape.userValues.actions?.forEach((action) => {
+    shape.userValues?.actions?.forEach((action) => {
       if (action.nextItemId) {
         action.nextItem = getShapeById(action.nextItemId, newShapes);
       }
     });
-    if (shape.userValues.defaultActionNextItemId) {
+    if (shape.userValues?.defaultActionNextItemId) {
       shape.userValues.defaultActionNextItem = getShapeById(
         shape.userValues.defaultActionNextItemId,
         newShapes

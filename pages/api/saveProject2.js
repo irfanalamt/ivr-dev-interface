@@ -7,8 +7,7 @@ async function saveProject2(req, res) {
     return;
   }
   try {
-    const {email, name, shapes, tabs, shapeCount, userVariables, token} =
-      req.body;
+    const {name, shapes, tabs, shapeCount, userVariables, token} = req.body;
 
     let validEmail = '';
 
@@ -25,7 +24,15 @@ async function saveProject2(req, res) {
     const filter = {email: validEmail, name};
 
     const update = {
-      $set: {email: validEmail, name, shapes, tabs, shapeCount, userVariables},
+      $set: {
+        email: validEmail,
+        name,
+        shapes,
+        tabs,
+        shapeCount,
+        userVariables,
+        timestamp: Date.now(),
+      },
     };
     const options = {upsert: true};
 
