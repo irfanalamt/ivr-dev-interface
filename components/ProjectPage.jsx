@@ -99,6 +99,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       );
       newShape.text = shape.text;
       newShape.id = shape.id;
+      newShape.functionString = shape.functionString;
       newShape.nextItemId = shape.nextItemId;
       if (shape.userValues) {
         newShape.setUserValues(JSON.parse(shape.userValues));

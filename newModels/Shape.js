@@ -179,6 +179,7 @@ class Shape {
         : null,
       nextItemId: this.nextItem?.id || null,
       id: this.id,
+      functionString: this.functionString,
     };
 
     return newShape;
