@@ -71,7 +71,7 @@ const LoginPage = ({updateUser}) => {
         setSuccessText('Login successful.');
         updateUser(token);
         setTimeout(() => {
-          router.push('/');
+          router.push('/home');
         }, [2500]);
       }
       return true;

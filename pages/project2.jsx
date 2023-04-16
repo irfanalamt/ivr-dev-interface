@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import ProjectPage from '../components/ProjectPage';
 import IvrDialog from '../components/IvrDialog';
 
-const TestWorkSpace = () => {
+const TestWorkSpace = ({user}) => {
   const [isIvrDialogOpen, setIsIvrDialogOpen] = useState(false);
   const [ivrName, setIvrName] = useState({name: '', version: 1});
 
@@ -31,6 +31,7 @@ const TestWorkSpace = () => {
       <ProjectPage
         ivrName={ivrName}
         openIvrDialog={() => setIsIvrDialogOpen(true)}
+        user={user}
       />
       <IvrDialog
         isOpen={Boolean(isIvrDialogOpen)}

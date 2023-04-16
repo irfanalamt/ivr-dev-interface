@@ -2,6 +2,7 @@ import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SaveIcon from '@mui/icons-material/Save';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import {
   AppBar,
@@ -18,6 +19,7 @@ const CanvasAppbar2 = ({
   ivrName,
   saveToDb,
   openIvrDialog,
+  user,
 }) => {
   function handleClick() {
     console.log('appBar clicked.');
@@ -45,16 +47,19 @@ const CanvasAppbar2 = ({
           <HelpCenterIcon sx={{color: 'black', fontSize: 'large'}} />
         </IconButton>
       </Tooltip>
+      <Typography
+        sx={{ml: 4, color: 'black'}}
+        variant='subtitle1'
+        fontSize='large'>
+        {ivrName.name}
+        {ivrName.name && `_${ivrName.version}`}
+      </Typography>
       <Box
         sx={{
           ml: 'auto',
           display: 'flex',
           alignItems: 'center',
         }}>
-        <Typography sx={{mr: 3, color: 'black'}} variant='subtitle1'>
-          {ivrName.name}
-          {ivrName.name && `_${ivrName.version}`}
-        </Typography>
         <Tooltip title='SAVE'>
           <IconButton
             sx={{
@@ -110,6 +115,25 @@ const CanvasAppbar2 = ({
             <SaveAltIcon sx={{fontSize: 'large'}} />
           </Button>
         </Tooltip>
+        {user ? (
+          <>
+            <Typography sx={{ml: 'auto', ml: 2, color: 'black'}}>
+              {user.name}
+            </Typography>
+            <AccountCircleIcon sx={{color: '#666666', mx: 1}} />
+          </>
+        ) : (
+          <Typography
+            sx={{
+              ml: 'auto',
+              mx: 1,
+              fontWeight: 'bold',
+              color: 'black',
+            }}
+            variant='subtitle2'>
+            Guest 🟢
+          </Typography>
+        )}
       </Box>
     </AppBar>
   );

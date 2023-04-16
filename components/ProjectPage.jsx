@@ -394,6 +394,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         ivrName={ivrName}
         saveToDb={saveToDb}
         openIvrDialog={openIvrDialog}
+        user={user}
       />
       <div style={{display: 'flex'}}>
         <div
