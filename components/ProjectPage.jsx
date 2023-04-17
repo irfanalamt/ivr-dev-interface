@@ -91,18 +91,26 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
   function createShapesFromResponse(shapes) {
     return shapes.map((shape) => {
-      const newShape = new Shape(
-        shape.x,
-        shape.y,
-        shape.type,
-        shape.pageNumber
-      );
-      newShape.text = shape.text;
-      newShape.id = shape.id;
-      newShape.functionString = shape.functionString;
-      newShape.nextItemId = shape.nextItemId;
-      if (shape.userValues) {
-        newShape.setUserValues(JSON.parse(shape.userValues));
+      const {
+        x,
+        y,
+        type,
+        pageNumber,
+        text,
+        id,
+        functionString,
+        nextItemId,
+        userValues,
+      } = shape;
+      const newShape = new Shape(x, y, type, pageNumber);
+
+      newShape.text = text;
+      newShape.id = id;
+      newShape.functionString = functionString;
+      newShape.nextItemId = nextItemId;
+
+      if (userValues) {
+        newShape.setUserValues(JSON.parse(userValues));
       }
 
       return newShape;

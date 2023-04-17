@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Box,
   Avatar,
@@ -14,7 +14,7 @@ import {validateEmail} from '../src/myFunctions';
 import axios from 'axios';
 import {useRouter} from 'next/router';
 
-const IndexPage = ({updateUser}) => {
+const IndexPage = ({updateUser, user}) => {
   const router = useRouter();
   const [formState, setFormState] = useState({
     email: '',
@@ -23,6 +23,12 @@ const IndexPage = ({updateUser}) => {
   const [errors, setErrors] = useState({});
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
+
+  useEffect(() => {
+    if (user) {
+      router.push('/home');
+    }
+  }, [user, router]);
 
   function handleChange(name, value) {
     setFormState((prevState) => ({...prevState, [name]: value}));
