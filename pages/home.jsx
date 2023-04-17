@@ -15,6 +15,7 @@ const HomePage = ({user, updateUser}) => {
   }
   function handleLogout() {
     localStorage.removeItem('token');
+    sessionStorage.removeItem('ivrName');
     updateUser(null);
   }
 
