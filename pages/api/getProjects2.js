@@ -18,7 +18,10 @@ export default async function handler(req, res) {
       validEmail = 'guest';
     }
 
-    const documents = await collection.find({email: validEmail}).toArray();
+    const documents = await collection
+      .find({email: validEmail}, {projection: {name: 1, timestamp: 1}})
+      .toArray();
+
     let totalSize = 0;
 
     for (const document of documents) {
