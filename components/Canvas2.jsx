@@ -117,6 +117,13 @@ const CanvasTest = ({
     const count = shapeCount.current[type]++;
     const newShape = new Shape(x, y, type, pageNumber);
     newShape.setTextAndId(count);
+    if (newShape.type === 'setParams' && !hasShapeByText('start')) {
+      newShape.text = 'start';
+      newShape.setFunctionString(`this.start = async function() {
+        const newParams = {  };
+        await IVR.setCallParams('start', newParams);
+      };`);
+    }
     setShapes([...shapes, newShape]);
   }
 
@@ -137,6 +144,10 @@ const CanvasTest = ({
         return newShapes;
       });
     }
+  }
+
+  function hasShapeByText(text) {
+    return shapes.some((shape) => shape.text === text);
   }
 
   function deleteMatchingEntryJumper(exitJumper) {
@@ -340,12 +351,20 @@ const CanvasTest = ({
 
     if (selectedItemToolbar) {
       clearAndDraw();
+
       const tempShape = new Shape(
         realX,
         realY,
         selectedItemToolbar,
         pageNumber
       );
+
+      if (selectedItemToolbar === 'setParams') {
+        if (!hasShapeByText('start')) {
+          tempShape.text = 'start';
+        }
+      }
+
       tempShape.drawShape(contextRef.current);
       return;
     }
