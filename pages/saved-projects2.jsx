@@ -12,16 +12,22 @@ import {
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import axios from 'axios';
 import {useRouter} from 'next/router';
+import DeleteConfirmationDialog from '../components/DeleteConfirmationDialog';
 
 const SavedProjects2 = ({user}) => {
   const router = useRouter();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
+    fetchProjectsFromDb();
+  }, []);
+
+  function fetchProjectsFromDb() {
     const token = localStorage.getItem('token');
     axios
       .get('/api/getProjects2', {headers: {Authorization: token}})
@@ -33,7 +39,52 @@ const SavedProjects2 = ({user}) => {
         console.error(error);
         setLoading(false);
       });
-  }, []);
+  }
+
+  const projectRef = useRef('');
+
+  function handleDeleteClick(name) {
+    setDialogOpen(true);
+    projectRef.current = name;
+  }
+
+  function handleDialogClose() {
+    setDialogOpen(false);
+    projectRef.current = '';
+  }
+
+  function handleConfirmDelete() {
+    deleteProjectFromDb(projectRef.current);
+    setDialogOpen(false);
+  }
+
+  function deleteProjectFromDb(name) {
+    const token = localStorage.getItem('token');
+    console.log('name is ' + name);
+    axios
+      .delete('/api/deleteProject', {
+        params: {
+          name,
+        },
+        headers: {Authorization: token},
+      })
+      .then((response) => {
+        console.log(response.data);
+        updateProjectsAfterDelete(name);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => {
+        projectRef.current = '';
+      });
+  }
+
+  function updateProjectsAfterDelete(name) {
+    const updatedProjects = projects.filter((project) => project.name !== name);
+
+    if (updatedProjects.length < projects.length) {
+      setProjects(updatedProjects);
+    }
+  }
 
   function modifyResponseDate(data) {
     const newData = data.map((d) => {
@@ -139,7 +190,11 @@ const SavedProjects2 = ({user}) => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button sx={{ml: 'auto'}} variant='outlined' color='error'>
+                    <Button
+                      sx={{ml: 'auto'}}
+                      variant='outlined'
+                      color='error'
+                      onClick={() => handleDeleteClick(project.name)}>
                       Delete
                     </Button>
                     <Button
@@ -155,6 +210,12 @@ const SavedProjects2 = ({user}) => {
           </Grid>
         )}
       </Container>
+      <DeleteConfirmationDialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        onConfirm={handleConfirmDelete}
+        itemName={projectRef.current}
+      />
     </Box>
   );
 };
