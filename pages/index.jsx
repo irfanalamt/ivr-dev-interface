@@ -10,6 +10,7 @@ import {
   Stack,
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import CheckIcon from '@mui/icons-material/Check';
 import {validateEmail} from '../src/myFunctions';
 import axios from 'axios';
 import {useRouter} from 'next/router';
@@ -230,10 +231,21 @@ const IndexPage = ({updateUser, user}) => {
             editor.
           </Typography>
           <Stack spacing={1}>
-            <Typography>✔️ Integrated validation functionality</Typography>
-            <Typography>✔️ JavaScript support</Typography>
-            <Typography>✔️ Seamless API integration capabilities</Typography>
-            <Typography>✔️ Multi-language support</Typography>
+            <Typography sx={{display: 'flex', alignItems: 'center'}}>
+              <CheckIcon sx={{mr: 0.5}} />
+              Integrated validation functionality
+            </Typography>
+            <Typography sx={{display: 'flex', alignItems: 'center'}}>
+              <CheckIcon sx={{mr: 0.5}} /> JavaScript support
+            </Typography>
+            <Typography sx={{display: 'flex', alignItems: 'center'}}>
+              <CheckIcon sx={{mr: 0.5}} />
+              Seamless API integration capabilities
+            </Typography>
+            <Typography sx={{display: 'flex', alignItems: 'center'}}>
+              <CheckIcon sx={{mr: 0.5}} />
+              Multi-language support
+            </Typography>
           </Stack>
         </Box>
       </Box>
