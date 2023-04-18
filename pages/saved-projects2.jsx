@@ -32,7 +32,8 @@ const SavedProjects2 = ({user}) => {
     axios
       .get('/api/getProjects2', {headers: {Authorization: token}})
       .then((response) => {
-        modifyResponseDate(response.data);
+        const newData = modifyResponseData(response.data);
+        setProjects(newData);
         setLoading(false);
       })
       .catch((error) => {
@@ -63,9 +64,7 @@ const SavedProjects2 = ({user}) => {
     console.log('name is ' + name);
     axios
       .delete('/api/deleteProject', {
-        params: {
-          name,
-        },
+        params: {name},
         headers: {Authorization: token},
       })
       .then((response) => {
@@ -80,32 +79,28 @@ const SavedProjects2 = ({user}) => {
 
   function updateProjectsAfterDelete(name) {
     const updatedProjects = projects.filter((project) => project.name !== name);
-
-    if (updatedProjects.length < projects.length) {
-      setProjects(updatedProjects);
-    }
+    setProjects(updatedProjects);
   }
 
-  function modifyResponseDate(data) {
-    const newData = data.map((d) => {
-      const date = new Date(d.timestamp);
-      const formattedDate = date.toLocaleString();
-
-      return {name: d.name, date: formattedDate};
+  function modifyResponseData(data) {
+    return data.map((d) => {
+      const date = new Date(d.timestamp).toLocaleString();
+      const {ivrName, version} = getIvrNameAndVersion(d.name);
+      const displayName = `${ivrName} (${version})`;
+      return {name: d.name, date, displayName};
     });
-
-    setProjects(newData);
   }
 
-  function handleOpenProject(name) {
+  function getIvrNameAndVersion(name) {
     const parts = name.split('_');
     const version = parts.pop();
     const ivrName = parts.join('_');
+    return {ivrName, version};
+  }
 
-    sessionStorage.setItem(
-      'ivrName',
-      JSON.stringify({name: ivrName, version: version})
-    );
+  function handleOpenProject(name) {
+    const {ivrName, version} = getIvrNameAndVersion(name);
+    sessionStorage.setItem('ivrName', JSON.stringify({name: ivrName, version}));
     router.push('/project2');
   }
 
@@ -183,7 +178,7 @@ const SavedProjects2 = ({user}) => {
                   }}>
                   <CardContent sx={{flexGrow: 1}}>
                     <Typography variant='h6' component='div'>
-                      {project.name}
+                      {project.displayName}
                     </Typography>
                     <Typography color='textSecondary'>
                       {project.date}

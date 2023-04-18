@@ -52,7 +52,7 @@ const CanvasAppbar2 = ({
         variant='subtitle1'
         fontSize='large'>
         {ivrName.name}
-        {ivrName.name && `_${ivrName.version}`}
+        {ivrName.name && ` (${ivrName.version})`}
       </Typography>
       <Box
         sx={{
