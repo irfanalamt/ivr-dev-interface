@@ -98,8 +98,16 @@ const CanvasTest = ({
 
     // Draw the multi-select rectangle if it exists
     if (drawnMultiSelectRectangle.current) {
-      const {x, y, width, height} = drawnMultiSelectRectangle.current;
-      drawMultiSelectRect(ctx, x, y, width, height, contextMenuItem.current);
+      const {
+        x,
+        y,
+        width,
+        height,
+        pageNumber: pnum,
+      } = drawnMultiSelectRectangle.current;
+
+      if (pnum === pageNumber)
+        drawMultiSelectRect(ctx, x, y, width, height, contextMenuItem.current);
     }
   }
 
@@ -189,6 +197,28 @@ const CanvasTest = ({
       }
     });
   }
+  function clearNextItem(shape) {
+    if (shape.type === 'playMenu') {
+      shape.userValues?.actions?.forEach((action) => {
+        if (action.nextItem) {
+          delete action.nextItem;
+        }
+      });
+    } else if (shape.type === 'switch') {
+      shape.userValues?.actions?.forEach((action) => {
+        if (action.nextItem) {
+          delete action.nextItem;
+        }
+      });
+      if (shape.userValues?.defaultActionNextItem) {
+        delete shape.userValues.defaultActionNextItem;
+      }
+    } else {
+      if (shape.nextItem) {
+        shape.nextItem = null;
+      }
+    }
+  }
 
   function getRealCoordinates(clientX, clientY) {
     const boundingRect = canvasRef.current.getBoundingClientRect();
@@ -213,11 +243,15 @@ const CanvasTest = ({
       return;
     }
 
-    if (drawnMultiSelectRectangle.current) {
+    if (
+      drawnMultiSelectRectangle.current &&
+      drawnMultiSelectRectangle.current.pageNumber === pageNumber
+    ) {
       // Check if mouse down outside rect; reset this if inside.
       if (isPointInRectangle(realX, realY, drawnMultiSelectRectangle.current)) {
         multiSelectDragStart.current = {x: realX, y: realY};
       } else {
+        console.log('mouse down reset');
         resetMultiSelect();
       }
       return;
@@ -300,7 +334,8 @@ const CanvasTest = ({
 
     if (drawnMultiSelectRectangle.current) {
       // If rectangle is drawn, check if any shapes are inside it
-      const {x, y, width, height} = drawnMultiSelectRectangle.current;
+      const {x, y, width, height, pageNumber} =
+        drawnMultiSelectRectangle.current;
 
       let x1 = x;
       let y1 = y;
@@ -322,10 +357,13 @@ const CanvasTest = ({
         y: y1,
         width: x2 - x1,
         height: y2 - y1,
+        pageNumber,
       };
 
-      selectedShapes.current = shapesInPage.filter((shape) =>
-        shape.isInRectangle(x, y, width, height)
+      selectedShapes.current = shapes.filter(
+        (shape) =>
+          shape.isInRectangle(x, y, width, height) &&
+          shape.pageNumber === pageNumber
       );
 
       // If there are selected shapes, set them as selected
@@ -334,6 +372,7 @@ const CanvasTest = ({
         clearAndDraw();
       } else {
         // If there are no shapes bound, reset multi select
+        console.log('mouse up reset');
         resetMultiSelect();
       }
     }
@@ -475,6 +514,7 @@ const CanvasTest = ({
           y: startY.current,
           width: realX - startX.current,
           height: realY - startY.current,
+          pageNumber,
         };
       } else {
         // rectangle already there
@@ -650,7 +690,10 @@ const CanvasTest = ({
     if (selectedItemToolbar) return;
 
     if (drawnMultiSelectRectangle.current) {
-      if (isPointInRectangle(realX, realY, drawnMultiSelectRectangle.current)) {
+      if (
+        isPointInRectangle(realX, realY, drawnMultiSelectRectangle.current) &&
+        drawnMultiSelectRectangle.current.pageNumber === pageNumber
+      ) {
         let items = ['Cut', 'Copy', 'Delete'];
         setContextMenu(
           contextMenu === null
@@ -734,6 +777,7 @@ const CanvasTest = ({
       }
       if (item === 'Cut') {
         contextMenuItem.current = 'Cut';
+        selectedShapes.current.cutPage = pageNumber;
         clearAndDraw();
         return;
       }
@@ -763,6 +807,7 @@ const CanvasTest = ({
         contextMenuItem.current = 'Cut';
         currentShape.current.setSelected(true);
         selectedShapes.current = [];
+        selectedShapes.current.cutPage = pageNumber;
         selectedShapes.current.push(currentShape.current);
         clearAndDraw();
         return;
@@ -815,18 +860,35 @@ const CanvasTest = ({
       pageNumber
     );
 
+    clearNextItem(newShape);
+
     setShapes([...shapes, newShape]);
     resetSelectedElement();
   }
+
   function handleContextCutPaste(realX, realY) {
     const currShape = selectedShapes.current[0];
+    const cutPage = selectedShapes.current.cutPage;
     const offsetX = realX - currShape.x;
     const offsetY = realY - currShape.y;
-    currShape.x += offsetX;
-    currShape.y += offsetY;
-    currShape.pageNumber = pageNumber;
 
-    setShapes([...shapes, currShape]);
+    if (cutPage !== pageNumber) {
+      clearShapesWithNextItem(currShape);
+      clearNextItem(currShape);
+    }
+
+    const updatedShapes = [...shapes];
+    const index = updatedShapes.findIndex((shape) => shape.id === currShape.id);
+
+    if (index !== -1) {
+      const newShape = updatedShapes[index];
+      newShape.x += offsetX;
+      newShape.y += offsetY;
+      newShape.pageNumber = pageNumber;
+
+      setShapes(updatedShapes);
+    }
+
     resetSelectedElement();
   }
 
@@ -915,6 +977,11 @@ const CanvasTest = ({
     selectedShapes.current.forEach((shape) => {
       shape.x += offsetX;
       shape.y += offsetY;
+      shape.pageNumber = pageNumber;
+      if (selectedShapes.current.cutPage !== pageNumber) {
+        clearNextItem(shape);
+        clearShapesWithNextItem(shape);
+      }
 
       // Check if shape is within bounds
       if (shape.x < MIN_X) {
@@ -929,11 +996,13 @@ const CanvasTest = ({
         shape.y = MAX_Y - shape.height;
       }
     });
+
+    setShapes([...shapes]);
     contextMenuItem.current = null;
-    clearAndDraw();
   }
 
   function resetSelectedElement() {
+    console.log('single reset');
     contextMenuItem.current = null;
     if (selectedShapes.current) {
       selectedShapes.current.forEach((shape) => shape.setSelected(false));
@@ -943,6 +1012,7 @@ const CanvasTest = ({
   }
 
   function resetMultiSelect() {
+    console.log('⚡resett');
     selectedShapes.current?.forEach((shape) => shape.setSelected(false));
     selectedShapes.current = null;
     drawnMultiSelectRectangle.current = null;

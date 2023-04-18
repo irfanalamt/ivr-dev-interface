@@ -144,6 +144,7 @@ class Shape {
     newShape.setTextAndId(count);
     const shapeNames = shapes.map((shape) => shape.text);
     newShape.text = this.getUniqueName(text, shapeNames);
+    newShape.userValues = structuredClone(this.userValues);
 
     return newShape;
   }
