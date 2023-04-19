@@ -36,6 +36,7 @@ export default function MyApp(props) {
         .catch((error) => {
           console.error(error);
           setUser(null);
+          localStorage.removeItem('token');
         });
     } else {
       setUser(null);
