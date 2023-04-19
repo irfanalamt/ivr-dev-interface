@@ -13,7 +13,12 @@ async function user(req, res) {
       if (existingUser) {
         res.status(409).json({message: 'Email already registered'});
       } else {
-        const result = await usersCollection.insertOne({name, email, password});
+        const result = await usersCollection.insertOne({
+          name,
+          email,
+          password,
+          timestamp: Date.now(),
+        });
         res
           .status(201)
           .json({message: 'Details saved. Pending admin approval.'});
