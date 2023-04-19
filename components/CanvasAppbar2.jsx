@@ -12,6 +12,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import {useState} from 'react';
+import ResetWorkspaceDialog from './ResetWorkspaceDialog';
 
 const CanvasAppbar2 = ({
   resetSelectedItemToolbar,
@@ -21,9 +23,16 @@ const CanvasAppbar2 = ({
   openIvrDialog,
   user,
 }) => {
+  const [openDialog, setOpenDialog] = useState(false);
+
   function handleClick() {
     console.log('appBar clicked.');
     resetSelectedItemToolbar();
+  }
+
+  function handleReset() {
+    sessionStorage.removeItem('ivrName');
+    location.reload();
   }
 
   return (
@@ -95,7 +104,8 @@ const CanvasAppbar2 = ({
               color: 'black',
               '&:hover': {backgroundColor: '#64b5f6'},
             }}
-            variant='contained'>
+            variant='contained'
+            onClick={() => setOpenDialog(true)}>
             <RestartAltIcon sx={{fontSize: 'large'}} />
           </IconButton>
         </Tooltip>
@@ -135,6 +145,11 @@ const CanvasAppbar2 = ({
           </Typography>
         )}
       </Box>
+      <ResetWorkspaceDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onConfirm={handleReset}
+      />
     </AppBar>
   );
 };

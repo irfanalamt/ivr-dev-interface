@@ -7,13 +7,21 @@ const TestWorkSpace = ({user}) => {
   const [ivrName, setIvrName] = useState({name: '', version: 1});
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedIvrName = sessionStorage.getItem('ivrName');
-      setIvrName(
-        storedIvrName ? JSON.parse(storedIvrName) : {name: '', version: 1}
-      );
-      setIsIvrDialogOpen(!storedIvrName);
+    if (typeof window === 'undefined') {
+      return;
     }
+
+    const storedIvrName = sessionStorage.getItem('ivrName');
+
+    if (!storedIvrName) {
+      setIsIvrDialogOpen(true);
+      setIvrName({name: '', version: 1});
+      return;
+    }
+
+    const {name, version} = JSON.parse(storedIvrName);
+    setIsIvrDialogOpen(!name);
+    setIvrName({name, version});
   }, []);
 
   useEffect(() => {
@@ -21,10 +29,6 @@ const TestWorkSpace = ({user}) => {
       sessionStorage.setItem('ivrName', JSON.stringify(ivrName));
     }
   }, [ivrName]);
-
-  const handleDialogInputChange = (event, type) => {
-    setIvrName({...ivrName, [type]: event.target.value});
-  };
 
   return (
     <>
@@ -37,7 +41,7 @@ const TestWorkSpace = ({user}) => {
         isOpen={Boolean(isIvrDialogOpen)}
         handleClose={() => setIsIvrDialogOpen(false)}
         ivrName={ivrName}
-        handleInputChange={handleDialogInputChange}
+        setIvrName={setIvrName}
       />
     </>
   );

@@ -52,9 +52,10 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
   function fetchProjectFromDB() {
     const token = localStorage.getItem('token');
+
     const storedIvrName = JSON.parse(sessionStorage.getItem('ivrName'));
 
-    if (storedIvrName && storedIvrName.name) {
+    if (storedIvrName?.name) {
       axios
         .get('/api/getProject2', {
           params: {

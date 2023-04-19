@@ -10,8 +10,9 @@ import {
 import {checkValidity} from '../src/helpers';
 import {useState} from 'react';
 
-const IvrDialog = ({isOpen, handleClose, ivrName, handleInputChange}) => {
+const IvrDialog = ({isOpen, handleClose, ivrName, setIvrName}) => {
   const [isError, setIsError] = useState(false);
+  const [dialog, setDialog] = useState({name: '', version: 1});
 
   function handleNameChange(e, type) {
     if (type === 'name') {
@@ -21,9 +22,15 @@ const IvrDialog = ({isOpen, handleClose, ivrName, handleInputChange}) => {
     handleInputChange(e, type);
   }
 
+  function handleInputChange(event, type) {
+    setDialog({...dialog, [type]: event.target.value});
+  }
+
   function validateAndClose() {
-    if (ivrName.name.length > 1 && !isError) handleClose();
-    else setIsError(true);
+    if (dialog.name.length > 1 && !isError) {
+      setIvrName({name: dialog.name, version: dialog.version});
+      handleClose();
+    } else setIsError(true);
   }
 
   function validateIvrName(name) {
@@ -33,16 +40,16 @@ const IvrDialog = ({isOpen, handleClose, ivrName, handleInputChange}) => {
 
   return (
     <Dialog open={isOpen} onClose={validateAndClose}>
-      <DialogContent>
+      <DialogContent sx={{minWidth: 450}}>
         <Typography variant='body2' fontSize='large'>
           IVR name
         </Typography>
         <TextField
-          sx={{mt: -0.3}}
+          sx={{mt: -0.3, maxWidth: 300}}
           autoFocus
           margin='dense'
           size='small'
-          value={ivrName.name}
+          value={dialog.name}
           onChange={(e) => handleNameChange(e, 'name')}
           error={isError}
           fullWidth
@@ -61,9 +68,9 @@ const IvrDialog = ({isOpen, handleClose, ivrName, handleInputChange}) => {
           Version
         </Typography>
         <TextField
-          sx={{mt: -0.3}}
+          sx={{mt: -0.3, maxWidth: 100}}
           type='number'
-          value={ivrName.version}
+          value={dialog.version}
           onChange={(e) => handleNameChange(e, 'version')}
           margin='dense'
           size='small'
@@ -72,7 +79,7 @@ const IvrDialog = ({isOpen, handleClose, ivrName, handleInputChange}) => {
       <DialogActions>
         <Button
           color='primary'
-          disabled={!ivrName.name || isError}
+          disabled={!dialog.name || isError}
           onClick={validateAndClose}>
           Save
         </Button>
