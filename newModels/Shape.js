@@ -699,7 +699,7 @@ class Shape {
     ctx.closePath();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = this.text === 'start' ? '#B2DF8A' : '#FFFFFF';
     ctx.fill();
 
     // fill color when selected
