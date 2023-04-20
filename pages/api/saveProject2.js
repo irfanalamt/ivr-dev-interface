@@ -7,7 +7,8 @@ async function saveProject2(req, res) {
     return;
   }
   try {
-    const {name, shapes, tabs, shapeCount, userVariables, token} = req.body;
+    const {name, shapes, tabs, shapeCount, userVariables, token, description} =
+      req.body;
 
     let validEmail = '';
 
@@ -27,6 +28,7 @@ async function saveProject2(req, res) {
       $set: {
         email: validEmail,
         name,
+        description,
         shapes,
         tabs,
         shapeCount,

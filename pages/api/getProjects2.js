@@ -19,7 +19,10 @@ export default async function handler(req, res) {
     }
 
     const documents = await collection
-      .find({email: validEmail}, {projection: {name: 1, timestamp: 1}})
+      .find(
+        {email: validEmail},
+        {projection: {name: 1, timestamp: 1, description: 1}}
+      )
       .toArray();
 
     let totalSize = 0;

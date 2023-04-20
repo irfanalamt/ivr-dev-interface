@@ -336,7 +336,10 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     const endProjectBraces = `} \n\n `;
     const endExportString = `module.exports = {${functionName}}`;
 
+    const comments = `/*\nivrName:'${ivrName.name}',\nversion:${ivrName.version},\ndescription:'${ivrName.description}'\n*/\n\n`;
+
     const finalCodeString =
+      comments +
       globalParamsString +
       allVariablesString +
       allFunctionStringsAndDriverFunctions +
@@ -388,6 +391,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     return {
       email: user?.name ?? 'guest',
       name: `${ivrName.name}_${ivrName.version}`,
+      description: `${ivrName.description}`,
       shapes: shapes,
       tabs: tabs,
       shapeCount: shapeCount.current,

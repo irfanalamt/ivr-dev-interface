@@ -1,18 +1,19 @@
 import {
+  Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
+  Stack,
   TextField,
   Typography,
 } from '@mui/material';
 import {checkValidity} from '../src/helpers';
 import {useState} from 'react';
 
-const IvrDialog = ({isOpen, handleClose, ivrName, setIvrName}) => {
+const IvrDialog = ({isOpen, handleClose, setIvrName}) => {
   const [isError, setIsError] = useState(false);
-  const [dialog, setDialog] = useState({name: '', version: 1});
+  const [dialog, setDialog] = useState({name: '', version: 1, description: ''});
 
   function handleNameChange(e, type) {
     if (type === 'name') {
@@ -28,7 +29,12 @@ const IvrDialog = ({isOpen, handleClose, ivrName, setIvrName}) => {
 
   function validateAndClose() {
     if (dialog.name.length > 1 && !isError) {
-      setIvrName({name: dialog.name, version: dialog.version});
+      setIvrName({
+        name: dialog.name,
+        version: dialog.version,
+        description: dialog.description,
+      });
+
       handleClose();
     } else setIsError(true);
   }
@@ -40,20 +46,37 @@ const IvrDialog = ({isOpen, handleClose, ivrName, setIvrName}) => {
 
   return (
     <Dialog open={isOpen} onClose={validateAndClose}>
-      <DialogContent sx={{minWidth: 450}}>
-        <Typography variant='body2' fontSize='large'>
-          IVR name
-        </Typography>
-        <TextField
-          sx={{mt: -0.3, maxWidth: 300}}
-          autoFocus
-          margin='dense'
-          size='small'
-          value={dialog.name}
-          onChange={(e) => handleNameChange(e, 'name')}
-          error={isError}
-          fullWidth
-        />
+      <DialogContent>
+        <Stack direction='row' spacing={2}>
+          <Box>
+            <Typography variant='body2' fontSize='large'>
+              IVR name
+            </Typography>
+            <TextField
+              sx={{mt: -0.3}}
+              autoFocus
+              margin='dense'
+              size='small'
+              value={dialog.name}
+              onChange={(e) => handleNameChange(e, 'name')}
+              error={isError}
+              fullWidth
+            />
+          </Box>
+          <Box>
+            <Typography variant='body2' fontSize='large'>
+              Version
+            </Typography>
+            <TextField
+              sx={{mt: -0.3, maxWidth: 100}}
+              type='number'
+              value={dialog.version}
+              onChange={(e) => handleNameChange(e, 'version')}
+              margin='dense'
+              size='small'
+            />
+          </Box>
+        </Stack>
         <Typography
           sx={{
             visibility: isError ? 'visible' : 'hidden',
@@ -64,16 +87,19 @@ const IvrDialog = ({isOpen, handleClose, ivrName, setIvrName}) => {
           variant='body1'>
           Name not in valid format
         </Typography>
+
         <Typography sx={{mt: 1}} variant='body2' fontSize='large'>
-          Version
+          Description
         </Typography>
         <TextField
-          sx={{mt: -0.3, maxWidth: 100}}
-          type='number'
-          value={dialog.version}
-          onChange={(e) => handleNameChange(e, 'version')}
+          sx={{mt: -0.3}}
+          value={dialog.description}
+          onChange={(e) => handleNameChange(e, 'description')}
           margin='dense'
           size='small'
+          multiline
+          fullWidth
+          minRows={2}
         />
       </DialogContent>
       <DialogActions>

@@ -87,7 +87,8 @@ const SavedProjects2 = ({user}) => {
       const date = new Date(d.timestamp).toLocaleString();
       const {ivrName, version} = getIvrNameAndVersion(d.name);
       const displayName = `${ivrName} (${version})`;
-      return {name: d.name, date, displayName};
+
+      return {name: d.name, date, displayName, description: d.description};
     });
   }
 
@@ -98,9 +99,12 @@ const SavedProjects2 = ({user}) => {
     return {ivrName, version};
   }
 
-  function handleOpenProject(name) {
+  function handleOpenProject(name, description) {
     const {ivrName, version} = getIvrNameAndVersion(name);
-    sessionStorage.setItem('ivrName', JSON.stringify({name: ivrName, version}));
+    sessionStorage.setItem(
+      'ivrName',
+      JSON.stringify({name: ivrName, version, description})
+    );
     router.push('/project2');
   }
 
@@ -195,7 +199,9 @@ const SavedProjects2 = ({user}) => {
                     <Button
                       variant='contained'
                       color='primary'
-                      onClick={() => handleOpenProject(project.name)}>
+                      onClick={() =>
+                        handleOpenProject(project.name, project.description)
+                      }>
                       Open
                     </Button>
                   </CardActions>
