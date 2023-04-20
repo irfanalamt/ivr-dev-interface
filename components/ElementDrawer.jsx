@@ -148,7 +148,7 @@ const ElementDrawer = ({
     }
   };
   return (
-    <Drawer anchor='right' open={isOpen} onClose={handleCloseDrawer}>
+    <Drawer anchor='right' open={isOpen}>
       {renderShape()}
     </Drawer>
   );
