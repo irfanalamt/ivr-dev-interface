@@ -185,27 +185,31 @@ catch(err) { IVR.error('Error in ivrMain', err); }
 
   return mainMenuString;
 }
+
 function getShapesTillMenuOrSwitch(startShape) {
   // Avoid shapes that are not relevant for final script
   if (!startShape) return;
-  const typesToIgnore = ['connector', 'jumper'];
 
-  let shapesArray = [];
+  const typesToIgnore = ['connector', 'jumper'];
+  const shapesArray = [];
+
   if (!typesToIgnore.includes(startShape.type)) {
     shapesArray.push(startShape);
   }
 
   let nextShape = getNextShapeForSingleExit(startShape);
 
-  while (nextShape) {
+  while (nextShape && !shapesArray.includes(nextShape)) {
     if (!typesToIgnore.includes(nextShape.type)) {
       shapesArray.push(nextShape);
     }
+
     nextShape = getNextShapeForSingleExit(nextShape);
-    if (!nextShape) break;
   }
+
   return shapesArray;
 }
+
 function getDriverFunctionShapeCode(shape) {
   if (shape.type === 'endFlow') {
     if (shape.userValues?.type === 'disconnect') {
