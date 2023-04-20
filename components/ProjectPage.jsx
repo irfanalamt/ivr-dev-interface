@@ -336,7 +336,9 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     const endProjectBraces = `} \n\n `;
     const endExportString = `module.exports = {${functionName}}`;
 
-    const comments = `/*\nivrName:'${ivrName.name}',\nversion:${ivrName.version},\ndescription:'${ivrName.description}'\n*/\n\n`;
+    const comments = `/*\nivrName:'${ivrName.name}',\nversion:${
+      ivrName.version
+    },\ndescription:'${ivrName.description}',\ntimestamp:${Date.now()}\n*/\n\n`;
 
     const finalCodeString =
       comments +
