@@ -338,7 +338,9 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
     const comments = `/*\nivrName:'${ivrName.name}',\nversion:${
       ivrName.version
-    },\ndescription:'${ivrName.description}',\ntimestamp:${Date.now()}\n*/\n\n`;
+    },\ndescription:'${ivrName.description}',\nuser:'${
+      user ? user.email : 'guest'
+    }',\ntimestamp:${Date.now()}\n*/\n\n`;
 
     const finalCodeString =
       comments +
