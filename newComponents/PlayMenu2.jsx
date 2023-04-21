@@ -98,7 +98,7 @@ const PlayMenu = ({
       .join(', ');
 
     const modifiedItems = items.map(
-      ({actionError, promptError, isDefault, ...rest}) => rest
+      ({actionError, promptError, isDefault, nextItem, ...rest}) => rest
     );
 
     const menuString = `{menuId: ${name}${
