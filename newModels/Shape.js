@@ -137,16 +137,41 @@ class Shape {
     this.id = id;
   }
 
-  copyShape(shapeCount, shapes, offsetX, offsetY, pageNumber) {
+  copyShape(shapeCount, shapes, offsetX, offsetY, pageNumber, idMap) {
     const {x, y, type, text} = this;
     const count = ++shapeCount[type];
     const newShape = new Shape(x + offsetX, y + offsetY, type, pageNumber);
     newShape.setTextAndId(count);
     const shapeNames = shapes.map((shape) => shape.text);
     newShape.text = this.getUniqueName(text, shapeNames);
-    newShape.userValues = structuredClone(this.userValues);
+    newShape.userValues = this.copyUserValues();
+
+    // add old and new id to idMap
+    idMap[this.id] = newShape.id;
 
     return newShape;
+  }
+
+  copyUserValues() {
+    const {type, userValues} = this;
+    let newUserValues;
+
+    if (type === 'playMenu') {
+      newUserValues = {
+        ...userValues,
+        items: userValues.items.map(({nextItem, ...rest}) => rest),
+      };
+    } else if (type === 'switch') {
+      newUserValues = {
+        ...userValues,
+        actions: userValues.actions.map(({nextItem, ...rest}) => rest),
+      };
+      delete newUserValues.defaultActionNextItem;
+    } else {
+      newUserValues = userValues;
+    }
+
+    return structuredClone(newUserValues);
   }
 
   getUniqueName(oldName, shapeNames) {

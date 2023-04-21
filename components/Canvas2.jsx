@@ -136,22 +136,17 @@ const CanvasTest = ({
   }
 
   function deleteShape(shapeToDelete) {
-    if (
-      shapeToDelete.type === 'jumper' &&
-      shapeToDelete.userValues?.type === 'exit'
-    ) {
-      deleteMatchingEntryJumper(shapeToDelete);
+    const index = shapes.indexOf(shapeToDelete);
+
+    if (index === -1) {
+      return;
     }
 
-    const index = shapes.indexOf(shapeToDelete);
-    if (index !== -1) {
-      clearShapesWithNextItem(shapeToDelete);
-      setShapes((prevShapes) => {
-        const newShapes = [...prevShapes];
-        newShapes.splice(index, 1);
-        return newShapes;
-      });
-    }
+    clearShapesWithNextItem(shapeToDelete);
+
+    setShapes((prevShapes) => {
+      return prevShapes.filter((shape) => shape !== shapeToDelete);
+    });
   }
 
   function hasShapeByText(text) {
@@ -893,11 +888,8 @@ const CanvasTest = ({
   }
 
   function handleContextMultiDelete() {
-    const newShapes = shapes.filter(
-      (shape) => !selectedShapes.current.includes(shape)
-    );
+    selectedShapes.current.forEach((shape) => deleteShape(shape));
 
-    setShapes(newShapes);
     resetMultiSelect();
   }
 
@@ -932,12 +924,62 @@ const CanvasTest = ({
       newY = MAX_Y - height;
     }
 
+    const idMap = {};
     const newShapes = selectedShapes.current.map((shape) =>
-      shape.copyShape(shapeCount.current, shapes, offsetX, offsetY, pageNumber)
+      shape.copyShape(
+        shapeCount.current,
+        shapes,
+        offsetX,
+        offsetY,
+        pageNumber,
+        idMap
+      )
     );
+
+    mapAllValidConnections(selectedShapes.current, newShapes, idMap);
 
     contextMenuItem.current = null;
     setShapes([...shapes, ...newShapes]);
+  }
+
+  function mapAllValidConnections(selectedShapes, newShapes, idMap) {
+    function findNewShapeById(shapeId) {
+      return newShapes.find((shape) => shape.id === idMap[shapeId]);
+    }
+
+    function updateNextItem(nextItem, newItem, index) {
+      if (idMap.hasOwnProperty(nextItem?.id)) {
+        newItem[index].nextItem = findNewShapeById(nextItem.id);
+      } else {
+        newItem[index].nextItem = undefined;
+      }
+    }
+
+    selectedShapes.forEach((oldShape) => {
+      const newShape = findNewShapeById(oldShape.id);
+
+      if (oldShape.type === 'playMenu') {
+        oldShape.userValues.items.forEach((item, i) => {
+          updateNextItem(item.nextItem, newShape.userValues.items, i);
+        });
+      } else if (oldShape.type === 'switch') {
+        oldShape.userValues.actions.forEach((action, i) => {
+          updateNextItem(action.nextItem, newShape.userValues.actions, i);
+        });
+
+        if (
+          idMap.hasOwnProperty(oldShape.userValues.defaultActionNextItem?.id)
+        ) {
+          newShape.userValues.defaultActionNextItem = findNewShapeById(
+            oldShape.userValues.defaultActionNextItem.id
+          );
+        }
+      } else {
+        if (idMap.hasOwnProperty(oldShape.nextItem?.id)) {
+          newShape.nextItem = findNewShapeById(oldShape.nextItem.id);
+        }
+      }
+    });
   }
 
   function handleContextMultiCutPaste(realX, realY) {
