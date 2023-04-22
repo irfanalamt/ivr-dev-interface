@@ -142,6 +142,13 @@ const CanvasTest = ({
       return;
     }
 
+    if (
+      shapeToDelete.type === 'jumper' &&
+      shapeToDelete.userValues?.type === 'entry'
+    ) {
+      deleteMatchingExitJumpers(shapeToDelete);
+    }
+
     clearShapesWithNextItem(shapeToDelete);
 
     setShapes((prevShapes) => {
@@ -153,21 +160,21 @@ const CanvasTest = ({
     return shapes.some((shape) => shape.text === text);
   }
 
-  function deleteMatchingEntryJumper(exitJumper) {
-    const index = shapes.findIndex(
-      (shape) =>
+  function deleteMatchingExitJumpers(entryJumper) {
+    const updatedShapes = shapes.filter((shape) => {
+      if (
         shape.type === 'jumper' &&
-        shape.userValues?.type === 'entry' &&
-        shape.userValues.exitItem === exitJumper
-    );
+        shape.userValues?.type === 'exit' &&
+        shape.userValues?.nextItem === entryJumper
+      ) {
+        clearShapesWithNextItem(shape);
+        return false;
+      }
 
-    if (index !== -1) {
-      setShapes((prevShapes) => {
-        const newShapes = [...prevShapes];
-        newShapes.splice(index, 1);
-        return newShapes;
-      });
-    }
+      return true;
+    });
+
+    setShapes(updatedShapes);
   }
 
   function clearShapesWithNextItem(deletedShape) {
