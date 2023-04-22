@@ -246,7 +246,6 @@ const CanvasTest = ({
       if (isPointInRectangle(realX, realY, drawnMultiSelectRectangle.current)) {
         multiSelectDragStart.current = {x: realX, y: realY};
       } else {
-        console.log('mouse down reset');
         resetMultiSelect();
       }
       return;
@@ -290,9 +289,6 @@ const CanvasTest = ({
     // Reset dragging mode
     isDragging.current = false;
 
-    // Stop drawing
-    isMultiSelectMode.current = false;
-
     if (multiSelectDragStart.current) {
       multiSelectDragStart.current = false;
       return;
@@ -327,7 +323,10 @@ const CanvasTest = ({
       connectingShapes.current = null;
     }
 
-    if (drawnMultiSelectRectangle.current) {
+    if (drawnMultiSelectRectangle.current && isMultiSelectMode.current) {
+      // Stop drawing
+      isMultiSelectMode.current = false;
+
       // If rectangle is drawn, check if any shapes are inside it
       const {x, y, width, height, pageNumber} =
         drawnMultiSelectRectangle.current;
@@ -367,7 +366,6 @@ const CanvasTest = ({
         clearAndDraw();
       } else {
         // If there are no shapes bound, reset multi select
-        console.log('mouse up reset');
         resetMultiSelect();
       }
     }
@@ -936,13 +934,13 @@ const CanvasTest = ({
       )
     );
 
-    mapAllValidConnections(selectedShapes.current, newShapes, idMap);
+    mapAllValidConnectionsCopy(selectedShapes.current, newShapes, idMap);
 
     contextMenuItem.current = null;
     setShapes([...shapes, ...newShapes]);
   }
 
-  function mapAllValidConnections(selectedShapes, newShapes, idMap) {
+  function mapAllValidConnectionsCopy(selectedShapes, newShapes, idMap) {
     function findNewShapeById(shapeId) {
       return newShapes.find((shape) => shape.id === idMap[shapeId]);
     }
@@ -1021,9 +1019,8 @@ const CanvasTest = ({
       shape.y += offsetY;
       shape.pageNumber = pageNumber;
       if (selectedShapes.current.cutPage !== pageNumber) {
-        console.log('haha', selectedShapes.current.cutPage, pageNumber);
-        clearNextItem(shape);
-        clearShapesWithNextItem(shape);
+        clearInvalidShapesWithNextItem(shape, selectedShapes.current);
+        clearInvalidNextItems(shape, selectedShapes.current);
       }
 
       // Check if shape is within bounds
@@ -1044,8 +1041,64 @@ const CanvasTest = ({
     contextMenuItem.current = null;
   }
 
+  function clearInvalidNextItems(shape, selectedShapes) {
+    const isValidNextItem = (nextItem) => selectedShapes.includes(nextItem);
+
+    if (shape.type === 'playMenu') {
+      shape.userValues?.items?.forEach((action) => {
+        if (!isValidNextItem(action.nextItem)) {
+          delete action.nextItem;
+        }
+      });
+    } else if (shape.type === 'switch') {
+      shape.userValues?.actions?.forEach((action) => {
+        if (!isValidNextItem(action.nextItem)) {
+          delete action.nextItem;
+        }
+      });
+
+      if (!isValidNextItem(shape.userValues?.defaultActionNextItem)) {
+        delete shape.userValues.defaultActionNextItem;
+      }
+    } else {
+      if (!isValidNextItem(shape.nextItem)) {
+        shape.nextItem = null;
+      }
+    }
+  }
+
+  function clearInvalidShapesWithNextItem(deletedShape, selectedShapes) {
+    const isShapeIncluded = (shape) => selectedShapes.includes(shape);
+
+    shapes.forEach((shape) => {
+      if (shape.type === 'playMenu') {
+        shape.userValues?.items?.forEach((item) => {
+          if (item.nextItem === deletedShape && !isShapeIncluded(shape)) {
+            delete item.nextItem;
+          }
+        });
+      } else if (shape.type === 'switch') {
+        shape.userValues?.actions?.forEach((action) => {
+          if (action.nextItem === deletedShape && !isShapeIncluded(shape)) {
+            delete action.nextItem;
+          }
+        });
+
+        if (
+          shape.userValues?.defaultActionNextItem === deletedShape &&
+          !isShapeIncluded(shape)
+        ) {
+          delete shape.userValues.defaultActionNextItem;
+        }
+      } else {
+        if (shape.nextItem === deletedShape && !isShapeIncluded(shape)) {
+          delete shape.nextItem;
+        }
+      }
+    });
+  }
+
   function resetSelectedElement() {
-    console.log('single reset');
     contextMenuItem.current = null;
     if (selectedShapes.current) {
       selectedShapes.current.forEach((shape) => shape.setSelected(false));
@@ -1055,7 +1108,6 @@ const CanvasTest = ({
   }
 
   function resetMultiSelect() {
-    console.log('⚡resett');
     selectedShapes.current?.forEach((shape) => shape.setSelected(false));
     selectedShapes.current = null;
     drawnMultiSelectRectangle.current = null;
