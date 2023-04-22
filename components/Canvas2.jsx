@@ -958,17 +958,17 @@ const CanvasTest = ({
     selectedShapes.forEach((oldShape) => {
       const newShape = findNewShapeById(oldShape.id);
 
-      if (oldShape.type === 'playMenu') {
+      if (oldShape.type === 'playMenu' && oldShape.userValues?.items) {
         oldShape.userValues.items.forEach((item, i) => {
           updateNextItem(item.nextItem, newShape.userValues.items, i);
         });
-      } else if (oldShape.type === 'switch') {
+      } else if (oldShape.type === 'switch' && oldShape.userValues?.actions) {
         oldShape.userValues.actions.forEach((action, i) => {
           updateNextItem(action.nextItem, newShape.userValues.actions, i);
         });
 
         if (
-          idMap.hasOwnProperty(oldShape.userValues.defaultActionNextItem?.id)
+          idMap.hasOwnProperty(oldShape.userValues?.defaultActionNextItem?.id)
         ) {
           newShape.userValues.defaultActionNextItem = findNewShapeById(
             oldShape.userValues.defaultActionNextItem.id
@@ -1021,6 +1021,7 @@ const CanvasTest = ({
       shape.y += offsetY;
       shape.pageNumber = pageNumber;
       if (selectedShapes.current.cutPage !== pageNumber) {
+        console.log('haha', selectedShapes.current.cutPage, pageNumber);
         clearNextItem(shape);
         clearShapesWithNextItem(shape);
       }

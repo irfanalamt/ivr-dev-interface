@@ -156,12 +156,12 @@ class Shape {
     const {type, userValues} = this;
     let newUserValues;
 
-    if (type === 'playMenu') {
+    if (type === 'playMenu' && userValues?.items) {
       newUserValues = {
         ...userValues,
         items: userValues.items.map(({nextItem, ...rest}) => rest),
       };
-    } else if (type === 'switch') {
+    } else if (type === 'switch' && userValues?.actions) {
       newUserValues = {
         ...userValues,
         actions: userValues.actions.map(({nextItem, ...rest}) => rest),
