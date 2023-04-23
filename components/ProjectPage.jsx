@@ -455,7 +455,10 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
       <VariableManager
         isOpen={isVariableManagerOpen}
-        handleClose={() => setIsVariableManagerOpen(false)}
+        handleClose={() => {
+          setIsVariableManagerOpen(false);
+          saveToDb();
+        }}
         variables={userVariables}
         setVariables={setUserVariables}
         saveToDb={saveToDb}
