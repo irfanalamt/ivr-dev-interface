@@ -26,6 +26,7 @@ const CanvasTest = ({
   shapes,
   setShapes,
   shapeCount,
+  saveToDb,
 }) => {
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
@@ -1126,6 +1127,7 @@ const CanvasTest = ({
     setIsOpenElementDrawer(false);
     currentShape.current.setSelected(false);
     clearAndDraw();
+    saveToDb();
   }
 
   return (

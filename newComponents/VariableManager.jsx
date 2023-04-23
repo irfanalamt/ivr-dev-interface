@@ -16,8 +16,13 @@ import {
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
-const VariableManager = ({isOpen, handleClose, userVariables}) => {
-  const [variables, setVariables] = useState(userVariables.current);
+const VariableManager = ({
+  isOpen,
+  handleClose,
+  variables,
+  setVariables,
+  saveToDb,
+}) => {
   const [currentVariable, setCurrentVariable] = useState('');
   const [type, setType] = useState('prompt');
   const [name, setName] = useState('');
@@ -28,10 +33,6 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
   const [errorText, setErrorText] = useState('');
 
   const errorObj = useRef({});
-
-  useEffect(() => {
-    userVariables.current = variables;
-  }, [variables]);
 
   const DayValues = [
     '1 Sunday',
@@ -166,6 +167,7 @@ const VariableManager = ({isOpen, handleClose, userVariables}) => {
       anchor='left'
       open={isOpen}
       onClose={() => {
+        saveToDb();
         setMode('');
         setCurrentVariable('');
         setName('');

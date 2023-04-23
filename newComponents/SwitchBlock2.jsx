@@ -139,7 +139,7 @@ const SwitchBlock = ({
     setActions(updatedActions);
   }
   function getUserVariablesString() {
-    const variables = userVariables.current
+    const variables = userVariables
       .map(
         (userVariable) =>
           `let $${userVariable.name} = '${userVariable.defaultValue}';`

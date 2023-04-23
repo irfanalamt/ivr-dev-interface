@@ -251,7 +251,7 @@ const SetParams = ({
 
   function validateVariableInput(input) {
     const inputWithoutDollar = input.slice(1);
-    const isValidName = userVariables.current.some(
+    const isValidName = userVariables.some(
       (variable) => variable.name === inputWithoutDollar
     );
 

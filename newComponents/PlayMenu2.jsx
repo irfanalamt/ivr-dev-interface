@@ -249,7 +249,7 @@ const PlayMenu = ({
 
   function validateVariableInput(input) {
     const variableName = input.slice(1);
-    const isValidName = userVariables.current.some(
+    const isValidName = userVariables.some(
       (variable) => variable.type === 'prompt' && variable.name === variableName
     );
     return isValidName ? -1 : `${variableName} is not a valid prompt variable.`;

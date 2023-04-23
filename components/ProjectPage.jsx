@@ -20,6 +20,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [isVariableManagerOpen, setIsVariableManagerOpen] = useState(false);
   const [isPromptListOpen, setIsPromptListOpen] = useState(false);
+  const [userVariables, setUserVariables] = useState([]);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [shapes, setShapes] = useState([]);
@@ -43,8 +44,6 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     jumper: 1,
     module: 1,
   });
-
-  const userVariables = useRef([]);
 
   useEffect(() => {
     fetchProjectFromDB();
@@ -80,7 +79,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
           updateNextItems(newShapes);
 
-          newUserVariables.forEach((v) => userVariables.current.push(v));
+          setUserVariables(newUserVariables);
 
           setTabs(tabs);
         })
@@ -327,8 +326,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         logDB: false
   };` + '\n \n';
 
-    const allVariablesString =
-      generateInitVariablesJS(userVariables.current) + '\n \n';
+    const allVariablesString = generateInitVariablesJS(userVariables) + '\n \n';
 
     const allFunctionStringsAndDriverFunctions =
       traverseAndReturnString(startShape);
@@ -370,7 +368,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       const response = await axios.post('/api/saveProject2', data);
 
       setShowSnackbar({
-        message: 'Project saved successfully.',
+        message: 'Project saved.',
         type: 'success',
       });
       return response.data;
@@ -399,7 +397,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       shapes: shapes,
       tabs: tabs,
       shapeCount: shapeCount.current,
-      userVariables: userVariables.current,
+      userVariables: userVariables,
       token: token,
     };
   }
@@ -438,6 +436,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
           shapes={shapes}
           setShapes={setShapes}
           shapeCount={shapeCount}
+          saveToDb={saveToDb}
         />
       </div>
       <BottomBar
@@ -453,10 +452,13 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         handleLabelChange={handleLabelChange}
         handleDeleteTab={handleDeleteTab}
       />
+
       <VariableManager
         isOpen={isVariableManagerOpen}
         handleClose={() => setIsVariableManagerOpen(false)}
-        userVariables={userVariables}
+        variables={userVariables}
+        setVariables={setUserVariables}
+        saveToDb={saveToDb}
       />
       {isPromptListOpen && (
         <PromptList

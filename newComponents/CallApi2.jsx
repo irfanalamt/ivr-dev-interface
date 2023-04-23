@@ -303,7 +303,7 @@ const CallApi = ({
                   value={v.name ?? ''}
                   onChange={(e) => handleChangeSelectInput(e.target.value, i)}
                   size='small'>
-                  {userVariables.current.map((v, i) => (
+                  {userVariables.map((v, i) => (
                     <MenuItem value={v.name} key={i}>
                       {v.name}
                     </MenuItem>
@@ -367,7 +367,7 @@ const CallApi = ({
                   value={v.name ?? ''}
                   onChange={(e) => handleChangeSelectOutput(e.target.value, i)}
                   size='small'>
-                  {userVariables.current.map((v, i) => (
+                  {userVariables.map((v, i) => (
                     <MenuItem value={v.name} key={i}>
                       {v.name}
                     </MenuItem>

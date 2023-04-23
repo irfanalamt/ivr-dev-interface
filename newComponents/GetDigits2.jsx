@@ -483,7 +483,7 @@ const GetDigits = ({
               sx={{width: '220px', backgroundColor: '#f5f5f5'}}
               onChange={(e) => setResultName(e.target.value)}
               size='small'>
-              {userVariables.current
+              {userVariables
                 .filter((v) => v.type === 'number')
                 .map((v, i) => (
                   <MenuItem value={`$${v.name}`} key={i}>

@@ -123,7 +123,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
 
     const variableType = variableTypes[type];
 
-    return userVariables.current
+    return userVariables
       .filter((v) => v.type === variableType)
       .map((v, i) => (
         <MenuItem value={`$${v.name}`} key={i}>
