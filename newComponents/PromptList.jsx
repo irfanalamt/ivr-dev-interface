@@ -13,9 +13,12 @@ import {
   List,
   ListItem,
   IconButton,
+  Tooltip,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import {useEffect, useState} from 'react';
+const {parse} = require('json2csv');
 
 const PromptList = ({isOpen, handleClose, shapes}) => {
   const [promptArray, setPromptArray] = useState(null);
@@ -23,53 +26,64 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
   const [errorText, setErrorText] = useState('');
 
   useEffect(() => {
-    getAllPrompts();
+    fetchAllPrompts();
   }, []);
 
-  function getAllPrompts() {
-    const allPrompts = [];
+  useEffect(() => {
+    if (errorText !== '') {
+      const timer = setTimeout(() => {
+        setErrorText('');
+      }, 4000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [errorText]);
+
+  function fetchAllPrompts() {
+    const prompts = [];
 
     shapes.forEach((shape) => {
       if (shape.type === 'playMenu') {
-        addMenuPrompts(shape, allPrompts);
-      } else if (
-        ['playMessage', 'playConfirm', 'getDigits'].includes(shape.type)
-      ) {
-        addMessageListPrompts(shape, allPrompts);
+        collectMenuPrompts(shape, prompts);
+      } else if (isPromptRelevantShape(shape)) {
+        collectMessageListPrompts(shape, prompts);
       }
     });
 
-    setPromptArray(allPrompts);
+    setPromptArray(prompts);
   }
 
-  function addMenuPrompts(shape, allPrompts) {
+  function isPromptRelevantShape(shape) {
+    return ['playMessage', 'playConfirm', 'getDigits'].includes(shape.type);
+  }
+
+  function collectMenuPrompts(shape, prompts) {
     const itemsWithPrompts = shape.userValues?.items.filter(
       (item) => item.prompt
     );
 
     itemsWithPrompts?.forEach((item) => {
-      const promptIndex = allPrompts.findIndex((p) => p.prompt === item.prompt);
-      if (promptIndex >= 0) {
-        allPrompts[promptIndex].usedIn += `, ${shape.text}`;
-      } else {
-        allPrompts.push({prompt: item.prompt, usedIn: shape.text});
-      }
+      updateOrAddPrompt(item.prompt, shape.text, prompts);
     });
   }
 
-  function addMessageListPrompts(shape, allPrompts) {
-    const prompts = shape.userValues?.messageList.filter(
+  function collectMessageListPrompts(shape, prompts) {
+    const filteredPrompts = shape.userValues?.messageList.filter(
       (message) => message.type === 'Prompt'
     );
 
-    prompts?.forEach((prompt) => {
-      const promptIndex = allPrompts.findIndex((p) => p.prompt === prompt.item);
-      if (promptIndex >= 0) {
-        allPrompts[promptIndex].usedIn += `, ${shape.text}`;
-      } else {
-        allPrompts.push({prompt: prompt.item, usedIn: shape.text});
-      }
+    filteredPrompts?.forEach((prompt) => {
+      updateOrAddPrompt(prompt.item, shape.text, prompts);
     });
+  }
+
+  function updateOrAddPrompt(promptText, shapeText, prompts) {
+    const promptIndex = prompts.findIndex((p) => p.prompt === promptText);
+    if (promptIndex >= 0) {
+      prompts[promptIndex].usedIn += `, ${shapeText}`;
+    } else {
+      prompts.push({prompt: promptText, usedIn: shapeText});
+    }
   }
 
   function handleDescriptionChange(e, index) {
@@ -82,14 +96,55 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
     });
   }
 
+  function generateCSV(headings, data) {
+    const csvContent = parse(data, {fields: headings});
+    const csvFilename = 'promptList.csv';
+    const csvBlob = new Blob([csvContent], {type: 'text/csv'});
+
+    const downloadLink = document.createElement('a');
+    downloadLink.href = window.URL.createObjectURL(csvBlob);
+    downloadLink.download = csvFilename;
+    downloadLink.click();
+  }
+
+  function handleDownloadCSV() {
+    if (promptArray?.length === 0) {
+      setErrorText('Cannot generate CSV.');
+      return;
+    }
+    setErrorText('');
+
+    const formattedPrompts = promptArray.map((prompt, index) => ({
+      SlNo: index + 1,
+      PromptName: prompt.prompt,
+      Description: prompt.description,
+    }));
+
+    generateCSV(['SlNo', 'PromptName', 'Description'], formattedPrompts);
+  }
+
   return (
     <Drawer anchor='left' open={isOpen} onClose={handleClose}>
       <List sx={{backgroundColor: '#cfd8dc', boxShadow: 2, minWidth: 400}}>
         <ListItem disablePadding>
+          <Tooltip title='Download CSV'>
+            <IconButton
+              onClick={handleDownloadCSV}
+              sx={{
+                ml: 'auto',
+                backgroundColor: '#263238',
+                color: 'white',
+                '&:hover': {backgroundColor: '#66bb6a'},
+                height: 30,
+                width: 30,
+              }}>
+              <FileDownloadIcon sx={{fontSize: '22px'}} />
+            </IconButton>
+          </Tooltip>
           <IconButton
             onClick={handleClose}
             sx={{
-              ml: 'auto',
+              ml: 1,
               backgroundColor: '#263238',
               color: 'white',
               '&:hover': {backgroundColor: '#ef5350'},
@@ -118,7 +173,11 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
       </List>
       <Box sx={{backgroundColor: '#eeeeee', height: '100%', p: 2}}>
         {errorText && (
-          <Typography variant='body1' color='error' gutterBottom>
+          <Typography
+            textAlign='center'
+            variant='body1'
+            color='error'
+            gutterBottom>
             {errorText}
           </Typography>
         )}
