@@ -135,19 +135,18 @@ const BottomBar = ({
                 minHeight: 33,
                 maxHeight: 33,
                 mt: 0.9,
-                bgcolor: tab.id === activeTab && 'divider',
                 borderBottom:
                   tab.id === activeTab &&
                   !tab.isEditMode &&
-                  '3px solid primary.main',
+                  '3px solid #9e9e9e',
                 borderRight:
                   tab.id === activeTab
-                    ? '1px solid primary.main'
+                    ? '1px solid #9e9e9e'
                     : '1px solid grey.400',
-                bgcolor: tab.id === activeTab && 'divider',
+                bgcolor: tab.id === activeTab && '#EFF7FD',
                 borderLeft:
                   tab.id === activeTab
-                    ? '1px solid primary.main'
+                    ? '1px solid #9e9e9e'
                     : i === 0 && '1px solid grey.400',
               }}
               key={tab.id}
