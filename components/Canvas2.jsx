@@ -377,6 +377,7 @@ const CanvasTest = ({
         resetMultiSelect();
       }
     }
+    isMultiSelectMode.current = false;
 
     // Align all shapes
     alignAllShapes(shapes, setShapes);
