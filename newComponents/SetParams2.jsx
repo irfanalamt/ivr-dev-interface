@@ -61,6 +61,10 @@ const SetParams = ({
     return () => clearTimeout(timeoutId);
   }, [successText]);
 
+  useEffect(() => {
+    generateJS();
+  }, [modifiedParameters]);
+
   function handleSaveName() {
     if (errors.current.name) {
       setErrorText('Id not valid.');
