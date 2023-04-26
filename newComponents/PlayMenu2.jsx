@@ -46,6 +46,12 @@ const PlayMenu = ({
   const [previousMenuId, setPreviousMenuId] = useState(
     shape.userValues?.previousMenuId
   );
+  const [logText, setLogText] = useState(
+    shape.userValues?.logs ?? {
+      before: {type: 'info', text: ''},
+      after: {type: 'info', text: ''},
+    }
+  );
 
   const errors = useRef({});
 
@@ -84,6 +90,7 @@ const PlayMenu = ({
       description,
       previousMenuId,
       optionalParams: addedOptionalParams,
+      logs: logText,
     });
 
     setErrorText('');
@@ -106,7 +113,15 @@ const PlayMenu = ({
     }${paramsString}, items: ${JSON.stringify(modifiedItems)}}`;
 
     const codeString = `this.${functionName} = async function() {
-      let menu =${menuString};await IVR.playMenu(menu);
+      let menu =${menuString}; ${
+      logText.before.text
+        ? `IVR.log.${logText.before.type}('${logText.before.text}')`
+        : ''
+    };await IVR.playMenu(menu);${
+      logText.after.text
+        ? `IVR.log.${logText.after.type}('${logText.after.text}')`
+        : ''
+    };
     };`;
 
     console.log('codeString 📍', codeString);
@@ -1000,7 +1015,9 @@ const PlayMenu = ({
             ))}
           </List>
         )}
-        {tabValue === 2 && <LogDrawer />}
+        {tabValue === 2 && (
+          <LogDrawer logText={logText} setLogText={setLogText} />
+        )}
       </Box>
     </Box>
   );

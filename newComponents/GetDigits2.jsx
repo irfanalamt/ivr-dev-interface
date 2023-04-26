@@ -52,6 +52,12 @@ const GetDigits = ({
   const [addedOptionalParams, setAddedOptionalParams] = useState(
     shape.userValues?.optionalParams ?? []
   );
+  const [logText, setLogText] = useState(
+    shape.userValues?.logs ?? {
+      before: {type: 'info', text: ''},
+      after: {type: 'info', text: ''},
+    }
+  );
 
   const errors = useRef({});
 
@@ -91,6 +97,7 @@ const GetDigits = ({
       variableName: resultName,
       params: {minDigits, maxDigits},
       optionalParams: addedOptionalParams,
+      logs: logText,
     });
 
     if (validMessages.length < messageList.length) {
@@ -128,10 +135,17 @@ const GetDigits = ({
 
     const codeString = `this.${functionName} = async function() {
       const msgList = ${messageListString};
-      const params = { ${paramsString} };
-      this.${
-        resultNameString || 'default'
-      } = await IVR.getDigits('${functionName}',msgList,params);
+      const params = { ${paramsString} };${
+      logText.before.text
+        ? `IVR.log.${logText.before.type}('${logText.before.text}')`
+        : ''
+    };this.${
+      resultNameString || 'default'
+    } = await IVR.getDigits('${functionName}',msgList,params);${
+      logText.after.text
+        ? `IVR.log.${logText.after.type}('${logText.after.text}')`
+        : ''
+    };
     };`;
 
     console.log('codeString', codeString);
@@ -637,7 +651,9 @@ const GetDigits = ({
             ))}
           </List>
         )}
-        {tabValue === 2 && <LogDrawer />}
+        {tabValue === 2 && (
+          <LogDrawer logText={logText} setLogText={setLogText} />
+        )}
       </Box>
     </>
   );
