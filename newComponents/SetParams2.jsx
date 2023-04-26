@@ -2,23 +2,17 @@ import {
   Box,
   Button,
   Divider,
-  Drawer,
-  FormLabel,
   IconButton,
-  InputLabel,
   List,
   ListItem,
   MenuItem,
   Select,
   Switch,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import DeleteIcon from '@mui/icons-material/Delete';
 import defaultParams from '../src/defaultParams';
@@ -51,6 +45,7 @@ const SetParams = ({
     shape.setUserValues({
       params: modifiedParameters,
     });
+    generateJS();
   }, [modifiedParameters]);
 
   useEffect(() => {
@@ -60,10 +55,6 @@ const SetParams = ({
 
     return () => clearTimeout(timeoutId);
   }, [successText]);
-
-  useEffect(() => {
-    generateJS();
-  }, [modifiedParameters]);
 
   function handleSaveName() {
     if (errors.current.name) {
