@@ -22,6 +22,7 @@ const CanvasAppbar2 = ({
   saveToDb,
   openIvrDialog,
   user,
+  openUserGuide,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -52,7 +53,8 @@ const CanvasAppbar2 = ({
             '&:hover': {backgroundColor: '#80cbc4'},
           }}
           aria-label='user-guide'
-          size='small'>
+          size='small'
+          onClick={openUserGuide}>
           <HelpCenterIcon sx={{color: 'black', fontSize: 'large'}} />
         </IconButton>
       </Tooltip>

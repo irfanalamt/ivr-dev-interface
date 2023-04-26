@@ -15,11 +15,13 @@ import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
 import Shape from '../newModels/Shape';
+import MainUserGuide from '../newComponents/MainUserGuide';
 
 function ProjectPage({ivrName, user, openIvrDialog}) {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
-  const [isVariableManagerOpen, setIsVariableManagerOpen] = useState(false);
-  const [isPromptListOpen, setIsPromptListOpen] = useState(false);
+  const [openVariableManager, setOpenVariableManager] = useState(false);
+  const [openPromptList, setOpenPromptList] = useState(false);
+  const [openUserGuide, setOpenUserGuide] = useState(false);
   const [userVariables, setUserVariables] = useState([]);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -410,6 +412,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         ivrName={ivrName}
         saveToDb={saveToDb}
         openIvrDialog={openIvrDialog}
+        openUserGuide={() => setOpenUserGuide(true)}
         user={user}
       />
       <div style={{display: 'flex'}}>
@@ -431,7 +434,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
           toolBarObj={selectedItemToolbar}
           resetSelectedItemToolbar={resetSelectedItemToolbar}
           userVariables={userVariables}
-          openVariableManager={() => setIsVariableManagerOpen(true)}
+          openVariableManager={() => setOpenVariableManager(true)}
           pageNumber={activeTab}
           shapes={shapes}
           setShapes={setShapes}
@@ -440,8 +443,8 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         />
       </div>
       <BottomBar
-        openVariableManager={() => setIsVariableManagerOpen(true)}
-        openPromptList={() => setIsPromptListOpen(true)}
+        openVariableManager={() => setOpenVariableManager(true)}
+        openPromptList={() => setOpenPromptList(true)}
         resetSelectedItemToolbar={resetSelectedItemToolbar}
         tabs={tabs}
         setTabs={setTabs}
@@ -454,19 +457,19 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       />
 
       <VariableManager
-        isOpen={isVariableManagerOpen}
+        isOpen={openVariableManager}
         handleClose={() => {
-          setIsVariableManagerOpen(false);
+          setOpenVariableManager(false);
           saveToDb();
         }}
         variables={userVariables}
         setVariables={setUserVariables}
         saveToDb={saveToDb}
       />
-      {isPromptListOpen && (
+      {openPromptList && (
         <PromptList
-          isOpen={isPromptListOpen}
-          handleClose={() => setIsPromptListOpen(false)}
+          isOpen={openPromptList}
+          handleClose={() => setOpenPromptList(false)}
           shapes={shapes}
         />
       )}
@@ -481,6 +484,10 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
           <Alert severity={showSnackbar.type}>{showSnackbar.message}</Alert>
         </Snackbar>
       )}
+      <MainUserGuide
+        open={openUserGuide}
+        handleClose={() => setOpenUserGuide(false)}
+      />
     </Box>
   );
 }
