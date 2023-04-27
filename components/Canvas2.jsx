@@ -567,7 +567,7 @@ const CanvasTest = ({
               setExitPointTooltip({
                 text: exitPoint.name,
                 mouseX: clientX,
-                mouseY: clientY + 20,
+                mouseY: clientY + 20 + window.scrollY,
               });
             }
           }
