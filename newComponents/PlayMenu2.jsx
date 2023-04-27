@@ -105,7 +105,29 @@ const PlayMenu = ({
       .join(', ');
 
     const modifiedItems = items.map(
-      ({actionError, promptError, isDefault, nextItem, ...rest}) => rest
+      ({
+        actionError,
+        promptError,
+        isDefault,
+        nextItem,
+        nextItemId,
+        isSkip,
+        skip,
+        disabled,
+        silent,
+        ...rest
+      }) => {
+        if (isSkip) {
+          rest.skip = skip;
+        }
+        if (disabled) {
+          rest.disabled = disabled;
+        }
+        if (silent) {
+          rest.silent = silent;
+        }
+        return rest;
+      }
     );
 
     const menuString = `{menuId: '${name}'${
