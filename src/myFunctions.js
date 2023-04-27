@@ -406,6 +406,21 @@ function validateEmail(email) {
   return emailRegex.test(email);
 }
 
+function stringifySafe(obj) {
+  const cache = new Set();
+
+  return JSON.stringify(obj, function (key, value) {
+    if (typeof value === 'object' && value !== null) {
+      if (cache.has(value)) {
+        // Cyclic reference found, discard key
+        return;
+      }
+      cache.add(value);
+    }
+    return value;
+  });
+}
+
 export {
   replaceVarNameDollar,
   drawGridLines,
@@ -419,4 +434,5 @@ export {
   replaceDollarString,
   validateUserName,
   validateEmail,
+  stringifySafe,
 };

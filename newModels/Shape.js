@@ -1,3 +1,5 @@
+import {stringifySafe} from '../src/myFunctions';
+
 class Shape {
   constructor(x, y, type, pageNumber, style = 'black') {
     this.x = x;
@@ -212,7 +214,7 @@ class Shape {
         }
       });
 
-      return JSON.stringify(userValues);
+      return stringifySafe(userValues);
     } else if (this.type === 'switch') {
       userValues.actions?.forEach((action) => {
         if (action.nextItem) {
@@ -224,9 +226,9 @@ class Shape {
           userValues.defaultActionNextItem.id;
       }
 
-      return JSON.stringify(userValues);
+      return stringifySafe(userValues);
     } else {
-      return JSON.stringify(userValues);
+      return stringifySafe(userValues);
     }
   }
 
