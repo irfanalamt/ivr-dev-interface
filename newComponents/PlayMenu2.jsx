@@ -108,7 +108,7 @@ const PlayMenu = ({
       ({actionError, promptError, isDefault, nextItem, ...rest}) => rest
     );
 
-    const menuString = `{menuId: ${name}${
+    const menuString = `{menuId: '${name}'${
       paramsString ? ',' : ''
     }${paramsString}, items: ${JSON.stringify(modifiedItems)}}`;
 
