@@ -137,7 +137,7 @@ class Shape {
     this.id = id;
   }
 
-  copyShape(shapeCount, shapes, offsetX, offsetY, pageNumber, idMap) {
+  copyShape(shapeCount, shapes, offsetX, offsetY, pageNumber, idMap = {}) {
     const {x, y, type, text} = this;
     const count = ++shapeCount[type];
     const newShape = new Shape(x + offsetX, y + offsetY, type, pageNumber);
