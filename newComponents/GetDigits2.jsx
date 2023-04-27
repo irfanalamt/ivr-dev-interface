@@ -137,15 +137,15 @@ const GetDigits = ({
       const msgList = ${messageListString};
       const params = { ${paramsString} };${
       logText.before.text
-        ? `IVR.log.${logText.before.type}('${logText.before.text}')`
+        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
         : ''
-    };this.${
+    }this.${
       resultNameString || 'default'
     } = await IVR.getDigits('${functionName}',msgList,params);${
       logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}')`
+        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
         : ''
-    };
+    }
     };`;
 
     console.log('codeString', codeString);

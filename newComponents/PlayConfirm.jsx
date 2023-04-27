@@ -115,13 +115,13 @@ const PlayConfirm = ({
       const msgList = ${messageListString};
       const params = { ${paramsString} }; ${
       logText.before.text
-        ? `IVR.log.${logText.before.type}('${logText.before.text}')`
+        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
         : ''
-    };await IVR.playConfirm('${functionName}', msgList, params);${
+    }await IVR.playConfirm('${functionName}', msgList, params);${
       logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}')`
+        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
         : ''
-    };
+    }
     };`;
 
     console.log('codeString📍', codeString);

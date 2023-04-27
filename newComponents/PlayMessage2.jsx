@@ -114,13 +114,13 @@ const PlayMessage = ({
       const params = { ${paramsString} };
       ${
         logText.before.text
-          ? `IVR.log.${logText.before.type}('${logText.before.text}')`
+          ? `IVR.log.${logText.before.type}('${logText.before.text}');`
           : ''
-      };await IVR.playMessage('${functionName}', msgList, params);${
+      }await IVR.playMessage('${functionName}', msgList, params);${
       logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}')`
+        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
         : ''
-    };
+    }
     };`;
 
     console.log('codeString', codeString);

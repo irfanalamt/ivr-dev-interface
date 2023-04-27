@@ -115,13 +115,13 @@ const PlayMenu = ({
     const codeString = `this.${functionName} = async function() {
       let menu =${menuString}; ${
       logText.before.text
-        ? `IVR.log.${logText.before.type}('${logText.before.text}')`
+        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
         : ''
-    };await IVR.playMenu(menu);${
+    }await IVR.playMenu(menu);${
       logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}')`
+        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
         : ''
-    };
+    }
     };`;
 
     console.log('codeString 📍', codeString);

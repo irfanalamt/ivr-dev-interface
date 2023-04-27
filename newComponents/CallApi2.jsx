@@ -74,7 +74,7 @@ const CallApi = ({
       .map((el) => `this.${el.name}=outputVars.${el.name};`)
       .join('');
 
-    const codeString = `this.${functionName}=async function(){let endpoint = ${endpoint};let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI('${name}',endpoint,inputVars);${outputVarsString}};`;
+    const codeString = `this.${functionName}=async function(){let endpoint = '${endpoint}';let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI('${name}',endpoint,inputVars);${outputVarsString}};`;
 
     console.log('codeString📍', codeString);
     shape.setFunctionString(codeString);
