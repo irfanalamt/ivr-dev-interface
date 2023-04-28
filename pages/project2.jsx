@@ -36,13 +36,11 @@ const TestWorkSpace = ({user}) => {
 
   return (
     <>
-      <div style={{overflow: 'hidden', height: '100%'}}>
-        <ProjectPage
-          ivrName={ivrName}
-          openIvrDialog={() => setIsIvrDialogOpen(true)}
-          user={user}
-        />
-      </div>
+      <ProjectPage
+        ivrName={ivrName}
+        openIvrDialog={() => setIsIvrDialogOpen(true)}
+        user={user}
+      />
       <IvrDialog
         isOpen={Boolean(isIvrDialogOpen)}
         handleClose={() => setIsIvrDialogOpen(false)}
