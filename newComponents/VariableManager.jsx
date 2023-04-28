@@ -202,7 +202,7 @@ const VariableManager = ({
               width={'22px'}
             />
           }
-          &nbsp;VARIABLE MANAGER
+          &nbsp;Variable Manager
         </Typography>
         <IconButton
           onClick={handleClose}

@@ -151,7 +151,7 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
               width={'22px'}
             />
           }
-          &nbsp; PROMPT LIST
+          &nbsp; Prompt List
         </Typography>
         <Tooltip title='Download CSV'>
           <IconButton
@@ -211,8 +211,8 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
               <TableHead>
                 <TableRow>
                   <TableCell
-                    align='center'
-                    sx={{width: '50%', fontWeight: 'bold'}}>
+                    align='left'
+                    sx={{width: '40%', fontWeight: 'bold'}}>
                     Prompt Name
                   </TableCell>
                   <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
@@ -224,7 +224,7 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
               <TableBody>
                 {promptArray?.map((row, i) => (
                   <TableRow key={i}>
-                    <TableCell align='center'>{row.prompt}</TableCell>
+                    <TableCell align='left'>{row.prompt}</TableCell>
                     <TableCell>
                       <TextField
                         value={row.description}
