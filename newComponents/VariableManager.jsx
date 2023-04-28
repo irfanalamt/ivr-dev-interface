@@ -177,38 +177,47 @@ const VariableManager = ({
         setErrorText('');
         handleClose();
       }}>
-      <List sx={{backgroundColor: '#cfd8dc', boxShadow: 2}}>
-        <ListItem disablePadding>
-          <IconButton
-            onClick={handleClose}
-            sx={{
-              ml: 'auto',
-              backgroundColor: '#263238',
-              color: 'white',
-              '&:hover': {backgroundColor: '#ef5350'},
-              height: 30,
-              width: 30,
-              mr: 1,
-            }}>
-            <CloseIcon sx={{fontSize: '22px'}} />
-          </IconButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <Typography
-            sx={{mb: 1, display: 'flex', alignItems: 'center', mx: 'auto'}}
-            variant='h5'>
-            {
-              <img
-                src='/icons/variableManager.png'
-                alt='Icon'
-                height={'22px'}
-                width={'22px'}
-              />
-            }
-            &nbsp; VARIABLE MANAGER
-          </Typography>
-        </ListItem>
-      </List>
+      <ListItem
+        sx={{
+          backgroundColor: '#cfd8dc',
+          boxShadow: 2,
+          p: 1,
+        }}
+        disablePadding>
+        <Typography
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mr: 'auto',
+            fontSize: 'extra-large',
+            height: 40,
+            ml: 1,
+          }}
+          variant='h5'>
+          {
+            <img
+              src='/icons/variableManager.png'
+              alt='Icon'
+              height={'22px'}
+              width={'22px'}
+            />
+          }
+          &nbsp;VARIABLE MANAGER
+        </Typography>
+        <IconButton
+          onClick={handleClose}
+          sx={{
+            ml: 'auto',
+            backgroundColor: '#263238',
+            color: 'white',
+            '&:hover': {backgroundColor: '#ef5350'},
+            height: 30,
+            width: 30,
+          }}>
+          <CloseIcon sx={{fontSize: '22px'}} />
+        </IconButton>
+      </ListItem>
+
       <Box sx={{backgroundColor: '#eeeeee', height: '100%'}}>
         <List sx={{minWidth: 400}}>
           <ListItem sx={{mt: 1}}>

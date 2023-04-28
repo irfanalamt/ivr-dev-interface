@@ -125,52 +125,62 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
 
   return (
     <Drawer anchor='left' open={isOpen} onClose={handleClose}>
-      <List sx={{backgroundColor: '#cfd8dc', boxShadow: 2, minWidth: 400}}>
-        <ListItem disablePadding>
-          <Tooltip title='Download CSV'>
-            <IconButton
-              onClick={handleDownloadCSV}
-              sx={{
-                ml: 'auto',
-                backgroundColor: '#263238',
-                color: 'white',
-                '&:hover': {backgroundColor: '#66bb6a'},
-                height: 30,
-                width: 30,
-              }}>
-              <FileDownloadIcon sx={{fontSize: '22px'}} />
-            </IconButton>
-          </Tooltip>
+      <ListItem
+        sx={{
+          backgroundColor: '#cfd8dc',
+          boxShadow: 2,
+          minWidth: '45vw',
+          p: 1,
+        }}
+        disablePadding>
+        <Typography
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            mr: 'auto',
+            fontSize: 'extra-large',
+            height: 40,
+            ml: 1,
+          }}
+          variant='h5'>
+          {
+            <img
+              src='/icons/promptList.png'
+              alt='Icon'
+              height={'22px'}
+              width={'22px'}
+            />
+          }
+          &nbsp; PROMPT LIST
+        </Typography>
+        <Tooltip title='Download CSV'>
           <IconButton
-            onClick={handleClose}
+            onClick={handleDownloadCSV}
             sx={{
-              ml: 1,
+              ml: 'auto',
               backgroundColor: '#263238',
               color: 'white',
-              '&:hover': {backgroundColor: '#ef5350'},
+              '&:hover': {backgroundColor: '#66bb6a'},
               height: 30,
               width: 30,
-              mr: 1,
             }}>
-            <CloseIcon sx={{fontSize: '22px'}} />
+            <FileDownloadIcon sx={{fontSize: '22px'}} />
           </IconButton>
-        </ListItem>
-        <ListItem disablePadding>
-          <Typography
-            sx={{mb: 1, display: 'flex', alignItems: 'center', mx: 'auto'}}
-            variant='h5'>
-            {
-              <img
-                src='/icons/promptList.png'
-                alt='Icon'
-                height={'22px'}
-                width={'22px'}
-              />
-            }
-            &nbsp; PROMPT LIST
-          </Typography>
-        </ListItem>
-      </List>
+        </Tooltip>
+        <IconButton
+          onClick={handleClose}
+          sx={{
+            ml: 1,
+            backgroundColor: '#263238',
+            color: 'white',
+            '&:hover': {backgroundColor: '#ef5350'},
+            height: 30,
+            width: 30,
+          }}>
+          <CloseIcon sx={{fontSize: '22px'}} />
+        </IconButton>
+      </ListItem>
+
       <Box sx={{backgroundColor: '#eeeeee', height: '100%', p: 2}}>
         {errorText && (
           <Typography
@@ -202,12 +212,10 @@ const PromptList = ({isOpen, handleClose, shapes}) => {
                 <TableRow>
                   <TableCell
                     align='center'
-                    sx={{width: '20%', fontWeight: 'bold'}}>
+                    sx={{width: '50%', fontWeight: 'bold'}}>
                     Prompt Name
                   </TableCell>
-                  <TableCell sx={{width: '40%', fontWeight: 'bold'}}>
-                    Description
-                  </TableCell>
+                  <TableCell sx={{fontWeight: 'bold'}}>Description</TableCell>
                   {showUsedIn && (
                     <TableCell sx={{fontWeight: 'bold'}}>Used In</TableCell>
                   )}
