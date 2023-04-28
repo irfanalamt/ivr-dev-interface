@@ -86,6 +86,7 @@ const SwitchBlock = ({
     } else {
       const validActions = actions.filter((a) => a.condition && a.action);
       shape.setUserValues({
+        ...shape.userValues,
         actions: validActions,
         defaultAction,
       });
