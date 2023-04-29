@@ -656,6 +656,8 @@ const CanvasTest = ({
           action.nextItem = shape2;
         }
       }
+    } else if (shape2.nextItem === shape1) {
+      return;
     } else {
       shape1.nextItem = shape2;
     }
