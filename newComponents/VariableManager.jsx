@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
 const VariableManager = ({
@@ -135,23 +135,38 @@ const VariableManager = ({
     setSuccessText('');
     setErrorText('');
   }
-  function handleValidation(objType, value) {
-    let errorM = -1;
+
+  function isVariableNameUnique(name, variables) {
+    return !variables.some((variable) => variable.name === name);
+  }
+
+  function validate(objType, value, variables) {
+    let errorMessage = -1;
+
     if (objType === 'name' && value) {
-      errorM = checkValidity('name', value);
+      errorMessage = checkValidity('name', value);
+
+      if (errorMessage === -1 && !isVariableNameUnique(value, variables)) {
+        errorMessage = 'Name must be unique.';
+      }
     } else if (objType === 'value') {
-      errorM = checkValidity(type, value);
+      errorMessage = checkValidity(type, value);
     }
 
-    if (errorM === -1) {
+    return errorMessage;
+  }
+
+  function handleValidation(objType, value) {
+    const errorMessage = validate(objType, value, variables);
+
+    if (errorMessage === -1) {
       // No error condition
       setErrorText('');
       errorObj.current[objType] = false;
-      return;
+    } else {
+      errorObj.current[objType] = true;
+      setErrorText(errorMessage);
     }
-
-    errorObj.current[objType] = true;
-    setErrorText(errorM);
   }
 
   function getTextFieldPlaceholderValue(type) {
