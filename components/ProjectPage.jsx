@@ -404,6 +404,50 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     };
   }
 
+  function renameVariablesInUse(oldName, newName) {
+    setShapes((prevShapes) => {
+      return prevShapes.map((shape) => {
+        if (['playMessage', 'playConfirm', 'getDigits'].includes(shape.type)) {
+          if (shape.userValues?.messageList.length) {
+            shape.userValues.messageList = shape.userValues.messageList.map(
+              (m) => {
+                if (m.item === '$' + oldName) {
+                  m.item = '$' + newName;
+                }
+                return m;
+              }
+            );
+          }
+        } else if (shape.type === 'playMenu') {
+          if (shape.userValues?.items.length) {
+            shape.userValues.items = shape.userValues.items.map((item) => {
+              if (item.prompt === '$' + oldName) {
+                item.prompt = '$' + newName;
+              }
+              return item;
+            });
+          }
+        } else if (shape.type === 'switch') {
+          if (shape.userValues?.actions.length) {
+            shape.userValues.actions = shape.userValues.actions.map(
+              (action) => {
+                const regex = new RegExp('\\$' + oldName + '\\b', 'g');
+                action.condition = action.condition.replace(
+                  regex,
+                  '$' + newName
+                );
+                return action;
+              }
+            );
+          }
+        }
+        //TODO: runscript and callAPI functions
+
+        return shape;
+      });
+    });
+  }
+
   return (
     <Box onContextMenu={handleContextMenuPage}>
       <CanvasAppbar2
@@ -465,6 +509,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         variables={userVariables}
         setVariables={setUserVariables}
         saveToDb={saveToDb}
+        renameVariablesInUse={renameVariablesInUse}
       />
       {openPromptList && (
         <PromptList

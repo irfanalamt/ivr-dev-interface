@@ -22,6 +22,7 @@ const VariableManager = ({
   variables,
   setVariables,
   saveToDb,
+  renameVariablesInUse,
 }) => {
   const [currentVariable, setCurrentVariable] = useState('');
   const [type, setType] = useState('prompt');
@@ -86,7 +87,13 @@ const VariableManager = ({
 
       if (index !== -1) {
         const updatedVariables = [...variables];
+        const oldName = updatedVariables[index].name;
         updatedVariables[index] = {type, name, defaultValue, description};
+        const newName = updatedVariables[index].name;
+        if (oldName != newName) {
+          console.log('name changed!!');
+          renameVariablesInUse(oldName, newName);
+        }
         setVariables(updatedVariables);
         setSuccessText('Update successful.');
       } else {
