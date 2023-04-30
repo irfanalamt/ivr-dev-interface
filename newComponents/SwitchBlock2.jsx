@@ -160,10 +160,11 @@ const SwitchBlock = ({
     if (value.length < 2) return;
 
     const topCode = getUserVariablesString();
-    const bottomCode = `let x = ${value};`;
+    const bottomCode = `if(${value}){};`;
 
     try {
-      eval(topCode + bottomCode);
+      eval('"use strict";\n' + topCode + bottomCode);
+
       clearConditionError(index);
     } catch (error) {
       setConditionError(error.message, index);
