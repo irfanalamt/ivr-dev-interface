@@ -465,6 +465,16 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
               return v;
             });
           }
+        } else if (shapeType === 'setParams') {
+          const params = shape.userValues?.params;
+          if (params?.length) {
+            shape.userValues.params = shape.userValues.params.map((p) => {
+              if (p.value === '$' + oldName) {
+                p.value = '$' + newName;
+              }
+              return p;
+            });
+          }
         }
 
         return shape;
