@@ -1,20 +1,12 @@
 import CloseIcon from '@mui/icons-material/Close';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
-  Divider,
   IconButton,
-  List,
   ListItem,
-  MenuItem,
-  Select,
   Stack,
-  Switch,
-  Tab,
-  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
@@ -69,13 +61,6 @@ const RunScript = ({
         shape.isComplete = false;
       }
     }
-  }
-
-  function replaceDollarString(str) {
-    return str.replace(/\$([a-zA-Z])/g, 'this.$1');
-  }
-  function replaceLogWithIvrLog(str) {
-    return str.replace(/log/g, 'IVR.log');
   }
 
   function handleNameChange(e) {

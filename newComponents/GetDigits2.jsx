@@ -115,13 +115,6 @@ const GetDigits = ({
     }
   }
 
-  function deleteDollar(str) {
-    if (str.charAt(0) === '$') {
-      return str.slice(1);
-    }
-    return str;
-  }
-
   function handleNameChange(e) {
     const {value} = e.target;
 
