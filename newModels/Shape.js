@@ -153,6 +153,7 @@ class Shape {
     const shapeNames = shapes.map((shape) => shape.text);
     newShape.text = this.getUniqueName(text, shapeNames);
     newShape.userValues = this.copyUserValues();
+    newShape.isComplete = this.isComplete;
 
     // add old and new id to idMap
     idMap[this.id] = newShape.id;
