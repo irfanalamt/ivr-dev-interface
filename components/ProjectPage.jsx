@@ -407,41 +407,65 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
   function renameVariablesInUse(oldName, newName) {
     setShapes((prevShapes) => {
       return prevShapes.map((shape) => {
-        if (['playMessage', 'playConfirm', 'getDigits'].includes(shape.type)) {
-          if (shape.userValues?.messageList.length) {
-            shape.userValues.messageList = shape.userValues.messageList.map(
-              (m) => {
-                if (m.item === '$' + oldName) {
-                  m.item = '$' + newName;
-                }
-                return m;
+        const shapeType = shape.type;
+        if (['playMessage', 'playConfirm', 'getDigits'].includes(shapeType)) {
+          const messageList = shape.userValues?.messageList;
+
+          if (messageList?.length) {
+            shape.userValues.messageList = messageList.map((m) => {
+              if (m.item === '$' + oldName) {
+                m.item = '$' + newName;
               }
-            );
+              return m;
+            });
           }
-        } else if (shape.type === 'playMenu') {
-          if (shape.userValues?.items.length) {
-            shape.userValues.items = shape.userValues.items.map((item) => {
+        } else if (shapeType === 'playMenu') {
+          const items = shape.userValues?.items;
+
+          if (items?.length) {
+            shape.userValues.items = items.map((item) => {
               if (item.prompt === '$' + oldName) {
                 item.prompt = '$' + newName;
               }
               return item;
             });
           }
-        } else if (shape.type === 'switch') {
-          if (shape.userValues?.actions.length) {
-            shape.userValues.actions = shape.userValues.actions.map(
-              (action) => {
-                const regex = new RegExp('\\$' + oldName + '\\b', 'g');
-                action.condition = action.condition.replace(
-                  regex,
-                  '$' + newName
-                );
-                return action;
+        } else if (shapeType === 'switch') {
+          const actions = shape.userValues?.actions;
+
+          if (actions?.length) {
+            shape.userValues.actions = actions.map((action) => {
+              const regex = new RegExp('\\$' + oldName + '\\b', 'g');
+              action.condition = action.condition.replace(regex, '$' + newName);
+              return action;
+            });
+          }
+        } else if (shapeType === 'runScript') {
+          const script = shape.userValues?.script;
+
+          if (script) {
+            const regex = new RegExp('\\$' + oldName + '\\b', 'g');
+            shape.userValues.script = script.replace(regex, '$' + newName);
+          }
+        } else if (shapeType === 'callAPI') {
+          const userValues = shape.userValues;
+
+          if (userValues) {
+            shape.userValues.inputVars = userValues.inputVars.map((v) => {
+              if (v.name === oldName) {
+                v.name = newName;
               }
-            );
+              return v;
+            });
+
+            shape.userValues.outputVars = userValues.outputVars.map((v) => {
+              if (v.name === oldName) {
+                v.name = newName;
+              }
+              return v;
+            });
           }
         }
-        //TODO: runscript and callAPI functions
 
         return shape;
       });
