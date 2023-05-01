@@ -411,6 +411,12 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       return prevShapes.map((shape) => {
         const shapeType = shape.type;
         if (['playMessage', 'playConfirm', 'getDigits'].includes(shapeType)) {
+          if (shapeType === 'getDigits') {
+            const variableName = shape.userValues.variableName;
+            if (variableName === '$' + oldName) {
+              shape.userValues.variableName = '$' + newName;
+            }
+          }
           const messageList = shape.userValues?.messageList;
 
           if (messageList?.length) {

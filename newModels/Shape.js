@@ -1,4 +1,9 @@
-import {replaceVarNameDollar, stringifySafe} from '../src/myFunctions';
+import {
+  deleteDollar,
+  replaceDollarString,
+  replaceVarNameDollar,
+  stringifySafe,
+} from '../src/myFunctions';
 
 class Shape {
   constructor(x, y, type, pageNumber, style = 'black') {
@@ -217,6 +222,22 @@ class Shape {
       case 'playMessage':
         this.setFunctionStringPlayMessage();
         break;
+
+      case 'getDigits':
+        this.setFunctionStringGetDigits();
+        break;
+
+      case 'playConfirm':
+        this.setFunctionStringPlayConfirm();
+        break;
+
+      case 'runScript':
+        this.setFunctionStringRunScript();
+        break;
+
+      case 'callAPI':
+        this.setFunctionStringCallAPI();
+        break;
     }
   }
 
@@ -266,6 +287,107 @@ class Shape {
     };`;
 
     console.log('codeString', codeString);
+    this.setFunctionString(codeString);
+  }
+
+  setFunctionStringGetDigits() {
+    const functionName = this.text ? this.text : `getDigits${this.id}`;
+    const paramsString =
+      `minDigits:${this.userValues.params.minDigits},maxDigits:${this.userValues.params.maxDigits},` +
+      this.userValues.optionalParams
+        .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+        .join(', ');
+    const modifiedMessageList = this.userValues.messageList.map(
+      ({useVariable, ...rest}) => rest
+    );
+    const messageListString = replaceVarNameDollar(
+      JSON.stringify(modifiedMessageList)
+    );
+    const resultNameString = deleteDollar(this.userValues.variableName);
+
+    const logText = this.userValues.logs;
+    const codeString = `this.${functionName} = async function() {
+    const msgList = ${messageListString};
+    const params = { ${paramsString} };${
+      logText.before.text
+        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
+        : ''
+    }this.${
+      resultNameString || 'default'
+    } = await IVR.getDigits('${functionName}',msgList,params);${
+      logText.after.text
+        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
+        : ''
+    }
+  };`;
+
+    console.log('codeString', codeString);
+    this.setFunctionString(codeString);
+  }
+
+  setFunctionStringPlayConfirm() {
+    const functionName = this.text ? this.text : `playConfirm${this.id}`;
+    const paramsString = this.userValues.optionalParams
+      .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+      .join(', ');
+    const modifiedMessageList = this.userValues.messageList.map(
+      ({useVariable, ...rest}) => rest
+    );
+    const messageListString = replaceVarNameDollar(
+      JSON.stringify(modifiedMessageList)
+    );
+
+    const logText = this.userValues.logs;
+    const codeString = `this.${functionName} = async function() {
+      const msgList = ${messageListString};
+      const params = { ${paramsString} }; ${
+      logText.before.text
+        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
+        : ''
+    }await IVR.playConfirm('${functionName}', msgList, params);${
+      logText.after.text
+        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
+        : ''
+    }
+    };`;
+
+    console.log('codeString📍', codeString);
+    this.setFunctionString(codeString);
+  }
+
+  setFunctionStringRunScript() {
+    function replaceDollarString(str) {
+      return str.replace(/\$([a-zA-Z])/g, 'this.$1');
+    }
+    function replaceLogWithIvrLog(str) {
+      return str.replace(/log/g, 'IVR.log');
+    }
+    const functionName = this.text ? this.text : `runScript${this.id}`;
+    const newReplacedString = replaceDollarString(this.userValues.script);
+    const ivrReplacedString = replaceLogWithIvrLog(newReplacedString);
+
+    const codeString = `this.${functionName} = async function(){${ivrReplacedString}};`;
+
+    console.log('codeString📍', codeString);
+    this.setFunctionString(codeString);
+  }
+
+  setFunctionStringCallAPI() {
+    const functionName = this.text ? this.text : `callAPI${this.id}`;
+    const {endpoint, inputVars, outputVars} = this.userValues;
+
+    const inputVarsString = `{${inputVars
+      .filter((el) => el.name)
+      .map((el) => `${el.name}:this.${el.name}`)
+      .join(',')}}`;
+    const outputVarsString = outputVars
+      .filter((el) => el.name)
+      .map((el) => `this.${el.name}=outputVars.${el.name};`)
+      .join('');
+
+    const codeString = `this.${functionName}=async function(){let endpoint = '${endpoint}';let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI('${functionName}',endpoint,inputVars);${outputVarsString}};`;
+
+    console.log('codeString📍', codeString);
     this.setFunctionString(codeString);
   }
 

@@ -59,25 +59,11 @@ const CallApi = ({
 
     setErrorText('');
     setSuccessText('Saved.');
-    if (endpoint.length > 1 && inputVars[0].name && outputVars[0].name)
-      generateJS();
-  }
-
-  function generateJS() {
-    const functionName = name ? name : `callAPI${shape.id}`;
-    const inputVarsString = `{${inputVars
-      .filter((el) => el.name)
-      .map((el) => `${el.name}:this.${el.name}`)
-      .join(',')}}`;
-    const outputVarsString = outputVars
-      .filter((el) => el.name)
-      .map((el) => `this.${el.name}=outputVars.${el.name};`)
-      .join('');
-
-    const codeString = `this.${functionName}=async function(){let endpoint = '${endpoint}';let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI('${name}',endpoint,inputVars);${outputVarsString}};`;
-
-    console.log('codeString📍', codeString);
-    shape.setFunctionString(codeString);
+    if (endpoint.length > 1 && inputVars[0].name && outputVars[0].name) {
+      shape.isComplete = true;
+    } else {
+      shape.isComplete = false;
+    }
   }
 
   function handleNameChange(e) {

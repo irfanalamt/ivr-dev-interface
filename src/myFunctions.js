@@ -18,6 +18,12 @@ function replaceVarNameDollar(str) {
   }
   return strOut;
 }
+function deleteDollar(str) {
+  if (str.charAt(0) === '$') {
+    return str.slice(1);
+  }
+  return str;
+}
 function replaceDollarString(str) {
   return str.replace(/\$([a-zA-Z])/g, 'this.$1');
 }
@@ -432,6 +438,7 @@ export {
   drawMultiSelectRect,
   isNameUnique,
   replaceDollarString,
+  deleteDollar,
   validateUserName,
   validateEmail,
   stringifySafe,

@@ -63,19 +63,12 @@ const RunScript = ({
       setErrorText('');
       setSuccessText('Saved.');
       shape.setUserValues({script: functionString});
-      if (functionString.length > 1) generateJS();
+      if (functionString.length > 1) {
+        shape.isComplete = true;
+      } else {
+        shape.isComplete = false;
+      }
     }
-  }
-
-  function generateJS() {
-    const functionName = name ? name : `runScript${shape.id}`;
-    const newReplacedString = replaceDollarString(functionString);
-    const ivrReplacedString = replaceLogWithIvrLog(newReplacedString);
-
-    const codeString = `this.${functionName} = async function(){${ivrReplacedString}};`;
-
-    console.log('codeString📍', codeString);
-    shape.setFunctionString(codeString);
   }
 
   function replaceDollarString(str) {

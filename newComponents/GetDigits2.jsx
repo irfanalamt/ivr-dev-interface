@@ -107,7 +107,11 @@ const GetDigits = ({
       setErrorText('');
       setSuccessText('Saved.');
 
-      if (validMessages.length > 0 && resultName) generateJS();
+      if (validMessages.length > 0 && resultName) {
+        shape.isComplete = true;
+      } else {
+        shape.isComplete = false;
+      }
     }
   }
 
@@ -116,40 +120,6 @@ const GetDigits = ({
       return str.slice(1);
     }
     return str;
-  }
-
-  function generateJS() {
-    const functionName = name ? name : `getDigits${shape.id}`;
-    const paramsString =
-      `minDigits:${minDigits},maxDigits:${maxDigits},` +
-      addedOptionalParams
-        .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
-        .join(', ');
-    const modifiedMessageList = messageList.map(
-      ({useVariable, ...rest}) => rest
-    );
-    const messageListString = replaceVarNameDollar(
-      JSON.stringify(modifiedMessageList)
-    );
-    const resultNameString = deleteDollar(resultName);
-
-    const codeString = `this.${functionName} = async function() {
-      const msgList = ${messageListString};
-      const params = { ${paramsString} };${
-      logText.before.text
-        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
-        : ''
-    }this.${
-      resultNameString || 'default'
-    } = await IVR.getDigits('${functionName}',msgList,params);${
-      logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
-        : ''
-    }
-    };`;
-
-    console.log('codeString', codeString);
-    shape.setFunctionString(codeString);
   }
 
   function handleNameChange(e) {
