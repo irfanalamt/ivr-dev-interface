@@ -45,7 +45,6 @@ const SetParams = ({
     shape.setUserValues({
       params: modifiedParameters,
     });
-    generateJS();
   }, [modifiedParameters]);
 
   useEffect(() => {
@@ -65,24 +64,11 @@ const SetParams = ({
     clearAndDraw();
     setErrorText('');
     setSuccessText('ID Updated.');
-    generateJS();
-  }
-
-  function generateJS() {
-    const functionName = name ? name : `setParams${shape.id}`;
-
-    const codeModifiedParameters = modifiedParameters
-      .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
-      .join(', ');
-
-    const codeString = `this.${functionName} = async function() {
-      const newParams = { ${codeModifiedParameters} };
-      await IVR.setCallParams('${functionName}', newParams);
-    };`;
-
-    console.log('codeString☄️', codeString);
-
-    shape.setFunctionString(codeString);
+    if (shape.text === 'start' || modifiedParameters.length) {
+      shape.isComplete = true;
+    } else {
+      shape.isComplete = false;
+    }
   }
 
   function handleSelectedParameterIndexChange(e) {

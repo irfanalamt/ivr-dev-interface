@@ -93,38 +93,12 @@ const PlayMessage = ({
     } else {
       setErrorText('');
       setSuccessText('Saved.');
-      if (validMessages.length > 0) generateJS();
+      if (validMessages.length > 0) {
+        shape.isComplete = true;
+      } else {
+        shape.isComplete = false;
+      }
     }
-  }
-
-  function generateJS() {
-    const functionName = name ? name : `playMessage${shape.id}`;
-    const paramsString = addedOptionalParams
-      .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
-      .join(', ');
-    const modifiedMessageList = messageList.map(
-      ({useVariable, ...rest}) => rest
-    );
-    const messageListString = replaceVarNameDollar(
-      JSON.stringify(modifiedMessageList)
-    );
-
-    const codeString = `this.${functionName} = async function() {
-      const msgList = ${messageListString};
-      const params = { ${paramsString} };
-      ${
-        logText.before.text
-          ? `IVR.log.${logText.before.type}('${logText.before.text}');`
-          : ''
-      }await IVR.playMessage('${functionName}', msgList, params);${
-      logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
-        : ''
-    }
-    };`;
-
-    console.log('codeString', codeString);
-    shape.setFunctionString(codeString);
   }
 
   function handleNameChange(e) {

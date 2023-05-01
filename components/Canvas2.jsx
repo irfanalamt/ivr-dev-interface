@@ -128,10 +128,7 @@ const CanvasTest = ({
     newShape.setTextAndId(count);
     if (newShape.type === 'setParams' && !hasShapeByText('start')) {
       newShape.text = 'start';
-      newShape.setFunctionString(`this.start = async function() {
-        const newParams = {  };
-        await IVR.setCallParams('start', newParams);
-      };`);
+      newShape.isComplete = true;
     }
     setShapes([...shapes, newShape]);
   }

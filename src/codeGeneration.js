@@ -20,7 +20,7 @@ function generateInitVariablesJS(userVariables) {
 function findIsDefaultValuesPresent(shapes) {
   for (let shape of shapes) {
     const typesToIgnore = ['connector', 'jumper', 'endFlow'];
-    if (!typesToIgnore.includes(shape.type) && !shape.functionString) {
+    if (!typesToIgnore.includes(shape.type) && !shape.isComplete) {
       return shape;
     }
   }
@@ -72,6 +72,8 @@ function generateCode(shape) {
     'callAPI',
   ];
   if (typesToInclude.includes(shape.type)) {
+    shape.generateAndSetFunctionString();
+
     return shape.functionString;
   }
 

@@ -1,4 +1,4 @@
-import {stringifySafe} from '../src/myFunctions';
+import {replaceVarNameDollar, stringifySafe} from '../src/myFunctions';
 
 class Shape {
   constructor(x, y, type, pageNumber, style = 'black') {
@@ -16,6 +16,7 @@ class Shape {
     this.exitPoints = [];
     this.functionString = '';
     this.pageNumber = pageNumber;
+    this.isComplete = false;
     this.setWidthAndHeight(type);
     this.setImage(type);
     this.setInitialValue();
@@ -201,9 +202,71 @@ class Shape {
       nextItemId: this.nextItem?.id || null,
       id: this.id,
       functionString: this.functionString,
+      isComplete: this.isComplete,
     };
 
     return newShape;
+  }
+
+  generateAndSetFunctionString() {
+    switch (this.type) {
+      case 'setParams':
+        this.setFunctionStringSetParams();
+        break;
+
+      case 'playMessage':
+        this.setFunctionStringPlayMessage();
+        break;
+    }
+  }
+
+  setFunctionStringSetParams() {
+    const functionName = this.text ? this.text : `setParams${this.id}`;
+
+    const codeModifiedParameters = this.userValues?.params
+      ?.map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+      .join(', ');
+
+    const codeString = `this.${functionName} = async function() {
+      const newParams = { ${codeModifiedParameters} };
+      await IVR.setCallParams('${functionName}', newParams);
+    };`;
+
+    console.log('codeString☄️', codeString);
+
+    this.setFunctionString(codeString);
+  }
+
+  setFunctionStringPlayMessage() {
+    const functionName = this.text ? this.text : `playMessage${this.id}`;
+
+    const paramsString = this.userValues.optionalParams
+      .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+      .join(', ');
+    const modifiedMessageList = this.userValues.messageList.map(
+      ({useVariable, ...rest}) => rest
+    );
+    const messageListString = replaceVarNameDollar(
+      JSON.stringify(modifiedMessageList)
+    );
+
+    const logText = this.userValues.logs;
+    const codeString = `this.${functionName} = async function() {
+      const msgList = ${messageListString};
+      const params = { ${paramsString} };
+      ${
+        logText.before.text
+          ? `IVR.log.${logText.before.type}('${logText.before.text}');`
+          : ''
+      }await IVR.playMessage('${functionName}', msgList, params);${
+      logText.after.text
+        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
+        : ''
+    }
+    };`;
+
+    console.log('codeString', codeString);
+    this.setFunctionString(codeString);
   }
 
   addNextItemIdUserValues(userValues) {

@@ -103,6 +103,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         functionString,
         nextItemId,
         userValues,
+        isComplete,
       } = shape;
       const newShape = new Shape(x, y, type, pageNumber);
 
@@ -110,6 +111,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       newShape.id = id;
       newShape.functionString = functionString;
       newShape.nextItemId = nextItemId;
+      newShape.isComplete = isComplete;
 
       if (userValues) {
         newShape.setUserValues(JSON.parse(userValues));
