@@ -1,3 +1,4 @@
+import {replaceVariablesInLog} from '../src/codeGeneration';
 import {
   deleteDollar,
   replaceDollarString,
@@ -214,22 +215,22 @@ class Shape {
     return newShape;
   }
 
-  generateAndSetFunctionString() {
+  generateAndSetFunctionString(variables) {
     switch (this.type) {
       case 'setParams':
         this.setFunctionStringSetParams();
         break;
 
       case 'playMessage':
-        this.setFunctionStringPlayMessage();
+        this.setFunctionStringPlayMessage(variables);
         break;
 
       case 'getDigits':
-        this.setFunctionStringGetDigits();
+        this.setFunctionStringGetDigits(variables);
         break;
 
       case 'playConfirm':
-        this.setFunctionStringPlayConfirm();
+        this.setFunctionStringPlayConfirm(variables);
         break;
 
       case 'runScript':
@@ -259,7 +260,7 @@ class Shape {
     this.setFunctionString(codeString);
   }
 
-  setFunctionStringPlayMessage() {
+  setFunctionStringPlayMessage(variables) {
     const functionName = this.text ? this.text : `playMessage${this.id}`;
 
     const paramsString = this.userValues.optionalParams
@@ -273,17 +274,18 @@ class Shape {
     );
 
     const logText = this.userValues.logs;
+    const beforeLog = replaceVariablesInLog(logText.before.text, variables);
+    const afterLog = replaceVariablesInLog(logText.after.text, variables);
+
     const codeString = `this.${functionName} = async function() {
       const msgList = ${messageListString};
       const params = { ${paramsString} };
       ${
         logText.before.text
-          ? `IVR.log.${logText.before.type}('${logText.before.text}');`
+          ? `IVR.log.${logText.before.type}(${beforeLog});`
           : ''
       }await IVR.playMessage('${functionName}', msgList, params);${
-      logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
-        : ''
+      logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''
     }
     };`;
 
@@ -291,7 +293,7 @@ class Shape {
     this.setFunctionString(codeString);
   }
 
-  setFunctionStringGetDigits() {
+  setFunctionStringGetDigits(variables) {
     const functionName = this.text ? this.text : `getDigits${this.id}`;
     const paramsString =
       `minDigits:${this.userValues.params.minDigits},maxDigits:${this.userValues.params.maxDigits},` +
@@ -307,18 +309,16 @@ class Shape {
     const resultNameString = deleteDollar(this.userValues.variableName);
 
     const logText = this.userValues.logs;
+    const beforeLog = replaceVariablesInLog(logText.before.text, variables);
+    const afterLog = replaceVariablesInLog(logText.after.text, variables);
     const codeString = `this.${functionName} = async function() {
     const msgList = ${messageListString};
     const params = { ${paramsString} };${
-      logText.before.text
-        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
-        : ''
+      logText.before.text ? `IVR.log.${logText.before.type}(${beforeLog});` : ''
     }this.${
       resultNameString || 'default'
     } = await IVR.getDigits('${functionName}',msgList,params);${
-      logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
-        : ''
+      logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''
     }
   };`;
 
@@ -326,7 +326,7 @@ class Shape {
     this.setFunctionString(codeString);
   }
 
-  setFunctionStringPlayConfirm() {
+  setFunctionStringPlayConfirm(variables) {
     const functionName = this.text ? this.text : `playConfirm${this.id}`;
     const paramsString = this.userValues.optionalParams
       .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
@@ -339,16 +339,14 @@ class Shape {
     );
 
     const logText = this.userValues.logs;
+    const beforeLog = replaceVariablesInLog(logText.before.text, variables);
+    const afterLog = replaceVariablesInLog(logText.after.text, variables);
     const codeString = `this.${functionName} = async function() {
       const msgList = ${messageListString};
       const params = { ${paramsString} }; ${
-      logText.before.text
-        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
-        : ''
+      logText.before.text ? `IVR.log.${logText.before.type}(${beforeLog});` : ''
     }await IVR.playConfirm('${functionName}', msgList, params);${
-      logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
-        : ''
+      logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''
     }
     };`;
 

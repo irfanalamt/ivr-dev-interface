@@ -332,8 +332,10 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
     const allVariablesString = generateInitVariablesJS(userVariables) + '\n \n';
 
-    const allFunctionStringsAndDriverFunctions =
-      traverseAndReturnString(startShape);
+    const allFunctionStringsAndDriverFunctions = traverseAndReturnString(
+      startShape,
+      userVariables
+    );
 
     const endProjectBraces = `} \n\n `;
     const endExportString = `module.exports = {${functionName}}`;

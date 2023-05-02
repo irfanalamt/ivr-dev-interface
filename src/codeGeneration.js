@@ -33,7 +33,7 @@ function checkForStartShape(shapes) {
 
   return startShape;
 }
-function traverseAndReturnString(startShape) {
+function traverseAndReturnString(startShape, variables) {
   const mainMenuCode = generateMainMenuCode(startShape);
   const visitedShapes = new Set();
   const shapeStack = [startShape];
@@ -46,7 +46,7 @@ function traverseAndReturnString(startShape) {
     visitedShapes.add(currentShape);
     console.log(' ➡️' + currentShape.text);
 
-    codeAndDrivers += generateCode(currentShape);
+    codeAndDrivers += generateCode(currentShape, variables);
 
     const nextShapes = getNextShapes(currentShape);
 
@@ -56,7 +56,7 @@ function traverseAndReturnString(startShape) {
   }
   return mainMenuCode + codeAndDrivers;
 }
-function generateCode(shape) {
+function generateCode(shape, variables) {
   if (shape.type === 'playMenu') {
     return generateMenuCode(shape);
   }
@@ -72,7 +72,7 @@ function generateCode(shape) {
     'callAPI',
   ];
   if (typesToInclude.includes(shape.type)) {
-    shape.generateAndSetFunctionString();
+    shape.generateAndSetFunctionString(variables);
 
     return shape.functionString;
   }
@@ -241,6 +241,15 @@ function formatCode(code) {
     singleQuote: true,
   });
 }
+function replaceVariablesInLog(text, variables) {
+  variables.forEach((variable) => {
+    const regex = new RegExp(`\\$${variable.name}\\b`, 'g');
+
+    text = text.replace(regex, `\${this.${variable.name}}`);
+  });
+
+  return `\`${text}\``;
+}
 
 export {
   generateInitVariablesJS,
@@ -248,4 +257,5 @@ export {
   checkForStartShape,
   traverseAndReturnString,
   formatCode,
+  replaceVariablesInLog,
 };
