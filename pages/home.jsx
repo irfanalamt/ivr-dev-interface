@@ -23,7 +23,7 @@ const HomePage = ({user, updateUser}) => {
   function handleFileUpload() {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
-    fileInput.accept = '.json';
+    fileInput.accept = '.ivrf';
     fileInput.onchange = handleFileSelected;
     fileInput.click();
   }
