@@ -59,6 +59,42 @@ const SavedProjects2 = ({user}) => {
     setDialogOpen(false);
   }
 
+  function handleExportProject(name) {
+    const token = localStorage.getItem('token');
+
+    console.log('name:', name);
+
+    axios
+      .get('/api/getProject2', {
+        params: {
+          name,
+        },
+        headers: {Authorization: token},
+      })
+      .then((response) => {
+        console.log(response.data);
+        downloadObjectAsFile(response.data, name);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }
+
+  function downloadObjectAsFile(object, fileName) {
+    const json = JSON.stringify(object, null, 2);
+    const blob = new Blob([json], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName + '.ivrf';
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
   function deleteProjectFromDb(name) {
     const token = localStorage.getItem('token');
     console.log('name is ' + name);
@@ -191,6 +227,12 @@ const SavedProjects2 = ({user}) => {
                   <CardActions>
                     <Button
                       sx={{ml: 'auto'}}
+                      variant='outlined'
+                      color='info'
+                      onClick={() => handleExportProject(project.name)}>
+                      Export
+                    </Button>
+                    <Button
                       variant='outlined'
                       color='error'
                       onClick={() => handleDeleteClick(project.name)}>
