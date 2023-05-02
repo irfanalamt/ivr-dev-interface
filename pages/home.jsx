@@ -1,6 +1,7 @@
 import {Avatar, Box, Button, Container, Stack, Typography} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {useRouter} from 'next/router';
+import axios from 'axios';
 
 const HomePage = ({user, updateUser}) => {
   const router = useRouter();
@@ -17,6 +18,55 @@ const HomePage = ({user, updateUser}) => {
     localStorage.removeItem('token');
     sessionStorage.removeItem('ivrName');
     updateUser(null);
+  }
+
+  function handleFileUpload() {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.onchange = handleFileSelected;
+    fileInput.click();
+  }
+
+  function handleFileSelected(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsText(file, 'UTF-8');
+    reader.onload = (event) => {
+      const fileContent = event.target.result;
+      const parsedData = JSON.parse(fileContent);
+      saveImportToDB(parsedData);
+    };
+    reader.onerror = (event) => {
+      console.error('Error reading file:', event.target.error);
+    };
+  }
+
+  async function saveImportToDB(data) {
+    try {
+      const token = localStorage.getItem('token');
+
+      const {name, description, shapes, tabs, shapeCount, userVariables} = data;
+
+      const newData = {
+        email: user?.name ?? 'guest',
+        name,
+        description,
+        shapes,
+        tabs,
+        shapeCount,
+        userVariables,
+        token,
+      };
+
+      const response = await axios.post('/api/saveProject2', newData);
+
+      router.push('saved-projects2');
+
+      return response.data;
+    } catch (err) {
+      console.log('Failed to insert document', err);
+    }
   }
 
   return (
@@ -78,7 +128,7 @@ const HomePage = ({user, updateUser}) => {
         )}
       </Box>
 
-      <Container sx={{py: 10}} maxWidth='sm'>
+      <Container sx={{py: 10}} maxWidth='md'>
         <Typography variant='h3' align='center' color='primary' gutterBottom>
           IVR Studio
         </Typography>
@@ -100,6 +150,14 @@ const HomePage = ({user, updateUser}) => {
             color='secondary'
             onClick={handleOpenSavedProjects}>
             Open project
+          </Button>
+
+          <Button
+            sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
+            variant='outlined'
+            color='success'
+            onClick={handleFileUpload}>
+            Import project
           </Button>
         </Stack>
       </Container>
