@@ -80,15 +80,15 @@ const HomePage = ({user, updateUser}) => {
           display: 'flex',
           backgroundColor: '#f5f5f5',
           alignItems: 'center',
-          height: 80,
-          px: 4,
+          height: 64,
+          px: 3,
           boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
-        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 2}}>
+        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
           <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
         </Avatar>
         <Typography
-          variant='h4'
+          variant='h5'
           component='div'
           sx={{
             fontFamily: 'Roboto',
@@ -104,7 +104,7 @@ const HomePage = ({user, updateUser}) => {
             direction='row'
             spacing={2}>
             <Typography sx={{ml: 'auto'}} variant='body1'>
-              Welcome, <b>{user.name}</b>
+              Welcome <b>{user.name}</b>
             </Typography>
             <Button onClick={handleLogout} variant='outlined' color='warning'>
               Logout
