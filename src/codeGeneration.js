@@ -58,7 +58,7 @@ function traverseAndReturnString(startShape, variables) {
 }
 function generateCode(shape, variables) {
   if (shape.type === 'playMenu') {
-    return generateMenuCode(shape);
+    return generateMenuCode(shape, variables);
   }
   if (shape.type === 'switch') {
     return generateSwitchCode(shape);
@@ -79,7 +79,8 @@ function generateCode(shape, variables) {
 
   return '';
 }
-function generateMenuCode(shape) {
+function generateMenuCode(shape, variables) {
+  shape.generateAndSetFunctionString(variables);
   let driverFunctionsString = '';
   const items = shape.userValues?.items;
 

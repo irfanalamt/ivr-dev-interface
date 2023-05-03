@@ -95,59 +95,12 @@ const PlayMenu = ({
 
     setErrorText('');
     setSuccessText('Saved.');
-    if (validItems.length > 0) generateJS();
-  }
 
-  function generateJS() {
-    const functionName = name || `playMenu${shape.id}`;
-    const paramsString = addedOptionalParams
-      .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
-      .join(', ');
-
-    const modifiedItems = items.map(
-      ({
-        actionError,
-        promptError,
-        isDefault,
-        nextItem,
-        nextItemId,
-        isSkip,
-        skip,
-        disabled,
-        silent,
-        ...rest
-      }) => {
-        if (isSkip) {
-          rest.skip = skip;
-        }
-        if (disabled) {
-          rest.disabled = disabled;
-        }
-        if (silent) {
-          rest.silent = silent;
-        }
-        return rest;
-      }
-    );
-
-    const menuString = `{menuId: '${name}'${
-      paramsString ? ',' : ''
-    }${paramsString}, items: ${JSON.stringify(modifiedItems)}}`;
-
-    const codeString = `this.${functionName} = async function() {
-      let menu =${menuString}; ${
-      logText.before.text
-        ? `IVR.log.${logText.before.type}('${logText.before.text}');`
-        : ''
-    }await IVR.playMenu(menu);${
-      logText.after.text
-        ? `IVR.log.${logText.after.type}('${logText.after.text}');`
-        : ''
+    if (validItems.length > 0) {
+      shape.isComplete = true;
+    } else {
+      shape.isComplete = false;
     }
-    };`;
-
-    console.log('codeString 📍', codeString);
-    shape.setFunctionString(codeString);
   }
 
   function handleNameChange(e) {

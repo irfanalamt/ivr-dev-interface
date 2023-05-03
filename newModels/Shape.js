@@ -240,6 +240,10 @@ class Shape {
       case 'callAPI':
         this.setFunctionStringCallAPI();
         break;
+
+      case 'playMenu':
+        this.setFunctionStringPlayMenu(variables);
+        break;
     }
   }
 
@@ -387,6 +391,62 @@ class Shape {
     const codeString = `this.${functionName}=async function(){let endpoint = '${endpoint}';let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI('${functionName}',endpoint,inputVars);${outputVarsString}};`;
 
     console.log('codeString📍', codeString);
+    this.setFunctionString(codeString);
+  }
+
+  setFunctionStringPlayMenu(variables) {
+    const functionName = this.text || `playMenu${this.id}`;
+    const paramsString = this.userValues.optionalParams
+      ?.map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
+      .join(', ');
+
+    const modifiedItems = this.userValues.items.map(
+      ({
+        actionError,
+        promptError,
+        isDefault,
+        nextItem,
+        nextItemId,
+        isSkip,
+        skip,
+        disabled,
+        silent,
+        ...rest
+      }) => {
+        if (isSkip) {
+          rest.skip = skip;
+        }
+        if (disabled) {
+          rest.disabled = disabled;
+        }
+        if (silent) {
+          rest.silent = silent;
+        }
+        return rest;
+      }
+    );
+
+    const modifiedItemsString = replaceVarNameDollar(
+      JSON.stringify(modifiedItems)
+    );
+
+    const menuString = `{menuId: '${functionName}'${
+      paramsString ? ',' : ''
+    }${paramsString}, items: ${modifiedItemsString}}`;
+
+    const logText = this.userValues.logs;
+    const beforeLog = replaceVariablesInLog(logText.before.text, variables);
+    const afterLog = replaceVariablesInLog(logText.after.text, variables);
+
+    const codeString = `this.${functionName} = async function() {
+    let menu =${menuString}; ${
+      logText.before.text ? `IVR.log.${logText.before.type}(${beforeLog});` : ''
+    }await IVR.playMenu(menu);${
+      logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''
+    }
+  };`;
+
+    console.log('codeString 📍', codeString);
     this.setFunctionString(codeString);
   }
 
