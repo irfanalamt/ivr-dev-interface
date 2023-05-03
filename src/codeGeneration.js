@@ -117,7 +117,7 @@ function generateSwitchCode(shape) {
       const actionFlowShapes = getShapesTillMenuOrSwitch(action.nextItem);
       ifCode += `${!ifCode ? 'if' : 'else if'}(${replaceDollarString(
         action.condition
-      )}){${actionFlowShapes.map(getDriverFunctionShapeCode).join('')}}`;
+      )}){${actionFlowShapes?.map(getDriverFunctionShapeCode).join('')}}`;
     }
   });
 
@@ -126,7 +126,8 @@ function generateSwitchCode(shape) {
   const elseFlowShapesCode = defaultFlowShapes
     ? defaultFlowShapes.map(getDriverFunctionShapeCode).join('')
     : '';
-  const elseCode = `else{${elseFlowShapesCode}}`;
+  const elseCode =
+    elseFlowShapesCode && ifCode ? `else{${elseFlowShapesCode}}` : '';
 
   const outerCode = `this.${shape.text}= async function(){
       try{

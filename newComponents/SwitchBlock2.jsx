@@ -92,7 +92,11 @@ const SwitchBlock = ({
       });
       setSuccessText('Saved.');
       setErrorText('');
-      if (validActions.length > 0) shape.setFunctionString('switch valid');
+      if (validActions.length > 0) {
+        shape.isComplete = true;
+      } else {
+        shape.isComplete = false;
+      }
     }
   }
 
