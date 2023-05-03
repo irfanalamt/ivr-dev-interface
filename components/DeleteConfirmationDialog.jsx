@@ -13,7 +13,7 @@ const DeleteConfirmationDialog = ({open, onClose, onConfirm, itemName}) => {
         <Button onClick={onClose} color='primary'>
           Cancel
         </Button>
-        <Button onClick={onConfirm} color='primary' autoFocus>
+        <Button onClick={onConfirm} color='error'>
           Confirm
         </Button>
       </DialogActions>
