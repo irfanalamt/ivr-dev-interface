@@ -412,41 +412,75 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     setShapes((prevShapes) => {
       return prevShapes.map((shape) => {
         const shapeType = shape.type;
+        const oldVar = '$' + oldName;
+        const newVar = '$' + newName;
+        const regex = new RegExp('\\' + oldVar + '\\b', 'g');
+
         if (['playMessage', 'playConfirm', 'getDigits'].includes(shapeType)) {
           if (shapeType === 'getDigits') {
             const variableName = shape.userValues.variableName;
-            if (variableName === '$' + oldName) {
-              shape.userValues.variableName = '$' + newName;
+            if (variableName === oldVar) {
+              shape.userValues.variableName = newVar;
             }
           }
+
           const messageList = shape.userValues?.messageList;
 
           if (messageList?.length) {
             shape.userValues.messageList = messageList.map((m) => {
-              if (m.item === '$' + oldName) {
-                m.item = '$' + newName;
+              if (m.item === oldVar) {
+                m.item = newVar;
               }
               return m;
             });
+          }
+
+          const logs = shape.userValues?.logs;
+          if (logs.before.text) {
+            shape.userValues.logs.before.text = logs.before.text.replace(
+              regex,
+              newVar
+            );
+          }
+
+          if (logs.after.text) {
+            shape.userValues.logs.after.text = logs.after.text.replace(
+              regex,
+              newVar
+            );
           }
         } else if (shapeType === 'playMenu') {
           const items = shape.userValues?.items;
 
           if (items?.length) {
             shape.userValues.items = items.map((item) => {
-              if (item.prompt === '$' + oldName) {
-                item.prompt = '$' + newName;
+              if (item.prompt === oldVar) {
+                item.prompt = newVar;
               }
               return item;
             });
+          }
+
+          const logs = shape.userValues?.logs;
+          if (logs.before.text) {
+            shape.userValues.logs.before.text = logs.before.text.replace(
+              regex,
+              newVar
+            );
+          }
+
+          if (logs.after.text) {
+            shape.userValues.logs.after.text = logs.after.text.replace(
+              regex,
+              newVar
+            );
           }
         } else if (shapeType === 'switch') {
           const actions = shape.userValues?.actions;
 
           if (actions?.length) {
             shape.userValues.actions = actions.map((action) => {
-              const regex = new RegExp('\\$' + oldName + '\\b', 'g');
-              action.condition = action.condition.replace(regex, '$' + newName);
+              action.condition = action.condition.replace(regex, newVar);
               return action;
             });
           }
@@ -454,8 +488,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
           const script = shape.userValues?.script;
 
           if (script) {
-            const regex = new RegExp('\\$' + oldName + '\\b', 'g');
-            shape.userValues.script = script.replace(regex, '$' + newName);
+            shape.userValues.script = script.replace(regex, newVar);
           }
         } else if (shapeType === 'callAPI') {
           const userValues = shape.userValues;
@@ -479,8 +512,8 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
           const params = shape.userValues?.params;
           if (params?.length) {
             shape.userValues.params = shape.userValues.params.map((p) => {
-              if (p.value === '$' + oldName) {
-                p.value = '$' + newName;
+              if (p.value === oldVar) {
+                p.value = newVar;
               }
               return p;
             });
