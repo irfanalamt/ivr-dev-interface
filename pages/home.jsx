@@ -80,15 +80,15 @@ const HomePage = ({user, updateUser}) => {
           display: 'flex',
           backgroundColor: '#f5f5f5',
           alignItems: 'center',
-          height: 64,
-          px: 3,
+          height: 80,
+          px: 4,
           boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
-        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
+        <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 2}}>
           <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
         </Avatar>
         <Typography
-          variant='h5'
+          variant='h4'
           component='div'
           sx={{
             fontFamily: 'Roboto',
@@ -104,7 +104,7 @@ const HomePage = ({user, updateUser}) => {
             direction='row'
             spacing={2}>
             <Typography sx={{ml: 'auto'}} variant='body1'>
-              Welcome <b>{user.name}</b>
+              Welcome, <b>{user.name}</b>
             </Typography>
             <Button onClick={handleLogout} variant='outlined' color='warning'>
               Logout
@@ -128,28 +128,28 @@ const HomePage = ({user, updateUser}) => {
         )}
       </Box>
 
-      <Container sx={{py: 10}} maxWidth='md'>
-        <Typography variant='h3' align='center' color='primary' gutterBottom>
+      <Container sx={{py: 12}} maxWidth='md'>
+        <Typography variant='h2' align='center' color='primary' gutterBottom>
           IVR Studio
         </Typography>
         <Typography variant='h5' align='center' color='textSecondary' paragraph>
-          Easily design personalized IVR flows using our intuitive, visual
-          editor.
+          Design personalized IVR flows effortlessly with our user-friendly,
+          visual editor.
         </Typography>
-        <Stack sx={{pt: 6}} direction='row' spacing={2} justifyContent='center'>
+        <Stack sx={{pt: 8}} direction='row' spacing={2} justifyContent='center'>
           <Button
             sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
             variant='contained'
             color='primary'
             onClick={handleNewProject}>
-            Start new project
+            Start New Project
           </Button>
           <Button
             sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
             variant='outlined'
             color='secondary'
             onClick={handleOpenSavedProjects}>
-            Open project
+            Open Project
           </Button>
 
           <Button
@@ -157,7 +157,7 @@ const HomePage = ({user, updateUser}) => {
             variant='outlined'
             color='success'
             onClick={handleFileUpload}>
-            Import project
+            Import Project
           </Button>
         </Stack>
       </Container>
