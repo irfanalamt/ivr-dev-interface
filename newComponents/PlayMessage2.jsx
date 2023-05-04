@@ -82,7 +82,7 @@ const PlayMessage = ({
     }
 
     shape.setUserValues({
-      messageList: validMessages,
+      messageList,
       optionalParams: addedOptionalParams,
       logs: logText,
     });
@@ -93,7 +93,7 @@ const PlayMessage = ({
     } else {
       setErrorText('');
       setSuccessText('Saved.');
-      if (validMessages.length > 0) {
+      if (messageList.length > 0) {
         shape.isComplete = true;
       } else {
         shape.isComplete = false;

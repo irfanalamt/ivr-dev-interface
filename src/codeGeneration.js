@@ -18,10 +18,33 @@ function generateInitVariablesJS(userVariables) {
 }
 
 function findIsDefaultValuesPresent(shapes) {
+  const ignoredShapeTypes = ['connector', 'jumper', 'endFlow'];
+
   for (let shape of shapes) {
-    const typesToIgnore = ['connector', 'jumper', 'endFlow'];
-    if (!typesToIgnore.includes(shape.type) && !shape.isComplete) {
+    if (!ignoredShapeTypes.includes(shape.type) && !shape.isComplete) {
       return shape;
+    }
+  }
+  return false;
+}
+function findIsErrorsPresent(shapes) {
+  const ignoredShapeTypes = ['connector', 'jumper', 'endFlow'];
+  const shapeTypesWithMessages = ['playMessage', 'playConfirm', 'getDigits'];
+
+  for (let shape of shapes) {
+    if (ignoredShapeTypes.includes(shape.type)) {
+      continue;
+    }
+
+    if (shapeTypesWithMessages.includes(shape.type)) {
+      const messageList = shape.userValues?.messageList;
+
+      if (messageList && messageList.length > 0) {
+        const hasError = messageList.some((message) => message.error);
+        if (hasError) {
+          return shape;
+        }
+      }
     }
   }
   return false;
@@ -256,6 +279,7 @@ function replaceVariablesInLog(text, variables) {
 export {
   generateInitVariablesJS,
   findIsDefaultValuesPresent,
+  findIsErrorsPresent,
   checkForStartShape,
   traverseAndReturnString,
   formatCode,

@@ -93,7 +93,7 @@ const GetDigits = ({
       validMessages.push(message);
     }
     shape.setUserValues({
-      messageList: validMessages,
+      messageList,
       variableName: resultName,
       params: {minDigits, maxDigits},
       optionalParams: addedOptionalParams,
@@ -107,7 +107,7 @@ const GetDigits = ({
       setErrorText('');
       setSuccessText('Saved.');
 
-      if (validMessages.length > 0 && resultName) {
+      if (messageList.length > 0 && resultName) {
         shape.isComplete = true;
       } else {
         shape.isComplete = false;

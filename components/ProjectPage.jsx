@@ -6,6 +6,7 @@ import VariableManager from '../newComponents/VariableManager';
 import {
   checkForStartShape,
   findIsDefaultValuesPresent,
+  findIsErrorsPresent,
   formatCode,
   generateInitVariablesJS,
   traverseAndReturnString,
@@ -286,6 +287,15 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     if (isDefaultValuesPresent) {
       setShowSnackbar({
         message: `Default values detected in page ${isDefaultValuesPresent.pageNumber}. Please update ${isDefaultValuesPresent.text}.`,
+        type: 'error',
+      });
+      return;
+    }
+
+    const isErrorsPresent = findIsErrorsPresent(shapes);
+    if (isErrorsPresent) {
+      setShowSnackbar({
+        message: `Error detected in page ${isErrorsPresent.pageNumber}. Please update ${isErrorsPresent.text}.`,
         type: 'error',
       });
       return;
