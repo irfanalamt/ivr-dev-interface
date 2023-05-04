@@ -282,7 +282,7 @@ const CallApi = ({
               <Box sx={{display: 'flex', alignItems: 'center', mt: 1}} key={i}>
                 <Select
                   sx={{
-                    width: 120,
+                    minWidth: 120,
                     my: 0.5,
                     backgroundColor: '#f5f5f5',
                   }}
@@ -346,7 +346,7 @@ const CallApi = ({
               <Box sx={{display: 'flex', alignItems: 'center', mt: 1}} key={i}>
                 <Select
                   sx={{
-                    width: 120,
+                    minWidth: 120,
                     my: 0.5,
                     backgroundColor: '#f5f5f5',
                   }}
