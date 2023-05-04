@@ -79,7 +79,7 @@ const CanvasAppbar2 = ({
               color: 'black',
               '&:hover': {backgroundColor: '#81c784'},
             }}
-            onClick={saveToDb}
+            onClick={() => saveToDb(true)}
             variant='contained'
             color='success'>
             <SaveIcon sx={{fontSize: 'large'}} />

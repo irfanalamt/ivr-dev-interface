@@ -367,7 +367,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     return formatCode(finalCodeString);
   }
 
-  async function saveToDb() {
+  async function saveToDb(showNotifiation = false) {
     const shapesForDb = prepareShapesForDb(shapes);
 
     try {
@@ -383,10 +383,12 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       );
       const response = await axios.post('/api/saveProject2', data);
 
-      setShowSnackbar({
-        message: 'Project saved.',
-        type: 'success',
-      });
+      if (showNotifiation) {
+        setShowSnackbar({
+          message: 'Project saved.',
+          type: 'success',
+        });
+      }
       return response.data;
     } catch (err) {
       console.log('Failed to insert document', err);
