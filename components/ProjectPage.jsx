@@ -367,7 +367,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     return formatCode(finalCodeString);
   }
 
-  async function saveToDb(showNotifiation = false) {
+  async function saveToDb(showNotification = false) {
     const shapesForDb = prepareShapesForDb(shapes);
 
     try {
@@ -383,7 +383,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       );
       const response = await axios.post('/api/saveProject2', data);
 
-      if (showNotifiation) {
+      if (showNotification) {
         setShowSnackbar({
           message: 'Project saved.',
           type: 'success',
