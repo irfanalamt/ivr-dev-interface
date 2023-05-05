@@ -128,10 +128,21 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         updatePlayMenuNextItems(shape, newShapes);
       } else if (shape.type === 'switch') {
         updateSwitchNextItems(shape, newShapes);
+      } else if (shape.type === 'jumper' && shape.userValues?.type === 'exit') {
+        updateJumperNextItem(shape, newShapes);
       } else if (shape.nextItemId) {
         shape.nextItem = getShapeById(shape.nextItemId, newShapes);
       }
     });
+  }
+
+  function updateJumperNextItem(shape, newShapes) {
+    if (shape.userValues.nextItemId) {
+      shape.userValues.nextItem = getShapeById(
+        shape.userValues.nextItemId,
+        newShapes
+      );
+    }
   }
 
   function updatePlayMenuNextItems(shape, newShapes) {

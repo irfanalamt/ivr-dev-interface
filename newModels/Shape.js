@@ -471,6 +471,12 @@ class Shape {
       }
 
       return stringifySafe(userValues);
+    } else if (this.type === 'jumper') {
+      if (userValues.nextItem) {
+        userValues.nextItemId = userValues.nextItem.id;
+      }
+
+      return stringifySafe(userValues);
     } else {
       return stringifySafe(userValues);
     }
