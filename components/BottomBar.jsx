@@ -9,6 +9,7 @@ import {
   Tabs,
   TextField,
   Tooltip,
+  Typography,
 } from '@mui/material';
 import {useRef, useState} from 'react';
 
@@ -178,7 +179,9 @@ const BottomBar = ({
                     </Tooltip>
                   </Box>
                 ) : (
-                  <span>{tab.label}</span>
+                  <Typography sx={{textTransform: 'none'}}>
+                    {tab.label}
+                  </Typography>
                 )
               }
               value={tab.id}
