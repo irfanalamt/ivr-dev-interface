@@ -521,43 +521,162 @@ class Shape {
       return this.getCircularCoordinates(shape2.x, shape2.y);
     }
 
-    let [x, y] = this.getBottomCoordinates();
-
-    if (this.y < shape2.y) {
-      if (shape2.getTopCoordinates()[1] < this.getBottomCoordinates()[1]) {
-        [x, y] =
-          this.x < shape2.x
-            ? this.getRightCoordinates()
-            : this.getLeftCoordinates();
-      }
-    } else {
-      [x, y] =
-        this.x < shape2.x
-          ? this.getRightCoordinates()
-          : this.getLeftCoordinates();
-    }
-
-    return [x, y];
+    return [this.x, this.y];
   }
 
   getRelativeEntryCoordinates(shape1) {
     if (['connector', 'endFlow', 'jumper'].includes(this.type)) {
       return this.getCircularCoordinates(shape1.x, shape1.y);
     }
-    let [x, y] = this.getTopCoordinates();
 
-    if (this.getTopCoordinates()[1] < shape1.getBottomCoordinates()[1]) {
-      let dxLeft = Math.abs(this.getLeftCoordinates()[0] - shape1.x);
-      let dxRight = Math.abs(this.getRightCoordinates()[0] - shape1.x);
+    return this.findIntersectionPoint(shape1.x, shape1.y);
+  }
 
-      [x, y] =
-        dxLeft < dxRight
-          ? this.getLeftCoordinates()
-          : this.getRightCoordinates();
+  getShapePoints() {
+    // return an array of shape points
+    //[{x,y},..]
+
+    switch (this.type) {
+      case 'setParams':
+        return [
+          {x: this.x + this.width / 2, y: this.y - this.height / 2},
+          {x: this.x + this.width / 2, y: this.y + this.height / 3},
+          {x: this.x, y: this.y + this.height / 2},
+          {x: this.x - this.width / 2, y: this.y + this.height / 3},
+          {x: this.x - this.width / 2, y: this.y - this.height / 2},
+        ];
+
+      case 'playMenu':
+        return [
+          {x: this.x + this.width * 0.5, y: this.y},
+          {x: this.x + this.width * 0.4, y: this.y + 0.5 * this.height},
+          {x: this.x - this.width * 0.4, y: this.y + 0.5 * this.height},
+          {x: this.x - this.width * 0.5, y: this.y},
+          {x: this.x - this.width * 0.4, y: this.y - 0.5 * this.height},
+          {x: this.x + this.width * 0.4, y: this.y - 0.5 * this.height},
+        ];
+
+      case 'playConfirm':
+      case 'playMessage':
+        return [
+          {
+            x: this.x + this.width * 0.5 - this.height * 0.5,
+            y: this.y + this.height * 0.5,
+          },
+          {
+            x: this.x - (this.width * 0.5 - this.height * 0.5),
+            y: this.y + this.height * 0.5,
+          },
+          {
+            x:
+              this.x -
+              (this.width * 0.5 - this.height * 0.5) -
+              Math.abs(this.height * 0.5),
+            y: this.y,
+          },
+          {
+            x: this.x - (this.width * 0.5 - this.height * 0.5),
+            y: this.y - this.height * 0.5,
+          },
+          {
+            x: this.x + this.width * 0.5 - this.height * 0.5,
+            y: this.y - this.height * 0.5,
+          },
+          {
+            x:
+              this.x +
+              this.width * 0.5 -
+              this.height * 0.5 +
+              Math.abs(this.height * 0.5),
+            y: this.y,
+          },
+        ];
+
+      case 'getDigits':
+        return [
+          {x: this.x - this.width * (3 / 8), y: this.y - this.height / 2},
+          {x: this.x + this.width * (5 / 8), y: this.y - this.height / 2},
+          {x: this.x + this.width * (3 / 8), y: this.y + this.height / 2},
+          {x: this.x - this.width * (5 / 8), y: this.y + this.height / 2},
+        ];
+
+      case 'runScript':
+        return [
+          {x: this.x - this.width / 2, y: this.y - this.height / 2},
+          {x: this.x + this.width / 2, y: this.y - this.height / 2},
+          {x: this.x + this.width / 2, y: this.y + this.height / 2},
+          {x: this.x - this.width / 2, y: this.y + this.height / 2},
+        ];
+
+      case 'switch':
+        return [
+          {x: this.x + this.width * 0.5, y: this.y + this.height * 0.5},
+          {x: this.x - this.width * 0.5, y: this.y + this.height * 0.5},
+          {
+            x: this.x - this.width * 0.5 + 0.5 * this.height,
+            y: this.y - this.height * 0.5,
+          },
+          {
+            x: this.x + this.width * 0.5 - 0.5 * this.height,
+            y: this.y - this.height * 0.5,
+          },
+        ];
+
+      case 'callAPI':
+        return [
+          {x: this.x + this.width / 2, y: this.y - this.height / 3},
+          {x: this.x + this.width / 2, y: this.y + this.height / 3},
+          {x: this.x, y: this.y + this.height / 2},
+          {x: this.x - this.width / 2, y: this.y + this.height / 3},
+          {x: this.x - this.width / 2, y: this.y - this.height / 3},
+          {x: this.x, y: this.y - this.height / 2},
+        ];
+
+      default:
+        return [];
+    }
+  }
+
+  findIntersectionPoint(x, y) {
+    // Calculate the center of the shape
+    const centerX = this.x;
+    const centerY = this.y;
+
+    // Define the points of the shape
+    const points = this.getShapePoints();
+
+    // Find the intersection point with each edge of the shape
+    for (let i = 0; i < points.length; i++) {
+      const p1 = points[i];
+      const p2 = points[(i + 1) % points.length];
+
+      const denominator =
+        (p2.x - p1.x) * (y - centerY) - (p2.y - p1.y) * (x - centerX);
+
+      if (denominator === 0) {
+        continue; // Parallel lines
+      }
+
+      const ua =
+        ((p1.y - centerY) * (x - centerX) - (p1.x - centerX) * (y - centerY)) /
+        denominator;
+      const ub =
+        ((p2.x - p1.x) * (p1.y - centerY) - (p2.y - p1.y) * (p1.x - centerX)) /
+        denominator;
+
+      // Check if the intersection point is on the line segment and the line from (x, y) to the center
+      if (ua >= 0 && ua <= 1 && ub >= 0) {
+        const intersectionX = p1.x + ua * (p2.x - p1.x);
+        const intersectionY = p1.y + ua * (p2.y - p1.y);
+
+        return [intersectionX, intersectionY];
+      }
     }
 
-    return [x, y];
+    // No intersection found
+    return [centerX, centerY];
   }
+
   getCircularCoordinates(pointX, pointY) {
     const angle = Math.atan2(pointY - this.y, pointX - this.x);
     const radius = this.width / 2;
