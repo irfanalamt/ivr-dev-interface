@@ -521,6 +521,13 @@ class Shape {
       return this.getCircularCoordinates(shape2.x, shape2.y);
     }
 
+    const [exitPointX, exitPointY] = this.findIntersectionPoint(
+      shape2.x,
+      shape2.y
+    );
+
+    this.exitPoints = [{x: exitPointX, y: exitPointY}];
+
     return [this.x, this.y];
   }
 
@@ -763,7 +770,12 @@ class Shape {
     }
 
     if (exitPointCount === 1) {
-      [exitX, exitY] = this.getBottomCoordinates();
+      if (this.exitPoints.length) {
+        [exitX, exitY] = [this.exitPoints[0].x, this.exitPoints[0].y];
+      } else {
+        [exitX, exitY] = this.getBottomCoordinates();
+      }
+
       const distance = Math.hypot(x - exitX, y - exitY);
 
       if (distance <= 4) {
@@ -820,6 +832,10 @@ class Shape {
     }
 
     return false;
+  }
+
+  clearExitPoints() {
+    this.exitPoints = [];
   }
 
   getExitPointNameAtPosition(position) {
@@ -913,10 +929,10 @@ class Shape {
     const dotRadius = 1.9;
     ctx.fillStyle = this.style;
 
-    // Draw top dot
-    ctx.beginPath();
-    ctx.arc(...this.getTopCoordinates(), dotRadius, 0, 2 * Math.PI);
-    ctx.fill();
+    // // Draw top dot
+    // ctx.beginPath();
+    // ctx.arc(...this.getTopCoordinates(), dotRadius, 0, 2 * Math.PI);
+    // ctx.fill();
 
     // Draw bottom dots
     let exitPointCount = 1; // default value for single exit point only
@@ -932,9 +948,22 @@ class Shape {
 
     if (exitPointCount === 1) {
       // Draw bottom dot for single exit point only
-      ctx.beginPath();
-      ctx.arc(...this.getBottomCoordinates(), dotRadius * 2, 0, 2 * Math.PI);
-      ctx.fill();
+
+      if (this.exitPoints.length) {
+        ctx.beginPath();
+        ctx.arc(
+          this.exitPoints[0].x,
+          this.exitPoints[0].y,
+          dotRadius * 2,
+          0,
+          2 * Math.PI
+        );
+        ctx.fill();
+      } else {
+        ctx.beginPath();
+        ctx.arc(...this.getBottomCoordinates(), dotRadius * 2, 0, 2 * Math.PI);
+        ctx.fill();
+      }
     } else if (exitPointCount > 1) {
       // Draw bottom dots for multiple exit points
       for (let i = 1; i <= exitPointCount; i++) {

@@ -272,6 +272,7 @@ function getConnectingLines(shapes) {
       const shape2 = shape.nextItem;
 
       if (!shape2) {
+        shape.clearExitPoints();
         continue;
       }
 
