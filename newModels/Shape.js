@@ -526,6 +526,8 @@ class Shape {
       shape2.y
     );
 
+    console.log('📍', {exitPointX: exitPointX, exitPointY: exitPointY});
+
     this.exitPoints = [{x: exitPointX, y: exitPointY}];
 
     return [this.x, this.y];
@@ -574,12 +576,27 @@ class Shape {
             x: this.x - (this.width * 0.5 - this.height * 0.5),
             y: this.y + this.height * 0.5,
           },
+          // New vertices on the curved edge
+          {
+            x:
+              this.x -
+              (this.width * 0.5 - this.height * 0.5) -
+              Math.abs(this.height * 0.25),
+            y: this.y + this.height * 0.25,
+          },
           {
             x:
               this.x -
               (this.width * 0.5 - this.height * 0.5) -
               Math.abs(this.height * 0.5),
             y: this.y,
+          },
+          {
+            x:
+              this.x -
+              (this.width * 0.5 - this.height * 0.5) -
+              Math.abs(this.height * 0.25),
+            y: this.y - this.height * 0.25,
           },
           {
             x: this.x - (this.width * 0.5 - this.height * 0.5),
@@ -589,6 +606,15 @@ class Shape {
             x: this.x + this.width * 0.5 - this.height * 0.5,
             y: this.y - this.height * 0.5,
           },
+          // New vertices on the curved edge
+          {
+            x:
+              this.x +
+              this.width * 0.5 -
+              this.height * 0.5 +
+              Math.abs(this.height * 0.25),
+            y: this.y - this.height * 0.25,
+          },
           {
             x:
               this.x +
@@ -596,6 +622,14 @@ class Shape {
               this.height * 0.5 +
               Math.abs(this.height * 0.5),
             y: this.y,
+          },
+          {
+            x:
+              this.x +
+              this.width * 0.5 -
+              this.height * 0.5 +
+              Math.abs(this.height * 0.25),
+            y: this.y + this.height * 0.25,
           },
         ];
 
@@ -642,6 +676,51 @@ class Shape {
       default:
         return [];
     }
+  }
+
+  findIntersectionPointCurve(pointX, pointY) {
+    const dx = pointX - this.x;
+    const dy = pointY - this.y;
+    const absWidthHalf = Math.abs(this.width * 0.5);
+    const absHeightHalf = Math.abs(this.height * 0.5);
+    const rectWidthHalf = absWidthHalf - absHeightHalf;
+
+    const lineAngle = Math.atan2(dy, dx);
+    let intersectionX, intersectionY;
+
+    // Check intersection with vertical edges
+    if (Math.abs(lineAngle) < Math.atan2(absHeightHalf, rectWidthHalf)) {
+      const sign = dx > 0 ? 1 : -1;
+      intersectionX = this.x + sign * rectWidthHalf;
+      intersectionY = this.y + ((dy * rectWidthHalf) / dx) * sign;
+    }
+    // Check intersection with horizontal edges
+    else {
+      const sign = dy > 0 ? 1 : -1;
+      intersectionY = this.y + sign * absHeightHalf;
+      intersectionX = this.x + ((dx * absHeightHalf) / dy) * sign;
+    }
+
+    // Check if intersection is within semicircles
+    if (Math.abs(intersectionX - this.x) > rectWidthHalf) {
+      const circleCenterX =
+        this.x + (intersectionX > this.x ? rectWidthHalf : -rectWidthHalf);
+      const circleRadius = absHeightHalf;
+      const circleDistX = (intersectionX - circleCenterX) / circleRadius;
+      const circleDistY = (intersectionY - this.y) / circleRadius;
+
+      if (circleDistX * circleDistX + circleDistY * circleDistY <= 1) {
+        return [intersectionX, intersectionY];
+      }
+
+      const clampedCircleDistX = Math.max(-1, Math.min(1, circleDistX));
+      const circleAngle = Math.acos(clampedCircleDistX);
+      intersectionX = circleCenterX + circleRadius * Math.cos(circleAngle);
+      intersectionY =
+        this.y + circleRadius * Math.sin(circleAngle * (dy > 0 ? 1 : -1));
+    }
+
+    return [intersectionX, intersectionY];
   }
 
   findIntersectionPoint(x, y) {
