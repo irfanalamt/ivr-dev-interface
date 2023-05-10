@@ -19,7 +19,7 @@ class Shape {
     this.userValues = null;
     this.nextItem = null;
 
-    this.exitPoints = [];
+    this.exitPoint = null;
     this.functionString = '';
     this.pageNumber = pageNumber;
     this.isComplete = false;
@@ -528,7 +528,7 @@ class Shape {
 
     console.log('📍', {exitPointX: exitPointX, exitPointY: exitPointY});
 
-    this.exitPoints = [{x: exitPointX, y: exitPointY}];
+    this.exitPoint = {x: exitPointX, y: exitPointY};
 
     return [this.x, this.y];
   }
@@ -849,8 +849,8 @@ class Shape {
     }
 
     if (exitPointCount === 1) {
-      if (this.exitPoints.length) {
-        [exitX, exitY] = [this.exitPoints[0].x, this.exitPoints[0].y];
+      if (this.exitPoint) {
+        [exitX, exitY] = [this.exitPoint.x, this.exitPoint.y];
       } else {
         [exitX, exitY] = this.getBottomCoordinates();
       }
@@ -913,8 +913,8 @@ class Shape {
     return false;
   }
 
-  clearExitPoints() {
-    this.exitPoints = [];
+  clearExitPoint() {
+    delete this.exitPoint;
   }
 
   getExitPointNameAtPosition(position) {
@@ -1028,11 +1028,11 @@ class Shape {
     if (exitPointCount === 1) {
       // Draw bottom dot for single exit point only
 
-      if (this.exitPoints.length) {
+      if (this.exitPoint) {
         ctx.beginPath();
         ctx.arc(
-          this.exitPoints[0].x,
-          this.exitPoints[0].y,
+          this.exitPoint.x,
+          this.exitPoint.y,
           dotRadius * 2,
           0,
           2 * Math.PI

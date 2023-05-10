@@ -541,8 +541,8 @@ const CanvasTest = ({
           connectingShapes.current.exitPoint.exitY,
         ];
       } else {
-        if (shape1.exitPoints.length) {
-          [x1, y1] = [shape1.exitPoints[0].x, shape1.exitPoints[0].y];
+        if (shape1.exitPoint) {
+          [x1, y1] = [shape1.exitPoint.x, shape1.exitPoint.y];
         } else {
           [x1, y1] = shape1.getBottomCoordinates();
         }
