@@ -272,7 +272,7 @@ function getConnectingLines(shapes) {
       const shape2 = shape.nextItem;
 
       if (!shape2) {
-        shape.clearExitPoints();
+        shape.clearExitPoint();
         continue;
       }
 
@@ -283,39 +283,7 @@ function getConnectingLines(shapes) {
     }
   }
 
-  return modifyConnections(connections);
-}
-
-function modifyConnections(connections) {
-  const groups = groupConnectionsByEndCoordinate(connections);
-  modifyX2ValuesForConnectionsInGroups(groups);
   return connections;
-}
-
-function groupConnectionsByEndCoordinate(connections) {
-  return connections.reduce((groups, connection) => {
-    const key = `${connection.x2},${connection.y2}`;
-    if (!groups[key]) {
-      groups[key] = [];
-    }
-    groups[key].push(connection);
-    return groups;
-  }, {});
-}
-
-function modifyX2ValuesForConnectionsInGroups(groups) {
-  Object.values(groups).forEach((group) => {
-    group.sort((a, b) => a.x1 - b.x1);
-    let numOfLeftPoints = 0;
-
-    group.forEach((con) => {
-      if (con.x1 < con.x2) numOfLeftPoints++;
-    });
-
-    group.forEach((connection, i) => {
-      connection.x2 += (i - numOfLeftPoints) * 4;
-    });
-  });
 }
 
 function alignAllShapes(shapes, setShapes) {
