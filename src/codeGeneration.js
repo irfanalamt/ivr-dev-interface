@@ -31,22 +31,32 @@ function findIsErrorsPresent(shapes) {
   const ignoredShapeTypes = ['connector', 'jumper', 'endFlow'];
   const shapeTypesWithMessages = ['playMessage', 'playConfirm', 'getDigits'];
 
+  const isErrorInMessageList = (messageList) => {
+    return messageList && messageList.some((message) => message.error);
+  };
+
+  const isErrorInMenuItems = (items) => {
+    return items.some((item) => item.actionError || item.promptError);
+  };
+
   for (let shape of shapes) {
-    if (ignoredShapeTypes.includes(shape.type)) {
-      continue;
+    if (ignoredShapeTypes.includes(shape.type)) continue;
+
+    if (
+      shapeTypesWithMessages.includes(shape.type) &&
+      isErrorInMessageList(shape.userValues?.messageList)
+    ) {
+      return shape;
     }
 
-    if (shapeTypesWithMessages.includes(shape.type)) {
-      const messageList = shape.userValues?.messageList;
-
-      if (messageList && messageList.length > 0) {
-        const hasError = messageList.some((message) => message.error);
-        if (hasError) {
-          return shape;
-        }
-      }
+    if (
+      shape.type === 'playMenu' &&
+      isErrorInMenuItems(shape.userValues.items)
+    ) {
+      return shape;
     }
   }
+
   return false;
 }
 function checkForStartShape(shapes) {
