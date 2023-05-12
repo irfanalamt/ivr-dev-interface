@@ -493,7 +493,22 @@ class Shape {
     const xPosition =
       this.x +
       (position - totalPoints * 0.5 - (isEvenPoints ? 0 : 0.5)) * SPACING;
+
     const yPosition = this.y + this.height / 2;
+
+    if (this.type === 'playMenu') {
+      let exitPoints =
+        this.userValues?.items.filter((item) => !item.isDefault) || [];
+      const hasDuplicatePoint = exitPoints.some(
+        (point) =>
+          point.exitPoint &&
+          point.exitPoint.x === xPosition &&
+          point.exitPoint.y === yPosition
+      );
+      if (hasDuplicatePoint) {
+        return [xPosition + 10, yPosition];
+      }
+    }
 
     return [xPosition, yPosition];
   }
@@ -693,51 +708,6 @@ class Shape {
     }
   }
 
-  findIntersectionPointCurve(pointX, pointY) {
-    const dx = pointX - this.x;
-    const dy = pointY - this.y;
-    const absWidthHalf = Math.abs(this.width * 0.5);
-    const absHeightHalf = Math.abs(this.height * 0.5);
-    const rectWidthHalf = absWidthHalf - absHeightHalf;
-
-    const lineAngle = Math.atan2(dy, dx);
-    let intersectionX, intersectionY;
-
-    // Check intersection with vertical edges
-    if (Math.abs(lineAngle) < Math.atan2(absHeightHalf, rectWidthHalf)) {
-      const sign = dx > 0 ? 1 : -1;
-      intersectionX = this.x + sign * rectWidthHalf;
-      intersectionY = this.y + ((dy * rectWidthHalf) / dx) * sign;
-    }
-    // Check intersection with horizontal edges
-    else {
-      const sign = dy > 0 ? 1 : -1;
-      intersectionY = this.y + sign * absHeightHalf;
-      intersectionX = this.x + ((dx * absHeightHalf) / dy) * sign;
-    }
-
-    // Check if intersection is within semicircles
-    if (Math.abs(intersectionX - this.x) > rectWidthHalf) {
-      const circleCenterX =
-        this.x + (intersectionX > this.x ? rectWidthHalf : -rectWidthHalf);
-      const circleRadius = absHeightHalf;
-      const circleDistX = (intersectionX - circleCenterX) / circleRadius;
-      const circleDistY = (intersectionY - this.y) / circleRadius;
-
-      if (circleDistX * circleDistX + circleDistY * circleDistY <= 1) {
-        return [intersectionX, intersectionY];
-      }
-
-      const clampedCircleDistX = Math.max(-1, Math.min(1, circleDistX));
-      const circleAngle = Math.acos(clampedCircleDistX);
-      intersectionX = circleCenterX + circleRadius * Math.cos(circleAngle);
-      intersectionY =
-        this.y + circleRadius * Math.sin(circleAngle * (dy > 0 ? 1 : -1));
-    }
-
-    return [intersectionX, intersectionY];
-  }
-
   findIntersectionPoint(x, y) {
     // Calculate the center of the shape
     const centerX = this.x;
@@ -819,18 +789,7 @@ class Shape {
     let exitX, exitY;
 
     if (['endFlow', 'connector', 'jumper'].includes(this.type)) {
-      [exitX, exitY] = [this.x, this.y];
-      const distance = Math.hypot(x - exitX, y - exitY);
-
-      if (distance <= 4) {
-        return {
-          totalPoints: 1,
-          position: 1,
-          name: 'default',
-        };
-      } else {
-        return false;
-      }
+      return this.isMouseNearExitPointCircularShape(x, y);
     }
 
     let exitPointCount = 0;
@@ -838,6 +797,7 @@ class Shape {
     if (this.type === 'playMenu') {
       return this.isMouseNearExitPointPlayMenu(x, y);
     } else if (this.type === 'switch') {
+      return this.isMouseNearExitPointSwitch(x, y);
       exitPointCount = (this.userValues?.actions?.length || 0) + 1;
     } else {
       exitPointCount = 1;
@@ -908,6 +868,21 @@ class Shape {
     return false;
   }
 
+  isMouseNearExitPointCircularShape(x, y) {
+    const [exitX, exitY] = [this.x, this.y];
+    const distance = Math.hypot(x - exitX, y - exitY);
+
+    if (distance <= 4) {
+      return {
+        totalPoints: 1,
+        position: 1,
+        name: 'default',
+      };
+    } else {
+      return false;
+    }
+  }
+
   isMouseNearExitPointPlayMenu(x, y) {
     const items =
       this.userValues?.items?.filter((item) => !item.isDefault) || [];
@@ -958,6 +933,12 @@ class Shape {
     } else {
       return false;
     }
+  }
+
+  isMouseNearExitPointSwitch(x, y) {
+    const actions = this.userValues?.actions;
+    // plus default action
+    const actionCount = actions.length + 1;
   }
 
   clearExitPoint() {
@@ -1093,6 +1074,7 @@ class Shape {
 
     for (let i = 1; i <= exitPoints.length; i++) {
       ctx.beginPath();
+
       if (exitPoints[i - 1].exitPoint) {
         ctx.arc(
           exitPoints[i - 1].exitPoint.x,
@@ -1109,7 +1091,6 @@ class Shape {
           2 * Math.PI
         );
       }
-
       ctx.fill();
     }
   }
