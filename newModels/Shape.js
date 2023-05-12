@@ -533,6 +533,21 @@ class Shape {
     return [this.x, this.y];
   }
 
+  getRelativeExitCoordinatesMenu(shape2, action) {
+    const [exitPointX, exitPointY] = this.findIntersectionPoint(
+      shape2.x,
+      shape2.y
+    );
+
+    const items = this.userValues?.items;
+
+    const index = items.findIndex((item) => item.action === action);
+
+    this.userValues.items[index].exitPoint = {x: exitPointX, y: exitPointY};
+
+    return [this.x, this.y];
+  }
+
   getRelativeEntryCoordinates(shape1) {
     if (['connector', 'endFlow', 'jumper'].includes(this.type)) {
       return this.getCircularCoordinates(shape1.x, shape1.y);
@@ -821,27 +836,7 @@ class Shape {
     let exitPointCount = 0;
 
     if (this.type === 'playMenu') {
-      const filteredItems = this.userValues?.items?.filter(
-        (item) => !item.isDefault
-      );
-      exitPointCount = filteredItems?.length || 0;
-
-      if (exitPointCount === 1) {
-        [exitX, exitY] = this.getBottomCoordinates();
-        const distance = Math.hypot(x - exitX, y - exitY);
-
-        if (distance <= 4) {
-          return {
-            totalPoints: 1,
-            position: 1,
-            name: filteredItems[0].action,
-            exitX,
-            exitY,
-          };
-        } else {
-          return false;
-        }
-      }
+      return this.isMouseNearExitPointPlayMenu(x, y);
     } else if (this.type === 'switch') {
       exitPointCount = (this.userValues?.actions?.length || 0) + 1;
     } else {
@@ -911,6 +906,58 @@ class Shape {
     }
 
     return false;
+  }
+
+  isMouseNearExitPointPlayMenu(x, y) {
+    const items =
+      this.userValues?.items?.filter((item) => !item.isDefault) || [];
+
+    if (items.length === 0) {
+      return false;
+    }
+
+    let minDistance = Infinity;
+    let minPoint = null;
+    let minPosition = null;
+    let name = '';
+
+    items.forEach((item, i) => {
+      let pointX, pointY;
+
+      if (item.exitPoint) {
+        pointX = item.exitPoint.x;
+        pointY = item.exitPoint.y;
+      } else {
+        [pointX, pointY] = this.getBottomCoordinatesMultiExit(
+          i + 1,
+          items.length
+        );
+      }
+
+      const distance = Math.hypot(x - pointX, y - pointY);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        minPoint = [pointX, pointY];
+        minPosition = i + 1;
+        name = item.action;
+      }
+    });
+
+    const [exitX, exitY] = minPoint;
+    const distance = Math.hypot(x - exitX, y - exitY);
+
+    if (distance <= 4) {
+      return {
+        totalPoints: items.length,
+        position: minPosition,
+        name,
+        exitX,
+        exitY,
+      };
+    } else {
+      return false;
+    }
   }
 
   clearExitPoint() {
@@ -1004,58 +1051,73 @@ class Shape {
     this.width = Math.max(minWidth, this.width);
   }
 
-  drawDotsTopAndBottom(ctx) {
-    const dotRadius = 1.9;
-    ctx.fillStyle = this.style;
-
-    // // Draw top dot
-    // ctx.beginPath();
-    // ctx.arc(...this.getTopCoordinates(), dotRadius, 0, 2 * Math.PI);
-    // ctx.fill();
-
-    // Draw bottom dots
-    let exitPointCount = 1; // default value for single exit point only
-
-    if (this.type === 'playMenu') {
-      exitPointCount =
-        this.userValues?.items.filter((item) => !item.isDefault).length || 0;
-    } else if (this.type === 'switch') {
-      exitPointCount = this.userValues?.actions.length + 1 || 0;
-    }
-
+  drawExitPoints(ctx) {
     ctx.fillStyle = '#0d5bdd';
 
-    if (exitPointCount === 1) {
-      // Draw bottom dot for single exit point only
-
-      if (this.exitPoint) {
-        ctx.beginPath();
-        ctx.arc(
-          this.exitPoint.x,
-          this.exitPoint.y,
-          dotRadius * 2,
-          0,
-          2 * Math.PI
-        );
-        ctx.fill();
-      } else {
-        ctx.beginPath();
-        ctx.arc(...this.getBottomCoordinates(), dotRadius * 2, 0, 2 * Math.PI);
-        ctx.fill();
-      }
-    } else if (exitPointCount > 1) {
-      // Draw bottom dots for multiple exit points
-      for (let i = 1; i <= exitPointCount; i++) {
-        ctx.beginPath();
-        ctx.arc(
-          ...this.getBottomCoordinatesMultiExit(i, exitPointCount),
-          dotRadius * 2,
-          0,
-          2 * Math.PI
-        );
-        ctx.fill();
-      }
+    if (this.type === 'playMenu') {
+      this.drawExitPointPlayMenu(ctx);
+    } else if (this.type === 'switch') {
+      this.drawExitPointSwitch(ctx);
+    } else {
+      this.drawSingleExitPoint(ctx);
     }
+  }
+
+  drawSingleExitPoint(ctx) {
+    const dotRadius = 1.9;
+
+    if (this.exitPoint) {
+      // If exit point, draw it at the specified coordinates
+      ctx.beginPath();
+      ctx.arc(
+        this.exitPoint.x,
+        this.exitPoint.y,
+        dotRadius * 2,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
+    } else {
+      // If no exit point, draw it at the bottom coordinates
+      ctx.beginPath();
+      ctx.arc(...this.getBottomCoordinates(), dotRadius * 2, 0, 2 * Math.PI);
+      ctx.fill();
+    }
+  }
+
+  drawExitPointPlayMenu(ctx) {
+    const dotRadius = 1.9;
+
+    let exitPoints =
+      this.userValues?.items.filter((item) => !item.isDefault) || [];
+
+    for (let i = 1; i <= exitPoints.length; i++) {
+      ctx.beginPath();
+      if (exitPoints[i - 1].exitPoint) {
+        ctx.arc(
+          exitPoints[i - 1].exitPoint.x,
+          exitPoints[i - 1].exitPoint.y,
+          dotRadius * 2,
+          0,
+          2 * Math.PI
+        );
+      } else {
+        ctx.arc(
+          ...this.getBottomCoordinatesMultiExit(i, exitPoints.length),
+          dotRadius * 2,
+          0,
+          2 * Math.PI
+        );
+      }
+
+      ctx.fill();
+    }
+  }
+
+  drawExitPointSwitch(ctx) {
+    const dotRadius = 1.9;
+    let exitPointCount = 1;
+    exitPointCount = this.userValues?.actions.length + 1 || 0;
   }
 
   drawShape(ctx) {
@@ -1152,7 +1214,7 @@ class Shape {
       this.height
     );
 
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
   }
 
   drawInvertedHexagon(ctx) {
@@ -1187,7 +1249,7 @@ class Shape {
     ctx.strokeStyle = '#4285F4';
     ctx.stroke();
     this.style = '#4285F4';
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
   }
   drawPentagon(ctx) {
     this.setWidthFromText(ctx);
@@ -1225,7 +1287,7 @@ class Shape {
     ctx.strokeStyle = '#4285F4';
     ctx.stroke();
     this.style = '#4285F4';
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
   }
   drawHexagon(ctx) {
     this.setWidthFromText(ctx);
@@ -1259,7 +1321,7 @@ class Shape {
     ctx.stroke();
 
     this.style = '#4285F4';
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
     // this.drawExitPointsMenu(ctx);
   }
   drawParallelogram(ctx) {
@@ -1297,7 +1359,7 @@ class Shape {
     ctx.stroke();
 
     this.style = '#4285F4';
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
   }
   drawRoundedRectangle(ctx) {
     this.setWidthFromText(ctx);
@@ -1341,7 +1403,7 @@ class Shape {
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = this.style;
     ctx.stroke();
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
   }
   drawRoundedRectangle2(ctx) {
     this.setWidthFromText(ctx);
@@ -1384,7 +1446,7 @@ class Shape {
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = this.style;
     ctx.stroke();
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
   }
 
   drawEndCircle(ctx) {
@@ -1486,7 +1548,7 @@ class Shape {
     ctx.lineWidth = 1.5;
     ctx.strokeStyle = this.style;
     ctx.stroke();
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
   }
 
   drawModule(ctx) {
@@ -1500,7 +1562,7 @@ class Shape {
     );
     ctx.strokeStyle = '#eda167';
     this.style = '#eda167';
-    this.drawDotsTopAndBottom(ctx);
+    this.drawExitPoints(ctx);
     ctx.strokeRect(
       this.x - this.width / 2,
       this.y - this.height / 2,

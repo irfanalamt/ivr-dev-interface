@@ -226,13 +226,19 @@ function getConnectingLines(shapes) {
         const shape2 = item.nextItem;
 
         if (!shape2) {
+          delete item.exitPoint;
           continue;
         }
 
-        const [x1, y1] = shape.getBottomCoordinatesMultiExit(
-          index + 1,
-          filteredItems.length
+        const [x1, y1] = shape.getRelativeExitCoordinatesMenu(
+          shape2,
+          item.action
         );
+
+        // const [x1, y1] = shape.getBottomCoordinatesMultiExit(
+        //   index + 1,
+        //   filteredItems.length
+        // );
         const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
 
         connections.push({x1, y1, x2, y2});
