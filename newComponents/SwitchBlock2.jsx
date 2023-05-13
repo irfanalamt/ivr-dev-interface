@@ -179,7 +179,7 @@ const SwitchBlock = ({
     const duplicateIndex = actions.findIndex(
       (action, i) => action.action === value && i !== index
     );
-    if (duplicateIndex >= 0) {
+    if (duplicateIndex >= 0 || value == defaultAction) {
       setActionError('action not unique', index);
     } else {
       clearActionError(index);
