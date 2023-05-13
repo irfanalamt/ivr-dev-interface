@@ -559,7 +559,31 @@ class Shape {
 
     const index = items.findIndex((item) => item.action === action);
 
-    this.userValues.items[index].exitPoint = {x: exitPointX, y: exitPointY};
+    if (index !== -1) {
+      this.userValues.items[index].exitPoint = {x: exitPointX, y: exitPointY};
+    }
+
+    return [this.x, this.y];
+  }
+
+  getRelativeExitCoordinatesSwitch(shape2, action) {
+    const [exitPointX, exitPointY] = this.findIntersectionPoint(
+      shape2.x,
+      shape2.y
+    );
+    const defaultItem = this.userValues?.defaultAction;
+
+    if (action === defaultItem) {
+      this.userValues.defaultActionExitPoint = {x: exitPointX, y: exitPointY};
+      return [this.x, this.y];
+    }
+
+    const items = this.userValues?.actions;
+    const index = items.findIndex((item) => item.action === action);
+
+    if (index !== -1) {
+      this.userValues.actions[index].exitPoint = {x: exitPointX, y: exitPointY};
+    }
 
     return [this.x, this.y];
   }
@@ -709,8 +733,6 @@ class Shape {
     const lineSlope = Math.abs((centreY - y) / (centreX - x));
 
     if (lineSlope >= diagonalSlope) {
-      console.log('straight edge');
-
       const points = this.getShapePoints();
 
       for (let i = 0; i < points.length; i++) {
@@ -741,8 +763,6 @@ class Shape {
         }
       }
     } else {
-      console.log('curved edge');
-
       const circle1CentreX = centreX - width / 2 + height / 2;
       const circle2CentreX = centreX + width / 2 - height / 2;
 
@@ -990,9 +1010,76 @@ class Shape {
   }
 
   isMouseNearExitPointSwitch(x, y) {
-    const actions = this.userValues?.actions;
-    // plus default action
+    const actions = this.userValues?.actions || [];
+
+    if (actions.length === 0) {
+      return false;
+    }
+
     const actionCount = actions.length + 1;
+    let minDistance = Infinity;
+    let minPoint = null;
+    let minPosition = null;
+    let name = '';
+
+    actions.forEach((a, i) => {
+      let pointX, pointY;
+
+      if (a.exitPoint) {
+        pointX = a.exitPoint.x;
+        pointY = a.exitPoint.y;
+      } else {
+        [pointX, pointY] = this.getBottomCoordinatesMultiExit(
+          i + 1,
+          actionCount
+        );
+      }
+
+      const distance = Math.hypot(x - pointX, y - pointY);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        minPoint = [pointX, pointY];
+        minPosition = i + 1;
+        name = a.action;
+      }
+    });
+
+    let pointX, pointY;
+
+    if (this.userValues?.defaultActionExitPoint) {
+      pointX = this.userValues.defaultActionExitPoint.x;
+      pointY = this.userValues.defaultActionExitPoint.y;
+    } else {
+      [pointX, pointY] = this.getBottomCoordinatesMultiExit(
+        actionCount,
+        actionCount
+      );
+    }
+
+    const distance = Math.hypot(x - pointX, y - pointY);
+
+    if (distance < minDistance) {
+      minDistance = distance;
+      minPoint = [pointX, pointY];
+      minPosition = actionCount;
+      name = this.userValues?.defaultAction;
+    }
+
+    const [exitX, exitY] = minPoint;
+    const closestDistance = Math.hypot(x - exitX, y - exitY);
+
+    if (closestDistance <= 4) {
+      return {
+        totalPoints: actionCount,
+        position: minPosition,
+        name,
+        exitX,
+        exitY,
+      };
+    } else {
+      return false;
+    }
   }
 
   clearExitPoint() {
@@ -1151,8 +1238,55 @@ class Shape {
 
   drawExitPointSwitch(ctx) {
     const dotRadius = 1.9;
-    let exitPointCount = 1;
-    exitPointCount = this.userValues?.actions.length + 1 || 0;
+    const exitPoints = this.userValues?.actions;
+
+    if (!exitPoints?.length) {
+      return;
+    }
+
+    const exitPointCount = exitPoints?.length + 1 || 0;
+
+    for (let i = 1; i <= exitPointCount; i++) {
+      ctx.beginPath();
+
+      if (i === exitPointCount) {
+        if (this.userValues?.defaultActionExitPoint) {
+          ctx.arc(
+            this.userValues.defaultActionExitPoint.x,
+            this.userValues.defaultActionExitPoint.y,
+            dotRadius * 2,
+            0,
+            2 * Math.PI
+          );
+        } else {
+          ctx.arc(
+            ...this.getBottomCoordinatesMultiExit(i, exitPointCount),
+            dotRadius * 2,
+            0,
+            2 * Math.PI
+          );
+        }
+      } else {
+        if (exitPoints[i - 1]?.exitPoint) {
+          ctx.arc(
+            exitPoints[i - 1].exitPoint.x,
+            exitPoints[i - 1].exitPoint.y,
+            dotRadius * 2,
+            0,
+            2 * Math.PI
+          );
+        } else {
+          ctx.arc(
+            ...this.getBottomCoordinatesMultiExit(i, exitPointCount),
+            dotRadius * 2,
+            0,
+            2 * Math.PI
+          );
+        }
+      }
+
+      ctx.fill();
+    }
   }
 
   drawShape(ctx) {

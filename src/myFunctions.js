@@ -235,10 +235,6 @@ function getConnectingLines(shapes) {
           item.action
         );
 
-        // const [x1, y1] = shape.getBottomCoordinatesMultiExit(
-        //   index + 1,
-        //   filteredItems.length
-        // );
         const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
 
         connections.push({x1, y1, x2, y2});
@@ -247,9 +243,9 @@ function getConnectingLines(shapes) {
       const items = shape.userValues?.actions ?? [];
 
       if (shape.userValues?.defaultActionNextItem) {
-        const [x1, y1] = shape.getBottomCoordinatesMultiExit(
-          items.length + 1,
-          items.length + 1
+        const [x1, y1] = shape.getRelativeExitCoordinatesSwitch(
+          shape.userValues.defaultActionNextItem,
+          shape.userValues.defaultAction
         );
         const [x2, y2] =
           shape.userValues.defaultActionNextItem.getRelativeEntryCoordinates(
@@ -257,18 +253,23 @@ function getConnectingLines(shapes) {
           );
 
         connections.push({x1, y1, x2, y2});
+      } else {
+        if (shape.userValues) {
+          delete shape.userValues.defaultActionExitPoint;
+        }
       }
 
       for (const [index, item] of items.entries()) {
         const shape2 = item.nextItem;
 
         if (!shape2) {
+          delete item.exitPoint;
           continue;
         }
 
-        const [x1, y1] = shape.getBottomCoordinatesMultiExit(
-          index + 1,
-          items.length + 1
+        const [x1, y1] = shape.getRelativeExitCoordinatesSwitch(
+          shape2,
+          item.action
         );
         const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
 
