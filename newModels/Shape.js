@@ -1,5 +1,6 @@
 import {replaceVariablesInLog} from '../src/codeGeneration';
 import {
+  calculateDistance,
   deleteDollar,
   replaceDollarString,
   replaceVarNameDollar,
@@ -606,28 +607,7 @@ class Shape {
             x: this.x - (this.width * 0.5 - this.height * 0.5),
             y: this.y + this.height * 0.5,
           },
-          // New vertices on the curved edge
-          {
-            x:
-              this.x -
-              (this.width * 0.5 - this.height * 0.5) -
-              Math.abs(this.height * 0.25),
-            y: this.y + this.height * 0.25,
-          },
-          {
-            x:
-              this.x -
-              (this.width * 0.5 - this.height * 0.5) -
-              Math.abs(this.height * 0.5),
-            y: this.y,
-          },
-          {
-            x:
-              this.x -
-              (this.width * 0.5 - this.height * 0.5) -
-              Math.abs(this.height * 0.25),
-            y: this.y - this.height * 0.25,
-          },
+
           {
             x: this.x - (this.width * 0.5 - this.height * 0.5),
             y: this.y - this.height * 0.5,
@@ -635,31 +615,6 @@ class Shape {
           {
             x: this.x + this.width * 0.5 - this.height * 0.5,
             y: this.y - this.height * 0.5,
-          },
-          // New vertices on the curved edge
-          {
-            x:
-              this.x +
-              this.width * 0.5 -
-              this.height * 0.5 +
-              Math.abs(this.height * 0.25),
-            y: this.y - this.height * 0.25,
-          },
-          {
-            x:
-              this.x +
-              this.width * 0.5 -
-              this.height * 0.5 +
-              Math.abs(this.height * 0.5),
-            y: this.y,
-          },
-          {
-            x:
-              this.x +
-              this.width * 0.5 -
-              this.height * 0.5 +
-              Math.abs(this.height * 0.25),
-            y: this.y + this.height * 0.25,
           },
         ];
 
@@ -709,14 +664,15 @@ class Shape {
   }
 
   findIntersectionPoint(x, y) {
-    // Calculate the center of the shape
+    if (this.type === 'playMessage' || this.type === 'playConfirm') {
+      return this.findIntersectionPointCurve(x, y);
+    }
+
     const centerX = this.x;
     const centerY = this.y;
 
-    // Define the points of the shape
     const points = this.getShapePoints();
 
-    // Find the intersection point with each edge of the shape
     for (let i = 0; i < points.length; i++) {
       const p1 = points[i];
       const p2 = points[(i + 1) % points.length];
@@ -735,7 +691,6 @@ class Shape {
         ((p2.x - p1.x) * (p1.y - centerY) - (p2.y - p1.y) * (p1.x - centerX)) /
         denominator;
 
-      // Check if the intersection point is on the line segment and the line from (x, y) to the center
       if (ua >= 0 && ua <= 1 && ub >= 0) {
         const intersectionX = p1.x + ua * (p2.x - p1.x);
         const intersectionY = p1.y + ua * (p2.y - p1.y);
@@ -744,8 +699,107 @@ class Shape {
       }
     }
 
-    // No intersection found
     return [centerX, centerY];
+  }
+
+  findIntersectionPointCurve(x, y) {
+    const {height, width, x: centreX, y: centreY} = this;
+
+    const diagonalSlope = Math.abs(height / (width - height));
+    const lineSlope = Math.abs((centreY - y) / (centreX - x));
+
+    if (lineSlope >= diagonalSlope) {
+      console.log('straight edge');
+
+      const points = this.getShapePoints();
+
+      for (let i = 0; i < points.length; i++) {
+        const p1 = points[i];
+        const p2 = points[(i + 1) % points.length];
+
+        const denominator =
+          (p2.x - p1.x) * (y - centreY) - (p2.y - p1.y) * (x - centreX);
+
+        if (denominator === 0) {
+          continue; // Parallel lines
+        }
+
+        const ua =
+          ((p1.y - centreY) * (x - centreX) -
+            (p1.x - centreX) * (y - centreY)) /
+          denominator;
+        const ub =
+          ((p2.x - p1.x) * (p1.y - centreY) -
+            (p2.y - p1.y) * (p1.x - centreX)) /
+          denominator;
+
+        if (ua >= 0 && ua <= 1 && ub >= 0) {
+          const intersectionX = p1.x + ua * (p2.x - p1.x);
+          const intersectionY = p1.y + ua * (p2.y - p1.y);
+
+          return [intersectionX, intersectionY];
+        }
+      }
+    } else {
+      console.log('curved edge');
+
+      const circle1CentreX = centreX - width / 2 + height / 2;
+      const circle2CentreX = centreX + width / 2 - height / 2;
+
+      const d1 = calculateDistance(x, y, circle1CentreX, centreY);
+      const d2 = calculateDistance(x, y, circle2CentreX, centreY);
+
+      if (d1 < d2) {
+        return this.findIntersectionPointArc(
+          x,
+          y,
+          centreX,
+          centreY,
+          circle1CentreX,
+          centreY,
+          height / 2
+        );
+      } else {
+        return this.findIntersectionPointArc(
+          x,
+          y,
+          centreX,
+          centreY,
+          circle2CentreX,
+          centreY,
+          height / 2
+        );
+      }
+    }
+  }
+  findIntersectionPointArc(x1, y1, x2, y2, centreX, centreY, r) {
+    const slope = (y2 - y1) / (x2 - x1);
+    const yIntercept = y1 - slope * x1;
+    const a = 1 + slope * slope;
+    const b = 2 * (slope * yIntercept - slope * centreY - centreX);
+    const c =
+      centreX * centreX +
+      (yIntercept - centreY) * (yIntercept - centreY) -
+      r * r;
+    const discriminant = b * b - 4 * a * c;
+
+    if (discriminant < 0) {
+      return [centreX, centreY];
+    } else {
+      const x1Intersect = (-b + Math.sqrt(discriminant)) / (2 * a);
+      const x2Intersect = (-b - Math.sqrt(discriminant)) / (2 * a);
+      const y1Intersect = slope * x1Intersect + yIntercept;
+      const y2Intersect = slope * x2Intersect + yIntercept;
+
+      const distance1 = calculateDistance(x1, y1, x1Intersect, y1Intersect);
+      const distance2 = calculateDistance(x1, y1, x2Intersect, y2Intersect);
+
+      if (distance1 < distance2) {
+        return [x1Intersect, y1Intersect];
+      } else {
+        return [x2Intersect, y2Intersect];
+      }
+    }
   }
 
   getCircularCoordinates(pointX, pointY) {
