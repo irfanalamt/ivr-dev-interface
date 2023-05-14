@@ -1146,7 +1146,7 @@ const CanvasTest = ({
             : 'default',
         }}
         width={2000}
-        height={2000}
+        height={4000}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
