@@ -27,6 +27,7 @@ const CanvasTest = ({
   setShapes,
   shapeCount,
   saveToDb,
+  isLoadFromDb,
 }) => {
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
@@ -70,6 +71,13 @@ const CanvasTest = ({
     const context = canvasRef.current.getContext('2d');
     contextRef.current = context;
     clearAndDraw();
+
+    if (isLoadFromDb.current === true) {
+      isLoadFromDb.current = false;
+      setTimeout(() => {
+        clearAndDraw();
+      }, [2000]);
+    }
   }, [shapes]);
 
   function clearAndDraw() {

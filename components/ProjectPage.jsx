@@ -32,6 +32,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     {id: 2, label: 'Page 2'},
   ]);
   const [activeTab, setActiveTab] = useState(tabs[0].id);
+  const isLoadFromDb = useRef(false);
 
   const shapeCount = useRef({
     setParams: 1,
@@ -78,6 +79,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
           const newShapes = createShapesFromResponse(shapes);
 
+          isLoadFromDb.current = true;
           setShapes(newShapes);
 
           updateNextItems(newShapes);
@@ -584,6 +586,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
           setShapes={setShapes}
           shapeCount={shapeCount}
           saveToDb={saveToDb}
+          isLoadFromDb={isLoadFromDb}
         />
       </div>
       <BottomBar
