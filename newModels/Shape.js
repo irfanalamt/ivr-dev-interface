@@ -2,7 +2,6 @@ import {replaceVariablesInLog} from '../src/codeGeneration';
 import {
   calculateDistance,
   deleteDollar,
-  replaceDollarString,
   replaceVarNameDollar,
   stringifySafe,
 } from '../src/myFunctions';
@@ -541,8 +540,6 @@ class Shape {
       shape2.x,
       shape2.y
     );
-
-    console.log('📍', {exitPointX: exitPointX, exitPointY: exitPointY});
 
     this.exitPoint = {x: exitPointX, y: exitPointY};
 
