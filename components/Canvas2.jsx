@@ -76,7 +76,7 @@ const CanvasTest = ({
       isLoadFromDb.current = false;
       setTimeout(() => {
         clearAndDraw();
-      }, [2000]);
+      }, [500]);
     }
   }, [shapes]);
 
