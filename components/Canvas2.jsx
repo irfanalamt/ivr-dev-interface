@@ -579,6 +579,26 @@ const CanvasTest = ({
                 mouseY: clientY + 20 + window.scrollY,
               });
             }
+          } else if (shape.type === 'jumper') {
+            const type = shape.userValues.type;
+            let name = '';
+
+            if (type == 'entry' && shape.userValues.name) {
+              name = shape.userValues.name;
+            } else if (shape.userValues.nextItem) {
+              const nextItem = shape.userValues.nextItem;
+              if (nextItem.userValues.name) {
+                name = nextItem.userValues.name;
+              }
+            }
+
+            const capitalizedType = type.toUpperCase();
+
+            setExitPointTooltip({
+              text: `${capitalizedType}${name ? `: ${name}` : ''}`,
+              mouseX: clientX,
+              mouseY: clientY + 20 + window.scrollY,
+            });
           }
 
           break;
