@@ -209,7 +209,7 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
           </Typography>
           {type === 'entry' ? (
             <TextField
-              sx={{width: '220px', backgroundColor: '#f5f5f5'}}
+              sx={{backgroundColor: '#f5f5f5'}}
               size='small'
               value={name}
               onChange={(e) => {
@@ -219,7 +219,7 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
             />
           ) : (
             <Select
-              sx={{width: '180px', backgroundColor: '#f5f5f5'}}
+              sx={{width: 'max-content', backgroundColor: '#f5f5f5'}}
               size='small'
               value={nextItem}
               onChange={(e) => setNextItem(e.target.value)}>
