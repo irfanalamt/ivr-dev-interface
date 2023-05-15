@@ -206,6 +206,10 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
   }
   function handleChangeTab(id) {
     setActiveTab(id);
+    window.scrollTo({
+      top: 0,
+      behavior: 'auto',
+    });
   }
   function getShapeCountInPageNumber(id) {
     return shapes.filter((shape) => shape.pageNumber === id).length;
