@@ -172,6 +172,10 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
   function getShapeById(id, shapes) {
     return shapes.find((shape) => shape.id === id);
   }
+  function getLabelById(id) {
+    const tab = tabs.find((tab) => tab.id === id);
+    return tab ? tab.label : null;
+  }
 
   function handleTabDoubleClick(tabId) {
     const tabIdx = tabs.findIndex((tab) => tab.id === tabId);
@@ -302,8 +306,9 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
     const isDefaultValuesPresent = findIsDefaultValuesPresent(shapes);
     if (isDefaultValuesPresent) {
+      const label = getLabelById(isDefaultValuesPresent.pageNumber);
       setShowSnackbar({
-        message: `Default values detected in page ${isDefaultValuesPresent.pageNumber}. Please update ${isDefaultValuesPresent.text}.`,
+        message: `Default values detected in page ${label}. Please update ${isDefaultValuesPresent.text}.`,
         type: 'error',
       });
       return;
@@ -311,8 +316,9 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
     const isErrorsPresent = findIsErrorsPresent(shapes);
     if (isErrorsPresent) {
+      const label = getLabelById(isErrorsPresent.pageNumber);
       setShowSnackbar({
-        message: `Error detected in page ${isErrorsPresent.pageNumber}. Please update ${isErrorsPresent.text}.`,
+        message: `Error detected in page ${label}. Please update ${isErrorsPresent.text}.`,
         type: 'error',
       });
       return;
