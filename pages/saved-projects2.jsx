@@ -22,6 +22,7 @@ const SavedProjects2 = ({user}) => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const projectRef = useRef('');
 
   useEffect(() => {
     fetchProjectsFromDb();
@@ -33,6 +34,7 @@ const SavedProjects2 = ({user}) => {
       .get('/api/getProjects2', {headers: {Authorization: token}})
       .then((response) => {
         const newData = modifyResponseData(response.data);
+        sortAscendingByDate(newData);
         setProjects(newData);
         setLoading(false);
       })
@@ -41,8 +43,6 @@ const SavedProjects2 = ({user}) => {
         setLoading(false);
       });
   }
-
-  const projectRef = useRef('');
 
   function handleDeleteClick(name) {
     setDialogOpen(true);
@@ -125,6 +125,14 @@ const SavedProjects2 = ({user}) => {
       const displayName = `${ivrName} (${version})`;
 
       return {name: d.name, date, displayName, description: d.description};
+    });
+  }
+
+  function sortAscendingByDate(array) {
+    return array.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateA - dateB;
     });
   }
 
