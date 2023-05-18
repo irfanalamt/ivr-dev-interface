@@ -546,21 +546,24 @@ class Shape {
     return [this.x, this.y];
   }
 
-  getRelativeExitCoordinatesMenu(shape2, action) {
+  getRelativeExitCoordinatesMenu(shape2, action, duplicateCount = 0) {
+    let i = duplicateCount ? duplicateCount - 1 : 0;
+
+    const centerOffsetX = [0, 20, -20, 40, -40];
     const [exitPointX, exitPointY] = this.findIntersectionPoint(
       shape2.x,
-      shape2.y
+      shape2.y,
+      centerOffsetX[i]
     );
 
     const items = this.userValues?.items;
-
     const index = items.findIndex((item) => item.action === action);
 
     if (index !== -1) {
       this.userValues.items[index].exitPoint = {x: exitPointX, y: exitPointY};
     }
 
-    return [this.x, this.y];
+    return [exitPointX, exitPointY];
   }
 
   getRelativeExitCoordinatesSwitch(shape2, action) {
@@ -684,12 +687,13 @@ class Shape {
     }
   }
 
-  findIntersectionPoint(x, y) {
+  findIntersectionPoint(x, y, centerOffsetX = 0) {
+    console.log('centerOffsetX = ', centerOffsetX);
     if (this.type === 'playMessage' || this.type === 'playConfirm') {
       return this.findIntersectionPointCurve(x, y);
     }
 
-    const centerX = this.x;
+    const centerX = this.x + centerOffsetX;
     const centerY = this.y;
 
     const points = this.getShapePoints();

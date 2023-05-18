@@ -222,22 +222,35 @@ function getConnectingLines(shapes) {
         continue;
       }
 
-      for (const [index, item] of filteredItems.entries()) {
+      const shape2Count = new Map();
+
+      for (const item of filteredItems) {
         const shape2 = item.nextItem;
+        let duplicateCount = 0;
 
-        if (!shape2) {
+        if (shape2) {
+          if (shape2Count.has(shape2)) {
+            duplicateCount = shape2Count.get(shape2) + 1;
+            shape2Count.set(shape2, duplicateCount);
+          } else {
+            shape2Count.set(shape2, 1);
+          }
+
+          // duplicateCount= 0 if  no duplicates
+          // duplicateCount= 2 for the first occurrence of a duplicate, and increment the value for subsequent duplicates
+
+          const [x1, y1] = shape.getRelativeExitCoordinatesMenu(
+            shape2,
+            item.action,
+            duplicateCount
+          );
+
+          const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+
+          connections.push({x1, y1, x2, y2});
+        } else {
           delete item.exitPoint;
-          continue;
         }
-
-        const [x1, y1] = shape.getRelativeExitCoordinatesMenu(
-          shape2,
-          item.action
-        );
-
-        const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
-
-        connections.push({x1, y1, x2, y2});
       }
     } else if (shape.type === 'switch') {
       const items = shape.userValues?.actions ?? [];
