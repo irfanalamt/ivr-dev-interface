@@ -254,10 +254,14 @@ class Shape {
       ?.map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
       .join(', ');
 
-    const codeString = `this.${functionName} = async function() {
-      const newParams = { ${codeModifiedParameters} };
-      await IVR.setCallParams('${functionName}', newParams);
-    };`;
+    const codeString = `
+      this.${functionName} = async function() {
+        const newParams = { ${
+          codeModifiedParameters ? codeModifiedParameters : ''
+        } };
+        await IVR.setCallParams('${functionName}', newParams);
+      };
+    `;
 
     console.log('codeString☄️', codeString);
 
@@ -281,17 +285,22 @@ class Shape {
     const beforeLog = replaceVariablesInLog(logText.before.text, variables);
     const afterLog = replaceVariablesInLog(logText.after.text, variables);
 
-    const codeString = `this.${functionName} = async function() {
+    const codeString = `
+    this.${functionName} = async function() {
       const msgList = ${messageListString};
       const params = { ${paramsString} };
+  
       ${
         logText.before.text
           ? `IVR.log.${logText.before.type}(${beforeLog});`
           : ''
-      }await IVR.playMessage('${functionName}', msgList, params);${
-      logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''
-    }
-    };`;
+      }
+  
+      await IVR.playMessage('${functionName}', msgList, params);
+  
+      ${logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''}
+    };
+  `;
 
     console.log('codeString', codeString);
     this.setFunctionString(codeString);
@@ -315,16 +324,24 @@ class Shape {
     const logText = this.userValues.logs;
     const beforeLog = replaceVariablesInLog(logText.before.text, variables);
     const afterLog = replaceVariablesInLog(logText.after.text, variables);
-    const codeString = `this.${functionName} = async function() {
-    const msgList = ${messageListString};
-    const params = { ${paramsString} };${
-      logText.before.text ? `IVR.log.${logText.before.type}(${beforeLog});` : ''
-    }this.${
-      resultNameString || 'default'
-    } = await IVR.getDigits('${functionName}',msgList,params);${
-      logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''
-    }
-  };`;
+    const codeString = `
+    this.${functionName} = async function() {
+      const msgList = ${messageListString};
+      const params = { ${paramsString} };
+  
+      ${
+        logText.before.text
+          ? `IVR.log.${logText.before.type}(${beforeLog});`
+          : ''
+      }
+  
+      this.${
+        resultNameString || 'default'
+      } = await IVR.getDigits('${functionName}', msgList, params);
+  
+      ${logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''}
+    };
+  `;
 
     console.log('codeString', codeString);
     this.setFunctionString(codeString);
@@ -345,14 +362,22 @@ class Shape {
     const logText = this.userValues.logs;
     const beforeLog = replaceVariablesInLog(logText.before.text, variables);
     const afterLog = replaceVariablesInLog(logText.after.text, variables);
-    const codeString = `this.${functionName} = async function() {
+    const codeString = `
+    this.${functionName} = async function() {
       const msgList = ${messageListString};
-      const params = { ${paramsString} }; ${
-      logText.before.text ? `IVR.log.${logText.before.type}(${beforeLog});` : ''
-    }await IVR.playConfirm('${functionName}', msgList, params);${
-      logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''
-    }
-    };`;
+      const params = { ${paramsString} };
+  
+      ${
+        logText.before.text
+          ? `IVR.log.${logText.before.type}(${beforeLog});`
+          : ''
+      }
+  
+      await IVR.playConfirm('${functionName}', msgList, params);
+  
+      ${logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''}
+    };
+  `;
 
     console.log('codeString📍', codeString);
     this.setFunctionString(codeString);
@@ -369,7 +394,15 @@ class Shape {
     const newReplacedString = replaceDollarString(this.userValues.script);
     const ivrReplacedString = replaceLogWithIvrLog(newReplacedString);
 
-    const codeString = `this.${functionName} = async function(){${ivrReplacedString}};`;
+    const codeString = `
+    this.${functionName} = async function() {
+      try {
+        ${ivrReplacedString}
+      } catch (err) {
+        IVR.error('Error in runScript ${functionName}', err);
+      }
+    };
+  `;
 
     console.log('codeString📍', codeString);
     this.setFunctionString(codeString);
@@ -385,10 +418,24 @@ class Shape {
       .join(',')}}`;
     const outputVarsString = outputVars
       .filter((el) => el.name)
-      .map((el) => `this.${el.name}=outputVars.${el.name};`)
+      .map((el) => `this.${el.name}=outputVars?.${el.name};`)
       .join('');
 
-    const codeString = `this.${functionName}=async function(){let endpoint = '${endpoint}';let inputVars= ${inputVarsString};let outputVars = await IVR.callAPI('${functionName}',endpoint,inputVars);${outputVarsString}};`;
+    const codeString = `
+    this.${functionName} = async function() {
+      let endpoint = '${endpoint}';
+      let inputVars = ${inputVarsString};
+      let outputVars;
+  
+      try {
+        outputVars = await IVR.callAPI('${functionName}', endpoint, inputVars);
+      } catch (err) {
+        IVR.error('Error in callAPI ${functionName}', err);
+      }
+  
+      ${outputVarsString}
+    };
+  `;
 
     console.log('codeString📍', codeString);
     this.setFunctionString(codeString);
@@ -438,13 +485,21 @@ class Shape {
     const beforeLog = replaceVariablesInLog(logText.before.text, variables);
     const afterLog = replaceVariablesInLog(logText.after.text, variables);
 
-    const codeString = `this.${functionName} = async function() {
-    let menu =${menuString}; ${
-      logText.before.text ? `IVR.log.${logText.before.type}(${beforeLog});` : ''
-    }await IVR.playMenu(menu);${
-      logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''
-    }
-  };`;
+    const codeString = `
+    this.${functionName} = async function() {
+      let menu = ${menuString};
+  
+      ${
+        logText.before.text
+          ? `IVR.log.${logText.before.type}(${beforeLog});`
+          : ''
+      }
+  
+      await IVR.playMenu(menu);
+  
+      ${logText.after.text ? `IVR.log.${logText.after.type}(${afterLog});` : ''}
+    };
+  `;
 
     console.log('codeString 📍', codeString);
     this.setFunctionString(codeString);
@@ -548,6 +603,9 @@ class Shape {
 
   getRelativeExitCoordinatesMenu(shape2, action, duplicateCount = 0) {
     let i = duplicateCount ? duplicateCount - 1 : 0;
+    if (i > 4) {
+      i = 0;
+    }
 
     const centerOffsetX = [0, 20, -20, 40, -40];
     const [exitPointX, exitPointY] = this.findIntersectionPoint(
@@ -688,7 +746,6 @@ class Shape {
   }
 
   findIntersectionPoint(x, y, centerOffsetX = 0) {
-    console.log('centerOffsetX = ', centerOffsetX);
     if (this.type === 'playMessage' || this.type === 'playConfirm') {
       return this.findIntersectionPointCurve(x, y);
     }
