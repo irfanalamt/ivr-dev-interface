@@ -458,6 +458,7 @@ class Shape {
         skip,
         disabled,
         silent,
+        exitPoint,
         ...rest
       }) => {
         if (isSkip) {
