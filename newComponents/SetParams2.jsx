@@ -20,6 +20,7 @@ import {useEffect, useRef, useState} from 'react';
 import {isNameUnique} from '../src/myFunctions';
 import {checkValidity} from '../src/helpers';
 import DrawerUserGuideDialog from '../components/DrawerUserGuideDialog';
+import SaveChangesDialog from './SaveChangesDialog';
 
 const SetParams = ({
   shape,
@@ -38,6 +39,7 @@ const SetParams = ({
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
   const [openGuideDialog, setOpenGuideDialog] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
   const errors = useRef({});
 
@@ -68,6 +70,26 @@ const SetParams = ({
       shape.isComplete = true;
     } else {
       shape.isComplete = false;
+    }
+  }
+
+  function handleSaveAndClose() {
+    if (!shape.userValues) {
+      handleCloseDrawer();
+      return;
+    }
+
+    const shapeString = JSON.stringify({
+      name: shape.text,
+      params: shape.userValues.params,
+    });
+
+    const expectedString = JSON.stringify({name, params: modifiedParameters});
+
+    if (shapeString === expectedString) {
+      handleCloseDrawer();
+    } else {
+      setShowDialog(true);
     }
   }
 
@@ -306,7 +328,7 @@ const SetParams = ({
           <QuestionMarkIcon sx={{fontSize: '20px'}} />
         </IconButton>
         <IconButton
-          onClick={handleCloseDrawer}
+          onClick={handleSaveAndClose}
           size='small'
           sx={{
             ml: 1,
@@ -498,6 +520,17 @@ const SetParams = ({
           open={openGuideDialog}
           handleClose={() => setOpenGuideDialog(false)}
           name={shape.type}
+        />
+        <SaveChangesDialog
+          open={showDialog}
+          handleSave={() => {
+            handleAddModifiedParameter();
+            handleSaveName();
+          }}
+          handleClose={() => {
+            setShowDialog(false);
+            handleCloseDrawer();
+          }}
         />
       </Box>
     </>
