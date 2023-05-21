@@ -23,6 +23,7 @@ import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
+import SaveChangesDialog from './SaveChangesDialog';
 
 const PlayMenu = ({
   shape,
@@ -52,6 +53,7 @@ const PlayMenu = ({
       after: {type: 'info', text: ''},
     }
   );
+  const [showDialog, setShowDialog] = useState(false);
 
   const errors = useRef({});
 
@@ -248,6 +250,35 @@ const PlayMenu = ({
   function validateUserInput(input) {
     const promptRegex = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/;
     return promptRegex.test(input) ? -1 : 'Prompt not in valid format.';
+  }
+
+  function handleSaveAndClose() {
+    if (!shape.userValues) {
+      handleCloseDrawer();
+      return;
+    }
+
+    const shapeString = JSON.stringify({
+      items: shape.userValues.items,
+      description: shape.userValues.description,
+      previousMenuId: shape.userValues.previousMenuId,
+      optionalParams: shape.userValues.optionalParams,
+      logs: shape.userValues.logs,
+    });
+
+    const expectedString = JSON.stringify({
+      items,
+      description,
+      previousMenuId,
+      optionalParams: addedOptionalParams,
+      logs: logText,
+    });
+
+    if (shapeString === expectedString) {
+      handleCloseDrawer();
+    } else {
+      setShowDialog(true);
+    }
   }
 
   function validateOptionalPrompt(value, index) {
@@ -529,7 +560,7 @@ const PlayMenu = ({
           <QuestionMarkIcon sx={{fontSize: '20px'}} />
         </IconButton>
         <IconButton
-          onClick={handleCloseDrawer}
+          onClick={handleSaveAndClose}
           size='small'
           sx={{
             ml: 1,
@@ -994,6 +1025,14 @@ const PlayMenu = ({
           <LogDrawer logText={logText} setLogText={setLogText} />
         )}
       </Box>
+      <SaveChangesDialog
+        open={showDialog}
+        handleSave={handleSave}
+        handleClose={() => {
+          setShowDialog(false);
+          handleCloseDrawer();
+        }}
+      />
     </Box>
   );
 };
