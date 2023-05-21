@@ -9,7 +9,7 @@ import {
 
 const SaveChangesDialog = ({open, handleClose, handleSave}) => {
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open}>
       <DialogTitle>{'Unsaved Changes'}</DialogTitle>
       <DialogContent>
         <DialogContentText sx={{minWidth: 400}}>
