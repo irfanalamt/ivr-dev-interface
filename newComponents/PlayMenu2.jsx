@@ -585,113 +585,12 @@ const PlayMenu = ({
           value={tabValue}
           onChange={handleTabChange}
           centered>
-          <Tab label='General' />
           <Tab label='Items' />
+          <Tab label='General' />
           <Tab label='Log' />
         </Tabs>
         <Divider />
-
         {tabValue === 0 && (
-          <List>
-            <Stack
-              sx={{
-                mt: 2,
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                Description
-              </Typography>
-              <TextField
-                sx={{backgroundColor: '#f5f5f5', width: 300}}
-                size='small'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                multiline
-              />
-            </Stack>
-            <Stack
-              sx={{
-                px: 2,
-                py: 1,
-              }}>
-              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                previousMenuId
-              </Typography>
-              <TextField
-                sx={{backgroundColor: '#f5f5f5', width: 200}}
-                size='small'
-                value={previousMenuId}
-                onChange={(e) => setPreviousMenuId(e.target.value)}
-              />
-            </Stack>
-            <Divider />
-            <Stack sx={{pl: 2, py: 2, mt: 2, mb: 1}}>
-              <Typography>Optional Params</Typography>
-              <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <Select
-                  labelId='select-label'
-                  sx={{
-                    minWidth: 150,
-                    backgroundColor: '#f5f5f5',
-                  }}
-                  value={optionalParam}
-                  onChange={(e) => setOptionalParam(e.target.value)}
-                  size='small'>
-                  {optionalParamList
-                    .filter(
-                      (p) =>
-                        !addedOptionalParams.some((object) => object.name === p)
-                    )
-                    .map((p, i) => (
-                      <MenuItem key={i} value={p}>
-                        {p}
-                      </MenuItem>
-                    ))}
-                </Select>
-                <Button
-                  sx={{
-                    ml: 2,
-                    backgroundColor: '#bdbdbd',
-                    color: 'black',
-                    '&:hover': {backgroundColor: '#9ccc65'},
-                  }}
-                  onClick={handleAddOptionalParam}
-                  disabled={!optionalParam}
-                  variant='contained'>
-                  Add
-                </Button>
-              </Box>
-            </Stack>
-            {addedOptionalParams.map((p, i) => (
-              <ListItem
-                sx={{
-                  py: 1,
-                  backgroundColor: '#e6e6e6',
-                  borderTop: i === 0 && '1px solid #bdbdbd',
-                  borderBottom: '1px solid #bdbdbd',
-                }}
-                key={i}>
-                {renderComponentByType(p.name, i)}
-                <IconButton
-                  color='error'
-                  size='small'
-                  onClick={() => handleDeleteOptionalParam(i)}
-                  sx={{
-                    ml: 'auto',
-                    backgroundColor: '#cfcfcf',
-                    '&:hover': {backgroundColor: '#c7c1bd'},
-                    alignSelf: 'end',
-                    height: 30,
-                    width: 30,
-                  }}>
-                  <DeleteIcon sx={{color: '#424242'}} />
-                </IconButton>
-              </ListItem>
-            ))}
-          </List>
-        )}
-        {tabValue === 1 && (
           <List>
             <Stack sx={{pl: 2, py: 2, mb: 2}}>
               <Typography>Digits</Typography>
@@ -990,6 +889,107 @@ const PlayMenu = ({
             ))}
           </List>
         )}
+        {tabValue === 1 && (
+          <List>
+            <Stack
+              sx={{
+                mt: 2,
+                px: 2,
+                py: 1,
+              }}>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                Description
+              </Typography>
+              <TextField
+                sx={{backgroundColor: '#f5f5f5', width: 300}}
+                size='small'
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                multiline
+              />
+            </Stack>
+            <Stack
+              sx={{
+                px: 2,
+                py: 1,
+              }}>
+              <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+                previousMenuId
+              </Typography>
+              <TextField
+                sx={{backgroundColor: '#f5f5f5', width: 200}}
+                size='small'
+                value={previousMenuId}
+                onChange={(e) => setPreviousMenuId(e.target.value)}
+              />
+            </Stack>
+            <Divider />
+            <Stack sx={{pl: 2, py: 2, mt: 2, mb: 1}}>
+              <Typography>Optional Params</Typography>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Select
+                  labelId='select-label'
+                  sx={{
+                    minWidth: 150,
+                    backgroundColor: '#f5f5f5',
+                  }}
+                  value={optionalParam}
+                  onChange={(e) => setOptionalParam(e.target.value)}
+                  size='small'>
+                  {optionalParamList
+                    .filter(
+                      (p) =>
+                        !addedOptionalParams.some((object) => object.name === p)
+                    )
+                    .map((p, i) => (
+                      <MenuItem key={i} value={p}>
+                        {p}
+                      </MenuItem>
+                    ))}
+                </Select>
+                <Button
+                  sx={{
+                    ml: 2,
+                    backgroundColor: '#bdbdbd',
+                    color: 'black',
+                    '&:hover': {backgroundColor: '#9ccc65'},
+                  }}
+                  onClick={handleAddOptionalParam}
+                  disabled={!optionalParam}
+                  variant='contained'>
+                  Add
+                </Button>
+              </Box>
+            </Stack>
+            {addedOptionalParams.map((p, i) => (
+              <ListItem
+                sx={{
+                  py: 1,
+                  backgroundColor: '#e6e6e6',
+                  borderTop: i === 0 && '1px solid #bdbdbd',
+                  borderBottom: '1px solid #bdbdbd',
+                }}
+                key={i}>
+                {renderComponentByType(p.name, i)}
+                <IconButton
+                  color='error'
+                  size='small'
+                  onClick={() => handleDeleteOptionalParam(i)}
+                  sx={{
+                    ml: 'auto',
+                    backgroundColor: '#cfcfcf',
+                    '&:hover': {backgroundColor: '#c7c1bd'},
+                    alignSelf: 'end',
+                    height: 30,
+                    width: 30,
+                  }}>
+                  <DeleteIcon sx={{color: '#424242'}} />
+                </IconButton>
+              </ListItem>
+            ))}
+          </List>
+        )}
+
         {tabValue === 2 && (
           <LogDrawer logText={logText} setLogText={setLogText} />
         )}
