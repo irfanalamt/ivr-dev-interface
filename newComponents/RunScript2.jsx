@@ -13,6 +13,7 @@ import {
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
+import SaveChangesDialog from './SaveChangesDialog';
 
 const RunScript = ({
   shape,
@@ -29,6 +30,7 @@ const RunScript = ({
     shape.userValues?.script || ''
   );
   const [isFunctionError, setIsFunctionError] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
   const errors = useRef({});
 
@@ -60,6 +62,35 @@ const RunScript = ({
       } else {
         shape.isComplete = false;
       }
+    }
+  }
+
+  function handleSaveAndClose() {
+    if (!shape.userValues) {
+      const expectedString = JSON.stringify({
+        script: functionString,
+      });
+
+      if (expectedString.length === 13) {
+        handleCloseDrawer();
+      } else {
+        setShowDialog(true);
+      }
+      return;
+    }
+
+    const shapeString = JSON.stringify({
+      script: shape.userValues.script,
+    });
+
+    const expectedString = JSON.stringify({
+      script: functionString,
+    });
+
+    if (shapeString === expectedString) {
+      handleCloseDrawer();
+    } else {
+      setShowDialog(true);
     }
   }
 
@@ -182,7 +213,7 @@ const RunScript = ({
           <QuestionMarkIcon sx={{fontSize: '20px'}} />
         </IconButton>
         <IconButton
-          onClick={handleCloseDrawer}
+          onClick={handleSaveAndClose}
           size='small'
           sx={{
             ml: 1,
@@ -252,6 +283,14 @@ const RunScript = ({
           />
         </ListItem>
       </Box>
+      <SaveChangesDialog
+        open={showDialog}
+        handleSave={handleSave}
+        handleClose={() => {
+          setShowDialog(false);
+          handleCloseDrawer();
+        }}
+      />
     </>
   );
 };

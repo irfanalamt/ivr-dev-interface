@@ -22,6 +22,7 @@ import {checkValidity} from '../src/helpers';
 import {isNameUnique, replaceVarNameDollar} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
 import MessageList from './MessageList2';
+import SaveChangesDialog from './SaveChangesDialog';
 
 const PlayConfirm = ({
   shape,
@@ -49,6 +50,7 @@ const PlayConfirm = ({
       after: {type: 'info', text: ''},
     }
   );
+  const [showDialog, setShowDialog] = useState(false);
 
   const errors = useRef({});
 
@@ -122,6 +124,41 @@ const PlayConfirm = ({
     } else {
       setErrorText('');
       errors.current.name = undefined;
+    }
+  }
+
+  function handleSaveAndClose() {
+    if (!shape.userValues) {
+      const expectedString = JSON.stringify({
+        messageList,
+        optionalParams: addedOptionalParams,
+        logs: logText,
+      });
+
+      if (expectedString.length === 116) {
+        handleCloseDrawer();
+      } else {
+        setShowDialog(true);
+      }
+      return;
+    }
+
+    const shapeString = JSON.stringify({
+      messageList: shape.userValues.messageList,
+      optionalParams: shape.userValues.optionalParams,
+      logs: shape.userValues.logs,
+    });
+
+    const expectedString = JSON.stringify({
+      messageList,
+      optionalParams: addedOptionalParams,
+      logs: logText,
+    });
+
+    if (shapeString === expectedString) {
+      handleCloseDrawer();
+    } else {
+      setShowDialog(true);
     }
   }
 
@@ -291,7 +328,7 @@ const PlayConfirm = ({
           <QuestionMarkIcon sx={{fontSize: '20px'}} />
         </IconButton>
         <IconButton
-          onClick={handleCloseDrawer}
+          onClick={handleSaveAndClose}
           size='small'
           sx={{
             ml: 1,
@@ -432,6 +469,14 @@ const PlayConfirm = ({
         {tabValue === 2 && (
           <LogDrawer logText={logText} setLogText={setLogText} />
         )}
+        <SaveChangesDialog
+          open={showDialog}
+          handleSave={handleSaveName}
+          handleClose={() => {
+            setShowDialog(false);
+            handleCloseDrawer();
+          }}
+        />
       </Box>
     </>
   );

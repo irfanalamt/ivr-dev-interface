@@ -16,6 +16,7 @@ import {
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
+import SaveChangesDialog from './SaveChangesDialog';
 
 const SwitchBlock = ({
   shape,
@@ -34,6 +35,7 @@ const SwitchBlock = ({
   const [defaultAction, setDefaultAction] = useState(
     shape.userValues?.defaultAction ?? 'default'
   );
+  const [showDialog, setShowDialog] = useState(false);
 
   const errors = useRef({});
 
@@ -97,6 +99,39 @@ const SwitchBlock = ({
       } else {
         shape.isComplete = false;
       }
+    }
+  }
+  function handleSaveAndClose() {
+    if (!shape.userValues) {
+      const expectedString = JSON.stringify({
+        actions,
+        defaultAction,
+      });
+
+      if (expectedString.length === 68) {
+        handleCloseDrawer();
+      } else {
+        setShowDialog(true);
+      }
+
+      return;
+    }
+
+    const shapeString = JSON.stringify({
+      actions: shape.userValues.actions,
+      defaultAction: shape.userValues.defaultAction,
+    });
+
+    const expectedString = JSON.stringify({
+      actions,
+      defaultAction,
+    });
+
+    if (shapeString === expectedString) {
+      handleSave();
+      handleCloseDrawer();
+    } else {
+      setShowDialog(true);
     }
   }
 
@@ -245,7 +280,7 @@ const SwitchBlock = ({
           <QuestionMarkIcon sx={{fontSize: '20px'}} />
         </IconButton>
         <IconButton
-          onClick={handleCloseDrawer}
+          onClick={handleSaveAndClose}
           size='small'
           sx={{
             ml: 1,
@@ -391,6 +426,14 @@ const SwitchBlock = ({
           </ListItem>
         </List>
       </Box>
+      <SaveChangesDialog
+        open={showDialog}
+        handleSave={handleSave}
+        handleClose={() => {
+          setShowDialog(false);
+          handleCloseDrawer();
+        }}
+      />
     </>
   );
 };

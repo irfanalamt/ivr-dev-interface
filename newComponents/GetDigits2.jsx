@@ -20,9 +20,10 @@ import {
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
-import {isNameUnique, replaceVarNameDollar} from '../src/myFunctions';
+import {isNameUnique} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
 import MessageList from './MessageList2';
+import SaveChangesDialog from './SaveChangesDialog';
 
 const GetDigits = ({
   shape,
@@ -58,6 +59,7 @@ const GetDigits = ({
       after: {type: 'info', text: ''},
     }
   );
+  const [showDialog, setShowDialog] = useState(false);
 
   const errors = useRef({});
 
@@ -112,6 +114,50 @@ const GetDigits = ({
       } else {
         shape.isComplete = false;
       }
+    }
+  }
+
+  function handleSaveAndClose() {
+    if (!shape.userValues) {
+      const expectedString = JSON.stringify({
+        messageList,
+        variableName: resultName,
+        params: {minDigits, maxDigits},
+        optionalParams: addedOptionalParams,
+        logs: logText,
+      });
+
+      if (expectedString.length === 174) {
+        handleCloseDrawer();
+      } else {
+        setShowDialog(true);
+      }
+      return;
+    }
+
+    const shapeString = JSON.stringify({
+      messageList: shape.userValues.messageList,
+      variableName: shape.userValues.variableName,
+      params: {
+        minDigits: shape.userValues.params.minDigits,
+        maxDigits: shape.userValues.params.maxDigits,
+      },
+      optionalParams: shape.userValues.optionalParams,
+      logs: shape.userValues.logs,
+    });
+
+    const expectedString = JSON.stringify({
+      messageList,
+      variableName: resultName,
+      params: {minDigits, maxDigits},
+      optionalParams: addedOptionalParams,
+      logs: logText,
+    });
+
+    if (shapeString === expectedString) {
+      handleCloseDrawer();
+    } else {
+      setShowDialog(true);
     }
   }
 
@@ -415,7 +461,7 @@ const GetDigits = ({
           <QuestionMarkIcon sx={{fontSize: '20px'}} />
         </IconButton>
         <IconButton
-          onClick={handleCloseDrawer}
+          onClick={handleSaveAndClose}
           size='small'
           sx={{
             ml: 1,
@@ -617,6 +663,14 @@ const GetDigits = ({
         {tabValue === 2 && (
           <LogDrawer logText={logText} setLogText={setLogText} />
         )}
+        <SaveChangesDialog
+          open={showDialog}
+          handleSave={handleSave}
+          handleClose={() => {
+            setShowDialog(false);
+            handleCloseDrawer();
+          }}
+        />
       </Box>
     </>
   );
