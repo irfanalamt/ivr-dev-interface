@@ -623,50 +623,11 @@ const PlayMenu = ({
         <Divider />
         {tabValue === 0 && (
           <List>
-            <Stack sx={{pl: 2, py: 2, mb: 2}}>
-              <Typography>Digits</Typography>
-              <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <Select
-                  labelId='select-label'
-                  value={itemDigit}
-                  onChange={(e) => setItemDigit(e.target.value)}
-                  sx={{
-                    minWidth: 100,
-                    backgroundColor: '#f5f5f5',
-                  }}
-                  size='small'>
-                  {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '*', '#']
-                    .filter(
-                      (menuItemValue) =>
-                        !items.some((item) => item.digit === menuItemValue)
-                    )
-                    .map((menuItemValue) => (
-                      <MenuItem value={menuItemValue} key={menuItemValue}>
-                        {menuItemValue}
-                      </MenuItem>
-                    ))}
-                </Select>
-
-                <Button
-                  sx={{
-                    ml: 2,
-                    backgroundColor: '#bdbdbd',
-                    color: 'black',
-                    '&:hover': {backgroundColor: '#9ccc65'},
-                  }}
-                  onClick={handleAddNewItem}
-                  variant='contained'>
-                  Add
-                </Button>
-              </Box>
-            </Stack>
-
             {items.map((item, i) => (
               <ListItem
                 sx={{
                   backgroundColor: '#eeeeee',
                   borderBottom: '1px solid #bdbdbd',
-                  borderTop: i == 0 && '1px solid #bdbdbd',
                 }}
                 key={i}>
                 <Stack sx={{width: '100%', py: 1}}>
@@ -918,6 +879,50 @@ const PlayMenu = ({
                 </Stack>
               </ListItem>
             ))}
+            <Stack
+              sx={{
+                pl: 2,
+                pt: 2,
+                pb: 4,
+                backgroundColor: '#e0e0e0',
+                mt: items.length ? 0 : -1,
+              }}>
+              <Typography>Digits</Typography>
+              <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Select
+                  labelId='select-label'
+                  value={itemDigit}
+                  onChange={(e) => setItemDigit(e.target.value)}
+                  sx={{
+                    minWidth: 100,
+                    backgroundColor: '#f5f5f5',
+                  }}
+                  size='small'>
+                  {['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '*', '#']
+                    .filter(
+                      (menuItemValue) =>
+                        !items.some((item) => item.digit === menuItemValue)
+                    )
+                    .map((menuItemValue) => (
+                      <MenuItem value={menuItemValue} key={menuItemValue}>
+                        {menuItemValue}
+                      </MenuItem>
+                    ))}
+                </Select>
+
+                <Button
+                  sx={{
+                    ml: 2,
+                    backgroundColor: '#bdbdbd',
+                    color: 'black',
+                    '&:hover': {backgroundColor: '#9ccc65'},
+                  }}
+                  onClick={handleAddNewItem}
+                  variant='contained'>
+                  Add
+                </Button>
+              </Box>
+            </Stack>
           </List>
         )}
         {tabValue === 1 && (
