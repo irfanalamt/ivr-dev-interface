@@ -2,6 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
+  Divider,
   FormControlLabel,
   IconButton,
   List,
@@ -142,43 +143,10 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
 
   return (
     <List sx={{backgroundColor: '#eeeeee'}}>
-      <Stack sx={{pl: 2, pb: 2}}>
-        <Typography variant='subtitle1'>Type</Typography>
-        <Box sx={{display: 'flex', alignItems: 'center'}}>
-          <Select
-            labelId='select-label'
-            value={currentType}
-            onChange={(e) => setCurrentType(e.target.value)}
-            sx={{
-              minWidth: 150,
-              backgroundColor: '#f5f5f5',
-            }}
-            size='small'>
-            {messageListTypes.map((type, i) => (
-              <MenuItem value={type} key={i}>
-                {type}
-              </MenuItem>
-            ))}
-          </Select>
-          <Button
-            sx={{
-              ml: 2,
-              backgroundColor: '#bdbdbd',
-              color: 'black',
-              '&:hover': {backgroundColor: '#9ccc65'},
-            }}
-            onClick={handleAddNewMessage}
-            disabled={!currentType}
-            variant='contained'>
-            Add
-          </Button>
-        </Box>
-      </Stack>
       <List>
         {messageList.map((m, i) => (
           <ListItem
             sx={{
-              borderTop: i === 0 && '1px solid #bdbdbd',
               borderBottom: '1px solid #bdbdbd',
               pb: 2,
             }}
@@ -356,6 +324,47 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
             </Stack>
           </ListItem>
         ))}
+
+        <Stack
+          sx={{
+            pl: 2,
+            pt: messageList.length ? 2 : 1,
+            mt: messageList.length ? 0 : -2,
+            backgroundColor: '#e0e0e0',
+            pb: 4,
+          }}>
+          <Typography variant='subtitle1'>Type</Typography>
+          <Box sx={{display: 'flex', alignItems: 'center'}}>
+            <Select
+              labelId='select-label'
+              value={currentType}
+              onChange={(e) => setCurrentType(e.target.value)}
+              sx={{
+                minWidth: 150,
+                backgroundColor: '#f5f5f5',
+              }}
+              size='small'>
+              {messageListTypes.map((type, i) => (
+                <MenuItem value={type} key={i}>
+                  {type}
+                </MenuItem>
+              ))}
+            </Select>
+            <Button
+              sx={{
+                ml: 2,
+                backgroundColor: '#bdbdbd',
+                color: 'black',
+                '&:hover': {backgroundColor: '#9ccc65'},
+              }}
+              onClick={handleAddNewMessage}
+              disabled={!currentType}
+              variant='contained'>
+              Add
+            </Button>
+          </Box>
+        </Stack>
+        <Divider />
       </List>
     </List>
   );
