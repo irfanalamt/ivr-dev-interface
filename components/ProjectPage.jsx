@@ -55,43 +55,57 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
   function fetchProjectFromDB() {
     const token = localStorage.getItem('token');
-
     const storedIvrName = JSON.parse(sessionStorage.getItem('ivrName'));
 
-    if (storedIvrName?.name) {
-      axios
-        .get('/api/getProject2', {
-          params: {
-            name: `${storedIvrName.name}_${storedIvrName.version}`,
-          },
-          headers: {Authorization: token},
-        })
-        .then((response) => {
-          console.log(response.data);
-          const {
-            shapes,
-            tabs,
-            userVariables: newUserVariables,
-            shapeCount: newShapeCount,
-          } = response.data;
+    let retries = 2;
 
-          shapeCount.current = newShapeCount;
+    const makeRequest = () => {
+      if (storedIvrName?.name) {
+        axios
+          .get('/api/getProject2', {
+            params: {
+              name: `${storedIvrName.name}_${storedIvrName.version}`,
+            },
+            headers: {Authorization: token},
+          })
+          .then((response) => {
+            const {
+              shapes,
+              tabs,
+              userVariables: newUserVariables,
+              shapeCount: newShapeCount,
+            } = response.data;
 
-          const newShapes = createShapesFromResponse(shapes);
+            shapeCount.current = newShapeCount;
 
-          isLoadFromDb.current = true;
-          setShapes(newShapes);
+            const newShapes = createShapesFromResponse(shapes);
 
-          updateNextItems(newShapes);
+            isLoadFromDb.current = true;
+            setShapes(newShapes);
 
-          setUserVariables(newUserVariables);
+            updateNextItems(newShapes);
 
-          setTabs(tabs);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
+            setUserVariables(newUserVariables);
+
+            setTabs(tabs);
+          })
+          .catch((error) => {
+            // if internal server error; retry twice after 2 seconds
+            if (
+              error.response &&
+              error.response.status === 500 &&
+              retries > 0
+            ) {
+              retries--;
+              setTimeout(makeRequest, 2000);
+            } else {
+              console.error(error);
+            }
+          });
+      }
+    };
+
+    makeRequest();
   }
 
   function createShapesFromResponse(shapes) {
