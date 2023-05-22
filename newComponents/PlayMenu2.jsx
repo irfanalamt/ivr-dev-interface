@@ -86,6 +86,7 @@ const PlayMenu = ({
     shape.setText(name);
     clearAndDraw();
 
+    validateBeforeSave();
     const validItems = items.filter((i) => i.action);
     shape.setUserValues({
       items: validItems,
@@ -103,6 +104,21 @@ const PlayMenu = ({
     } else {
       shape.isComplete = false;
     }
+  }
+
+  function validateBeforeSave() {
+    const newItems = [...items];
+
+    for (const item of newItems) {
+      if (!item.prompt && !item.isDefault) {
+        item.promptError = 'prompt is required';
+      }
+      if (!item.action) {
+        item.actionError = 'action is required';
+      }
+    }
+
+    setItems(newItems);
   }
 
   function handleNameChange(e) {
@@ -194,6 +210,13 @@ const PlayMenu = ({
   function handleItemFieldChange(name, value, index) {
     const updatedItems = [...items];
     updatedItems[index][name] = value;
+    if (
+      name === 'action' &&
+      value &&
+      updatedItems[index].actionError == 'action is required'
+    ) {
+      delete updatedItems[index].actionError;
+    }
     setItems(updatedItems);
   }
 
@@ -658,6 +681,10 @@ const PlayMenu = ({
                         py: 0.5,
                         borderRadius: 1,
                         width: 'max-content',
+                        visibility:
+                          item.actionError || item.promptError
+                            ? 'visible'
+                            : 'hidden',
                       }}
                       variant='subtitle2'>
                       {item.actionError || item.promptError}
@@ -677,8 +704,10 @@ const PlayMenu = ({
                         handleItemFieldChange('transferPoint', undefined, i);
                         handleItemFieldChange('messagePrompt', undefined, i);
                         handleItemFieldChange('prompt', '', i);
-                        handleItemFieldChange('actionError', '', i);
+
+                        // handleItemFieldChange('actionError', '', i);
                         handleItemFieldChange('promptError', '', i);
+                        // console.log('item.isDefault', item.isDefault);
                       }}
                       sx={{mt: -1, ml: -1}}
                     />

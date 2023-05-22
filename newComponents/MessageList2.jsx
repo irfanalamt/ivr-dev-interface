@@ -57,7 +57,10 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
   ];
 
   function handleAddNewMessage() {
-    setMessageList((prev) => [...prev, {type: currentType, item: ''}]);
+    setMessageList((prev) => [
+      ...prev,
+      {type: currentType, item: '', error: 'required'},
+    ]);
     setCurrentType('');
   }
 
