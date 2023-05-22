@@ -258,8 +258,13 @@ const PlayMenu = ({
       return;
     }
 
+    const shapeItems = shape.userValues.items.map(
+      ({nextItem, ...rest}) => rest
+    );
+    const expectedItems = items.map(({nextItem, ...rest}) => rest);
+
     const shapeString = JSON.stringify({
-      items: shape.userValues.items,
+      items: shapeItems,
       description: shape.userValues.description,
       previousMenuId: shape.userValues.previousMenuId,
       optionalParams: shape.userValues.optionalParams,
@@ -267,7 +272,7 @@ const PlayMenu = ({
     });
 
     const expectedString = JSON.stringify({
-      items,
+      items: expectedItems,
       description,
       previousMenuId,
       optionalParams: addedOptionalParams,

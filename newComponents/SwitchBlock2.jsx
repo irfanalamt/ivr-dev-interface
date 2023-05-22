@@ -102,32 +102,28 @@ const SwitchBlock = ({
     }
   }
   function handleSaveAndClose() {
+    const defaultShape = {
+      actions: actions.map(({nextItem, ...rest}) => rest),
+      defaultAction,
+    };
+
     if (!shape.userValues) {
-      const expectedString = JSON.stringify({
-        actions,
-        defaultAction,
-      });
+      const expectedString = JSON.stringify(defaultShape);
 
       if (expectedString.length === 68) {
         handleCloseDrawer();
       } else {
         setShowDialog(true);
       }
-
       return;
     }
 
-    const shapeString = JSON.stringify({
-      actions: shape.userValues.actions,
+    const userShape = {
+      actions: shape.userValues.actions.map(({nextItem, ...rest}) => rest),
       defaultAction: shape.userValues.defaultAction,
-    });
+    };
 
-    const expectedString = JSON.stringify({
-      actions,
-      defaultAction,
-    });
-
-    if (shapeString === expectedString) {
+    if (JSON.stringify(userShape) === JSON.stringify(defaultShape)) {
       handleSave();
       handleCloseDrawer();
     } else {
