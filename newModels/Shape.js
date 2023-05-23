@@ -208,11 +208,25 @@ class Shape {
       userValues: this.userValues
         ? this.addNextItemIdUserValues(this.userValues)
         : null,
-      nextItemId: this.nextItem?.id || null,
+      nextItemId: this.nextItem ? this.nextItem.id : null,
       id: this.id,
       functionString: this.functionString,
       isComplete: this.isComplete,
     };
+
+    if (this.type === 'playConfirm') {
+      if (this.yes && this.yes.nextItem) {
+        newShape.yes = {
+          nextItemId: this.yes.nextItem.id,
+        };
+      }
+
+      if (this.no && this.no.nextItem) {
+        newShape.no = {
+          nextItemId: this.no.nextItem.id,
+        };
+      }
+    }
 
     return newShape;
   }

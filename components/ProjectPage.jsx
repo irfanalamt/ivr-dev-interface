@@ -122,13 +122,18 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         userValues,
         isComplete,
       } = shape;
-      const newShape = new Shape(x, y, type, pageNumber);
 
+      const newShape = new Shape(x, y, type, pageNumber);
       newShape.text = text;
       newShape.id = id;
       newShape.functionString = functionString;
       newShape.nextItemId = nextItemId;
       newShape.isComplete = isComplete;
+
+      if (type === 'playConfirm') {
+        newShape.yes = shape.yes ?? {};
+        newShape.no = shape.no ?? {};
+      }
 
       if (userValues) {
         newShape.setUserValues(JSON.parse(userValues));
@@ -144,6 +149,8 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         updatePlayMenuNextItems(shape, newShapes);
       } else if (shape.type === 'switch') {
         updateSwitchNextItems(shape, newShapes);
+      } else if (shape.type === 'playConfirm') {
+        updatePlayConfirmNextItems(shape, newShapes);
       } else if (shape.type === 'jumper' && shape.userValues?.type === 'exit') {
         updateJumperNextItem(shape, newShapes);
       } else if (shape.nextItemId) {
@@ -180,6 +187,16 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         shape.userValues.defaultActionNextItemId,
         newShapes
       );
+    }
+  }
+
+  function updatePlayConfirmNextItems(shape, newShapes) {
+    if (shape.yes.nextItemId) {
+      shape.yes.nextItem = getShapeById(shape.yes.nextItemId, newShapes);
+    }
+
+    if (shape.no.nextItemId) {
+      shape.no.nextItem = getShapeById(shape.no.nextItemId, newShapes);
     }
   }
 
