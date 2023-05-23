@@ -96,6 +96,9 @@ function generateCode(shape, variables) {
   if (shape.type === 'switch') {
     return generateSwitchCode(shape);
   }
+  if (shape.type === 'playConfirm') {
+    return generatePlayConfirmCode(shape, variables);
+  }
   const typesToInclude = [
     'setParams',
     'playMessage',
@@ -175,6 +178,32 @@ function generateSwitchCode(shape) {
   return outerCode;
 }
 
+function generatePlayConfirmCode(shape, variables) {
+  shape.generateAndSetFunctionString(variables);
+  let driverFunctionsString = '';
+
+  if (shape.yes.nextItem) {
+    const yesFlowShapes = getShapesTillMenuOrSwitch(shape.yes.nextItem);
+    const code = `this.${shape.text}_yes=async function(){
+      try{${yesFlowShapes
+        .map(getDriverFunctionShapeCode)
+        .join('')}}catch(err){ IVR.error('Error in ${shape.text}_yes', err);}
+                };`;
+    driverFunctionsString += code;
+  }
+  if (shape.no.nextItem) {
+    const noFlowShapes = getShapesTillMenuOrSwitch(shape.no.nextItem);
+    const code = `this.${shape.text}_no=async function(){
+      try{${noFlowShapes
+        .map(getDriverFunctionShapeCode)
+        .join('')}}catch(err){ IVR.error('Error in ${shape.text}_no', err);}
+                };`;
+    driverFunctionsString += code;
+  }
+
+  return shape.functionString + driverFunctionsString;
+}
+
 function getNextShapes(shape) {
   let nextShapes = [];
 
@@ -192,6 +221,13 @@ function getNextShapes(shape) {
     });
     if (shape.userValues?.defaultActionNextItem) {
       nextShapes.push(shape.userValues.defaultActionNextItem);
+    }
+  } else if (shape.type === 'playConfirm') {
+    if (shape.yes.nextItem) {
+      nextShapes.push(shape.yes.nextItem);
+    }
+    if (shape.no.nextItem) {
+      nextShapes.push(shape.no.nextItem);
     }
   } else if (
     shape.type === 'jumper' &&
