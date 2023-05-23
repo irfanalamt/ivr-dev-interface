@@ -63,6 +63,8 @@ class Shape {
       case 'playConfirm':
         this.width = 150;
         this.height = 40;
+        this.yes = {};
+        this.no = {};
         break;
 
       case 'endFlow':
@@ -647,6 +649,32 @@ class Shape {
     return [this.x, this.y];
   }
 
+  getRelativeExitCoordinatesPlayConfirm(
+    shape2,
+    exitType,
+    hasSameNextShape = false
+  ) {
+    const isYesType = exitType === 'yes';
+    const isNoType = exitType === 'no';
+    const defaultY = this.y + this.height / 2;
+
+    let [exitPointX, exitPointY] = hasSameNextShape
+      ? isYesType
+        ? [this.x, defaultY]
+        : [this.x + 20, defaultY]
+      : this.findIntersectionPoint(shape2.x, shape2.y);
+
+    if (isYesType) {
+      this.yes.exitPoint = {x: exitPointX, y: exitPointY};
+    }
+
+    if (isNoType) {
+      this.no.exitPoint = {x: exitPointX, y: exitPointY};
+    }
+
+    return [exitPointX, exitPointY];
+  }
+
   getRelativeEntryCoordinates(shape1) {
     if (['connector', 'endFlow', 'jumper'].includes(this.type)) {
       return this.getCircularCoordinates(shape1.x, shape1.y);
@@ -919,86 +947,20 @@ class Shape {
   }
 
   isMouseNearExitPoint(x, y) {
-    let exitX, exitY;
-
     if (['endFlow', 'connector', 'jumper'].includes(this.type)) {
       return this.isMouseNearExitPointCircularShape(x, y);
     }
 
-    let exitPointCount = 0;
-
-    if (this.type === 'playMenu') {
-      return this.isMouseNearExitPointPlayMenu(x, y);
-    } else if (this.type === 'switch') {
-      return this.isMouseNearExitPointSwitch(x, y);
-      exitPointCount = (this.userValues?.actions?.length || 0) + 1;
-    } else {
-      exitPointCount = 1;
+    switch (this.type) {
+      case 'playMenu':
+        return this.isMouseNearExitPointPlayMenu(x, y);
+      case 'switch':
+        return this.isMouseNearExitPointSwitch(x, y);
+      case 'playConfirm':
+        return this.isMouseNearExitPointPlayConfirm(x, y);
+      default:
+        return this.isMouseNearExitPointSingleExit(x, y);
     }
-
-    if (exitPointCount === 1) {
-      if (this.exitPoint) {
-        [exitX, exitY] = [this.exitPoint.x, this.exitPoint.y];
-      } else {
-        [exitX, exitY] = this.getBottomCoordinates();
-      }
-
-      const distance = Math.hypot(x - exitX, y - exitY);
-
-      if (distance <= 4) {
-        return {
-          totalPoints: 1,
-          position: 1,
-          name: 'default',
-          exitX,
-          exitY,
-        };
-      } else {
-        return false;
-      }
-    }
-
-    if (exitPointCount > 1) {
-      let minDistance = Infinity;
-      let minPoint = null;
-      let minPosition = null;
-
-      for (let i = 1; i <= exitPointCount; i++) {
-        const [pointX, pointY] = this.getBottomCoordinatesMultiExit(
-          i,
-          exitPointCount
-        );
-        const distance = Math.hypot(x - pointX, y - pointY);
-
-        if (distance < minDistance) {
-          minDistance = distance;
-          minPoint = [pointX, pointY];
-          minPosition = i;
-        }
-      }
-
-      [exitX, exitY] = minPoint;
-      const distance = Math.hypot(x - exitX, y - exitY);
-
-      if (distance <= 4) {
-        const name =
-          this.type === 'switch' && minPosition === exitPointCount
-            ? this.userValues.defaultAction
-            : this.getExitPointNameAtPosition(minPosition);
-
-        return {
-          totalPoints: exitPointCount,
-          position: minPosition,
-          name,
-          exitX,
-          exitY,
-        };
-      } else {
-        return false;
-      }
-    }
-
-    return false;
   }
 
   isMouseNearExitPointCircularShape(x, y) {
@@ -1141,6 +1103,73 @@ class Shape {
     }
   }
 
+  isMouseNearExitPointPlayConfirm(x, y) {
+    let yesPointX, yesPointY, noPointX, noPointY;
+    if (this.yes?.exitPoint) {
+      yesPointX = this.yes.exitPoint.x;
+      yesPointY = this.yes.exitPoint.y;
+    } else {
+      yesPointX = this.x;
+      yesPointY = this.y + this.height / 2;
+    }
+
+    const yesDistance = Math.hypot(x - yesPointX, y - yesPointY);
+
+    if (this.no?.exitPoint) {
+      noPointX = this.no.exitPoint.x;
+      noPointY = this.no.exitPoint.y;
+    } else {
+      noPointX = this.x + 20;
+      noPointY = this.y + this.height / 2;
+    }
+
+    const noDistance = Math.hypot(x - noPointX, y - noPointY);
+
+    if (yesDistance < noDistance) {
+      if (yesDistance <= 4) {
+        return {
+          totalPoints: 2,
+          position: 1,
+          name: 'yes',
+          exitX: yesPointX,
+          exitY: yesPointY,
+        };
+      } else return false;
+    } else {
+      if (noDistance <= 4) {
+        return {
+          totalPoints: 2,
+          position: 2,
+          name: 'no',
+          exitX: noPointX,
+          exitY: noPointY,
+        };
+      } else return false;
+    }
+  }
+  isMouseNearExitPointSingleExit(x, y) {
+    let exitX, exitY;
+    if (this.exitPoint) {
+      [exitX, exitY] = [this.exitPoint.x, this.exitPoint.y];
+    } else {
+      [exitX, exitY] = this.getBottomCoordinates();
+    }
+
+    const distance = Math.hypot(x - exitX, y - exitY);
+
+    if (distance <= 4) {
+      return {
+        totalPoints: 1,
+        position: 1,
+        name: 'default',
+        exitX,
+        exitY,
+      };
+    } else {
+      return false;
+    }
+  }
+
   clearExitPoint() {
     delete this.exitPoint;
   }
@@ -1239,6 +1268,8 @@ class Shape {
       this.drawExitPointPlayMenu(ctx);
     } else if (this.type === 'switch') {
       this.drawExitPointSwitch(ctx);
+    } else if (this.type === 'playConfirm') {
+      this.drawExitPointPlayConfirm(ctx);
     } else {
       this.drawSingleExitPoint(ctx);
     }
@@ -1346,6 +1377,46 @@ class Shape {
 
       ctx.fill();
     }
+  }
+
+  drawExitPointPlayConfirm(ctx) {
+    const dotRadius = 1.9;
+
+    // draw exit point for 'yes'
+    ctx.beginPath();
+    if (this.yes.exitPoint) {
+      ctx.arc(
+        this.yes.exitPoint.x,
+        this.yes.exitPoint.y,
+        dotRadius * 2,
+        0,
+        2 * Math.PI
+      );
+    } else {
+      ctx.arc(this.x, this.y + this.height / 2, dotRadius * 2, 0, 2 * Math.PI);
+    }
+    ctx.fill();
+
+    // draw exit point for 'no'
+    ctx.beginPath();
+    if (this.no.exitPoint) {
+      ctx.arc(
+        this.no.exitPoint.x,
+        this.no.exitPoint.y,
+        dotRadius * 2,
+        0,
+        2 * Math.PI
+      );
+    } else {
+      ctx.arc(
+        this.x + 20,
+        this.y + this.height / 2,
+        dotRadius * 2,
+        0,
+        2 * Math.PI
+      );
+    }
+    ctx.fill();
   }
 
   drawShape(ctx) {

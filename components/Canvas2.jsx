@@ -543,7 +543,11 @@ const CanvasTest = ({
       let x1, y1;
       if (['connector', 'endFlow', 'jumper'].includes(shape1.type)) {
         [x1, y1] = shape1.getCircularCoordinates(realX, realY);
-      } else if (shape1.type === 'playMenu' || shape1.type === 'switch') {
+      } else if (
+        shape1.type === 'playMenu' ||
+        shape1.type === 'switch' ||
+        shape1.type === 'playConfirm'
+      ) {
         [x1, y1] = [
           connectingShapes.current.exitPoint.exitX,
           connectingShapes.current.exitPoint.exitY,
@@ -572,7 +576,11 @@ const CanvasTest = ({
           const exitPoint = shape.isMouseNearExitPoint(realX, realY);
           if (exitPoint) {
             canvasRef.current.style.cursor = 'crosshair';
-            if (shape.type == 'playMenu' || shape.type == 'switch') {
+            if (
+              shape.type == 'playMenu' ||
+              shape.type == 'switch' ||
+              shape.type == 'playConfirm'
+            ) {
               setExitPointTooltip({
                 text: exitPoint.name,
                 mouseX: clientX,
@@ -649,6 +657,15 @@ const CanvasTest = ({
           shape1.userValues.actions[index].nextItem = undefined;
         }
       }
+    } else if (shape1.type === 'playConfirm') {
+      const {name} = connectingShapes.current.exitPoint;
+
+      if (name === 'yes') {
+        delete shape1.yes.nextItem;
+      }
+      if (name === 'no') {
+        delete shape1.no.nextItem;
+      }
     } else {
       shape1.nextItem = undefined;
     }
@@ -684,6 +701,13 @@ const CanvasTest = ({
         if (action) {
           action.nextItem = shape2;
         }
+      }
+    } else if (shape1.type === 'playConfirm') {
+      const exitPointName = connectingShapes.current.exitPoint.name;
+      if (exitPointName === 'yes') {
+        shape1.yes.nextItem = shape2;
+      } else {
+        shape1.no.nextItem = shape2;
       }
     } else if (shape2.nextItem === shape1) {
       return;

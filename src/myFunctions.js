@@ -213,93 +213,97 @@ function getConnectingLines(shapes) {
   const connections = [];
 
   for (const shape of shapes) {
-    if (shape.type === 'playMenu') {
-      const filteredItems = shape.userValues?.items?.filter(
-        (item) => !item.isDefault
-      );
+    let items;
+    let shape2;
+    let x1, y1, x2, y2;
+    const userValues = shape.userValues;
 
-      if (!filteredItems?.length) {
-        continue;
-      }
+    switch (shape.type) {
+      case 'playMenu':
+        items = userValues?.items?.filter((item) => !item.isDefault);
+        if (!items?.length) continue;
 
-      const shape2Count = new Map();
-
-      for (const item of filteredItems) {
-        const shape2 = item.nextItem;
-        let duplicateCount = 0;
-
-        if (shape2) {
-          if (shape2Count.has(shape2)) {
-            duplicateCount = shape2Count.get(shape2) + 1;
-            shape2Count.set(shape2, duplicateCount);
-          } else {
-            shape2Count.set(shape2, 1);
+        const shape2Count = new Map();
+        for (const item of items) {
+          shape2 = item.nextItem;
+          if (!shape2) {
+            delete item.exitPoint;
+            continue;
           }
 
-          // duplicateCount= 0 if  no duplicates
-          // duplicateCount= 2 for the first occurrence of a duplicate, and increment the value for subsequent duplicates
+          let duplicateCount = shape2Count.has(shape2)
+            ? shape2Count.get(shape2) + 1
+            : 1;
+          shape2Count.set(shape2, duplicateCount);
 
-          const [x1, y1] = shape.getRelativeExitCoordinatesMenu(
+          [x1, y1] = shape.getRelativeExitCoordinatesMenu(
             shape2,
             item.action,
             duplicateCount
           );
+          [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+          connections.push({x1, y1, x2, y2});
+        }
+        break;
 
-          const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+      case 'switch':
+        items = userValues?.actions ?? [];
+        shape2 = userValues?.defaultActionNextItem;
 
+        if (shape2) {
+          [x1, y1] = shape.getRelativeExitCoordinatesSwitch(
+            shape2,
+            userValues.defaultAction
+          );
+          [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
           connections.push({x1, y1, x2, y2});
         } else {
-          delete item.exitPoint;
+          if (userValues) delete userValues.defaultActionExitPoint;
         }
-      }
-    } else if (shape.type === 'switch') {
-      const items = shape.userValues?.actions ?? [];
 
-      if (shape.userValues?.defaultActionNextItem) {
-        const [x1, y1] = shape.getRelativeExitCoordinatesSwitch(
-          shape.userValues.defaultActionNextItem,
-          shape.userValues.defaultAction
-        );
-        const [x2, y2] =
-          shape.userValues.defaultActionNextItem.getRelativeEntryCoordinates(
-            shape
+        for (const item of items) {
+          shape2 = item.nextItem;
+          if (!shape2) {
+            delete item.exitPoint;
+            continue;
+          }
+
+          [x1, y1] = shape.getRelativeExitCoordinatesSwitch(
+            shape2,
+            item.action
           );
-
-        connections.push({x1, y1, x2, y2});
-      } else {
-        if (shape.userValues) {
-          delete shape.userValues.defaultActionExitPoint;
+          [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+          connections.push({x1, y1, x2, y2});
         }
-      }
+        break;
 
-      for (const [index, item] of items.entries()) {
-        const shape2 = item.nextItem;
-
-        if (!shape2) {
-          delete item.exitPoint;
-          continue;
+      case 'playConfirm':
+        const confirmOptions = ['yes', 'no'];
+        for (const option of confirmOptions) {
+          shape2 = shape[option].nextItem;
+          if (shape2) {
+            [x1, y1] = shape.getRelativeExitCoordinatesPlayConfirm(
+              shape2,
+              option,
+              shape.yes.nextItem === shape.no.nextItem
+            );
+            [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+            connections.push({x1, y1, x2, y2});
+          } else {
+            delete shape[option].exitPoint;
+          }
         }
+        break;
 
-        const [x1, y1] = shape.getRelativeExitCoordinatesSwitch(
-          shape2,
-          item.action
-        );
-        const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
-
-        connections.push({x1, y1, x2, y2});
-      }
-    } else {
-      const shape2 = shape.nextItem;
-
-      if (!shape2) {
-        shape.clearExitPoint();
-        continue;
-      }
-
-      const [x1, y1] = shape.getRelativeExitCoordinates(shape2);
-      const [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
-
-      connections.push({x1, y1, x2, y2});
+      default:
+        shape2 = shape.nextItem;
+        if (shape2) {
+          [x1, y1] = shape.getRelativeExitCoordinates(shape2);
+          [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
+          connections.push({x1, y1, x2, y2});
+        } else {
+          shape.clearExitPoint();
+        }
     }
   }
 
