@@ -83,6 +83,9 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
 
     const newMessages = [...messageList];
     newMessages[index].item = value;
+    if (value && newMessages[index].error === 'required') {
+      newMessages[index].error = undefined;
+    }
     if (name) {
       let errorM = -1;
       errorM = checkValidity(name.toLowerCase(), value);
@@ -101,6 +104,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
 
     const newMessages = [...messageList];
     newMessages[index][name] = checked;
+
     setMessageList(newMessages);
   }
 
