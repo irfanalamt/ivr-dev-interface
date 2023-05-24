@@ -5,6 +5,7 @@ import PromptList from '../newComponents/PromptList';
 import VariableManager from '../newComponents/VariableManager';
 import {
   checkForStartShape,
+  findEntryCount,
   findIsDefaultValuesPresent,
   findIsErrorsPresent,
   formatCode,
@@ -355,6 +356,8 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
       return;
     }
 
+    const elementEntryCount = findEntryCount(shapes);
+
     const functionName = `${ivrName.name}_${ivrName.version}`;
 
     const globalParamsString =
@@ -398,7 +401,8 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
 
     const allFunctionStringsAndDriverFunctions = traverseAndReturnString(
       startShape,
-      userVariables
+      userVariables,
+      elementEntryCount
     );
 
     const endProjectBraces = `} \n\n `;

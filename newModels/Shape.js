@@ -1,4 +1,8 @@
-import {replaceVariablesInLog} from '../src/codeGeneration';
+import {
+  getDriverFunctionShapeCode,
+  getShapesTillMenuOrSwitch,
+  replaceVariablesInLog,
+} from '../src/codeGeneration';
 import {
   calculateDistance,
   deleteDollar,
@@ -231,7 +235,7 @@ class Shape {
     return newShape;
   }
 
-  generateAndSetFunctionString(variables) {
+  generateAndSetFunctionString(variables, elementEntryCount = {}) {
     switch (this.type) {
       case 'setParams':
         this.setFunctionStringSetParams();
@@ -260,6 +264,10 @@ class Shape {
       case 'playMenu':
         this.setFunctionStringPlayMenu(variables);
         break;
+    }
+    if (elementEntryCount[this.id]) {
+      console.log('multiiii', this.text, this.type);
+      this.generateDriverFunctionMultiEntry(elementEntryCount);
     }
   }
 
@@ -520,6 +528,22 @@ class Shape {
 
     console.log('codeString 📍', codeString);
     this.setFunctionString(codeString);
+  }
+
+  generateDriverFunctionMultiEntry(elementEntryCount) {
+    const shapesInFlow = getShapesTillMenuOrSwitch(
+      this,
+      elementEntryCount,
+      true
+    );
+
+    const code = `this.${this.text}_X=async function(){
+      try{${shapesInFlow
+        .map((shape) => getDriverFunctionShapeCode(shape, true))
+        .join('')}}catch(err){ IVR.error('Error in ${this.text}_X', err);}
+                };`;
+
+    this.functionString += code;
   }
 
   addNextItemIdUserValues(userValues) {

@@ -3,6 +3,8 @@ const prettier = require('prettier');
 const babelParser = require('@babel/parser');
 import {replaceDollarString} from '../src/myFunctions';
 
+let globalMultiEntryCount = {};
+
 function generateInitVariablesJS(userVariables) {
   const codeString = userVariables
     .map((v) => {
@@ -66,8 +68,8 @@ function checkForStartShape(shapes) {
 
   return startShape;
 }
-function traverseAndReturnString(startShape, variables) {
-  const mainMenuCode = generateMainMenuCode(startShape);
+function traverseAndReturnString(startShape, variables, multiEntryCount) {
+  const mainMenuCode = generateMainMenuCode(startShape, multiEntryCount);
   const visitedShapes = new Set();
   const shapeStack = [startShape];
   let codeAndDrivers = '';
@@ -79,7 +81,7 @@ function traverseAndReturnString(startShape, variables) {
     visitedShapes.add(currentShape);
     console.log(' ➡️' + currentShape.text);
 
-    codeAndDrivers += generateCode(currentShape, variables);
+    codeAndDrivers += generateCode(currentShape, variables, multiEntryCount);
 
     const nextShapes = getNextShapes(currentShape);
 
@@ -89,15 +91,16 @@ function traverseAndReturnString(startShape, variables) {
   }
   return mainMenuCode + codeAndDrivers;
 }
-function generateCode(shape, variables) {
+function generateCode(shape, variables, multiEntryCount) {
+  globalMultiEntryCount = multiEntryCount;
   if (shape.type === 'playMenu') {
-    return generateMenuCode(shape, variables);
+    return generateMenuCode(shape, variables, multiEntryCount);
   }
   if (shape.type === 'switch') {
-    return generateSwitchCode(shape);
+    return generateSwitchCode(shape, multiEntryCount);
   }
   if (shape.type === 'playConfirm') {
-    return generatePlayConfirmCode(shape, variables);
+    return generatePlayConfirmCode(shape, variables, multiEntryCount);
   }
   const typesToInclude = [
     'setParams',
@@ -108,14 +111,14 @@ function generateCode(shape, variables) {
     'callAPI',
   ];
   if (typesToInclude.includes(shape.type)) {
-    shape.generateAndSetFunctionString(variables);
+    shape.generateAndSetFunctionString(variables, multiEntryCount);
 
     return shape.functionString;
   }
 
   return '';
 }
-function generateMenuCode(shape, variables) {
+function generateMenuCode(shape, variables, multiEntryCount) {
   shape.generateAndSetFunctionString(variables);
   let driverFunctionsString = '';
   const items = shape.userValues?.items;
@@ -126,7 +129,10 @@ function generateMenuCode(shape, variables) {
 
   items.forEach((item) => {
     if (item.nextItem) {
-      const shapesTillMenuOrSwitch = getShapesTillMenuOrSwitch(item.nextItem);
+      const shapesTillMenuOrSwitch = getShapesTillMenuOrSwitch(
+        item.nextItem,
+        multiEntryCount
+      );
       const code = `this.${shape.text}_${item.action}=async function(){
           try{${shapesTillMenuOrSwitch
             .map(getDriverFunctionShapeCode)
@@ -141,7 +147,7 @@ function generateMenuCode(shape, variables) {
   return shape.functionString + driverFunctionsString;
 }
 
-function generateSwitchCode(shape) {
+function generateSwitchCode(shape, multiEntryCount) {
   const actions = shape.userValues?.actions;
 
   if (!actions.length) {
@@ -151,7 +157,10 @@ function generateSwitchCode(shape) {
   let ifCode = '';
   shape.userValues?.actions?.forEach((action) => {
     if (action.nextItem) {
-      const actionFlowShapes = getShapesTillMenuOrSwitch(action.nextItem);
+      const actionFlowShapes = getShapesTillMenuOrSwitch(
+        action.nextItem,
+        multiEntryCount
+      );
       ifCode += `${!ifCode ? 'if' : 'else if'}(${replaceDollarString(
         action.condition
       )}){${actionFlowShapes?.map(getDriverFunctionShapeCode).join('')}}`;
@@ -159,7 +168,10 @@ function generateSwitchCode(shape) {
   });
 
   const defaultNextItem = shape.userValues.defaultActionNextItem;
-  const defaultFlowShapes = getShapesTillMenuOrSwitch(defaultNextItem);
+  const defaultFlowShapes = getShapesTillMenuOrSwitch(
+    defaultNextItem,
+    multiEntryCount
+  );
   const elseFlowShapesCode = defaultFlowShapes
     ? defaultFlowShapes.map(getDriverFunctionShapeCode).join('')
     : '';
@@ -178,12 +190,15 @@ function generateSwitchCode(shape) {
   return outerCode;
 }
 
-function generatePlayConfirmCode(shape, variables) {
-  shape.generateAndSetFunctionString(variables);
+function generatePlayConfirmCode(shape, variables, multiEntryCount) {
+  shape.generateAndSetFunctionString(variables, multiEntryCount);
   let driverFunctionsString = '';
 
   if (shape.yes.nextItem) {
-    const yesFlowShapes = getShapesTillMenuOrSwitch(shape.yes.nextItem);
+    const yesFlowShapes = getShapesTillMenuOrSwitch(
+      shape.yes.nextItem,
+      multiEntryCount
+    );
     const code = `this.${shape.text}_yes=async function(){
       try{${yesFlowShapes
         .map(getDriverFunctionShapeCode)
@@ -192,7 +207,10 @@ function generatePlayConfirmCode(shape, variables) {
     driverFunctionsString += code;
   }
   if (shape.no.nextItem) {
-    const noFlowShapes = getShapesTillMenuOrSwitch(shape.no.nextItem);
+    const noFlowShapes = getShapesTillMenuOrSwitch(
+      shape.no.nextItem,
+      multiEntryCount
+    );
     const code = `this.${shape.text}_no=async function(){
       try{${noFlowShapes
         .map(getDriverFunctionShapeCode)
@@ -248,8 +266,11 @@ function getNextShapes(shape) {
   return nextShapes;
 }
 
-function generateMainMenuCode(startShape) {
-  const shapesTillMenuOrSwitch = getShapesTillMenuOrSwitch(startShape);
+function generateMainMenuCode(startShape, multiEntryCount) {
+  const shapesTillMenuOrSwitch = getShapesTillMenuOrSwitch(
+    startShape,
+    multiEntryCount
+  );
 
   const mainMenuString = `this.ivrMain = async function(){
 try{${shapesTillMenuOrSwitch.map(getDriverFunctionShapeCode).join('')}}
@@ -259,15 +280,23 @@ catch(err) { IVR.error('Error in ivrMain', err); }
   return mainMenuString;
 }
 
-function getShapesTillMenuOrSwitch(startShape) {
-  // Avoid shapes that are not relevant for final script
-  if (!startShape) return;
+function getShapesTillMenuOrSwitch(
+  startShape,
+  multiEntryCount = {},
+  isMultiEntryDriver = false
+) {
+  if (!startShape) {
+    return;
+  }
 
   const typesToIgnore = ['connector', 'jumper'];
   const shapesArray = [];
 
   if (!typesToIgnore.includes(startShape.type)) {
     shapesArray.push(startShape);
+  }
+  if (multiEntryCount[startShape.id] && !isMultiEntryDriver) {
+    return shapesArray;
   }
 
   let nextShape = getNextShapeForSingleExit(startShape);
@@ -276,6 +305,9 @@ function getShapesTillMenuOrSwitch(startShape) {
     if (!typesToIgnore.includes(nextShape.type)) {
       shapesArray.push(nextShape);
     }
+    if (multiEntryCount[nextShape.id]) {
+      break;
+    }
 
     nextShape = getNextShapeForSingleExit(nextShape);
   }
@@ -283,13 +315,15 @@ function getShapesTillMenuOrSwitch(startShape) {
   return shapesArray;
 }
 
-function getDriverFunctionShapeCode(shape) {
+function getDriverFunctionShapeCode(shape, isMultiEntryDriver = false) {
   if (shape.type === 'endFlow') {
     if (shape.userValues?.type === 'disconnect') {
       return 'IVR.doDisconnect();';
     } else if (shape.userValues?.transferPoint) {
       return `IVR.doTransfer('${shape.userValues.transferPoint}');`;
     }
+  } else if (globalMultiEntryCount[shape.id] && !isMultiEntryDriver) {
+    return `await this.${shape.text}_X();`;
   } else {
     return `await this.${shape.text}();`;
   }
@@ -321,6 +355,34 @@ function replaceVariablesInLog(text, variables) {
 
   return `\`${text}\``;
 }
+function findEntryCount(shapes) {
+  let entryCountObj = {};
+  for (let shape of shapes) {
+    const nextShapes = getNextShapes(shape);
+
+    const typesToIgnore = ['playMenu', 'switch', 'playConfirm'];
+
+    for (let nextShape of nextShapes) {
+      if (
+        entryCountObj[nextShape.id] &&
+        !typesToIgnore.includes(nextShape.type)
+      ) {
+        entryCountObj[nextShape.id] += 1;
+      } else {
+        entryCountObj[nextShape.id] = 1;
+      }
+    }
+  }
+
+  // remove entries with a count of 1
+  for (let key in entryCountObj) {
+    if (entryCountObj[key] === 1) {
+      delete entryCountObj[key];
+    }
+  }
+
+  return entryCountObj;
+}
 
 export {
   generateInitVariablesJS,
@@ -330,4 +392,7 @@ export {
   traverseAndReturnString,
   formatCode,
   replaceVariablesInLog,
+  findEntryCount,
+  getShapesTillMenuOrSwitch,
+  getDriverFunctionShapeCode,
 };
