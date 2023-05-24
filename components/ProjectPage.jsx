@@ -357,6 +357,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
     }
 
     const elementEntryCount = findEntryCount(shapes);
+    console.log('🚀 ~ generateJS ~ elementEntryCount:', elementEntryCount);
 
     const functionName = `${ivrName.name}_${ivrName.version}`;
 

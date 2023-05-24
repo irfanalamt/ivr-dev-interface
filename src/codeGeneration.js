@@ -135,7 +135,7 @@ function generateMenuCode(shape, variables, multiEntryCount) {
       );
       const code = `this.${shape.text}_${item.action}=async function(){
           try{${shapesTillMenuOrSwitch
-            .map(getDriverFunctionShapeCode)
+            .map((shape) => getDriverFunctionShapeCode(shape, false))
             .join('')}}catch(err){ IVR.error('Error in ${shape.text}_${
         item.action
       }', err);}
@@ -163,7 +163,9 @@ function generateSwitchCode(shape, multiEntryCount) {
       );
       ifCode += `${!ifCode ? 'if' : 'else if'}(${replaceDollarString(
         action.condition
-      )}){${actionFlowShapes?.map(getDriverFunctionShapeCode).join('')}}`;
+      )}){${actionFlowShapes
+        ?.map((shape) => getDriverFunctionShapeCode(shape, false))
+        .join('')}}`;
     }
   });
 
@@ -173,7 +175,9 @@ function generateSwitchCode(shape, multiEntryCount) {
     multiEntryCount
   );
   const elseFlowShapesCode = defaultFlowShapes
-    ? defaultFlowShapes.map(getDriverFunctionShapeCode).join('')
+    ? defaultFlowShapes
+        .map((shape) => getDriverFunctionShapeCode(shape, false))
+        .join('')
     : '';
   const elseCode =
     elseFlowShapesCode && ifCode ? `else{${elseFlowShapesCode}}` : '';
@@ -201,7 +205,7 @@ function generatePlayConfirmCode(shape, variables, multiEntryCount) {
     );
     const code = `this.${shape.text}_yes=async function(){
       try{${yesFlowShapes
-        .map(getDriverFunctionShapeCode)
+        .map((shape) => getDriverFunctionShapeCode(shape, false))
         .join('')}}catch(err){ IVR.error('Error in ${shape.text}_yes', err);}
                 };`;
     driverFunctionsString += code;
@@ -213,7 +217,7 @@ function generatePlayConfirmCode(shape, variables, multiEntryCount) {
     );
     const code = `this.${shape.text}_no=async function(){
       try{${noFlowShapes
-        .map(getDriverFunctionShapeCode)
+        .map((shape) => getDriverFunctionShapeCode(shape, false))
         .join('')}}catch(err){ IVR.error('Error in ${shape.text}_no', err);}
                 };`;
     driverFunctionsString += code;
@@ -273,7 +277,9 @@ function generateMainMenuCode(startShape, multiEntryCount) {
   );
 
   const mainMenuString = `this.ivrMain = async function(){
-try{${shapesTillMenuOrSwitch.map(getDriverFunctionShapeCode).join('')}}
+try{${shapesTillMenuOrSwitch
+    .map((shape) => getDriverFunctionShapeCode(shape, false))
+    .join('')}}
 catch(err) { IVR.error('Error in ivrMain', err); }
     };`;
 
