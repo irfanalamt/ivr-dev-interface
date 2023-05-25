@@ -31,8 +31,9 @@ const PeekMenu = ({shape}) => {
             {shape.userValues.messageList.map((m, i) => (
               <Box sx={{display: 'flex', alignItems: 'center'}} key={i}>
                 <Typography sx={{fontSize: 'small'}}>
-                  {i === 0 && '['} {`${m.item}`}
-                  {i !== shape.userValues.messageList.length - 1 && ','}
+                  {i === 0 && '['}&nbsp;
+                  {`${m.item}`}
+                  {i !== shape.userValues.messageList.length - 1 && ','}&nbsp;
                   {i === shape.userValues.messageList.length - 1 && ']'}
                 </Typography>
               </Box>
