@@ -717,7 +717,7 @@ const CanvasTest = ({
   }
 
   function shouldDisplayPeekMenu(shape) {
-    if (['setParams', 'runScript', 'connector'].includes(shape.type)) {
+    if (['endFlow', 'connector', 'jumper'].includes(shape.type)) {
       return;
     }
 
@@ -735,6 +735,15 @@ const CanvasTest = ({
     }
 
     if (shape.type === 'switch' && shape.userValues?.actions.length > 0) {
+      setOpenPeekMenu(shape);
+      return;
+    }
+    if (shape.type === 'runScript' && shape.userValues?.script.length > 0) {
+      setOpenPeekMenu(shape);
+      return;
+    }
+
+    if (shape.type === 'setParams' && shape.userValues?.params.length > 0) {
       setOpenPeekMenu(shape);
       return;
     }
