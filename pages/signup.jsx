@@ -179,7 +179,7 @@ const Signup = () => {
             mb: 1,
           }}
           onClick={handleSignup}>
-          Sign Up
+          Send Email Verification
         </Button>
         <Button
           fullWidth
