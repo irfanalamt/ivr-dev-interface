@@ -429,17 +429,11 @@ function calculateDistance(x1, y1, x2, y2) {
   return distance;
 }
 
-function generateEmailToken() {
-  //random 5 digit number between 10000 and 99999
-  const token = Math.floor(Math.random() * 90000) + 10000;
-  return token;
-}
-function generateConfirmationLink(email, token) {
-  const confirmationLink = `https://ivr-dev-framework.vercel.app/confirm/${token}?email=${encodeURIComponent(
-    email
-  )}`;
+function generateOTP() {
+  // random number between 1000 and 9999 (inclusive)
+  const randomNumber = Math.floor(Math.random() * 9000) + 1000;
 
-  return confirmationLink;
+  return randomNumber;
 }
 
 export {
@@ -458,6 +452,5 @@ export {
   validateEmail,
   stringifySafe,
   calculateDistance,
-  generateEmailToken,
-  generateConfirmationLink,
+  generateOTP,
 };

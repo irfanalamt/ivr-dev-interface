@@ -1,57 +1,59 @@
 import client from '../../src/db';
-import {
-  generateConfirmationLink,
-  generateEmailToken,
-} from '../../src/myFunctions';
+import {generateOTP} from '../../src/myFunctions';
 import sendEmail from '../../src/sendEmail';
 
 async function user(req, res) {
   if (req.method === 'POST') {
-    const {name, email, password} = req.body;
+    const {name, email} = req.body;
 
     try {
       await client.connect();
 
       const usersCollection = client.db('ivrStudio').collection('users');
-      const existingUser = await usersCollection.findOne({email});
-
-      if (existingUser) {
-        return res.status(409).json({message: 'Email already registered'});
-      }
-
-      const emailToken = generateEmailToken();
-      const confirmationLink = generateConfirmationLink(email, emailToken);
-
-      const result = await usersCollection.insertOne({
-        name,
+      const existingUser = await usersCollection.findOne({
         email,
-        password,
-        timestamp: Date.now(),
-        emailToken,
-        isEmailVerified: false,
+        isEmailVerified: true,
       });
 
+      if (existingUser) {
+        return res.status(409).json({message: 'Email already registered.'});
+      }
+
+      const OTP = generateOTP();
+
+      const filter = {email};
+      const update = {
+        $set: {
+          name,
+          email,
+          timestamp: Date.now(),
+          otp: OTP,
+          isEmailVerified: false,
+        },
+      };
+      const options = {upsert: true};
+
+      const result = await usersCollection.updateOne(filter, update, options);
+
       const success = await sendEmail(
-        'irfanalamt@gmail.com',
-        'Test Email',
-        `This is a test email from IVR STUDIO. ${confirmationLink}`
+        email,
+        'Email Verification OTP',
+        `Your OTP is: ${OTP}`
       );
 
       if (success) {
-        console.log('Email sent successfully!');
+        return res.status(200).json({message: 'OTP successfully sent.'});
       } else {
-        console.log('Failed to send email.');
+        return res.status(500).json({message: 'Error, OTP could not be sent.'});
       }
-
-      return res
-        .status(201)
-        .json({message: 'Details saved. Pending admin approval.'});
     } catch (error) {
       console.error(error);
-      return res.status(500).json({message: 'Internal Server Error'});
+      return res.status(500).json({message: 'Internal Server Error.'});
     } finally {
       await client.close();
     }
+  } else {
+    return res.status(405).json({message: 'Method not allowed.'});
   }
 }
 
