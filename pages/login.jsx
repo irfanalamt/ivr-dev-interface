@@ -72,7 +72,7 @@ const LoginPage = ({updateUser}) => {
         updateUser(token);
         setTimeout(() => {
           router.push('/home');
-        }, [2500]);
+        }, 2500);
       }
       return true;
     } catch (error) {
