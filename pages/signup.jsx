@@ -30,6 +30,7 @@ const Signup = () => {
   const [step, setStep] = useState(1);
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
+  const [isDisabled, setIsDisabled] = useState(false);
 
   function handleChange(name, value) {
     setFormState((prevState) => ({...prevState, [name]: value}));
@@ -66,16 +67,19 @@ const Signup = () => {
     sendSignupData(data);
   }
   function sendSignupData(data) {
+    setIsDisabled(true);
     axios
       .post('/api/user', data)
       .then((response) => {
         setSuccessText(response.data.message);
         setTimeout(() => {
           setStep(2);
+          setIsDisabled(false);
         }, 1500);
       })
       .catch((error) => {
         setErrorText(error.response.data.message);
+        setIsDisabled(false);
       });
   }
 
@@ -87,6 +91,7 @@ const Signup = () => {
   }
 
   function handleVerification() {
+    setIsDisabled(true);
     axios
       .get('/api/confirm', {
         params: {
@@ -100,11 +105,13 @@ const Signup = () => {
         console.log(response.data.message);
         setTimeout(() => {
           setStep(3);
+          setIsDisabled(false);
         }, 1500);
       })
       .catch(function (error) {
         console.error(error);
         setErrorText(error.response.data.message);
+        setIsDisabled(false);
       });
   }
 
@@ -122,6 +129,7 @@ const Signup = () => {
     }
 
     const hashedPassword = bcrypt.hashSync(password, 10);
+    setIsDisabled(true);
     axios
       .post('/api/setPassword', {
         email,
@@ -132,11 +140,13 @@ const Signup = () => {
         setSuccessText('Registration complete! Please proceed to login.');
         setTimeout(() => {
           router.push('/');
+          setIsDisabled(false);
         }, 2000);
       })
       .catch((error) => {
         console.error(error);
         setErrorText(error.response.data.message);
+        setIsDisabled(false);
       });
   }
 
@@ -231,7 +241,8 @@ const Signup = () => {
                 mt: 2,
                 mb: 1,
               }}
-              onClick={handleSignup}>
+              onClick={handleSignup}
+              disabled={isDisabled}>
               Verify Email
             </Button>
             <Button
@@ -280,7 +291,11 @@ const Signup = () => {
               onChange={(e) => handleChange('otp', e.target.value)}
               error={errors.otp}
             />
-            <Button fullWidth variant='contained' onClick={handleVerification}>
+            <Button
+              fullWidth
+              variant='contained'
+              onClick={handleVerification}
+              disabled={isDisabled}>
               Verify OTP
             </Button>
             <Typography sx={{mt: 1}} variant='body2'>
@@ -313,7 +328,11 @@ const Signup = () => {
               value={formState.confirmPassword}
               onChange={(e) => handleChange('confirmPassword', e.target.value)}
             />
-            <Button onClick={handlePasswordSetup} fullWidth variant='contained'>
+            <Button
+              onClick={handlePasswordSetup}
+              fullWidth
+              variant='contained'
+              disabled={isDisabled}>
               DONE
             </Button>
           </>

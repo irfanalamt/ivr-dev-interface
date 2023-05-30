@@ -1,17 +1,17 @@
 import client from '../../src/db';
 
 export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({error: 'Method Not Allowed'});
+  }
+
+  const {token, email} = req.query;
+
+  if (!token || !email) {
+    return res.status(400).json({error: 'Invalid verification request'});
+  }
+
   try {
-    if (req.method !== 'GET') {
-      return res.status(405).json({error: 'Method Not Allowed'});
-    }
-
-    const {token, email} = req.query;
-
-    if (!token || !email) {
-      return res.status(400).json({error: 'Invalid verification request'});
-    }
-
     await client.connect();
     const usersCollection = client.db('ivrStudio').collection('users');
 
