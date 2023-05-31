@@ -12,6 +12,7 @@ import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {validateEmail} from '../src/myFunctions';
 import axios from 'axios';
 import {useRouter} from 'next/router';
+import Link from 'next/link';
 
 const LoginPage = ({updateUser}) => {
   const router = useRouter();
@@ -152,6 +153,11 @@ const LoginPage = ({updateUser}) => {
           value={formState.password}
           onChange={(e) => handleChange('password', e.target.value)}
         />
+        <Typography variant='body2' sx={{alignSelf: 'flex-start', pt: 0.5}}>
+          <Link style={{textDecoration: 'none'}} href='/resetPassword'>
+            Forgot your password?
+          </Link>
+        </Typography>
         <Button
           fullWidth
           variant='contained'
@@ -162,7 +168,6 @@ const LoginPage = ({updateUser}) => {
           onClick={handleLogin}>
           Sign In
         </Button>
-
         <Typography
           variant='body2'
           component='div'

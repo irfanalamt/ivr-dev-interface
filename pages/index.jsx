@@ -82,6 +82,12 @@ const IndexPage = ({updateUser, user}) => {
       return false;
     }
   }
+  function handleCloseSnackbar(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setErrorText('');
+  }
 
   return (
     <Box
@@ -162,9 +168,7 @@ const IndexPage = ({updateUser, user}) => {
             onChange={(e) => handleChange('password', e.target.value)}
           />
           <Typography variant='body2' sx={{alignSelf: 'flex-start', pt: 0.5}}>
-            <Link
-              style={{textDecoration: 'none', color: 'inherit'}}
-              href='/resetPassword'>
+            <Link style={{textDecoration: 'none'}} href='/resetPassword'>
               Forgot your password?
             </Link>
           </Typography>
