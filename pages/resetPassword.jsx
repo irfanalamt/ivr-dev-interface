@@ -10,17 +10,15 @@ import {
 } from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {useState} from 'react';
-import {validateEmail, validateUserName} from '../src/myFunctions';
+import {validateEmail} from '../src/myFunctions';
 import bcrypt from 'bcryptjs';
 import axios from 'axios';
 import {useRouter} from 'next/router';
 
-const Signup = () => {
+const ResetPassword = () => {
   const router = useRouter();
   const [formState, setFormState] = useState({
-    name: '',
     email: '',
-    confirmEmail: '',
     otp: '',
     password: '',
     confirmPassword: '',
@@ -35,49 +33,46 @@ const Signup = () => {
   function handleChange(name, value) {
     setFormState((prevState) => ({...prevState, [name]: value}));
 
-    if (name === 'name' || name === 'email') {
-      const isValid =
-        name === 'name' ? validateUserName(value) : validateEmail(value);
+    if (name === 'email') {
+      const isValid = validateEmail(value);
       setErrors((prevErrors) => ({...prevErrors, [name]: !isValid}));
     }
   }
 
-  function handleSignup() {
-    const {name, email, confirmEmail} = formState;
+  function handleSendOtp() {
+    const {email} = formState;
 
-    if (!name || !email || !confirmEmail) {
-      setErrorText('Please complete all required fields to sign up.');
+    if (!email) {
+      setErrorText('Please complete all required fields.');
       return;
     }
 
     if (Object.values(errors).some((error) => error)) {
-      setErrorText('Invalid fields detected. Please review and resubmit.');
-      return;
-    }
-
-    if (email !== confirmEmail) {
-      setErrorText('Emails do not match.');
+      setErrorText('Email not valid. Please review and resubmit.');
       return;
     }
 
     setErrorText('');
 
-    const data = {name, email};
-
-    sendSignupData(data);
+    sendResetRequest();
   }
-  function sendSignupData(data) {
+  function sendResetRequest() {
     setIsDisabled(true);
     axios
-      .post('/api/user', data)
-      .then((response) => {
-        setSuccessText(response.data.message);
+      .get('/api/resetPassword', {
+        params: {
+          email: formState.email,
+        },
+      })
+      .then(function (response) {
+        setSuccessText('OTP successfully sent!');
+        console.log(response.data.message);
         setTimeout(() => {
           setStep(2);
           setIsDisabled(false);
         }, 1500);
       })
-      .catch((error) => {
+      .catch(function (error) {
         setErrorText(error.response.data.message);
         setIsDisabled(false);
       });
@@ -90,33 +85,13 @@ const Signup = () => {
     setErrorText('');
   }
 
-  function handleVerification() {
-    setIsDisabled(true);
-    axios
-      .get('/api/confirm', {
-        params: {
-          email: formState.email,
-          token: formState.otp,
-        },
-      })
-      .then(function (response) {
-        setSuccessText('OTP verified successfully!');
+  function handleResetPassword() {
+    const {email, otp, password, confirmPassword} = formState;
 
-        console.log(response.data.message);
-        setTimeout(() => {
-          setStep(3);
-          setIsDisabled(false);
-        }, 1500);
-      })
-      .catch(function (error) {
-        console.error(error);
-        setErrorText(error.response.data.message);
-        setIsDisabled(false);
-      });
-  }
-
-  function handlePasswordSetup() {
-    const {password, confirmPassword, email} = formState;
+    if (otp.length < 4) {
+      setErrorText('Incomplete OTP.');
+      return;
+    }
 
     if (password.length < 4) {
       setErrorText('Password is too short.');
@@ -134,11 +109,11 @@ const Signup = () => {
       .post('/api/setPassword', {
         email,
         password: hashedPassword,
-        token: formState.otp,
+        token: otp,
       })
       .then((response) => {
         console.log(response.data.message);
-        setSuccessText('Registration complete! Please proceed to login.');
+        setSuccessText('Password reset complete! Please proceed to login.');
         setTimeout(() => {
           router.push('/');
           setIsDisabled(false);
@@ -149,6 +124,8 @@ const Signup = () => {
         setErrorText(error.response.data.message);
         setIsDisabled(false);
       });
+
+    return;
   }
 
   return (
@@ -202,18 +179,9 @@ const Signup = () => {
         {step === 1 && (
           <>
             <Typography variant='h5' component='div' sx={{mb: 3}}>
-              Sign Up
+              Reset Password
             </Typography>
-            <TextField
-              fullWidth
-              margin='normal'
-              label='Name'
-              variant='outlined'
-              sx={{backgroundColor: '#ffffff'}}
-              value={formState.name}
-              onChange={(e) => handleChange('name', e.target.value)}
-              error={errors.name}
-            />
+
             <TextField
               fullWidth
               margin='normal'
@@ -224,16 +192,6 @@ const Signup = () => {
               onChange={(e) => handleChange('email', e.target.value)}
               error={errors.email}
             />
-            <TextField
-              fullWidth
-              margin='normal'
-              label='Confirm Email'
-              variant='outlined'
-              sx={{backgroundColor: '#ffffff'}}
-              value={formState.confirmEmail}
-              onChange={(e) => handleChange('confirmEmail', e.target.value)}
-              error={errors.confirmEmail}
-            />
 
             <Button
               fullWidth
@@ -242,30 +200,10 @@ const Signup = () => {
                 mt: 2,
                 mb: 1,
               }}
-              onClick={handleSignup}
+              onClick={handleSendOtp}
               disabled={isDisabled}>
-              Verify Email
+              Send OTP
             </Button>
-
-            <Typography
-              variant='body2'
-              component='div'
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                mt: 2,
-              }}>
-              Already have an account?{' '}
-              <Button
-                variant='text'
-                color='primary'
-                sx={{marginLeft: '4px'}}
-                href='/login'>
-                Login
-              </Button>
-            </Typography>
           </>
         )}
         {step === 2 && (
@@ -283,23 +221,6 @@ const Signup = () => {
               onChange={(e) => handleChange('otp', e.target.value)}
               error={errors.otp}
             />
-            <Button
-              fullWidth
-              variant='contained'
-              onClick={handleVerification}
-              disabled={isDisabled}>
-              Verify OTP
-            </Button>
-            <Typography sx={{mt: 1}} variant='body2'>
-              OTP sent to your email. Valid for 1 hour.
-            </Typography>
-          </>
-        )}
-        {step === 3 && (
-          <>
-            <Typography variant='h5' component='div' sx={{mb: 3}}>
-              Password Setup
-            </Typography>
             <TextField
               fullWidth
               margin='normal'
@@ -321,12 +242,16 @@ const Signup = () => {
               onChange={(e) => handleChange('confirmPassword', e.target.value)}
             />
             <Button
-              onClick={handlePasswordSetup}
+              sx={{mt: 2}}
               fullWidth
               variant='contained'
+              onClick={handleResetPassword}
               disabled={isDisabled}>
-              DONE
+              Reset Password
             </Button>
+            <Typography sx={{mt: 1}} variant='body2'>
+              OTP sent to your email. Valid for 1 hour.
+            </Typography>
           </>
         )}
       </Box>
@@ -370,4 +295,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default ResetPassword;

@@ -162,16 +162,7 @@ const LoginPage = ({updateUser}) => {
           onClick={handleLogin}>
           Sign In
         </Button>
-        <Button
-          fullWidth
-          variant='text'
-          sx={{
-            mt: 1,
-            mb: 1,
-          }}
-          href='/'>
-          Continue as Guest
-        </Button>
+
         <Typography
           variant='body2'
           component='div'

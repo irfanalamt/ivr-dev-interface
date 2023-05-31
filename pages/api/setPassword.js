@@ -6,7 +6,7 @@ export default async function handler(req, res) {
       return res.status(405).json({error: 'Method Not Allowed'});
     }
 
-    const {email, password} = req.body;
+    const {email, password, token} = req.body;
 
     await client.connect();
     const usersCollection = client.db('ivrStudio').collection('users');
@@ -14,13 +14,14 @@ export default async function handler(req, res) {
     const existingUser = await usersCollection.findOne({
       email,
       isEmailVerified: true,
+      otp: parseInt(token),
     });
 
     if (existingUser) {
       existingUser.password = password;
       await usersCollection.updateOne(
         {_id: existingUser._id},
-        {$set: {password}}
+        {$set: {password}, $unset: {otp: 1}}
       );
       return res.status(200).json({message: 'Password updated successfully.'});
     } else {

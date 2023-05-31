@@ -167,6 +167,14 @@ const IndexPage = ({updateUser, user}) => {
             value={formState.password}
             onChange={(e) => handleChange('password', e.target.value)}
           />
+          <Typography variant='body2' sx={{alignSelf: 'flex-start', pt: 0.5}}>
+            <a
+              href='/resetPassword'
+              style={{textDecoration: 'none', color: 'inherit'}}>
+              Forgot your password?
+            </a>
+          </Typography>
+
           <Button
             fullWidth
             variant='contained'

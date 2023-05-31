@@ -6,6 +6,10 @@ async function user(req, res) {
   if (req.method === 'POST') {
     const {name, email} = req.body;
 
+    if (!name || !email) {
+      return res.status(400).json({message: 'Name and email are required.'});
+    }
+
     try {
       await client.connect();
 
