@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {
-  Box,
-  Avatar,
-  Typography,
-  TextField,
-  Button,
-  Snackbar,
-  Alert,
-  Stack,
-} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import CheckIcon from '@mui/icons-material/Check';
-import {validateEmail} from '../src/myFunctions';
+import {
+  Alert,
+  Avatar,
+  Box,
+  Button,
+  Snackbar,
+  Stack,
+  TextField,
+  Typography,
+} from '@mui/material';
 import axios from 'axios';
+import Link from 'next/link';
 import {useRouter} from 'next/router';
+import React, {useEffect, useState} from 'react';
+import {validateEmail} from '../src/myFunctions';
 
 const IndexPage = ({updateUser, user}) => {
   const router = useRouter();
@@ -38,13 +39,6 @@ const IndexPage = ({updateUser, user}) => {
       const isValid = validateEmail(value);
       setErrors((prevErrors) => ({...prevErrors, [name]: !isValid}));
     }
-  }
-
-  function handleCloseSnackbar(event, reason) {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setErrorText('');
   }
 
   function handleLogin() {
@@ -168,11 +162,11 @@ const IndexPage = ({updateUser, user}) => {
             onChange={(e) => handleChange('password', e.target.value)}
           />
           <Typography variant='body2' sx={{alignSelf: 'flex-start', pt: 0.5}}>
-            <a
-              href='/resetPassword'
-              style={{textDecoration: 'none', color: 'inherit'}}>
+            <Link
+              style={{textDecoration: 'none', color: 'inherit'}}
+              href='/resetPassword'>
               Forgot your password?
-            </a>
+            </Link>
           </Typography>
 
           <Button
