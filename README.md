@@ -86,8 +86,8 @@ The connector is an optional component used to enhance the visual representation
 
 The jumper block serves the purpose of transferring control flow within a program and facilitating navigation between pages. It offers two types of jumpers: entry and exit.
 
-1. Entry (green): This is the default option and represents the starting point of a jump. It cannot be used as the 'to' shape when establishing connections.
-2. Exit (orange): The exit jumper denotes the endpoint of a jump. It should have the same name as the corresponding entry jumper to ensure proper navigation. It is important to note that the exit jumper cannot be used as the 'from' shape while establishing connections.
+1. Entry (green): This is the default option and represents the end point of a jump. It cannot be used as the 'to' shape when establishing connections.
+2. Exit (orange): The exit jumper denotes the start point of a jump. It should have the same name as the corresponding entry jumper to ensure proper navigation. It is important to note that the exit jumper cannot be used as the 'from' shape while establishing connections.
 
 ### What You'll Need Before Starting
 
