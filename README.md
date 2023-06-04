@@ -6,6 +6,8 @@
 
 Welcome to IVR Studio, a versatile application designed to empower both technical and non-technical users in creating their own customized Interactive Voice Response (IVR) flows. With its intuitive drag-and-drop interface, you can effortlessly design complex IVR diagrams, as the elements automatically align themselves on a grid for a neat and clear visualization. To safeguard against potential runtime crashes, the application also includes a validation feature to check and flag common input errors. The app supports running JavaScript code at any point during the flow, allowing for a wide range of possible actions.
 
+![sample](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/98cb77f9-1d1d-451c-8b61-d7a8b000c09f)
+
 ### General UI Overview
 
 ![ui-overview](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/ca2a855b-16ff-4dfe-b356-272344204796)
