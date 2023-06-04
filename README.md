@@ -15,12 +15,14 @@ Welcome to IVR Studio, a versatile application designed to empower both technica
 #### SetParams
 
 ![setParams](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/6d8a43bb-fe13-463b-a689-59b94bc5f18d)
+
 The setParams block is the initial block for the IVR flow.
 It sets global parameters and begins the flow. The parameter list includes all call parameters and their default values. To update a parameter, select it, change the value, and click 'save' to add it to the updated parameter list.
 
 #### PlayMessage
 
 ![playMessage](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/1183f732-8544-40cb-b330-53df4a7b196d)
+
 The playMessage block allows you to play one or more items together.
 To add items to the message list, navigate to the message list tab. Here, you can select the object type and click the "add" button to include it in the list. In the "parameters" tab, there are options available to customize the playMessage experience.
 
@@ -48,21 +50,25 @@ The playMenu block is utilized to manage the flow of an IVR system based on the 
 #### RunScript
 
 ![runScript](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/4b0a4715-4fea-41f5-8d08-a758bb5a1f5c)
+
 The runScript block serves the purpose of executing scripts and modifying IVR variables. It enables the usage of variables declared in the setVariables block by prefixing the variable name with a '$' symbol. Please note that the script syntax must adhere to valid JavaScript guidelines.
 
 #### Switch
 
 ![switch](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/87097063-5671-472d-9735-80790fd352be)
+
 The switch block is utilized to regulate the flow of the IVR system based on specific conditions. These conditions are determined by the values of pre-defined variables. For instance, if we have a variable named "marks" and we need to control the flow based on it, the condition would be written in the form of '$marks > 50', and the corresponding action would be 'PASS'. The default action, in case none of the conditions are met, would be 'FAIL'.
 
 #### CallAPI
 
 ![callAPI](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/f719af81-12d4-4da9-a2e8-927032576df8)
+
 The callAPI block is employed to query an API and establish the output variables. Prior to using the callAPI block, it is essential to ensure that all variables required by the block are defined in the setVariables block. Once all the necessary variables have been set, the callAPI block can be used to query the API and assign values to the output variables.
 
 #### EndFLow
 
 ![endFlow](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/d155dab7-81a3-42f2-94e3-6e906207d34c)
+
 The endFlow block is utilized to conclude an IVR flow. It provides two options: Disconnect and Transfer.
 
 1. Disconnect (red): Choosing this option will terminate the call flow and disconnect the call.
@@ -71,11 +77,13 @@ The endFlow block is utilized to conclude an IVR flow. It provides two options: 
 #### Connector
 
 ![connector](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/c1e7c2da-fe8e-4488-bfee-9518c610d41b)
+
 The connector is an optional component used to enhance the visual representation of the IVR flow in the user interface. It does not have any impact on the final script or the functioning of the IVR system. Its purpose is purely for visual organization and clarity in the UI, allowing users to better understand the flow of the IVR system.
 
 #### Jumper
 
 ![jumper](https://github.com/irfanalamt/ivr-dev-interface/assets/64161258/61e3ab15-614f-4080-8416-b384695f76e0)
+
 The jumper block serves the purpose of transferring control flow within a program and facilitating navigation between pages. It offers two types of jumpers: entry and exit.
 
 1. Entry (green): This is the default option and represents the starting point of a jump. It cannot be used as the 'to' shape when establishing connections.
