@@ -123,108 +123,108 @@ const IndexPage = ({updateUser, user}) => {
           IVR Studio
         </Typography>
       </Box>
-      {size.width <= 800 || size.height < 600 ? (
-        <Typography
-          sx={{mx: 'auto', mt: '10vh', textAlign: 'center', p: 1}}
-          variant='subtitle1'>
-          This app is not suitable for mobile devices.
-          <br /> For the best experience, please access it on a desktop device.
-        </Typography>
-      ) : (
+
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          mt: size.width <= 800 || size.height < 600 ? 8 : 10,
+        }}>
         <Box
+          id='box1'
           sx={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            mt: 10,
+            width: size.width <= 800 || size.height < 600 ? '100%' : '50%',
+            maxWidth: 360,
+            px: 4,
+            pb: 4,
+            pt: 3,
+            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+            borderRadius: 4,
+            backgroundColor: '#ffffff',
           }}>
-          <Box
+          <Typography
+            variant='h5'
+            component='div'
+            sx={{mb: 3, color: '#424242'}}>
+            Login
+          </Typography>
+          <TextField
+            fullWidth
+            margin='normal'
+            label='Email'
+            variant='outlined'
+            sx={{backgroundColor: '#ffffff'}}
+            value={formState.email}
+            onChange={(e) => handleChange('email', e.target.value)}
+            error={errors.email}
+            autoFocus
+          />
+          <TextField
+            fullWidth
+            margin='normal'
+            label='Password'
+            type='password'
+            variant='outlined'
+            sx={{backgroundColor: '#ffffff'}}
+            value={formState.password}
+            onChange={(e) => handleChange('password', e.target.value)}
+          />
+          <Typography variant='body2' sx={{alignSelf: 'flex-start', pt: 0.5}}>
+            <Link style={{textDecoration: 'none'}} href='/resetPassword'>
+              Forgot your password?
+            </Link>
+          </Typography>
+
+          <Button
+            fullWidth
+            variant='contained'
+            sx={{
+              mt: 2,
+              mb: 1,
+              backgroundColor: '#2196f3',
+              color: '#ffffff',
+            }}
+            onClick={handleLogin}>
+            Sign In
+          </Button>
+          <Button
+            fullWidth
+            variant='text'
+            sx={{
+              mt: 1,
+              mb: 1,
+            }}
+            href='/project2'>
+            Continue as Guest
+          </Button>
+          <Typography
+            variant='body2'
+            component='div'
             sx={{
               display: 'flex',
-              flexDirection: 'column',
+              flexDirection: 'row',
+              justifyContent: 'center',
               alignItems: 'center',
-              width: '50%',
-              maxWidth: 360,
-              px: 4,
-              py: 6,
-              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-              borderRadius: 4,
-              backgroundColor: '#ffffff',
+              mt: 2,
             }}>
-            <Typography variant='h5' component='div' sx={{mb: 3}}>
-              Login
-            </Typography>
-            <TextField
-              fullWidth
-              margin='normal'
-              label='Email'
-              variant='outlined'
-              sx={{backgroundColor: '#ffffff'}}
-              value={formState.email}
-              onChange={(e) => handleChange('email', e.target.value)}
-              error={errors.email}
-              autoFocus
-            />
-            <TextField
-              fullWidth
-              margin='normal'
-              label='Password'
-              type='password'
-              variant='outlined'
-              sx={{backgroundColor: '#ffffff'}}
-              value={formState.password}
-              onChange={(e) => handleChange('password', e.target.value)}
-            />
-            <Typography variant='body2' sx={{alignSelf: 'flex-start', pt: 0.5}}>
-              <Link style={{textDecoration: 'none'}} href='/resetPassword'>
-                Forgot your password?
-              </Link>
-            </Typography>
-
+            {`Don't have an account?`}
             <Button
-              fullWidth
-              variant='contained'
-              sx={{
-                mt: 2,
-                mb: 1,
-                backgroundColor: '#2196f3',
-                color: '#ffffff',
-              }}
-              onClick={handleLogin}>
-              Sign In
-            </Button>
-            <Button
-              fullWidth
               variant='text'
-              sx={{
-                mt: 1,
-                mb: 1,
-              }}
-              href='/project2'>
-              Continue as Guest
+              color='primary'
+              sx={{marginLeft: '4px'}}
+              href='/signup'>
+              Sign Up
             </Button>
-            <Typography
-              variant='body2'
-              component='div'
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                mt: 2,
-              }}>
-              {`Don't have an account?`}
-              <Button
-                variant='text'
-                color='primary'
-                sx={{marginLeft: '4px'}}
-                href='/signup'>
-                Sign Up
-              </Button>
-            </Typography>
-          </Box>
+          </Typography>
+        </Box>
+        {size.width >= 900 && (
           <Box
+            id='box2'
             sx={{
               display: 'flex',
               flexDirection: 'column',
@@ -270,8 +270,8 @@ const IndexPage = ({updateUser, user}) => {
               </Typography>
             </Stack>
           </Box>
-        </Box>
-      )}
+        )}
+      </Box>
 
       {errorText && (
         <Snackbar
