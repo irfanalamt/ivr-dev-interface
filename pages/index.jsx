@@ -140,6 +140,7 @@ const IndexPage = ({updateUser, user}) => {
             alignItems: 'center',
             width: size.width <= 800 || size.height < 600 ? '100%' : '50%',
             maxWidth: 360,
+            mx: 1,
             px: 4,
             pb: 4,
             pt: 3,
