@@ -15,6 +15,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
 import {validateEmail} from '../src/myFunctions';
+import useWindowSize from '../src/hooks/useWindowSize';
 
 const IndexPage = ({updateUser, user}) => {
   const router = useRouter();
@@ -25,6 +26,7 @@ const IndexPage = ({updateUser, user}) => {
   const [errors, setErrors] = useState({});
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
+  const size = useWindowSize();
 
   useEffect(() => {
     if (user) {
@@ -121,140 +123,156 @@ const IndexPage = ({updateUser, user}) => {
           IVR Studio
         </Typography>
       </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          height: 'calc(100% - 150px)',
-        }}>
+      {size.width <= 800 || size.height < 600 ? (
+        <Typography
+          sx={{mx: 'auto', mt: '10vh', textAlign: 'center', p: 1}}
+          variant='subtitle1'>
+          This app is not suitable for mobile devices.
+          <br /> For the best experience, please access it on a desktop device.
+        </Typography>
+      ) : (
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'row',
             alignItems: 'center',
-            width: '50%',
-            maxWidth: 360,
-            mt: 8,
-            px: 4,
-            py: 6,
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            borderRadius: 4,
-            backgroundColor: '#ffffff',
+            justifyContent: 'center',
+            mt: 10,
           }}>
-          <Typography variant='h5' component='div' sx={{mb: 3}}>
-            Login
-          </Typography>
-          <TextField
-            fullWidth
-            margin='normal'
-            label='Email'
-            variant='outlined'
-            sx={{backgroundColor: '#ffffff'}}
-            value={formState.email}
-            onChange={(e) => handleChange('email', e.target.value)}
-            error={errors.email}
-            autoFocus
-          />
-          <TextField
-            fullWidth
-            margin='normal'
-            label='Password'
-            type='password'
-            variant='outlined'
-            sx={{backgroundColor: '#ffffff'}}
-            value={formState.password}
-            onChange={(e) => handleChange('password', e.target.value)}
-          />
-          <Typography variant='body2' sx={{alignSelf: 'flex-start', pt: 0.5}}>
-            <Link style={{textDecoration: 'none'}} href='/resetPassword'>
-              Forgot your password?
-            </Link>
-          </Typography>
-
-          <Button
-            fullWidth
-            variant='contained'
-            sx={{
-              mt: 2,
-              mb: 1,
-              backgroundColor: '#2196f3',
-              color: '#ffffff',
-            }}
-            onClick={handleLogin}>
-            Sign In
-          </Button>
-          <Button
-            fullWidth
-            variant='text'
-            sx={{
-              mt: 1,
-              mb: 1,
-            }}
-            href='/project2'>
-            Continue as Guest
-          </Button>
-          <Typography
-            variant='body2'
-            component='div'
+          <Box
             sx={{
               display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
+              flexDirection: 'column',
               alignItems: 'center',
-              mt: 2,
+              width: '50%',
+              maxWidth: 360,
+              px: 4,
+              py: 6,
+              boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+              borderRadius: 4,
+              backgroundColor: '#ffffff',
             }}>
-            {`Don't have an account?`}
+            <Typography variant='h5' component='div' sx={{mb: 3}}>
+              Login
+            </Typography>
+            <TextField
+              fullWidth
+              margin='normal'
+              label='Email'
+              variant='outlined'
+              sx={{backgroundColor: '#ffffff'}}
+              value={formState.email}
+              onChange={(e) => handleChange('email', e.target.value)}
+              error={errors.email}
+              autoFocus
+            />
+            <TextField
+              fullWidth
+              margin='normal'
+              label='Password'
+              type='password'
+              variant='outlined'
+              sx={{backgroundColor: '#ffffff'}}
+              value={formState.password}
+              onChange={(e) => handleChange('password', e.target.value)}
+            />
+            <Typography variant='body2' sx={{alignSelf: 'flex-start', pt: 0.5}}>
+              <Link style={{textDecoration: 'none'}} href='/resetPassword'>
+                Forgot your password?
+              </Link>
+            </Typography>
+
             <Button
-              variant='text'
-              color='primary'
-              sx={{marginLeft: '4px'}}
-              href='/signup'>
-              Sign Up
+              fullWidth
+              variant='contained'
+              sx={{
+                mt: 2,
+                mb: 1,
+                backgroundColor: '#2196f3',
+                color: '#ffffff',
+              }}
+              onClick={handleLogin}>
+              Sign In
             </Button>
-          </Typography>
+            <Button
+              fullWidth
+              variant='text'
+              sx={{
+                mt: 1,
+                mb: 1,
+              }}
+              href='/project2'>
+              Continue as Guest
+            </Button>
+            <Typography
+              variant='body2'
+              component='div'
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                mt: 2,
+              }}>
+              {`Don't have an account?`}
+              <Button
+                variant='text'
+                color='primary'
+                sx={{marginLeft: '4px'}}
+                href='/signup'>
+                Sign Up
+              </Button>
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '35%',
+              pl: 8,
+              pt: 8,
+              alignSelf: 'start',
+            }}>
+            <Typography variant='h4' component='div' sx={{mb: 3}}>
+              Welcome to IVR Studio
+            </Typography>
+            <Typography variant='h5' component='div' sx={{mb: 3}}>
+              Easily design personalized IVR flows using our intuitive, visual
+              editor.
+            </Typography>
+            <Stack spacing={1}>
+              <Typography
+                sx={{display: 'flex', alignItems: 'center'}}
+                variant='subtitle1'
+                fontSize='large'>
+                <CheckIcon sx={{mr: 0.5}} />
+                Integrated validation functionality
+              </Typography>
+              <Typography
+                sx={{display: 'flex', alignItems: 'center'}}
+                variant='subtitle1'
+                fontSize='large'>
+                <CheckIcon sx={{mr: 0.5}} /> JavaScript support
+              </Typography>
+              <Typography
+                sx={{display: 'flex', alignItems: 'center'}}
+                variant='subtitle1'
+                fontSize='large'>
+                <CheckIcon sx={{mr: 0.5}} />
+                Seamless API integration capabilities
+              </Typography>
+              <Typography
+                sx={{display: 'flex', alignItems: 'center'}}
+                variant='subtitle1'
+                fontSize='large'>
+                <CheckIcon sx={{mr: 0.5}} />
+                Multi-language support
+              </Typography>
+            </Stack>
+          </Box>
         </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '35%',
-            px: 5,
-            py: 8,
-            mt: 10,
-            alignSelf: 'start',
-          }}>
-          <Typography variant='h4' component='div' sx={{mb: 3}}>
-            Welcome to IVR Studio
-          </Typography>
-          <Typography
-            variant='h5'
-            component='div'
-            sx={{mb: 3, textAlign: 'center'}}>
-            Easily design personalized IVR flows using our intuitive, visual
-            editor.
-          </Typography>
-          <Stack spacing={1}>
-            <Typography sx={{display: 'flex', alignItems: 'center'}}>
-              <CheckIcon sx={{mr: 0.5}} />
-              Integrated validation functionality
-            </Typography>
-            <Typography sx={{display: 'flex', alignItems: 'center'}}>
-              <CheckIcon sx={{mr: 0.5}} /> JavaScript support
-            </Typography>
-            <Typography sx={{display: 'flex', alignItems: 'center'}}>
-              <CheckIcon sx={{mr: 0.5}} />
-              Seamless API integration capabilities
-            </Typography>
-            <Typography sx={{display: 'flex', alignItems: 'center'}}>
-              <CheckIcon sx={{mr: 0.5}} />
-              Multi-language support
-            </Typography>
-          </Stack>
-        </Box>
-      </Box>
+      )}
+
       {errorText && (
         <Snackbar
           sx={{mb: 2}}
