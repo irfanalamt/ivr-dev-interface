@@ -159,7 +159,8 @@ const Signup = () => {
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
         height: '100vh',
-        pt: '10vh',
+        pt: {xs: '2vh', sm: '10vh'},
+        px: 2,
       }}>
       <Box
         sx={{
@@ -167,7 +168,7 @@ const Signup = () => {
           backgroundColor: '#f5f5f5',
           alignItems: 'center',
           height: 64,
-          px: 3,
+          px: {xs: 1, sm: 3},
           boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
         <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
@@ -191,17 +192,21 @@ const Signup = () => {
           flexDirection: 'column',
           alignItems: 'center',
           width: '100%',
-          maxWidth: 360,
+          maxWidth: {xs: '100%', sm: 360},
           mt: 2,
-          px: 4,
-          py: 4,
+          px: {xs: 2, sm: 4},
+          pt: 3,
+          pb: 4,
           boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
           borderRadius: 4,
           backgroundColor: '#ffffff',
         }}>
         {step === 1 && (
           <>
-            <Typography variant='h5' component='div' sx={{mb: 3}}>
+            <Typography
+              variant='h5'
+              component='div'
+              sx={{mb: 3, color: '#424242'}}>
               Sign Up
             </Typography>
             <TextField
@@ -246,26 +251,6 @@ const Signup = () => {
               disabled={isDisabled}>
               Verify Email
             </Button>
-
-            <Typography
-              variant='body2'
-              component='div'
-              sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                mt: 2,
-              }}>
-              Already have an account?{' '}
-              <Button
-                variant='text'
-                color='primary'
-                sx={{marginLeft: '4px'}}
-                href='/login'>
-                Login
-              </Button>
-            </Typography>
           </>
         )}
         {step === 2 && (
