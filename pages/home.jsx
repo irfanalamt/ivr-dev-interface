@@ -2,9 +2,11 @@ import {Avatar, Box, Button, Container, Stack, Typography} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {useRouter} from 'next/router';
 import axios from 'axios';
+import useWindowSize from '../src/hooks/useWindowSize';
 
 const HomePage = ({user, updateUser}) => {
   const router = useRouter();
+  const size = useWindowSize();
 
   function handleNewProject() {
     sessionStorage.removeItem('ivrName');
@@ -87,17 +89,20 @@ const HomePage = ({user, updateUser}) => {
         <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
           <ArchitectureIcon sx={{fontSize: '2.5rem', color: '#424242'}} />
         </Avatar>
-        <Typography
-          variant='h5'
-          component='div'
-          sx={{
-            fontFamily: 'Roboto',
-            display: 'flex',
-            alignItems: 'center',
-            color: '#424242',
-          }}>
-          IVR Studio
-        </Typography>
+        {size.width > 700 && (
+          <Typography
+            variant='h5'
+            component='div'
+            sx={{
+              fontFamily: 'Roboto',
+              display: 'flex',
+              alignItems: 'center',
+              color: '#424242',
+            }}>
+            IVR Studio
+          </Typography>
+        )}
+
         {user ? (
           <Stack
             sx={{ml: 'auto', alignItems: 'center'}}
@@ -128,7 +133,7 @@ const HomePage = ({user, updateUser}) => {
         )}
       </Box>
 
-      <Container sx={{py: 12}} maxWidth='md'>
+      <Container sx={{py: size.width < 700 ? 4 : 12}} maxWidth='md'>
         <Typography variant='h2' align='center' color='primary' gutterBottom>
           IVR Studio
         </Typography>
@@ -136,7 +141,11 @@ const HomePage = ({user, updateUser}) => {
           Design personalized IVR flows effortlessly with our user-friendly,
           visual editor.
         </Typography>
-        <Stack sx={{pt: 8}} direction='row' spacing={2} justifyContent='center'>
+        <Stack
+          sx={{pt: size.width < 700 ? 4 : 8}}
+          direction={size.width < 700 ? 'column' : 'row'}
+          spacing={2}
+          justifyContent='center'>
           <Button
             sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
             variant='contained'
