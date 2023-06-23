@@ -5,6 +5,7 @@ import {
   Avatar,
   Box,
   Button,
+  Container,
   Snackbar,
   Stack,
   TextField,
@@ -15,7 +16,7 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 import React, {useEffect, useState} from 'react';
 import {validateEmail} from '../src/myFunctions';
-import useWindowSize from '../src/hooks/useWindowSize';
+import {useMediaQuery, useTheme} from '@mui/material';
 
 const IndexPage = ({updateUser, user}) => {
   const router = useRouter();
@@ -26,7 +27,8 @@ const IndexPage = ({updateUser, user}) => {
   const [errors, setErrors] = useState({});
   const [errorText, setErrorText] = useState('');
   const [successText, setSuccessText] = useState('');
-  const size = useWindowSize();
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up('lg'));
 
   useEffect(() => {
     if (user) {
@@ -124,13 +126,13 @@ const IndexPage = ({updateUser, user}) => {
         </Typography>
       </Box>
 
-      <Box
+      <Container
         sx={{
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'center',
-          mt: size.width <= 800 || size.height < 600 ? 8 : 10,
+          my: '10vh',
         }}>
         <Box
           id='box1'
@@ -138,12 +140,8 @@ const IndexPage = ({updateUser, user}) => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: size.width <= 800 || size.height < 600 ? '100%' : '50%',
-            maxWidth: 360,
-            mx: 1,
-            px: 4,
-            pb: 4,
-            pt: 3,
+            px: 6,
+            py: 4,
             boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
             borderRadius: 4,
             backgroundColor: '#ffffff',
@@ -223,15 +221,15 @@ const IndexPage = ({updateUser, user}) => {
             </Button>
           </Typography>
         </Box>
-        {size.width >= 900 && (
+        {matches && (
           <Box
             id='box2'
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              width: '35%',
+              maxWidth: '40%',
               pl: 8,
-              pt: 8,
+              pt: 4,
               alignSelf: 'start',
             }}>
             <Typography variant='h4' component='div' sx={{mb: 3}}>
@@ -272,7 +270,7 @@ const IndexPage = ({updateUser, user}) => {
             </Stack>
           </Box>
         )}
-      </Box>
+      </Container>
 
       {errorText && (
         <Snackbar
