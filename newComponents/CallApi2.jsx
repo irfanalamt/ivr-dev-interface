@@ -5,6 +5,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   IconButton,
   ListItem,
@@ -36,6 +37,9 @@ const CallApi = ({
   const [outputVars, setOutputVars] = useState(
     shape.userValues?.outputVars ?? [{}]
   );
+  const [playWaitMessage, setPlayWaitMessage] = useState(
+    shape.userValues?.playWaitMessage ?? false
+  );
 
   const errors = useRef({});
 
@@ -55,7 +59,7 @@ const CallApi = ({
     shape.setText(name);
     clearAndDraw();
 
-    shape.setUserValues({endpoint, inputVars, outputVars});
+    shape.setUserValues({endpoint, inputVars, outputVars, playWaitMessage});
 
     setErrorText('');
     setSuccessText('Saved.');
@@ -237,7 +241,7 @@ const CallApi = ({
           sx={{
             px: 2,
             py: 1,
-            my: 2,
+            mt: 2,
           }}>
           <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
             REST Endpoint
@@ -251,6 +255,23 @@ const CallApi = ({
             fullWidth
           />
         </Stack>
+        <Box
+          sx={{
+            px: 2,
+            py: 1,
+
+            display: 'flex',
+            alignItems: 'center',
+          }}>
+          <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+            Play Wait Message
+          </Typography>
+          <Checkbox
+            checked={playWaitMessage}
+            onChange={(e) => setPlayWaitMessage(e.target.checked)}
+          />
+        </Box>
+
         <Divider />
         <Stack
           sx={{

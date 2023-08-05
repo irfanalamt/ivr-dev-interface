@@ -442,8 +442,11 @@ class Shape {
       .join(',')}}`;
     const outputVarsString = outputVars
       .filter((el) => el.name)
-      .map((el) => `this.${el.name}=outputVars?.${el.name};`)
+      .map((el) => `this.${el.name} = outputVars.${el.name};`)
       .join('');
+    const finalOutputString = `if (outputVars) {
+    ${outputVarsString}
+  }`;
 
     const codeString = `
     this.${functionName} = async function() {
@@ -453,11 +456,11 @@ class Shape {
   
       try {
         outputVars = await IVR.callAPI('${functionName}', endpoint, inputVars);
+        ${finalOutputString}
       } catch (err) {
         IVR.error('Error in callAPI ${functionName}', err);
       }
   
-      ${outputVarsString}
     };
   `;
 
