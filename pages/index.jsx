@@ -144,8 +144,8 @@ const IndexPage = ({updateUser, user}) => {
             alignItems: 'center',
             px: 6,
             py: 4,
-            borderRadius: 2,
-            backgroundColor: theme.palette.background.paper,
+            borderRadius: 4,
+            backgroundColor: '#FAFAFA',
             width: matches ? '35%' : '95%',
             maxWidth: '500px',
           }}>

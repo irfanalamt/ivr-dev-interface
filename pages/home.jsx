@@ -1,4 +1,12 @@
-import {Avatar, Box, Button, Container, Stack, Typography} from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Stack,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import {useRouter} from 'next/router';
 import axios from 'axios';
@@ -20,6 +28,7 @@ const HomePage = ({user, updateUser}) => {
     localStorage.removeItem('token');
     sessionStorage.removeItem('ivrName');
     updateUser(null);
+    router.push('/');
   }
 
   function handleFileUpload() {
@@ -133,7 +142,14 @@ const HomePage = ({user, updateUser}) => {
         )}
       </Box>
 
-      <Container sx={{py: size.width < 700 ? 4 : 12}} maxWidth='md'>
+      <Container
+        sx={{
+          py: size.width < 700 ? 4 : 12,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+        maxWidth='md'>
         <Typography variant='h2' align='center' color='primary' gutterBottom>
           IVR Studio
         </Typography>
@@ -147,27 +163,50 @@ const HomePage = ({user, updateUser}) => {
           spacing={2}
           justifyContent='center'>
           <Button
-            sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
+            sx={{
+              textAlign: 'center',
+              fontSize: '1.2rem',
+              px: 4,
+              py: 1,
+              fontWeight: 'bold',
+            }}
             variant='contained'
             color='primary'
             onClick={handleNewProject}>
             Start New Project
           </Button>
-          <Button
-            sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
-            variant='outlined'
-            color='secondary'
-            onClick={handleOpenSavedProjects}>
-            Open Project
-          </Button>
 
-          <Button
-            sx={{textAlign: 'center', fontSize: '1.2rem', px: 4, py: 1}}
-            variant='outlined'
-            color='success'
-            onClick={handleFileUpload}>
-            Import Project
-          </Button>
+          <Tooltip title='View your saved projects'>
+            <Button
+              sx={{
+                textAlign: 'center',
+                fontSize: '1.2rem',
+                px: 4,
+                py: 1,
+                fontWeight: 'bold',
+              }}
+              variant='outlined'
+              color='secondary'
+              onClick={handleOpenSavedProjects}>
+              Open Project
+            </Button>
+          </Tooltip>
+
+          <Tooltip title='Import a project from local file'>
+            <Button
+              sx={{
+                textAlign: 'center',
+                fontSize: '1.2rem',
+                px: 4,
+                py: 1,
+                fontWeight: 'bold',
+              }}
+              variant='outlined'
+              color='success'
+              onClick={handleFileUpload}>
+              Import Project
+            </Button>
+          </Tooltip>
         </Stack>
       </Container>
     </Box>
