@@ -198,7 +198,7 @@ const IndexPage = ({updateUser, user}) => {
               mt: 1,
               mb: 1,
             }}
-            href='/project2'>
+            href='/project'>
             Continue as Guest
           </Button>
           <Typography

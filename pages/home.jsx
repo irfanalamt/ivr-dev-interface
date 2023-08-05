@@ -10,11 +10,11 @@ const HomePage = ({user, updateUser}) => {
 
   function handleNewProject() {
     sessionStorage.removeItem('ivrName');
-    router.push('/project2');
+    router.push('/project');
   }
 
   function handleOpenSavedProjects() {
-    router.push('/saved-projects2');
+    router.push('/saved-projects');
   }
   function handleLogout() {
     localStorage.removeItem('token');
@@ -63,7 +63,7 @@ const HomePage = ({user, updateUser}) => {
 
       const response = await axios.post('/api/saveProject2', newData);
 
-      router.push('saved-projects2');
+      router.push('saved-projects');
 
       return response.data;
     } catch (err) {
