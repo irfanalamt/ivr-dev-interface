@@ -106,7 +106,7 @@ const RunScript = ({
       return;
     }
 
-    const isUnique = isNameUnique(value, shape, shapes);
+    const isUnique = isNameUnique(value, shape, shapes, userVariables);
     if (!isUnique) {
       setErrorText('Id not unique');
       errors.current.name = true;

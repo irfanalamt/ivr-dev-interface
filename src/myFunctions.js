@@ -372,13 +372,23 @@ function isPointInRectangle(pointX, pointY, startX, startY, width, height) {
   }
 }
 
-function isNameUnique(name, shape, shapes) {
+function isNameUnique(name, shape, shapes, userVariables = null) {
   for (let i = 0; i < shapes.length; i++) {
     const currentShape = shapes[i];
     if (currentShape !== shape && currentShape.text === name) {
       return false;
     }
   }
+
+  if (userVariables) {
+    for (let i = 0; i < userVariables.length; i++) {
+      const currentVariable = userVariables[i];
+      if (currentVariable.name === name) {
+        return false;
+      }
+    }
+  }
+
   return true;
 }
 
