@@ -659,6 +659,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         setVariables={setUserVariables}
         saveToDb={saveToDb}
         renameVariablesInUse={renameVariablesInUse}
+        shapes={shapes}
       />
       {openPromptList && (
         <PromptList

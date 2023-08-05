@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import {useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
+import {stringifySafe} from '../src/myFunctions';
 
 const VariableManager = ({
   isOpen,
@@ -23,6 +24,7 @@ const VariableManager = ({
   setVariables,
   saveToDb,
   renameVariablesInUse,
+  shapes,
 }) => {
   const [currentVariable, setCurrentVariable] = useState('');
   const [type, setType] = useState('prompt');
@@ -143,8 +145,17 @@ const VariableManager = ({
     setErrorText('');
   }
 
-  function isVariableNameUnique(name, variables) {
-    return !variables.some((variable) => variable.name === name);
+  function isVariableNameUnique(name, variables, shapes) {
+    // check if name exists in variables
+    const existsInVariables = variables.some(
+      (variable) => variable.name === name
+    );
+
+    // check if name exists in shapes
+    const existsInShapes = shapes.some((shape) => shape.text === name);
+
+    // return true if name is unique in both arrays, false otherwise
+    return !(existsInVariables || existsInShapes);
   }
 
   function validate(objType, value, variables) {
@@ -153,7 +164,10 @@ const VariableManager = ({
     if (objType === 'name' && value) {
       errorMessage = checkValidity('name', value);
 
-      if (errorMessage === -1 && !isVariableNameUnique(value, variables)) {
+      if (
+        errorMessage === -1 &&
+        !isVariableNameUnique(value, variables, shapes)
+      ) {
         errorMessage = 'Name must be unique.';
       }
     } else if (objType === 'value') {
