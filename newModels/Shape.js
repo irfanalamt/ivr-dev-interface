@@ -543,7 +543,13 @@ class Shape {
 
     const code = `this.${this.text}_X=async function(){
       try{${shapesInFlow
-        .map((shape) => getDriverFunctionShapeCode(shape, true))
+        .map((shape, i) => {
+          if (i == 0) {
+            return getDriverFunctionShapeCode(shape, true);
+          }
+
+          return getDriverFunctionShapeCode(shape, false);
+        })
         .join('')}}catch(err){ IVR.error('Error in ${this.text}_X', err);}
                 };`;
 
