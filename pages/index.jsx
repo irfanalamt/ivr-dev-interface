@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Container,
+  Paper,
   Snackbar,
   Stack,
   TextField,
@@ -82,7 +83,7 @@ const IndexPage = ({updateUser, user}) => {
       }
       return true;
     } catch (error) {
-      setErrorText(error.response?.data.message);
+      setErrorText('Invalid credentials. Please try again.');
       return false;
     }
   }
@@ -125,7 +126,6 @@ const IndexPage = ({updateUser, user}) => {
           IVR Studio
         </Typography>
       </Box>
-
       <Container
         sx={{
           display: 'flex',
@@ -133,8 +133,10 @@ const IndexPage = ({updateUser, user}) => {
           alignItems: 'center',
           justifyContent: 'center',
           my: '10vh',
+          gap: 6,
         }}>
-        <Box
+        <Paper
+          elevation={3}
           id='box1'
           sx={{
             display: 'flex',
@@ -142,14 +144,15 @@ const IndexPage = ({updateUser, user}) => {
             alignItems: 'center',
             px: 6,
             py: 4,
-            boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-            borderRadius: 4,
-            backgroundColor: '#ffffff',
+            borderRadius: 2,
+            backgroundColor: theme.palette.background.paper,
+            width: matches ? '35%' : '95%',
+            maxWidth: '500px',
           }}>
           <Typography
             variant='h5'
             component='div'
-            sx={{mb: 3, color: '#424242'}}>
+            sx={{mb: 3, color: theme.palette.text.primary}}>
             Login
           </Typography>
           <TextField
@@ -157,7 +160,7 @@ const IndexPage = ({updateUser, user}) => {
             margin='normal'
             label='Email'
             variant='outlined'
-            sx={{backgroundColor: '#ffffff'}}
+            sx={{backgroundColor: theme.palette.background.paper}}
             value={formState.email}
             onChange={(e) => handleChange('email', e.target.value)}
             error={errors.email}
@@ -169,7 +172,7 @@ const IndexPage = ({updateUser, user}) => {
             label='Password'
             type='password'
             variant='outlined'
-            sx={{backgroundColor: '#ffffff'}}
+            sx={{backgroundColor: theme.palette.background.paper}}
             value={formState.password}
             onChange={(e) => handleChange('password', e.target.value)}
           />
@@ -178,15 +181,13 @@ const IndexPage = ({updateUser, user}) => {
               Forgot your password?
             </Link>
           </Typography>
-
           <Button
             fullWidth
             variant='contained'
+            color='primary'
             sx={{
               mt: 2,
               mb: 1,
-              backgroundColor: '#2196f3',
-              color: '#ffffff',
             }}
             onClick={handleLogin}>
             Sign In
@@ -220,17 +221,16 @@ const IndexPage = ({updateUser, user}) => {
               Sign Up
             </Button>
           </Typography>
-        </Box>
+        </Paper>
         {matches && (
           <Box
             id='box2'
             sx={{
               display: 'flex',
               flexDirection: 'column',
-              maxWidth: '40%',
-              pl: 8,
-              pt: 4,
+              width: '50%',
               alignSelf: 'start',
+              mt: 8,
             }}>
             <Typography variant='h4' component='div' sx={{mb: 3}}>
               Welcome to IVR Studio
@@ -251,7 +251,8 @@ const IndexPage = ({updateUser, user}) => {
                 sx={{display: 'flex', alignItems: 'center'}}
                 variant='subtitle1'
                 fontSize='large'>
-                <CheckIcon sx={{mr: 0.5}} /> JavaScript support
+                <CheckIcon sx={{mr: 0.5}} />
+                JavaScript support
               </Typography>
               <Typography
                 sx={{display: 'flex', alignItems: 'center'}}
@@ -271,7 +272,6 @@ const IndexPage = ({updateUser, user}) => {
           </Box>
         )}
       </Container>
-
       {errorText && (
         <Snackbar
           sx={{mb: 2}}
