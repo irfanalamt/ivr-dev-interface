@@ -200,50 +200,64 @@ const SavedProjects2 = ({user}) => {
           </Typography>
         )}
       </Box>
-      <Container sx={{mt: 2}}>
-        <Typography sx={{mb: 2, color: '#6E6E6E'}} variant='h6'>
+      <Container sx={{mt: 4}}>
+        <Typography sx={{mb: 3}} variant='h4' gutterBottom>
           Saved Projects
         </Typography>
         {loading ? (
-          <Box sx={{display: 'flex', justifyContent: 'center', mt: 3}}>
+          <Box sx={{display: 'flex', justifyContent: 'center', mt: 5}}>
             <CircularProgress />
           </Box>
         ) : projects.length === 0 ? (
-          <Typography
-            sx={{mt: 4, fontSize: 'large', textAlign: 'center'}}
-            variant='subtitle2'>
-            No projects found.
-          </Typography>
+          <Box sx={{mt: 5}}>
+            <Typography variant='h6' align='center'>
+              No projects found.
+            </Typography>
+          </Box>
         ) : (
-          <Grid container spacing={3}>
+          <Grid container spacing={4}>
             {projects.map((project, i) => (
-              <Grid item xs={12} sm={6} md={4} lg={3} key={i}>
+              <Grid item key={i} xs={12} sm={6} md={4}>
                 <Card
                   sx={{
-                    height: '100%',
                     display: 'flex',
                     flexDirection: 'column',
+                    height: '100%',
+                    backgroundColor: '#FAFAFA',
+                    borderRadius: 2,
+                    p: 1,
+                    boxShadow: '0px 2px 0px rgba(0, 0, 0, 0.05)',
+                    transition: '0.3s',
+                    '&:hover': {
+                      transform: 'scale(1.02)',
+                      boxShadow: '0px 3px 0px rgba(0, 0, 0, 0.1)',
+                    },
                   }}>
                   <CardContent sx={{flexGrow: 1}}>
-                    <Typography variant='h6' component='div'>
+                    <Typography
+                      gutterBottom
+                      variant='h6'
+                      component='div'
+                      sx={{fontWeight: 'bold'}}>
                       {project.displayName}
                     </Typography>
-                    <Typography color='textSecondary'>
+                    <Typography color='text.secondary'>
                       {project.date}
                     </Typography>
                   </CardContent>
-                  <CardActions>
+                  <CardActions sx={{justifyContent: 'flex-end'}}>
                     <Button
-                      sx={{ml: 'auto'}}
                       variant='outlined'
-                      color='info'
-                      onClick={() => handleExportProject(project.name)}>
+                      color='success'
+                      onClick={() => handleExportProject(project.name)}
+                      sx={{textTransform: 'none'}}>
                       Export
                     </Button>
                     <Button
                       variant='outlined'
                       color='error'
-                      onClick={() => handleDeleteClick(project.name)}>
+                      onClick={() => handleDeleteClick(project.name)}
+                      sx={{textTransform: 'none'}}>
                       Delete
                     </Button>
                     <Button
@@ -251,7 +265,8 @@ const SavedProjects2 = ({user}) => {
                       color='primary'
                       onClick={() =>
                         handleOpenProject(project.name, project.description)
-                      }>
+                      }
+                      sx={{textTransform: 'none'}}>
                       Open
                     </Button>
                   </CardActions>
@@ -261,6 +276,7 @@ const SavedProjects2 = ({user}) => {
           </Grid>
         )}
       </Container>
+
       <DeleteConfirmationDialog
         open={dialogOpen}
         onClose={handleDialogClose}
