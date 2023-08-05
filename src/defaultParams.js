@@ -94,6 +94,7 @@ const defaultParams = [
     name: 'confirmPrompt',
     value: 'std-confirm',
   },
+  {name: 'waitMessage', value: 'std-wait-message'},
   {
     name: 'hotkeyMainMenu',
     value: 'X',

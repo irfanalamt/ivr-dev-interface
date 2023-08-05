@@ -388,6 +388,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         mainMenuPrompt: "std-to-main-menu",
         repeatInfoPrompt: "std-to-repeat",
         confirmPrompt: "std-confirm",
+        waitMessage: "std-wait-message",
         hotkeyMainMenu: "X",
         hotkeyPreviousMenu: "X",
         hotkeyTransfer: "X",

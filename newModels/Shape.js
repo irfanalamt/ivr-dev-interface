@@ -434,7 +434,7 @@ class Shape {
 
   setFunctionStringCallAPI() {
     const functionName = this.text ? this.text : `callAPI${this.id}`;
-    const {endpoint, inputVars, outputVars} = this.userValues;
+    const {endpoint, inputVars, outputVars, playWaitMessage} = this.userValues;
 
     const inputVarsString = `{${inputVars
       .filter((el) => el.name)
@@ -453,9 +453,10 @@ class Shape {
       let endpoint = '${endpoint}';
       let inputVars = ${inputVarsString};
       let outputVars;
+      let playWaitMessage = ${playWaitMessage};
   
       try {
-        outputVars = await IVR.callAPI('${functionName}', endpoint, inputVars);
+        outputVars = await IVR.callAPI('${functionName}', endpoint, inputVars, playWaitMessage);
         ${finalOutputString}
       } catch (err) {
         IVR.error('Error in callAPI ${functionName}', err);
