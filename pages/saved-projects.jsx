@@ -159,14 +159,17 @@ const SavedProjects2 = ({user}) => {
         flexDirection: 'column',
         height: '100vh',
         backgroundImage: 'linear-gradient(45deg, #f5f5f5, #e0e0e0)',
+        overflowY: 'auto',
+        pb: 6,
       }}>
       <Box
         sx={{
           display: 'flex',
           backgroundColor: '#f5f5f5',
           alignItems: 'center',
-          height: 64,
+          height: 60,
           px: 3,
+          py: 1,
           boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
         }}>
         <Avatar sx={{backgroundColor: '#bbdefb', marginRight: 1}}>
