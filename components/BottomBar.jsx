@@ -64,7 +64,7 @@ const BottomBar = ({
     <Box
       sx={{
         height: 35,
-        bgcolor: 'grey.300',
+        bgcolor: '#E5E5E5',
         position: 'fixed',
         bottom: 0,
         width: '100%',
@@ -113,7 +113,7 @@ const BottomBar = ({
           />
         </IconButton>
       </Tooltip>
-      <Box sx={{ml: 4, display: 'flex', alignItems: 'center', maxWidth: '80%'}}>
+      <Box sx={{ml: 2, display: 'flex', alignItems: 'center', maxWidth: '80%'}}>
         <Tabs
           value={activeTab}
           onChange={(e, id) => handleChangeTab(id)}
@@ -133,13 +133,13 @@ const BottomBar = ({
                 if (!tab.isEditMode) handleTabDoubleClick(tab.id);
               }}
               sx={{
-                minHeight: 33,
-                maxHeight: 33,
+                minHeight: 35,
+                maxHeight: 35,
                 mt: 0.9,
                 borderBottom:
                   tab.id === activeTab &&
                   !tab.isEditMode &&
-                  '3px solid #9e9e9e',
+                  '4px solid #9e9e9e',
                 borderRight:
                   tab.id === activeTab
                     ? '1px solid #9e9e9e'
@@ -189,7 +189,7 @@ const BottomBar = ({
           ))}
         </Tabs>
         <Tooltip title='Add Page'>
-          <IconButton sx={{ml: 1}} size='small' onClick={handleAddTab}>
+          <IconButton sx={{ml: -2}} size='small' onClick={handleAddTab}>
             <AddCircleIcon />
           </IconButton>
         </Tooltip>
