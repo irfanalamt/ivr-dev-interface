@@ -4,6 +4,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
+  DialogTitle,
+  Grid,
   Stack,
   TextField,
   Typography,
@@ -12,7 +14,7 @@ import {checkValidity} from '../src/helpers';
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 
-const IvrDialog = ({isOpen, handleClose, setIvrName}) => {
+const IvrDialog = ({isOpen, handleClose, setIvrName, isSaveAsOption}) => {
   const [errorText, setErrorText] = useState(false);
   const [dialog, setDialog] = useState({name: '', version: 1, description: ''});
   const [allProjects, setAllProjects] = useState([]);
@@ -42,6 +44,7 @@ const IvrDialog = ({isOpen, handleClose, setIvrName}) => {
   }
 
   function handleInputChange(event, type) {
+    if (isSaveAsOption) console.log('yaay is save as🔴');
     setDialog({...dialog, [type]: event.target.value});
     if (type == 'version') {
       if (event.target.value > 0) {
@@ -108,28 +111,27 @@ const IvrDialog = ({isOpen, handleClose, setIvrName}) => {
   return (
     <Dialog open={isOpen} onClose={validateAndClose}>
       <DialogContent>
-        <Stack direction='row' spacing={2}>
-          <Box>
-            <Typography variant='body2' fontSize='large'>
+        <Stack direction='row' spacing={3} alignItems='center'>
+          <Box sx={{pr: 3}}>
+            <Typography variant='subtitle1' fontWeight='medium'>
               IVR name
             </Typography>
             <TextField
-              sx={{mt: -0.3}}
               autoFocus
-              margin='dense'
-              size='small'
+              variant='outlined'
               value={dialog.name}
               onChange={(e) => handleNameChange(e, 'name')}
               error={Boolean(errorText)}
               fullWidth
             />
           </Box>
-          <Box>
-            <Typography variant='body2' fontSize='large'>
+          <Box sx={{pr: 3}}>
+            <Typography variant='subtitle1' fontWeight='medium'>
               Version
             </Typography>
             <TextField
-              sx={{mt: -0.3, maxWidth: 100}}
+              sx={{width: '100px'}}
+              variant='outlined'
               type='number'
               value={dialog.version}
               inputProps={{
@@ -137,42 +139,43 @@ const IvrDialog = ({isOpen, handleClose, setIvrName}) => {
                 max: 100,
               }}
               onChange={(e) => handleNameChange(e, 'version')}
-              margin='dense'
-              size='small'
             />
           </Box>
         </Stack>
         <Typography
           sx={{
             visibility: errorText ? 'visible' : 'hidden',
-            color: 'red',
+            color: 'error.main',
+            mt: 2,
             textAlign: 'center',
-            fontSize: 'small',
           }}
-          variant='body1'>
+          variant='caption'>
           {errorText}
         </Typography>
-
-        <Typography sx={{mt: 1}} variant='body2' fontSize='large'>
+        <Typography sx={{mt: 3}} variant='subtitle1' fontWeight='medium'>
           Description
         </Typography>
         <TextField
-          sx={{mt: -0.3}}
+          variant='outlined'
           value={dialog.description}
           onChange={(e) => handleNameChange(e, 'description')}
-          margin='dense'
-          size='small'
           multiline
           fullWidth
-          minRows={2}
+          minRows={3}
         />
       </DialogContent>
       <DialogActions>
+        {isSaveAsOption && (
+          <Button color='secondary' variant='outlined' onClick={handleClose}>
+            Cancel
+          </Button>
+        )}
         <Button
           color='primary'
+          variant='contained'
           disabled={!dialog.name || Boolean(errorText)}
           onClick={validateAndClose}>
-          Open
+          {isSaveAsOption ? 'Save As' : 'Open'}
         </Button>
       </DialogActions>
     </Dialog>

@@ -13,6 +13,7 @@ const TestWorkSpace = ({user, updateUser}) => {
     version: 1,
     description: '',
   });
+  const [isSaveAsOption, setIsSaveAsOption] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -86,15 +87,22 @@ const TestWorkSpace = ({user, updateUser}) => {
         <>
           <ProjectPage
             ivrName={ivrName}
-            openIvrDialog={() => setIsIvrDialogOpen(true)}
+            openIvrDialog={() => {
+              setIsSaveAsOption(true);
+              setIsIvrDialogOpen(true);
+            }}
             user={user}
             updateUser={updateUser}
           />
           <IvrDialog
             isOpen={Boolean(isIvrDialogOpen)}
-            handleClose={() => setIsIvrDialogOpen(false)}
+            handleClose={() => {
+              setIsSaveAsOption(false);
+              setIsIvrDialogOpen(false);
+            }}
             ivrName={ivrName}
             setIvrName={setIvrName}
+            isSaveAsOption={isSaveAsOption}
           />
         </>
       )}
