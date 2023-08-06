@@ -5,7 +5,7 @@ import useWindowSize from '../src/hooks/useWindowSize';
 import {Avatar, Box, Typography} from '@mui/material';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 
-const TestWorkSpace = ({user}) => {
+const TestWorkSpace = ({user, updateUser}) => {
   const size = useWindowSize();
   const [isIvrDialogOpen, setIsIvrDialogOpen] = useState(false);
   const [ivrName, setIvrName] = useState({
@@ -88,6 +88,7 @@ const TestWorkSpace = ({user}) => {
             ivrName={ivrName}
             openIvrDialog={() => setIsIvrDialogOpen(true)}
             user={user}
+            updateUser={updateUser}
           />
           <IvrDialog
             isOpen={Boolean(isIvrDialogOpen)}

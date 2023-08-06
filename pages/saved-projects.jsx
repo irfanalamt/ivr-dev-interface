@@ -201,7 +201,7 @@ const SavedProjects2 = ({user}) => {
         )}
       </Box>
       <Container sx={{mt: 4}}>
-        <Typography sx={{mb: 3}} variant='h4' gutterBottom>
+        <Typography sx={{mb: 3, color: '#424242'}} variant='h4' gutterBottom>
           Saved Projects
         </Typography>
         {loading ? (

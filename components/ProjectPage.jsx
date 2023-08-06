@@ -19,7 +19,7 @@ import MainToolbar from './Toolbar';
 import Shape from '../newModels/Shape';
 import MainUserGuide from '../newComponents/MainUserGuide';
 
-function ProjectPage({ivrName, user, openIvrDialog}) {
+function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [openVariableManager, setOpenVariableManager] = useState(false);
   const [openPromptList, setOpenPromptList] = useState(false);
@@ -607,6 +607,7 @@ function ProjectPage({ivrName, user, openIvrDialog}) {
         openIvrDialog={openIvrDialog}
         openUserGuide={() => setOpenUserGuide(true)}
         user={user}
+        updateUser={updateUser}
       />
       <div style={{display: 'flex'}}>
         <div

@@ -1,17 +1,25 @@
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SaveIcon from '@mui/icons-material/Save';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import {
   AppBar,
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
+  Menu,
+  MenuItem,
   Tooltip,
   Typography,
 } from '@mui/material';
+import {useRouter} from 'next/router';
 import {useState} from 'react';
 import ResetWorkspaceDialog from './ResetWorkspaceDialog';
 
@@ -23,11 +31,45 @@ const CanvasAppbar2 = ({
   openIvrDialog,
   user,
   openUserGuide,
+  updateUser,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [openSignOutDialog, setOpenSignOutDialog] = useState(false);
+
+  const router = useRouter();
+
+  function handleMenuOpen(event) {
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleMenuClose() {
+    setAnchorEl(null);
+  }
+
+  function handleMyProjects() {
+    window.open(`/saved-projects`, '_blank');
+    handleMenuClose();
+  }
+
+  function handleSignOut() {
+    handleMenuClose();
+    setOpenSignOutDialog(true);
+  }
+
+  function confirmSignOut() {
+    setOpenSignOutDialog(false);
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('ivrName');
+    updateUser(null);
+    router.push('/');
+  }
+
+  function cancelSignOut() {
+    setOpenSignOutDialog(false);
+  }
 
   function handleClick() {
-    console.log('appBar clicked.');
     resetSelectedItemToolbar();
   }
 
@@ -43,6 +85,7 @@ const CanvasAppbar2 = ({
         backgroundColor: '#FAFAFA',
         flexDirection: 'row',
         alignItems: 'center',
+        paddingRight: 0,
       }}
       onClick={handleClick}>
       <Tooltip title='GUIDE'>
@@ -59,7 +102,7 @@ const CanvasAppbar2 = ({
         </IconButton>
       </Tooltip>
       <Typography
-        sx={{ml: 4, color: 'black'}}
+        sx={{ml: 6, color: 'black', fontWeight: 600}}
         variant='subtitle1'
         fontSize='large'>
         {ivrName.name}
@@ -70,6 +113,7 @@ const CanvasAppbar2 = ({
           ml: 'auto',
           display: 'flex',
           alignItems: 'center',
+          height: '100%',
         }}>
         <Tooltip title='SAVE'>
           <IconButton
@@ -119,7 +163,8 @@ const CanvasAppbar2 = ({
               '&:hover': {
                 backgroundColor: '#43a047',
               },
-              mx: 1,
+              ml: 1,
+              mr: 2,
             }}
             size='small'
             variant='contained'
@@ -127,31 +172,73 @@ const CanvasAppbar2 = ({
             <SaveAltIcon sx={{fontSize: 'large'}} />
           </Button>
         </Tooltip>
-        {user ? (
-          <>
-            <Typography sx={{ml: 'auto', ml: 2, color: 'black'}}>
-              {user.name}
+        <Box
+          sx={{
+            backgroundColor: '#E5E5E5',
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+            pl: 0.5,
+            pr: 0,
+          }}>
+          {user ? (
+            <>
+              <IconButton edge='end' onClick={handleMenuOpen}>
+                <AccountCircleIcon sx={{color: 'black'}} />
+              </IconButton>
+              <Typography
+                variant='subtitle1'
+                sx={{ml: 1, mr: 1.5, color: 'black'}}>
+                {user.name}
+              </Typography>
+            </>
+          ) : (
+            <Typography
+              sx={{
+                ml: 2,
+                mr: 1,
+                fontWeight: 'bold',
+                color: 'black',
+              }}
+              variant='subtitle2'>
+              Guest 🟢
             </Typography>
-            <AccountCircleIcon sx={{color: '#666666', mx: 1}} />
-          </>
-        ) : (
-          <Typography
-            sx={{
-              ml: 'auto',
-              mx: 1,
-              fontWeight: 'bold',
-              color: 'black',
-            }}
-            variant='subtitle2'>
-            Guest 🟢
-          </Typography>
-        )}
+          )}
+        </Box>
       </Box>
       <ResetWorkspaceDialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
         onConfirm={handleReset}
       />
+      <Menu
+        id='simple-menu'
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        disableScrollLock={true}>
+        <MenuItem onClick={handleMyProjects} dense>
+          My projects
+        </MenuItem>
+        <MenuItem onClick={handleSignOut} dense>
+          Sign out
+        </MenuItem>
+      </Menu>
+      <Dialog open={openSignOutDialog} onClose={cancelSignOut}>
+        <DialogTitle>Confirm Sign Out</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to sign out?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelSignOut}>Cancel</Button>
+          <Button onClick={confirmSignOut} color='primary' autoFocus>
+            Yes, Sign Out
+          </Button>
+        </DialogActions>
+      </Dialog>
     </AppBar>
   );
 };
