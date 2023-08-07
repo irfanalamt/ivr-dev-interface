@@ -3,7 +3,7 @@ import ContentCutIcon from '@mui/icons-material/ContentCut';
 import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SettingsIcon from '@mui/icons-material/Settings';
-import {Menu, MenuItem, Paper, Stack, Typography} from '@mui/material';
+import {Menu, MenuItem, Typography} from '@mui/material';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import PeekMenu from '../newComponents/PeekMenu';
 import Shape from '../newModels/Shape';
@@ -64,7 +64,12 @@ const CanvasTest = ({
   );
 
   useEffect(() => {
-    if (contextRef.current) clearAndDraw();
+    if (contextRef.current) {
+      clearAndDraw();
+      setTimeout(() => {
+        clearAndDraw();
+      }, 50);
+    }
   }, [pageNumber]);
 
   useEffect(() => {
@@ -76,7 +81,7 @@ const CanvasTest = ({
       isLoadFromDb.current = false;
       setTimeout(() => {
         clearAndDraw();
-      }, [500]);
+      }, 100);
     }
   }, [shapes]);
 
@@ -274,7 +279,6 @@ const CanvasTest = ({
         }
         isDragging.current = true;
         currentShape.current = shape;
-        console.log('📍', shape);
         startX.current = realX;
         startY.current = realY;
         return;
