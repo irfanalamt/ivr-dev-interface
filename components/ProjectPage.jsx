@@ -29,8 +29,8 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [shapes, setShapes] = useState([]);
   const [tabs, setTabs] = useState([
-    {id: 1, label: 'Page 1'},
-    {id: 2, label: 'Page 2'},
+    {id: 1, label: 'Page1'},
+    {id: 2, label: 'Page2'},
   ]);
   const [activeTab, setActiveTab] = useState(tabs[0].id);
   const isLoadFromDb = useRef(false);

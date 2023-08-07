@@ -102,7 +102,7 @@ const CanvasAppbar2 = ({
         </IconButton>
       </Tooltip>
       <Typography
-        sx={{ml: 6, color: 'black', fontWeight: 600}}
+        sx={{ml: 6, color: '#3C3C3C', fontWeight: 600}}
         variant='subtitle1'
         fontSize='large'>
         {ivrName.name}
