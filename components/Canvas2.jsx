@@ -919,7 +919,7 @@ const CanvasTest = ({
     const offsetY = realY - currShape.y;
 
     const newShape = currShape.copyShape(
-      shapeCount.current,
+      shapeCount,
       shapes,
       offsetX,
       offsetY,
@@ -997,14 +997,7 @@ const CanvasTest = ({
 
     const idMap = {};
     const newShapes = selectedShapes.current.map((shape) =>
-      shape.copyShape(
-        shapeCount.current,
-        shapes,
-        offsetX,
-        offsetY,
-        pageNumber,
-        idMap
-      )
+      shape.copyShape(shapeCount, shapes, offsetX, offsetY, pageNumber, idMap)
     );
 
     mapAllValidConnectionsCopy(selectedShapes.current, newShapes, idMap);

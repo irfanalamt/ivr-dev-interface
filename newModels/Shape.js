@@ -128,7 +128,7 @@ class Shape {
     }
   }
 
-  setTextAndId(shapeCount) {
+  setTextAndId(shapeCount, isCopy = false) {
     const shapeTypeLetterMap = new Map([
       ['setParams', 'A'],
       ['runScript', 'B'],
@@ -150,13 +150,16 @@ class Shape {
     this.text += shapeCount.toString();
 
     this.id = id;
+    if (isCopy) {
+      this.id += '_c';
+    }
   }
 
   copyShape(shapeCount, shapes, offsetX, offsetY, pageNumber, idMap = {}) {
     const {x, y, type, text} = this;
-    const count = ++shapeCount[type];
+    const count = shapeCount.current[type]++;
     const newShape = new Shape(x + offsetX, y + offsetY, type, pageNumber);
-    newShape.setTextAndId(count);
+    newShape.setTextAndId(count, true);
     const shapeNames = shapes.map((shape) => shape.text);
     newShape.text = this.getUniqueName(text, shapeNames);
     newShape.userValues = this.copyUserValues();
@@ -183,6 +186,8 @@ class Shape {
         actions: userValues.actions.map(({nextItem, ...rest}) => rest),
       };
       delete newUserValues.defaultActionNextItem;
+    } else if (type === 'jumper') {
+      return userValues;
     } else {
       newUserValues = userValues;
     }
