@@ -1,4 +1,4 @@
-import {Box, Paper, Stack, Typography} from '@mui/material';
+import {Box, Grid, Paper, Typography} from '@mui/material';
 
 const PeekMenu = ({shape}) => {
   return (
@@ -10,96 +10,114 @@ const PeekMenu = ({shape}) => {
         right: 10,
         px: 2,
         py: 1,
-        backgroundColor: '#cccccc',
+        backgroundColor: '#E5E5E5',
         color: '#000000',
         wordWrap: 'break-word',
       }}>
-      <Stack spacing={-0.3}>
+      <Box sx={{mb: 0.5}}>
         {shape.userValues?.variableName ? (
-          <Typography sx={{mb: 0.5}} variant='subtitle2'>
+          <Typography sx={{mb: 0.5}} variant='h6' fontSize='medium'>
             {shape.userValues?.variableName} = getDigits[
             {`${shape.userValues?.params.minDigits}-${shape.userValues?.params.maxDigits}`}
             ]
           </Typography>
         ) : (
-          <Typography sx={{mb: 0.5}} variant='subtitle2'>
+          <Typography sx={{mb: 0.5}} variant='h6' fontSize='medium'>
             {shape.type}
           </Typography>
         )}
-        {['playMessage', 'playConfirm', 'getDigits'].includes(shape.type) && (
-          <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-            {shape.userValues.messageList.map((m, i) => (
-              <Box sx={{display: 'flex', alignItems: 'center'}} key={i}>
-                <Typography sx={{fontSize: 'small'}}>
-                  {i === 0 && '['}&nbsp;
-                  {`${m.item}`}
-                  {i !== shape.userValues.messageList.length - 1 && ','}&nbsp;
-                  {i === shape.userValues.messageList.length - 1 && ']'}
-                </Typography>
-              </Box>
-            ))}
-          </Typography>
-        )}
-        {shape.type === 'playMenu' &&
-          shape.userValues.items.map((m, i) => (
-            <Box sx={{display: 'flex', alignItems: 'center'}} key={i}>
-              <Typography sx={{fontSize: 'small', fontWeight: 'bold'}}>
-                {`${m.digit}: `}&nbsp;
-              </Typography>
-              <Typography sx={{fontSize: 'small'}} variant='subtitle2'>
-                {`${m.action}`}&nbsp;
-              </Typography>
-              <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                {` '${m.prompt}'`}
+      </Box>
+      {['playMessage', 'playConfirm', 'getDigits'].includes(shape.type) && (
+        <>
+          {shape.userValues.messageList.map((m, i) => (
+            <Box
+              sx={{display: 'flex', alignItems: 'center', fontSize: '13px'}}
+              key={i}
+              variant='body1'>
+              <Typography>
+                {i === 0 && '['}&nbsp;
+                {`${m.item}`}
+                {i !== shape.userValues.messageList.length - 1 && ','}&nbsp;
+                {i === shape.userValues.messageList.length - 1 && ']'}
               </Typography>
             </Box>
           ))}
-        {shape.type === 'switch' && (
-          <>
-            {shape.userValues.actions.map((a, i) => (
-              <Box sx={{display: 'flex', alignItems: 'center'}} key={i}>
-                <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                  {`${a.action}:`}&nbsp;
-                </Typography>
-                <Typography
-                  key={i}
-                  sx={{fontSize: 'small'}}
-                  variant='subtitle2'>
-                  {` ${a.condition}`}
-                </Typography>
-              </Box>
-            ))}
-            {
-              <Box sx={{display: 'flex', alignItems: 'center'}}>
-                <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-                  {`${shape.userValues.defaultAction}:`}&nbsp;
-                </Typography>
-                <Typography sx={{fontSize: 'small'}} variant='subtitle2'>
-                  {`default`}
-                </Typography>
-              </Box>
-            }
-          </>
-        )}
-        {shape.type === 'runScript' && (
-          <Box sx={{display: 'flex', alignItems: 'center'}}>
-            <Typography sx={{fontSize: 'small'}} variant='subtitle1'>
-              {`${shape.userValues.script}`}&nbsp;
+        </>
+      )}
+      {shape.type === 'playMenu' &&
+        shape.userValues.items.map((m, i) => (
+          <Grid container spacing={1} key={i}>
+            <Grid item xs={1}>
+              <Typography
+                sx={{fontSize: '14px', fontWeight: 'bold'}}
+                variant='body1'>
+                {`${m.digit} -`}
+              </Typography>
+            </Grid>
+            <Grid item xs={4}>
+              <Typography
+                sx={{fontSize: '14px', fontWeight: 'bold'}}
+                variant='body1'>
+                {`${m.action}`}
+              </Typography>
+            </Grid>
+            <Grid item xs={7}>
+              <Typography sx={{fontSize: '14px'}} variant='body1'>
+                {m.action === 'Transfer'
+                  ? ` ${m.transferPoint}`
+                  : ` '${m.prompt}'`}
+              </Typography>
+            </Grid>
+          </Grid>
+        ))}
+      {shape.type === 'switch' && (
+        <>
+          {shape.userValues.actions.map((a, i) => (
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}} key={i}>
+              <Typography
+                sx={{fontSize: '14px', fontWeight: 'bold'}}
+                variant='body1'>
+                {`${a.action}:`}
+              </Typography>
+              <Typography key={i} sx={{fontSize: '14px'}} variant='body1'>
+                {` ${a.condition}`}
+              </Typography>
+            </Box>
+          ))}
+          {
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+              <Typography
+                sx={{fontSize: '14px', fontWeight: 'bold'}}
+                variant='body1'>
+                {`${shape.userValues.defaultAction}:`}
+              </Typography>
+              <Typography sx={{fontSize: '14px'}} variant='body1'>
+                {`  default`}
+              </Typography>
+            </Box>
+          }
+        </>
+      )}
+      {shape.type === 'runScript' && (
+        <Box sx={{display: 'flex', alignItems: 'center'}}>
+          <Typography sx={{fontSize: '14px'}} variant='body1'>
+            {`${shape.userValues.script}`}&nbsp;
+          </Typography>
+        </Box>
+      )}
+      {shape.type === 'setParams' &&
+        shape.userValues.params.map((p, i) => (
+          <Box sx={{display: 'flex', alignItems: 'center'}} key={i}>
+            <Typography
+              sx={{fontSize: '14px', fontWeight: 'bold'}}
+              variant='body1'>
+              {`${p.name}: `}&nbsp;
+            </Typography>
+            <Typography sx={{fontSize: '14px'}} variant='body1'>
+              {`${p.value}`}&nbsp;
             </Typography>
           </Box>
-        )}
-        {shape.type === 'setParams' &&
-          shape.userValues.params.map((p, i) => (
-            <Box sx={{display: 'flex', alignItems: 'center'}} key={i}>
-              <Typography sx={{fontSize: 'small', fontWeight: 'bold'}}>
-                {`${p.name}: `}&nbsp;
-              </Typography>
-              <Typography sx={{fontSize: 'small'}} variant='subtitle2'>
-                {`${p.value}`}&nbsp;
-              </Typography>
-            </Box>
-          ))}
-      </Stack>
+        ))}
     </Paper>
   );
 };
