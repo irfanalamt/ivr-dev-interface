@@ -46,30 +46,31 @@ const PeekMenu = ({shape}) => {
       )}
       {shape.type === 'playMenu' &&
         shape.userValues.items.map((m, i) => (
-          <Grid container spacing={1} key={i}>
-            <Grid item xs={1}>
+          <Box display='flex' key={i} mb={1}>
+            <Box>
               <Typography
                 sx={{fontSize: '14px', fontWeight: 'bold'}}
                 variant='body1'>
-                {`${m.digit} -`}
+                {`${m.digit}:`}
               </Typography>
-            </Grid>
-            <Grid item xs={4}>
+            </Box>
+            <Box ml={1}>
               <Typography
                 sx={{fontSize: '14px', fontWeight: 'bold'}}
                 variant='body1'>
                 {`${m.action}`}
               </Typography>
-            </Grid>
-            <Grid item xs={7}>
+            </Box>
+            <Box ml={1}>
               <Typography sx={{fontSize: '14px'}} variant='body1'>
                 {m.action === 'Transfer'
                   ? ` ${m.transferPoint}`
                   : ` '${m.prompt}'`}
               </Typography>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         ))}
+
       {shape.type === 'switch' && (
         <>
           {shape.userValues.actions.map((a, i) => (
