@@ -366,7 +366,7 @@ function findEntryCount(shapes) {
   for (let shape of shapes) {
     const nextShapes = getNextShapes(shape);
 
-    const typesToIgnore = ['playMenu', 'switch', 'playConfirm'];
+    const typesToIgnore = ['playMenu', 'switch', 'playConfirm', 'jumper'];
 
     for (let nextShape of nextShapes) {
       if (
