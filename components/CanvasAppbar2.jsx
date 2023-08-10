@@ -1,5 +1,4 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import SaveIcon from '@mui/icons-material/Save';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
@@ -8,11 +7,13 @@ import {
   AppBar,
   Box,
   Button,
+  ButtonBase,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
   IconButton,
   Menu,
   MenuItem,
@@ -32,6 +33,8 @@ const CanvasAppbar2 = ({
   user,
   openUserGuide,
   updateUser,
+  openVariableManager,
+  openPromptList,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -88,21 +91,8 @@ const CanvasAppbar2 = ({
         paddingRight: 0,
       }}
       onClick={handleClick}>
-      <Tooltip title='GUIDE'>
-        <IconButton
-          sx={{
-            ml: 2,
-            backgroundColor: '#dcdcdc',
-            '&:hover': {backgroundColor: '#80cbc4'},
-          }}
-          aria-label='user-guide'
-          size='small'
-          onClick={openUserGuide}>
-          <HelpCenterIcon sx={{color: 'black', fontSize: 'large'}} />
-        </IconButton>
-      </Tooltip>
       <Typography
-        sx={{ml: 6, color: '#3C3C3C', fontWeight: 600}}
+        sx={{ml: 4, color: '#3C3C3C', fontWeight: 600}}
         variant='subtitle1'
         fontSize='large'>
         {ivrName.name}
@@ -172,39 +162,41 @@ const CanvasAppbar2 = ({
             <SaveAltIcon sx={{fontSize: 'large'}} />
           </Button>
         </Tooltip>
-        <Box
-          sx={{
-            backgroundColor: '#E5E5E5',
-            display: 'flex',
-            alignItems: 'center',
-            height: '100%',
-            pl: 0.5,
-            pr: 0,
-          }}>
-          {user ? (
-            <>
-              <IconButton edge='end' onClick={handleMenuOpen}>
-                <AccountCircleIcon sx={{color: 'black'}} />
-              </IconButton>
+        <ButtonBase sx={{height: '100%'}} onClick={handleMenuOpen}>
+          <Box
+            sx={{
+              backgroundColor: '#E5E5E5',
+              display: 'flex',
+              alignItems: 'center',
+              height: '100%',
+              pl: 0.5,
+              pr: 0,
+            }}>
+            {user ? (
+              <>
+                <IconButton edge='end'>
+                  <AccountCircleIcon sx={{color: 'black'}} />
+                </IconButton>
+                <Typography
+                  variant='subtitle1'
+                  sx={{ml: 1, mr: 1.5, color: 'black'}}>
+                  {user.name}
+                </Typography>
+              </>
+            ) : (
               <Typography
-                variant='subtitle1'
-                sx={{ml: 1, mr: 1.5, color: 'black'}}>
-                {user.name}
+                sx={{
+                  ml: 2,
+                  mr: 1,
+                  fontWeight: 'bold',
+                  color: 'black',
+                }}
+                variant='subtitle2'>
+                Guest 🟢
               </Typography>
-            </>
-          ) : (
-            <Typography
-              sx={{
-                ml: 2,
-                mr: 1,
-                fontWeight: 'bold',
-                color: 'black',
-              }}
-              variant='subtitle2'>
-              Guest 🟢
-            </Typography>
-          )}
-        </Box>
+            )}
+          </Box>
+        </ButtonBase>
       </Box>
       <ResetWorkspaceDialog
         open={openDialog}
@@ -218,13 +210,26 @@ const CanvasAppbar2 = ({
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
         disableScrollLock={true}>
+        <MenuItem onClick={openVariableManager} dense>
+          Variable Manager
+        </MenuItem>
+        <MenuItem onClick={openPromptList} dense>
+          Prompt List
+        </MenuItem>
+
+        <Divider />
+
+        <MenuItem onClick={openUserGuide} dense>
+          User Guide
+        </MenuItem>
         <MenuItem onClick={handleMyProjects} dense>
-          My projects
+          My Projects
         </MenuItem>
         <MenuItem onClick={handleSignOut} dense>
-          Sign out
+          Sign Out
         </MenuItem>
       </Menu>
+
       <Dialog open={openSignOutDialog} onClose={cancelSignOut}>
         <DialogTitle>Confirm Sign Out</DialogTitle>
         <DialogContent>

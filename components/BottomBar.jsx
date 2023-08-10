@@ -15,8 +15,6 @@ import {useRef, useState} from 'react';
 
 const BottomBar = ({
   resetSelectedItemToolbar,
-  openVariableManager,
-  openPromptList,
   tabs,
   setTabs,
   activeTab,
@@ -52,14 +50,6 @@ const BottomBar = ({
     resetSelectedItemToolbar();
   }
 
-  function handleVariableManagerClick() {
-    openVariableManager();
-  }
-
-  function handlePromptListClick() {
-    openPromptList();
-  }
-
   return (
     <Box
       sx={{
@@ -72,48 +62,13 @@ const BottomBar = ({
         alignItems: 'center',
       }}
       onClick={handleClick}>
-      <Tooltip title='VARIABLE MANAGER' arrow>
-        <IconButton
-          onClick={handleVariableManagerClick}
-          sx={{
-            ml: '90px',
-            bgcolor: '#7FB5B5',
-            '&:hover': {
-              bgcolor: '#A8CCCC',
-            },
-            height: '28px',
-            width: '28px',
-          }}>
-          <img
-            src='/icons/variableManager.png'
-            alt='Icon'
-            height={'15px'}
-            width={'15px'}
-          />
-        </IconButton>
-      </Tooltip>
-
-      <Tooltip title='PROMPT LIST' arrow>
-        <IconButton
-          onClick={handlePromptListClick}
-          sx={{
-            ml: 4,
-            bgcolor: '#7FB5B5',
-            '&:hover': {
-              bgcolor: '#A8CCCC',
-            },
-            height: '28px',
-            width: '28px',
-          }}>
-          <img
-            src='/icons/promptList.png'
-            alt='Icon'
-            height={'15px'}
-            width={'15px'}
-          />
-        </IconButton>
-      </Tooltip>
-      <Box sx={{ml: 2, display: 'flex', alignItems: 'center', maxWidth: '80%'}}>
+      <Box
+        sx={{
+          ml: '75px',
+          display: 'flex',
+          alignItems: 'center',
+          maxWidth: '80%',
+        }}>
         <Tabs
           value={activeTab}
           onChange={(e, id) => handleChangeTab(id)}
@@ -142,12 +97,12 @@ const BottomBar = ({
                   '4px solid #9e9e9e',
                 borderRight:
                   tab.id === activeTab
-                    ? '1px solid #9e9e9e'
+                    ? '2px solid #9e9e9e'
                     : '1px solid grey.400',
                 bgcolor: tab.id === activeTab && '#EFF7FD',
                 borderLeft:
                   tab.id === activeTab
-                    ? '1px solid #9e9e9e'
+                    ? '2px solid #9e9e9e'
                     : i === 0 && '1px solid grey.400',
               }}
               key={tab.id}

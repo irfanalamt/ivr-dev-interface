@@ -608,6 +608,8 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
         openUserGuide={() => setOpenUserGuide(true)}
         user={user}
         updateUser={updateUser}
+        openVariableManager={() => setOpenVariableManager(true)}
+        openPromptList={() => setOpenPromptList(true)}
       />
       <div style={{display: 'flex'}}>
         <div
@@ -638,8 +640,6 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
         />
       </div>
       <BottomBar
-        openVariableManager={() => setOpenVariableManager(true)}
-        openPromptList={() => setOpenPromptList(true)}
         resetSelectedItemToolbar={resetSelectedItemToolbar}
         tabs={tabs}
         setTabs={setTabs}
