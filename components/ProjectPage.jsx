@@ -1,8 +1,10 @@
-import {Alert, Box, Snackbar} from '@mui/material';
+import {Alert, Box, CircularProgress, Snackbar} from '@mui/material';
 import axios from 'axios';
 import {useEffect, useRef, useState} from 'react';
+import MainUserGuide from '../newComponents/MainUserGuide';
 import PromptList from '../newComponents/PromptList';
 import VariableManager from '../newComponents/VariableManager';
+import Shape from '../newModels/Shape';
 import {
   checkForStartShape,
   findEntryCount,
@@ -16,8 +18,6 @@ import BottomBar from './BottomBar';
 import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
-import Shape from '../newModels/Shape';
-import MainUserGuide from '../newComponents/MainUserGuide';
 
 function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
@@ -25,6 +25,7 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
   const [openPromptList, setOpenPromptList] = useState(false);
   const [openUserGuide, setOpenUserGuide] = useState(false);
   const [userVariables, setUserVariables] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [shapes, setShapes] = useState([]);
@@ -89,6 +90,7 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
             setUserVariables(newUserVariables);
 
             setTabs(tabs);
+            setLoading(false);
           })
           .catch((error) => {
             // if internal server error; retry twice after 2 seconds
@@ -101,6 +103,7 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
               setTimeout(makeRequest, 2000);
             } else {
               console.error(error);
+              setLoading(false);
             }
           });
       }
@@ -611,6 +614,19 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
         openVariableManager={() => setOpenVariableManager(true)}
         openPromptList={() => setOpenPromptList(true)}
       />
+      <div
+        style={{
+          position: 'fixed',
+          top: '40vh',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 100,
+          display: 'flex',
+          justifyContent: 'center',
+          width: '100%',
+        }}>
+        {loading && <CircularProgress size='4rem' />}
+      </div>
       <div style={{display: 'flex'}}>
         <div
           style={{
