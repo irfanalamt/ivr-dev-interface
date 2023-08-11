@@ -1,4 +1,10 @@
-import {Alert, Box, CircularProgress, Snackbar} from '@mui/material';
+import {
+  Alert,
+  Box,
+  CircularProgress,
+  Snackbar,
+  Typography,
+} from '@mui/material';
 import axios from 'axios';
 import {useEffect, useRef, useState} from 'react';
 import MainUserGuide from '../newComponents/MainUserGuide';
@@ -431,6 +437,12 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
   }
 
   async function saveToDb(showNotification = false) {
+    if (showNotification) {
+      setShowSnackbar({
+        message: 'Project saved.',
+        type: 'success',
+      });
+    }
     const shapesForDb = prepareShapesForDb(shapes);
 
     try {
@@ -446,12 +458,6 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
       );
       const response = await axios.post('/api/saveProject2', data);
 
-      if (showNotification) {
-        setShowSnackbar({
-          message: 'Project saved.',
-          type: 'success',
-        });
-      }
       return response.data;
     } catch (err) {
       console.log('Failed to insert document', err);
@@ -694,7 +700,13 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
           open={Boolean(showSnackbar)}
           autoHideDuration={5000}
           onClose={() => setShowSnackbar(false)}>
-          <Alert severity={showSnackbar.type}>{showSnackbar.message}</Alert>
+          <Alert
+            sx={{minWidth: '200px', display: 'flex', alignItems: 'center'}}
+            severity={showSnackbar.type}>
+            <Typography variant='body1' style={{fontSize: '1.1rem'}}>
+              {showSnackbar.message}
+            </Typography>
+          </Alert>
         </Snackbar>
       )}
       <MainUserGuide
