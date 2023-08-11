@@ -119,10 +119,18 @@ const VariableManager = ({
     setErrorText('');
 
     if (index !== -1) {
-      const updatedVariables = [...variables];
-      updatedVariables.splice(index, 1);
-      setVariables(updatedVariables);
-      setSuccessText('Delete successful.');
+      const shapeIndex = findVariableUsedIndex(currentVariable.name, shapes);
+
+      if (shapeIndex !== -1) {
+        setErrorText(
+          `Cannot delete. Variable used in ${shapes[shapeIndex].text}`
+        );
+      } else {
+        const updatedVariables = [...variables];
+        updatedVariables.splice(index, 1);
+        setVariables(updatedVariables);
+        setSuccessText('Delete successful.');
+      }
     } else {
       setErrorText('Delete error.');
     }
@@ -133,6 +141,10 @@ const VariableManager = ({
     setName('');
     setDefaultValue('');
     setDescription('');
+  }
+
+  function findVariableUsedIndex(name, shapes) {
+    return shapes.findIndex((shape) => shape.isVariableNameUsed(name));
   }
 
   function handleAddNewVariable() {
@@ -198,19 +210,22 @@ const VariableManager = ({
     } else return 'required';
   }
 
+  function doClosingOperations() {
+    setMode('');
+    setCurrentVariable('');
+    setName('');
+    setDefaultValue('');
+    setDescription('');
+    setSuccessText('');
+    setErrorText('');
+  }
+
   return (
     <Drawer
       anchor='left'
       open={isOpen}
       onClose={() => {
-        saveToDb();
-        setMode('');
-        setCurrentVariable('');
-        setName('');
-        setDefaultValue('');
-        setDescription('');
-        setSuccessText('');
-        setErrorText('');
+        doClosingOperations();
         handleClose();
       }}>
       <ListItem
@@ -241,7 +256,10 @@ const VariableManager = ({
           &nbsp;Variable Manager
         </Typography>
         <IconButton
-          onClick={handleClose}
+          onClick={() => {
+            doClosingOperations();
+            handleClose();
+          }}
           sx={{
             ml: 'auto',
             backgroundColor: '#263238',
@@ -481,14 +499,6 @@ const VariableManager = ({
                       disabled={!(mode == 'add' || mode == 'modify')}
                     />
                   )}
-
-                  <Button
-                    onClick={handleSave}
-                    variant='contained'
-                    disabled={!(mode == 'add' || mode == 'modify')}
-                    sx={{ml: 2}}>
-                    <SaveIcon />
-                  </Button>
                 </Box>
               </Box>
             </ListItem>
@@ -501,18 +511,27 @@ const VariableManager = ({
                   my: 1,
                 }}>
                 <Typography variant='subtitle2'>Description</Typography>
-                <TextField
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  sx={{
-                    width: 200,
-                    backgroundColor:
-                      mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
-                  }}
-                  size='small'
-                  multiline
-                  disabled={!(mode == 'add' || mode == 'modify')}
-                />
+                <Box sx={{display: 'flex', alignItems: 'center'}}>
+                  <TextField
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    sx={{
+                      width: 200,
+                      backgroundColor:
+                        mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
+                    }}
+                    size='small'
+                    multiline
+                    disabled={!(mode == 'add' || mode == 'modify')}
+                  />
+                  <Button
+                    onClick={handleSave}
+                    variant='contained'
+                    disabled={!(mode == 'add' || mode == 'modify')}
+                    sx={{ml: 2}}>
+                    <SaveIcon />
+                  </Button>
+                </Box>
               </Box>
             </ListItem>
           </Box>

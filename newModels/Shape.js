@@ -240,6 +240,67 @@ class Shape {
     return newShape;
   }
 
+  isVariableNameUsed(name) {
+    // checks if this variable is used in element
+
+    switch (this.type) {
+      case 'setParams':
+        const params = this.userValues?.params;
+        if (!params) return false;
+
+        return params.some((param) => param.value === `$${name}`);
+
+      case 'getDigits':
+        const resultVariableName = this.userValues?.variableName;
+        if (resultVariableName) {
+          if (resultVariableName === `$${name}`) {
+            return true;
+          }
+        }
+      case 'playConfirm':
+      case 'playMessage':
+        const messageList = this.userValues?.messageList;
+
+        if (!messageList) return false;
+        return messageList.some((message) => message.item === `$${name}`);
+
+      case 'switch':
+        const actions = this.userValues?.actions;
+        if (!actions) return false;
+        return actions.some((action) => action.condition.includes(`$${name}`));
+
+      case 'playMenu':
+        const items = this.userValues?.items;
+        if (!items) return false;
+        return items.some((item) => item.prompt === `$${name}`);
+
+      case 'runScript':
+        const script = this.userValues?.script;
+        if (!script) return false;
+        const regex = new RegExp(`\\$${name}[^a-zA-Z0-9_]`, 'g');
+        return regex.test(script);
+
+      case 'callAPI':
+        const inputVars = this.userValues?.inputVars;
+        if (inputVars) {
+          const isMatchFound = inputVars.some(
+            (inputVars) => inputVars.name === name
+          );
+          if (isMatchFound) return true;
+        }
+
+        const outputVars = this.userValues?.outputVars;
+        if (outputVars) {
+          return outputVars.some((outputVars) => outputVars.name === name);
+        } else {
+          return false;
+        }
+
+      default:
+        return false;
+    }
+  }
+
   generateAndSetFunctionString(variables, elementEntryCount = {}) {
     switch (this.type) {
       case 'setParams':
