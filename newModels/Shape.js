@@ -540,6 +540,7 @@ class Shape {
     const paramsString = this.userValues.optionalParams
       ?.map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
       .join(', ');
+    const previousMenuId = this.userValues.previousMenuId;
 
     const modifiedItems = this.userValues.items.map(
       ({
@@ -574,7 +575,9 @@ class Shape {
 
     const menuString = `{menuId: '${functionName}'${
       paramsString ? ',' : ''
-    }${paramsString}, items: ${modifiedItemsString}}`;
+    }${paramsString}${
+      previousMenuId ? `,previousMenuId: '${previousMenuId}'` : ''
+    }, items: ${modifiedItemsString}}`;
 
     const logText = this.userValues.logs;
     const beforeLog = replaceVariablesInLog(logText.before.text, variables);
