@@ -8,12 +8,15 @@ import {
   ListItem,
   Stack,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
 import SaveChangesDialog from './SaveChangesDialog';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 
 const RunScript = ({
   shape,
@@ -31,6 +34,7 @@ const RunScript = ({
   );
   const [isFunctionError, setIsFunctionError] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const errors = useRef({});
 
@@ -263,12 +267,15 @@ const RunScript = ({
             )}
           </ListItem>
         </Stack>
-
-        <ListItem sx={{px: 3, py: 1}}>
+        <ListItem sx={{px: 3, py: 1, position: 'relative'}}>
           <TextField
             sx={{
               fontFamily: 'monospace',
               backgroundColor: isFunctionError ? '#ffebee' : '#f5f5f5',
+              width: isExpanded ? '80vw' : '100%',
+              height: '100%',
+              boxShadow: '0px 2px 8px rgba(0,0,0,0.1)',
+              transition: 'width 0.3s ease, height 0.3s ease',
             }}
             placeholder='Enter JavaScript code here'
             multiline
@@ -281,6 +288,24 @@ const RunScript = ({
               validateFunctionString(e.target.value);
             }}
           />
+          <Tooltip
+            title={isExpanded ? 'Exit Full Screen' : 'Enter Full Screen'}>
+            <IconButton
+              onClick={() => setIsExpanded(!isExpanded)}
+              size='small'
+              sx={{
+                position: 'absolute',
+                bottom: 15,
+                right: 30,
+                backgroundColor: 'rgba(0,0,0,0.6)',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: 'rgba(0,0,0,0.8)',
+                },
+              }}>
+              {isExpanded ? <FullscreenExitIcon /> : <FullscreenIcon />}
+            </IconButton>
+          </Tooltip>
         </ListItem>
       </Box>
       <SaveChangesDialog
