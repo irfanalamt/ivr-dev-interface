@@ -587,7 +587,7 @@ const CanvasTest = ({
             ) {
               setExitPointTooltip({
                 text: exitPoint.name,
-                mouseX: clientX,
+                mouseX: clientX + window.scrollX,
                 mouseY: clientY + 20 + window.scrollY,
               });
             }
@@ -608,7 +608,7 @@ const CanvasTest = ({
 
             setExitPointTooltip({
               text: `${capitalizedType}${name ? `: ${name}` : ''}`,
-              mouseX: clientX,
+              mouseX: clientX + window.scrollX,
               mouseY: clientY + 20 + window.scrollY,
             });
           }
