@@ -279,7 +279,7 @@ const RunScript = ({
             }}
             placeholder='Enter JavaScript code here'
             multiline
-            minRows={10}
+            minRows={20}
             fullWidth
             inputProps={{spellCheck: 'false'}}
             value={functionString}
@@ -295,7 +295,7 @@ const RunScript = ({
               size='small'
               sx={{
                 position: 'absolute',
-                bottom: 15,
+                top: 15,
                 right: 30,
                 backgroundColor: 'rgba(0,0,0,0.6)',
                 color: 'white',
