@@ -230,7 +230,7 @@ const RunScript = ({
           <CloseIcon sx={{fontSize: '22px'}} />
         </IconButton>
       </ListItem>
-      <Box sx={{backgroundColor: '#eeeeee', height: '100%'}}>
+      <Box sx={{backgroundColor: '#eeeeee', height: '100%', overflowY: 'auto'}}>
         <Stack>
           <Typography sx={{ml: 2, mt: 1}} fontSize='large' variant='subtitle2'>
             ID

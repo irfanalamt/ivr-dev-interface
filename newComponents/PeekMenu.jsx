@@ -1,4 +1,4 @@
-import {Box, Grid, Paper, Typography} from '@mui/material';
+import {Box, Paper, Typography} from '@mui/material';
 
 const PeekMenu = ({shape}) => {
   return (
@@ -13,6 +13,9 @@ const PeekMenu = ({shape}) => {
         backgroundColor: '#E5E5E5',
         color: '#000000',
         wordWrap: 'break-word',
+        maxWidth: '35%',
+        maxHeight: '30%',
+        overflowY: 'hidden',
       }}>
       <Box sx={{mb: 0.5}}>
         {shape.userValues?.variableName ? (
