@@ -1,4 +1,5 @@
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
   Button,
@@ -12,6 +13,7 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import {useState} from 'react';
@@ -76,6 +78,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
     const newMessages = [...messageList];
     newMessages[index].useVariable = checked;
     newMessages[index].item = '';
+    newMessages[index].error = 'required';
     setMessageList(newMessages);
   }
   function handleFieldChange(e, index) {
@@ -148,200 +151,275 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
     } else return '';
   }
 
+  function handleAddMessageBelow(index) {
+    const newMessages = [...messageList];
+    newMessages.splice(index + 1, 0, {
+      type: 'Prompt',
+      item: '',
+      error: 'required',
+    });
+    setMessageList(newMessages);
+  }
+
+  function handleMessageTypeChange(e, index) {
+    const newMessages = [...messageList];
+    newMessages[index].type = e.target.value;
+    newMessages[index].item = '';
+    newMessages[index].useVariable = false;
+    newMessages[index].error = 'required';
+    setMessageList(newMessages);
+  }
+
   return (
-    <List sx={{backgroundColor: '#eeeeee'}}>
-      <List>
-        {messageList.map((m, i) => (
-          <ListItem
-            sx={{
-              borderBottom: '1px solid #bdbdbd',
-              pb: 2,
-            }}
-            key={i}>
-            <Stack sx={{width: '100%'}}>
-              <Box sx={{display: 'flex'}}>
-                <Typography fontSize='16px' variant='subtitle2'>
-                  {m.type}
+    <List sx={{backgroundColor: '#eeeeee', padding: '1rem'}}>
+      {messageList.map((m, i) => (
+        <ListItem
+          sx={{
+            borderBottom: '1px solid #bdbdbd',
+            pb: 2,
+            my: 2,
+            px: 1,
+          }}
+          key={i}>
+          <Stack spacing={2} sx={{width: '100%'}}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+              }}>
+              <Stack direction='column'>
+                <Typography sx={{fontSize: '0.85rem'}} variant='subtitle1'>
+                  Type
                 </Typography>
-                <Typography
-                  sx={{
-                    color: 'red',
-                    ml: 2,
-                    px: 2,
-                    width: 'max-content',
-                  }}
-                  variant='subtitle2'>
-                  {m.error}
-                </Typography>
-              </Box>
-              <Box sx={{display: 'flex', alignItems: 'center'}}>
-                {m.useVariable ? (
+                <Stack direction='row' alignItems='center'>
                   <Select
-                    value={m.useVariable ? m.item : ''}
-                    onChange={(e) => handleFieldChange(e, i)}
-                    sx={{minWidth: 150, mr: 3, backgroundColor: '#f5f5f5'}}
+                    value={m.type}
+                    onChange={(e) => handleMessageTypeChange(e, i)}
+                    sx={{
+                      minWidth: 100,
+                      backgroundColor: '#f5f5f5',
+                      padding: '4px 8px',
+                      fontSize: '0.95rem',
+                      '& .MuiSelect-icon': {
+                        width: '1.5rem',
+                        height: '1.5rem',
+                      },
+                      '& .MuiSelect-select.MuiSelect-select': {
+                        padding: '4px 24px 4px 8px',
+                      },
+                    }}
                     size='small'>
-                    {renderVariableOptions(m.type)}
-                  </Select>
-                ) : (
-                  m.type !== 'Month' &&
-                  m.type !== 'Day' && (
-                    <TextField
-                      name={m.type}
-                      sx={{
-                        mr: 3,
-                        width: m.type !== 'Prompt' ? 150 : undefined,
-                        backgroundColor: '#f5f5f5',
-                      }}
-                      placeholder={getTextFieldPlaceholderValue(m.type)}
-                      size='small'
-                      value={m.item}
-                      onChange={(e) => handleFieldChange(e, i)}
-                      fullWidth={m.type === 'Prompt'}
-                    />
-                  )
-                )}
-                {m.type === 'Month' && !m.useVariable && (
-                  <Select
-                    name={m.type}
-                    value={m.item ?? ''}
-                    onChange={(e) => handleFieldChange(e, i)}
-                    sx={{mr: 3, width: 150, backgroundColor: '#f5f5f5'}}
-                    size='small'>
-                    {MonthValues.map((m, i) => (
-                      <MenuItem value={i + 1} key={i}>
-                        {m}
+                    {messageListTypes.map((type, idx) => (
+                      <MenuItem value={type} key={idx}>
+                        {type}
                       </MenuItem>
                     ))}
                   </Select>
-                )}
-                {m.type === 'Day' && !m.useVariable && (
-                  <Select
-                    name={m.type}
-                    value={m.item ?? ''}
-                    onChange={(e) => handleFieldChange(e, i)}
-                    sx={{mr: 3, width: 150, backgroundColor: '#f5f5f5'}}
-                    size='small'>
-                    {DayValues.map((m, i) => (
-                      <MenuItem value={i + 1} key={i}>
-                        {m}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
-                {m.type === 'Amount' && (
+                  <Typography
+                    sx={{
+                      color: 'red',
+                      pl: 2,
+                    }}
+                    variant='subtitle2'>
+                    {m.error}
+                  </Typography>
+                </Stack>
+              </Stack>
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '1rem',
+                alignItems: 'center',
+              }}>
+              {m.useVariable ? (
+                <Select
+                  value={m.useVariable ? m.item : ''}
+                  onChange={(e) => handleFieldChange(e, i)}
+                  sx={{minWidth: 150, mr: 3, backgroundColor: '#f5f5f5'}}
+                  size='small'>
+                  {renderVariableOptions(m.type)}
+                </Select>
+              ) : (
+                m.type !== 'Month' &&
+                m.type !== 'Day' && (
                   <TextField
-                    name='currency'
-                    placeholder='currency'
-                    sx={{width: 100}}
+                    name={m.type}
+                    sx={{
+                      mr: 3,
+                      width: m.type !== 'Prompt' ? 150 : undefined,
+                      backgroundColor: '#f5f5f5',
+                    }}
+                    placeholder={getTextFieldPlaceholderValue(m.type)}
                     size='small'
-                    value={m.currency}
-                    onChange={(e) => handleNamedFieldChange(e, i)}
+                    value={m.item}
+                    onChange={(e) => handleFieldChange(e, i)}
+                    fullWidth={m.type === 'Prompt'}
                   />
-                )}
-                {m.type === 'Date' && (
-                  <Stack>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          name='playYear'
-                          checked={m.playYear ?? false}
-                          onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
-                          size='small'
-                          color='primary'
-                        />
-                      }
-                      label='playYear'
-                      labelPlacement='end'
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          sx={{mt: 0.5}}
-                          name='playDay'
-                          checked={m.playDay ?? false}
-                          onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
-                          size='small'
-                          color='primary'
-                        />
-                      }
-                      label='playDay'
-                      labelPlacement='end'
-                    />
-                  </Stack>
-                )}
-                {m.type === 'Month' && (
+                )
+              )}
+              {m.type === 'Month' && !m.useVariable && (
+                <Select
+                  name={m.type}
+                  value={m.item ?? ''}
+                  onChange={(e) => handleFieldChange(e, i)}
+                  sx={{mr: 3, width: 150, backgroundColor: '#f5f5f5'}}
+                  size='small'>
+                  {MonthValues.map((m, i) => (
+                    <MenuItem value={i + 1} key={i}>
+                      {m}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+              {m.type === 'Day' && !m.useVariable && (
+                <Select
+                  name={m.type}
+                  value={m.item ?? ''}
+                  onChange={(e) => handleFieldChange(e, i)}
+                  sx={{mr: 3, width: 150, backgroundColor: '#f5f5f5'}}
+                  size='small'>
+                  {DayValues.map((m, i) => (
+                    <MenuItem value={i + 1} key={i}>
+                      {m}
+                    </MenuItem>
+                  ))}
+                </Select>
+              )}
+              {m.type === 'Amount' && (
+                <TextField
+                  name='currency'
+                  placeholder='currency'
+                  sx={{width: 100}}
+                  size='small'
+                  value={m.currency}
+                  onChange={(e) => handleNamedFieldChange(e, i)}
+                />
+              )}
+              {m.type === 'Date' && (
+                <Stack>
                   <FormControlLabel
                     control={
                       <Switch
-                        name='isHijri'
-                        checked={m.isHijri ?? false}
+                        name='playYear'
+                        checked={m.playYear ?? false}
                         onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
                         size='small'
                         color='primary'
                       />
                     }
-                    label='isHijri'
+                    label='playYear'
                     labelPlacement='end'
                   />
-                )}
-                {m.type === 'Time' && (
                   <FormControlLabel
                     control={
                       <Switch
-                        name='is24'
-                        checked={m.is24 ?? false}
+                        sx={{mt: 0.5}}
+                        name='playDay'
+                        checked={m.playDay ?? false}
                         onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
                         size='small'
                         color='primary'
                       />
                     }
-                    label='is24'
+                    label='playDay'
                     labelPlacement='end'
                   />
-                )}
-              </Box>
-              <Box sx={{mt: 1, display: 'flex', alignItems: 'center'}}>
+                </Stack>
+              )}
+              {m.type === 'Month' && (
                 <FormControlLabel
-                  value='end'
                   control={
                     <Switch
-                      onChange={(e) => handleFieldChangeSwitch(e, i)}
-                      checked={m.useVariable ?? false}
+                      name='isHijri'
+                      checked={m.isHijri ?? false}
+                      onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
+                      size='small'
                       color='primary'
                     />
                   }
-                  label={<span style={{fontSize: 14}}>Use Variable</span>}
+                  label='isHijri'
                   labelPlacement='end'
                 />
-
-                <IconButton
-                  color='error'
-                  size='small'
-                  onClick={() => handleDeleteMessage(i)}
-                  sx={{
-                    ml: 'auto',
-                    mr: 1.5,
-                    backgroundColor: '#e0e0e0',
-                    '&:hover': {backgroundColor: '#c7c1bd'},
-                  }}>
-                  <DeleteIcon sx={{color: '#424242'}} />
-                </IconButton>
+              )}
+              {m.type === 'Time' && (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      name='is24'
+                      checked={m.is24 ?? false}
+                      onChange={(e) => handleNamedFieldChangeSwitch(e, i)}
+                      size='small'
+                      color='primary'
+                    />
+                  }
+                  label='is24'
+                  labelPlacement='end'
+                />
+              )}
+            </Box>
+            <Box
+              sx={{
+                mt: 1,
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <FormControlLabel
+                value='end'
+                control={
+                  <Switch
+                    onChange={(e) => handleFieldChangeSwitch(e, i)}
+                    checked={m.useVariable ?? false}
+                    color='primary'
+                  />
+                }
+                label={<span style={{fontSize: 14}}>Use Variable</span>}
+                labelPlacement='end'
+              />
+              <Box>
+                <Tooltip title='Add Message Below' enterDelay={500}>
+                  <IconButton
+                    size='small'
+                    sx={{
+                      backgroundColor: '#e0e0e0',
+                      '&:hover': {backgroundColor: '#c1d5c1'},
+                    }}
+                    onClick={() => handleAddMessageBelow(i)}
+                    variant='contained'>
+                    <AddIcon sx={{color: '#424242'}} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title='Delete Message' enterDelay={500}>
+                  <IconButton
+                    color='error'
+                    size='small'
+                    onClick={() => handleDeleteMessage(i)}
+                    sx={{
+                      mx: 1.5,
+                      backgroundColor: '#e0e0e0',
+                      '&:hover': {
+                        backgroundColor: '#d5c1c1',
+                      },
+                    }}>
+                    <DeleteIcon sx={{color: '#424242'}} />
+                  </IconButton>
+                </Tooltip>
               </Box>
-            </Stack>
-          </ListItem>
-        ))}
-
+            </Box>
+          </Stack>
+        </ListItem>
+      ))}
+      {messageList.length === 0 && (
         <Stack
           sx={{
-            pl: 2,
-            pt: messageList.length ? 2 : 1,
-            mt: messageList.length ? 0 : -2,
+            padding: '1rem',
             backgroundColor: '#e0e0e0',
-            pb: 4,
+            borderRadius: '0.5rem',
           }}>
           <Typography variant='subtitle1'>Type</Typography>
-          <Box sx={{display: 'flex', alignItems: 'center'}}>
+          <Box sx={{display: 'flex', alignItems: 'center', gap: '1rem'}}>
             <Select
               labelId='select-label'
               value={currentType}
@@ -359,7 +437,6 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
             </Select>
             <Button
               sx={{
-                ml: 2,
                 backgroundColor: '#bdbdbd',
                 color: 'black',
                 '&:hover': {backgroundColor: '#9ccc65'},
@@ -371,8 +448,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
             </Button>
           </Box>
         </Stack>
-        <Divider />
-      </List>
+      )}
     </List>
   );
 };
