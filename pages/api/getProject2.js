@@ -25,8 +25,6 @@ export default async function handler(req, res) {
 
     const query = {email: validEmail, name};
 
-    console.log('query: ' + JSON.stringify(query));
-
     const result = await collection.findOne(query);
 
     if (!result) {
@@ -35,7 +33,6 @@ export default async function handler(req, res) {
       res.status(200).json(result);
     }
   } catch (err) {
-    console.error(err);
     res.status(500).json({message: 'Internal server error'});
   } finally {
     await client.close();
