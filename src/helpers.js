@@ -674,7 +674,7 @@ export function checkValidity(name, value) {
       regex: /^\d{1,2}$/,
       error: 'ordinal not in valid format. (0-99)',
     },
-    digit: {
+    digits: {
       regex: /^\d+$/,
       error: 'digit not in valid format',
     },
