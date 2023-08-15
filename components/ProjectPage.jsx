@@ -99,7 +99,6 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
             setLoading(false);
           })
           .catch((error) => {
-            // if internal server error; retry twice after 2 seconds
             if (
               error.response &&
               error.response.status === 500 &&
@@ -108,10 +107,11 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
               retries--;
               setTimeout(makeRequest, 2000);
             } else {
-              console.error(error);
               setLoading(false);
             }
           });
+      } else {
+        setLoading(false);
       }
     };
 

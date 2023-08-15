@@ -94,6 +94,11 @@ const IndexPage = ({updateUser, user}) => {
     setErrorText('');
   }
 
+  function handleContinueAsGuest() {
+    sessionStorage.removeItem('ivrName');
+    router.push('/project');
+  }
+
   return (
     <Box
       sx={{
@@ -199,7 +204,7 @@ const IndexPage = ({updateUser, user}) => {
               mt: 1,
               mb: 1,
             }}
-            href='/project'>
+            onClick={handleContinueAsGuest}>
             Continue as Guest
           </Button>
           <Typography
