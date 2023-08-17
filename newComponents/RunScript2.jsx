@@ -1,4 +1,6 @@
 import CloseIcon from '@mui/icons-material/Close';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
 import {
@@ -11,12 +13,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
+import CodeEditor from './CodeEditor';
 import SaveChangesDialog from './SaveChangesDialog';
-import FullscreenIcon from '@mui/icons-material/Fullscreen';
-import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 
 const RunScript = ({
   shape,
@@ -37,6 +38,10 @@ const RunScript = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const errors = useRef({});
+
+  const allVariableNames = useMemo(() => {
+    return userVariables.map((variable) => `$${variable.name}`);
+  }, [userVariables]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -164,7 +169,7 @@ const RunScript = ({
           display: 'flex',
           boxShadow: 2,
           p: 1,
-          minWidth: 400,
+          minWidth: 500,
         }}>
         <Typography
           sx={{
@@ -267,27 +272,23 @@ const RunScript = ({
             )}
           </ListItem>
         </Stack>
-        <ListItem sx={{px: 3, py: 1, position: 'relative'}}>
-          <TextField
+        <ListItem sx={{py: 1, position: 'relative'}}>
+          <Box
             sx={{
-              fontFamily: 'monospace',
-              backgroundColor: isFunctionError ? '#ffebee' : '#f5f5f5',
-              width: isExpanded ? '80vw' : '100%',
-              height: '100%',
-              boxShadow: '0px 2px 8px rgba(0,0,0,0.1)',
-              transition: 'width 0.3s ease, height 0.3s ease',
-            }}
-            placeholder='Enter JavaScript code here'
-            multiline
-            minRows={20}
-            fullWidth
-            inputProps={{spellCheck: 'false'}}
-            value={functionString}
-            onChange={(e) => {
-              setFunctionString(e.target.value);
-              validateFunctionString(e.target.value);
-            }}
-          />
+              height: '70vh',
+              border: '3px solid #a5acb0',
+              mx: 1,
+              width: isExpanded ? '80vw' : '500px',
+            }}>
+            <CodeEditor
+              userVariables={allVariableNames}
+              value={functionString}
+              onChange={(value) => {
+                setFunctionString(value);
+                validateFunctionString(value);
+              }}
+            />
+          </Box>
           <Tooltip
             title={isExpanded ? 'Exit Full Screen' : 'Enter Full Screen'}>
             <IconButton
