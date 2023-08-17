@@ -31,7 +31,7 @@ const RunScript = ({
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
   const [functionString, setFunctionString] = useState(
-    shape.userValues?.script || ''
+    shape.userValues?.script || '//Enter JavaScript code here'
   );
   const [isFunctionError, setIsFunctionError] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -139,6 +139,16 @@ const RunScript = ({
     static info(message) {}
     static error(message) {}
   }`;
+  }
+
+  function handleEditorChange(value) {
+    if (value.trim() === '//Enter JavaScript code here') {
+      setFunctionString('');
+      return;
+    }
+
+    setFunctionString(value);
+    validateFunctionString(value);
   }
 
   function validateFunctionString(script) {
@@ -283,10 +293,7 @@ const RunScript = ({
             <CodeEditor
               userVariables={allVariableNames}
               value={functionString}
-              onChange={(value) => {
-                setFunctionString(value);
-                validateFunctionString(value);
-              }}
+              onChange={handleEditorChange}
             />
           </Box>
           <Tooltip
