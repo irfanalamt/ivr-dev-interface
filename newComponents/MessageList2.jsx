@@ -379,18 +379,6 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                 labelPlacement='end'
               />
               <Box>
-                <Tooltip title='Add Message Below' enterDelay={500}>
-                  <IconButton
-                    size='small'
-                    sx={{
-                      backgroundColor: '#e0e0e0',
-                      '&:hover': {backgroundColor: '#c1d5c1'},
-                    }}
-                    onClick={() => handleAddMessageBelow(i)}
-                    variant='contained'>
-                    <AddIcon sx={{color: '#424242'}} />
-                  </IconButton>
-                </Tooltip>
                 <Tooltip title='Delete Message' enterDelay={500}>
                   <IconButton
                     color='error'
@@ -404,6 +392,18 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                       },
                     }}>
                     <DeleteIcon sx={{color: '#424242'}} />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title='Add Message Below' enterDelay={500}>
+                  <IconButton
+                    size='small'
+                    sx={{
+                      backgroundColor: '#e0e0e0',
+                      '&:hover': {backgroundColor: '#c1d5c1'},
+                    }}
+                    onClick={() => handleAddMessageBelow(i)}
+                    variant='contained'>
+                    <AddIcon sx={{color: '#424242'}} />
                   </IconButton>
                 </Tooltip>
               </Box>
