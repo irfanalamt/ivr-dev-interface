@@ -1,46 +1,62 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import Editor, {useMonaco} from '@monaco-editor/react';
+
+let completionProvider = null;
 
 function CodeEditor({userVariables, value, onChange}) {
   const monaco = useMonaco();
-  const [hasRegisteredCompletion, setHasRegisteredCompletion] = useState(false);
+  const isMounted = useRef(false);
 
   useEffect(() => {
-    if (monaco && !hasRegisteredCompletion) {
-      monaco.languages.registerCompletionItemProvider('javascript', {
-        provideCompletionItems: function (model, position) {
-          const word = model.getWordAtPosition(position);
-          const range = word
-            ? new monaco.Range(
-                position.lineNumber,
-                word.startColumn,
-                position.lineNumber,
-                word.endColumn
-              )
-            : null;
+    isMounted.current = true;
 
-          const suggestions = userVariables.map((varName) => ({
-            label: varName,
-            kind: monaco.languages.CompletionItemKind.Variable,
-            insertText: varName,
-            range: range,
-          }));
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
-          return {suggestions: suggestions};
-        },
-      });
+  useEffect(() => {
+    if (monaco && !completionProvider) {
+      completionProvider = monaco.languages.registerCompletionItemProvider(
+        'javascript',
+        {
+          provideCompletionItems: function (model, position) {
+            const word = model.getWordAtPosition(position);
+            const range = word
+              ? new monaco.Range(
+                  position.lineNumber,
+                  word.startColumn,
+                  position.lineNumber,
+                  word.endColumn
+                )
+              : null;
 
-      setHasRegisteredCompletion(true);
+            const suggestions = userVariables.map((varName) => ({
+              label: varName,
+              kind: monaco.languages.CompletionItemKind.Variable,
+              insertText: varName,
+              range: range,
+            }));
+
+            return {suggestions: suggestions};
+          },
+        }
+      );
     }
-  }, [monaco, userVariables, hasRegisteredCompletion]);
+
+    return () => {
+      if (!isMounted.current && completionProvider) {
+        completionProvider.dispose(); // dispose off the provider when component is unmounted
+        completionProvider = null;
+      }
+    };
+  }, [monaco, userVariables]);
 
   return (
     <Editor
       options={{
         fontSize: 17,
-        minimap: {
-          enabled: false,
-        },
+        minimap: {enabled: false},
         lineNumbers: 'off',
         glyphMargin: false,
       }}
