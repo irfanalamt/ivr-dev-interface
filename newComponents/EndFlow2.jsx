@@ -15,7 +15,12 @@ import {
 } from '@mui/material';
 import {useState} from 'react';
 
-const EndFlow = ({shape, handleCloseDrawer, openVariableManager}) => {
+const EndFlow = ({
+  shape,
+  handleCloseDrawer,
+  openVariableManager,
+  openUserGuide,
+}) => {
   const [type, setType] = useState(shape.userValues?.type ?? 'disconnect');
   const [transferPoint, setTransferPoint] = useState(
     shape.userValues?.transferPoint ?? ''
@@ -76,6 +81,7 @@ const EndFlow = ({shape, handleCloseDrawer, openVariableManager}) => {
         </IconButton>
 
         <IconButton
+          onClick={openUserGuide}
           size='small'
           sx={{
             ml: 1,

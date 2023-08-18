@@ -32,6 +32,7 @@ const GetDigits = ({
   clearAndDraw,
   userVariables,
   openVariableManager,
+  openUserGuide,
 }) => {
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
@@ -449,7 +450,7 @@ const GetDigits = ({
 
         <IconButton
           size='small'
-          onClick={() => setOpenGuideDialog(true)}
+          onClick={openUserGuide}
           sx={{
             ml: 1,
             backgroundColor: '#263238',

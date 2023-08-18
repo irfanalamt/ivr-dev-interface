@@ -29,6 +29,7 @@ const SetParams = ({
   clearAndDraw,
   userVariables,
   openVariableManager,
+  openUserGuide,
 }) => {
   const [name, setName] = useState(shape.text);
   const [selectedParameterIndex, setSelectedParameterIndex] = useState('');
@@ -316,7 +317,7 @@ const SetParams = ({
 
         <IconButton
           size='small'
-          onClick={() => setOpenGuideDialog(true)}
+          onClick={openUserGuide}
           sx={{
             ml: 1,
             backgroundColor: '#263238',

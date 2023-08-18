@@ -25,6 +25,7 @@ const SwitchBlock = ({
   clearAndDraw,
   userVariables,
   openVariableManager,
+  openUserGuide,
 }) => {
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
@@ -264,6 +265,7 @@ const SwitchBlock = ({
         </IconButton>
 
         <IconButton
+          onClick={openUserGuide}
           size='small'
           sx={{
             ml: 1,

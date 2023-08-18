@@ -18,7 +18,13 @@ import {
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 
-const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
+const Jumper = ({
+  shape,
+  handleCloseDrawer,
+  openVariableManager,
+  shapes,
+  openUserGuide,
+}) => {
   const [type, setType] = useState(shape.userValues?.type ?? 'entry');
   const [name, setName] = useState(shape.userValues?.name || shape.text);
 
@@ -134,6 +140,7 @@ const Jumper = ({shape, handleCloseDrawer, openVariableManager, shapes}) => {
         </IconButton>
 
         <IconButton
+          onClick={openUserGuide}
           size='small'
           sx={{
             ml: 1,

@@ -10,6 +10,8 @@ import PlayMessage from '../newComponents/PlayMessage2';
 import RunScript from '../newComponents/RunScript2';
 import SetParams from '../newComponents/SetParams2';
 import SwitchBlock from '../newComponents/SwitchBlock2';
+import {useState} from 'react';
+import ElementUserGuide from '../newComponents/ElementUserGuide';
 
 const ElementDrawer = ({
   shape,
@@ -20,6 +22,8 @@ const ElementDrawer = ({
   userVariables,
   openVariableManager,
 }) => {
+  const [openGuide, setOpenGuide] = useState(false);
+
   if (!shape) return null;
 
   const renderShape = () => {
@@ -33,6 +37,7 @@ const ElementDrawer = ({
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -45,6 +50,7 @@ const ElementDrawer = ({
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -57,6 +63,7 @@ const ElementDrawer = ({
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -69,6 +76,7 @@ const ElementDrawer = ({
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -81,6 +89,7 @@ const ElementDrawer = ({
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -93,6 +102,7 @@ const ElementDrawer = ({
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -105,6 +115,7 @@ const ElementDrawer = ({
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -117,6 +128,7 @@ const ElementDrawer = ({
             clearAndDraw={clearAndDraw}
             userVariables={userVariables}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -126,6 +138,7 @@ const ElementDrawer = ({
             shape={shape}
             handleCloseDrawer={handleCloseDrawer}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -136,6 +149,7 @@ const ElementDrawer = ({
             shapes={shapes}
             handleCloseDrawer={handleCloseDrawer}
             openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
           />
         );
 
@@ -148,9 +162,16 @@ const ElementDrawer = ({
     }
   };
   return (
-    <Drawer anchor='right' open={isOpen}>
-      {renderShape()}
-    </Drawer>
+    <>
+      <Drawer anchor='right' open={isOpen}>
+        {renderShape()}
+      </Drawer>
+      <ElementUserGuide
+        open={openGuide}
+        handleClose={() => setOpenGuide(false)}
+        shapeType={shape.type}
+      />
+    </>
   );
 };
 

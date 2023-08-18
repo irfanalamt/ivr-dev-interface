@@ -26,6 +26,7 @@ const CallApi = ({
   clearAndDraw,
   userVariables,
   openVariableManager,
+  openUserGuide,
 }) => {
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
@@ -174,6 +175,7 @@ const CallApi = ({
         </IconButton>
 
         <IconButton
+          onClick={openUserGuide}
           size='small'
           sx={{
             ml: 1,

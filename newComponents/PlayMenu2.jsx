@@ -32,6 +32,7 @@ const PlayMenu = ({
   clearAndDraw,
   userVariables,
   openVariableManager,
+  openUserGuide,
 }) => {
   const [name, setName] = useState(shape.text);
   const [successText, setSuccessText] = useState('');
@@ -576,6 +577,7 @@ const PlayMenu = ({
         </IconButton>
 
         <IconButton
+          onClick={openUserGuide}
           size='small'
           sx={{
             ml: 1,
