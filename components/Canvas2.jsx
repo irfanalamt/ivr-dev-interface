@@ -626,7 +626,9 @@ const CanvasTest = ({
     for (const shape of shapesInPage) {
       if (shape.isMouseInShape(realX, realY)) {
         currentShape.current = shape;
-        setIsOpenElementDrawer(true);
+        if (shape.type !== 'connector') {
+          setIsOpenElementDrawer(true);
+        }
         return;
       }
     }
