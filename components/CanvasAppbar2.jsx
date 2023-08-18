@@ -81,6 +81,10 @@ const CanvasAppbar2 = ({
     location.reload();
   }
 
+  function handleLogin() {
+    router.push('/');
+  }
+
   return (
     <AppBar
       style={{
@@ -225,9 +229,21 @@ const CanvasAppbar2 = ({
         <MenuItem onClick={handleMyProjects} dense>
           My Projects
         </MenuItem>
-        <MenuItem onClick={handleSignOut} dense>
-          Sign Out
-        </MenuItem>
+        {user ? (
+          <MenuItem onClick={handleSignOut} dense>
+            Sign Out
+          </MenuItem>
+        ) : (
+          <MenuItem
+            style={{
+              fontWeight: 'bold',
+              backgroundColor: '#F2F3F7',
+            }}
+            onClick={handleLogin}
+            dense>
+            Log In
+          </MenuItem>
+        )}
       </Menu>
 
       <Dialog open={openSignOutDialog} onClose={cancelSignOut}>
