@@ -16,7 +16,12 @@ function CodeEditor({userVariables, value, onChange}) {
   }, []);
 
   useEffect(() => {
-    if (monaco && !completionProvider) {
+    if (completionProvider) {
+      completionProvider.dispose();
+      completionProvider = null;
+    }
+
+    if (monaco && isMounted.current) {
       completionProvider = monaco.languages.registerCompletionItemProvider(
         'javascript',
         {
@@ -45,8 +50,8 @@ function CodeEditor({userVariables, value, onChange}) {
     }
 
     return () => {
-      if (!isMounted.current && completionProvider) {
-        completionProvider.dispose(); // dispose off the provider when component is unmounted
+      if (completionProvider) {
+        completionProvider.dispose();
         completionProvider = null;
       }
     };
