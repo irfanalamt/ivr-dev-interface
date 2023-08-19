@@ -127,7 +127,11 @@ const RunScript = ({
   }
   function getUserVariablesString() {
     const variables = userVariables
-      .map(({name, defaultValue}) => `let $${name} = '${defaultValue}';`)
+      .map(({name, defaultValue, type}) => {
+        if (type === 'system') {
+          return `const $${name} = '${defaultValue}';`;
+        } else return `let $${name} = '${defaultValue}';`;
+      })
       .join(' ');
 
     return variables || '';
