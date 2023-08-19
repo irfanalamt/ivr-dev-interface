@@ -63,8 +63,8 @@ const MainUserGuide = ({open, handleClose}) => {
           <strong>Managing Variables:</strong>
           <ul>
             <li>
-              Access the Variable Manager in the bottom left corner of the
-              bottom bar.
+              Access the Variable Manager from the appbar menu as well as the
+              settings panel of every element.
             </li>
           </ul>
           <br />
@@ -72,7 +72,7 @@ const MainUserGuide = ({open, handleClose}) => {
           <ul>
             <li>
               After customizing all elements, click the green "Generate Script"
-              button in the top right corner of the app bar.
+              button in the top right corner of the appbar.
             </li>
           </ul>
         </Typography>
