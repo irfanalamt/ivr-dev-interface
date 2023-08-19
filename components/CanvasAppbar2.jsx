@@ -15,6 +15,8 @@ import {
   DialogTitle,
   Divider,
   IconButton,
+  ListItemIcon,
+  ListItemText,
   Menu,
   MenuItem,
   Tooltip,
@@ -215,10 +217,24 @@ const CanvasAppbar2 = ({
         onClose={handleMenuClose}
         disableScrollLock={true}>
         <MenuItem onClick={openVariableManager} dense>
-          Variable Manager
+          <ListItemIcon style={{minWidth: 'auto', marginRight: '5px'}}>
+            <img
+              src='/icons/variableManager.png'
+              alt='icon'
+              style={{width: '14px'}}
+            />
+          </ListItemIcon>
+          <ListItemText primary='Variable Manager' />
         </MenuItem>
         <MenuItem onClick={openPromptList} dense>
-          Prompt List
+          <ListItemIcon style={{minWidth: 'auto', marginRight: '7px'}}>
+            <img
+              src='/icons/promptList.png'
+              alt='icon'
+              style={{width: '14px'}}
+            />
+          </ListItemIcon>
+          <ListItemText primary=' Prompt List' />
         </MenuItem>
 
         <Divider />
