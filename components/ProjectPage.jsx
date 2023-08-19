@@ -24,13 +24,14 @@ import BottomBar from './BottomBar';
 import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
+import systemVariables from '../src/systemVariables';
 
 function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [openVariableManager, setOpenVariableManager] = useState(false);
   const [openPromptList, setOpenPromptList] = useState(false);
   const [openUserGuide, setOpenUserGuide] = useState(false);
-  const [userVariables, setUserVariables] = useState([]);
+  const [userVariables, setUserVariables] = useState(systemVariables);
   const [loading, setLoading] = useState(true);
 
   const [showSnackbar, setShowSnackbar] = useState(false);

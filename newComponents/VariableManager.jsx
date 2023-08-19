@@ -295,11 +295,13 @@ const VariableManager = ({
                   backgroundColor: '#f5f5f5',
                 }}
                 size='small'>
-                {variables.map((v, i) => (
-                  <MenuItem key={i} value={v}>
-                    {v.name}
-                  </MenuItem>
-                ))}
+                {variables
+                  .filter((v) => v.type !== 'system')
+                  .map((v, i) => (
+                    <MenuItem key={i} value={v}>
+                      {v.name}
+                    </MenuItem>
+                  ))}
               </Select>
             </Box>
           </ListItem>
