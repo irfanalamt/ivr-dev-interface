@@ -81,6 +81,7 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
           null,
           null,
           <ControlPointIcon
+            key='controlPointIcon-connector'
             sx={{
               fontSize: '25px',
               color: selectedItemToolbar['connector'] ? 'black' : '#607D8B',
@@ -102,6 +103,7 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
                 src={selectedItemToolbar[key] ? activeIcon : defaultIcon}
                 alt='Icon'
                 height={`${height}px`}
+                key={key}
               />
             )
           )}
