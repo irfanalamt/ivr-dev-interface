@@ -744,10 +744,18 @@ class Shape {
     return [exitPointX, exitPointY];
   }
 
-  getRelativeExitCoordinatesSwitch(shape2, action) {
+  getRelativeExitCoordinatesSwitch(shape2, action, duplicateCount = 0) {
+    let i = duplicateCount ? duplicateCount - 1 : 0;
+    if (i > 4) {
+      i = 0;
+    }
+
+    const centerOffsetX = [0, 20, -20, 40, -40];
+
     const [exitPointX, exitPointY] = this.findIntersectionPoint(
       shape2.x,
-      shape2.y
+      shape2.y,
+      centerOffsetX[i]
     );
     const defaultItem = this.userValues?.defaultAction;
 
@@ -763,7 +771,7 @@ class Shape {
       this.userValues.actions[index].exitPoint = {x: exitPointX, y: exitPointY};
     }
 
-    return [this.x, this.y];
+    return [exitPointX, exitPointY];
   }
 
   getRelativeExitCoordinatesPlayConfirm(

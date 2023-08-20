@@ -249,8 +249,13 @@ function getConnectingLines(shapes) {
       case 'switch':
         items = userValues?.actions ?? [];
         shape2 = userValues?.defaultActionNextItem;
-
+        const shape2CountSwitch = new Map();
         if (shape2) {
+          let duplicateCount = shape2CountSwitch.has(shape2)
+            ? shape2CountSwitch.get(shape2) + 1
+            : 1;
+          shape2CountSwitch.set(shape2, duplicateCount);
+
           [x1, y1] = shape.getRelativeExitCoordinatesSwitch(
             shape2,
             userValues.defaultAction
@@ -267,10 +272,15 @@ function getConnectingLines(shapes) {
             delete item.exitPoint;
             continue;
           }
+          let duplicateCount = shape2CountSwitch.has(shape2)
+            ? shape2CountSwitch.get(shape2) + 1
+            : 1;
+          shape2CountSwitch.set(shape2, duplicateCount);
 
           [x1, y1] = shape.getRelativeExitCoordinatesSwitch(
             shape2,
-            item.action
+            item.action,
+            duplicateCount
           );
           [x2, y2] = shape2.getRelativeEntryCoordinates(shape);
           connections.push({x1, y1, x2, y2});
