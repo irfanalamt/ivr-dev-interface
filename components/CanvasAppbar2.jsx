@@ -36,6 +36,7 @@ const CanvasAppbar2 = ({
   openUserGuide,
   updateUser,
   openVariableManager,
+  openCallDataManager,
   openPromptList,
 }) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -226,6 +227,16 @@ const CanvasAppbar2 = ({
           </ListItemIcon>
           <ListItemText primary='Variable Manager' />
         </MenuItem>
+        <MenuItem onClick={openCallDataManager} dense>
+          <ListItemIcon style={{minWidth: 'auto', marginRight: '4px'}}>
+            <img
+              src='/icons/callDataManager.png'
+              alt='icon'
+              style={{width: '16px'}}
+            />
+          </ListItemIcon>
+          <ListItemText primary='CallData Manager' />
+        </MenuItem>
         <MenuItem onClick={openPromptList} dense>
           <ListItemIcon style={{minWidth: 'auto', marginRight: '7px'}}>
             <img
@@ -236,9 +247,7 @@ const CanvasAppbar2 = ({
           </ListItemIcon>
           <ListItemText primary=' Prompt List' />
         </MenuItem>
-
         <Divider />
-
         <MenuItem onClick={openUserGuide} dense>
           User Guide
         </MenuItem>

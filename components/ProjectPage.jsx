@@ -17,6 +17,7 @@ import {
   findIsDefaultValuesPresent,
   findIsErrorsPresent,
   formatCode,
+  generateCallDataJS,
   generateInitVariablesJS,
   traverseAndReturnString,
 } from '../src/codeGeneration';
@@ -25,15 +26,28 @@ import CanvasTest from './Canvas2';
 import CanvasAppbar2 from './CanvasAppbar2';
 import MainToolbar from './Toolbar';
 import systemVariables from '../src/systemVariables';
+import CallDataManager from '../newComponents/CallDataManager';
 
 function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
   const [selectedItemToolbar, setSelectedItemToolbar] = useState({});
   const [openVariableManager, setOpenVariableManager] = useState(false);
+  const [openCallDataManager, setOpenCallDataManager] = useState(false);
   const [openPromptList, setOpenPromptList] = useState(false);
   const [openUserGuide, setOpenUserGuide] = useState(false);
   const [userVariables, setUserVariables] = useState(systemVariables);
+  const [callData, setCallData] = useState({
+    var1: '',
+    var2: '',
+    var3: '',
+    var4: '',
+    var5: '',
+    var6: '',
+    var7: '',
+    var8: '',
+    var9: '',
+    var10: '',
+  });
   const [loading, setLoading] = useState(true);
-
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [shapes, setShapes] = useState([]);
   const [tabs, setTabs] = useState([
@@ -41,8 +55,8 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
     {id: 2, label: 'Page2'},
   ]);
   const [activeTab, setActiveTab] = useState(tabs[0].id);
-  const isLoadFromDb = useRef(false);
 
+  const isLoadFromDb = useRef(false);
   const shapeCount = useRef({
     setParams: 1,
     runScript: 1,
@@ -411,6 +425,8 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
 
     const allVariablesString = generateInitVariablesJS(userVariables) + '\n \n';
 
+    const callDataString = generateCallDataJS(callData) + '\n \n';
+
     const allFunctionStringsAndDriverFunctions = traverseAndReturnString(
       startShape,
       userVariables,
@@ -430,6 +446,7 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
       comments +
       globalParamsString +
       allVariablesString +
+      callDataString +
       allFunctionStringsAndDriverFunctions +
       endProjectBraces +
       endExportString;
@@ -607,6 +624,10 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
     });
   }
 
+  function updateCallData(newData) {
+    setCallData((prevData) => ({...prevData, ...newData}));
+  }
+
   return (
     <Box onContextMenu={handleContextMenuPage}>
       <CanvasAppbar2
@@ -619,6 +640,7 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
         user={user}
         updateUser={updateUser}
         openVariableManager={() => setOpenVariableManager(true)}
+        openCallDataManager={() => setOpenCallDataManager(true)}
         openPromptList={() => setOpenPromptList(true)}
       />
       <div
@@ -686,6 +708,16 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
         renameVariablesInUse={renameVariablesInUse}
         shapes={shapes}
       />
+      {openCallDataManager && (
+        <CallDataManager
+          isOpen={openCallDataManager}
+          handleClose={() => setOpenCallDataManager(false)}
+          callData={callData}
+          saveCallData={updateCallData}
+          userVariables={userVariables}
+        />
+      )}
+
       {openPromptList && (
         <PromptList
           isOpen={openPromptList}

@@ -19,6 +19,21 @@ function generateInitVariablesJS(userVariables) {
   return codeString;
 }
 
+function generateCallDataJS(callData) {
+  const innerString = Object.entries(callData)
+    .map(([key, value]) => {
+      if (value.charAt(0) === '$') {
+        value = `this.${value.slice(1)}`;
+        return `IVR.callData.${key} = ${value};`;
+      } else return `IVR.callData.${key} = '${value}';`;
+    })
+    .join('');
+
+  const outerString = `this.onTransferSetCallData = async function(){${innerString}};`;
+
+  return outerString;
+}
+
 function findIsDefaultValuesPresent(shapes) {
   const ignoredShapeTypes = ['connector', 'jumper', 'endFlow'];
 
@@ -392,6 +407,7 @@ function findEntryCount(shapes) {
 
 export {
   generateInitVariablesJS,
+  generateCallDataJS,
   findIsDefaultValuesPresent,
   findIsErrorsPresent,
   checkForStartShape,
