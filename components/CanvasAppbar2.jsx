@@ -217,7 +217,12 @@ const CanvasAppbar2 = ({
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
         disableScrollLock={true}>
-        <MenuItem onClick={openVariableManager} dense>
+        <MenuItem
+          onClick={() => {
+            openVariableManager();
+            handleMenuClose();
+          }}
+          dense>
           <ListItemIcon style={{minWidth: 'auto', marginRight: '5px'}}>
             <img
               src='/icons/variableManager.png'
@@ -227,7 +232,12 @@ const CanvasAppbar2 = ({
           </ListItemIcon>
           <ListItemText primary='Variable Manager' />
         </MenuItem>
-        <MenuItem onClick={openCallDataManager} dense>
+        <MenuItem
+          onClick={() => {
+            openCallDataManager();
+            handleMenuClose();
+          }}
+          dense>
           <ListItemIcon style={{minWidth: 'auto', marginRight: '4px'}}>
             <img
               src='/icons/callDataManager.png'
@@ -237,7 +247,12 @@ const CanvasAppbar2 = ({
           </ListItemIcon>
           <ListItemText primary='CallData Manager' />
         </MenuItem>
-        <MenuItem onClick={openPromptList} dense>
+        <MenuItem
+          onClick={() => {
+            openPromptList();
+            handleMenuClose();
+          }}
+          dense>
           <ListItemIcon style={{minWidth: 'auto', marginRight: '7px'}}>
             <img
               src='/icons/promptList.png'
@@ -248,14 +263,29 @@ const CanvasAppbar2 = ({
           <ListItemText primary=' Prompt List' />
         </MenuItem>
         <Divider />
-        <MenuItem onClick={openUserGuide} dense>
+        <MenuItem
+          onClick={() => {
+            openUserGuide();
+            handleMenuClose();
+          }}
+          dense>
           User Guide
         </MenuItem>
-        <MenuItem onClick={handleMyProjects} dense>
+        <MenuItem
+          onClick={() => {
+            handleMyProjects();
+            handleMenuClose();
+          }}
+          dense>
           My Projects
         </MenuItem>
         {user ? (
-          <MenuItem onClick={handleSignOut} dense>
+          <MenuItem
+            onClick={() => {
+              handleSignOut();
+              handleMenuClose();
+            }}
+            dense>
             Sign Out
           </MenuItem>
         ) : (
