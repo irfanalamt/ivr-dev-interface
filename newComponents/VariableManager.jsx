@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {stringifySafe} from '../src/myFunctions';
 
@@ -183,10 +183,21 @@ const VariableManager = ({
         errorMessage = 'Name must be unique.';
       }
     } else if (objType === 'value') {
-      errorMessage = checkValidity(type, value);
+      if (type === 'json') {
+        errorMessage = checkIfJsonIsValid(value);
+      } else errorMessage = checkValidity(type, value);
     }
 
     return errorMessage;
+  }
+
+  function checkIfJsonIsValid(input) {
+    try {
+      JSON.parse(input);
+      return -1;
+    } catch (e) {
+      return 'JSON is not in valid format.';
+    }
   }
 
   function handleValidation(objType, value) {
@@ -218,6 +229,7 @@ const VariableManager = ({
     setDescription('');
     setSuccessText('');
     setErrorText('');
+    setType('prompt');
   }
 
   return (
@@ -364,7 +376,9 @@ const VariableManager = ({
                     value={type}
                     onChange={(e) => {
                       setType(e.target.value);
-                      setDefaultValue('');
+                      if (e.target.value == 'json') {
+                        setDefaultValue('{ }');
+                      } else setDefaultValue('');
                     }}
                     size='small'
                     disabled={!(mode == 'add' || mode == 'modify')}
@@ -377,6 +391,7 @@ const VariableManager = ({
                     <MenuItem value='number'>Number</MenuItem>
                     <MenuItem value='string'>String</MenuItem>
                     <MenuItem value='boolean'>Boolean</MenuItem>
+                    <MenuItem value='json'>JSON</MenuItem>
                     <MenuItem value='date'>Date</MenuItem>
                     <MenuItem value='day'>Day</MenuItem>
                     <MenuItem value='month'>Month</MenuItem>
@@ -499,6 +514,9 @@ const VariableManager = ({
                       }}
                       size='small'
                       disabled={!(mode == 'add' || mode == 'modify')}
+                      multiline={type === 'json'}
+                      rows={6}
+                      spellCheck={false}
                     />
                   )}
                 </Box>
