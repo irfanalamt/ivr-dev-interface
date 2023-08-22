@@ -102,6 +102,8 @@ const CallDataManager = ({
               fontSize: 'extra-large',
               height: 40,
               ml: 1,
+              display: 'flex',
+              alignItems: 'center',
             }}
             variant='h5'>
             <img
@@ -121,8 +123,10 @@ const CallDataManager = ({
                 color: 'white',
                 '&:hover': {backgroundColor: '#66bb6a'},
                 mr: 1,
+                height: 30,
+                width: 30,
               }}>
-              <SaveIcon sx={{fontSize: '22px'}} />
+              <SaveIcon sx={{fontSize: '20px'}} />
             </IconButton>
             <IconButton
               size='small'
@@ -131,6 +135,8 @@ const CallDataManager = ({
                 backgroundColor: '#263238',
                 color: 'white',
                 '&:hover': {backgroundColor: '#ef5350'},
+                height: 30,
+                width: 30,
               }}>
               <CloseIcon sx={{fontSize: '22px'}} />
             </IconButton>
@@ -163,21 +169,25 @@ const CallDataManager = ({
               '& tbody tr:hover': {
                 backgroundColor: '#f7f7f7',
               },
-              '& tbody td': {
-                paddingTop: '8px',
-                paddingBottom: '8px',
-              },
             }}>
             <TableHead>
               <TableRow>
-                <TableCell size='small'>Key</TableCell>
+                <TableCell
+                  size='small'
+                  sx={{whiteSpace: 'nowrap', width: '1%'}}>
+                  Key
+                </TableCell>
                 <TableCell size='small'>Value</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {Object.entries(localCallData).map(([key, value], i) => (
                 <TableRow key={i}>
-                  <TableCell size='small'>{key}</TableCell>
+                  <TableCell
+                    size='small'
+                    sx={{whiteSpace: 'nowrap', width: '1%'}}>
+                    {key}
+                  </TableCell>
                   <TableCell size='small'>
                     <Autocomplete
                       value={value}
@@ -189,8 +199,7 @@ const CallDataManager = ({
                           {...params}
                           size='small'
                           sx={{
-                            marginTop: 1,
-                            marginBottom: 1,
+                            my: 0.2,
                             backgroundColor: '#f2f2f2',
                           }}
                           error={!!fieldErrors[key]}
