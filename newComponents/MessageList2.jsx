@@ -1,9 +1,9 @@
-import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
+  Autocomplete,
   Box,
   Button,
-  Divider,
   FormControlLabel,
   IconButton,
   List,
@@ -81,6 +81,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
     newMessages[index].error = 'required';
     setMessageList(newMessages);
   }
+
   function handleFieldChange(e, index) {
     const {value, name} = e.target;
 
@@ -91,7 +92,12 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
     }
     if (name) {
       let errorM = -1;
-      errorM = checkValidity(name.toLowerCase(), value);
+      if (value && value[0] == '$') {
+        errorM = checkValidVariable(value, name);
+      } else {
+        errorM = checkValidity(name.toLowerCase(), value);
+      }
+
       if (errorM != -1) {
         newMessages[index].error = errorM;
       } else {
@@ -100,6 +106,20 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
     }
 
     setMessageList(newMessages);
+  }
+
+  function checkValidVariable(value, type) {
+    if (value.length == 1) {
+      return 'Please enter a valid variable.';
+    }
+
+    const validVariables = getValidVariableNames(type, userVariables);
+
+    if (validVariables.includes(value)) {
+      return -1;
+    }
+
+    return `Not a valid ${type.toLowerCase()} variable`;
   }
 
   function handleNamedFieldChangeSwitch(e, index) {
@@ -120,19 +140,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
   }
 
   function renderVariableOptions(type) {
-    const variableTypes = {
-      Prompt: 'prompt',
-      Number: 'number',
-      Ordinal: 'number',
-      Amount: 'number',
-      Digits: 'number',
-      Date: 'date',
-      Day: 'day',
-      Month: 'month',
-      Time: 'time',
-    };
-
-    const variableType = variableTypes[type];
+    const variableType = getCorrespondingUserVariableType(type);
 
     return userVariables
       .filter((v) => v.type === variableType)
@@ -168,6 +176,45 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
     newMessages[index].useVariable = false;
     newMessages[index].error = 'required';
     setMessageList(newMessages);
+  }
+
+  function getValidVariableNames(type, userVariables) {
+    // return formatted strings in user variables' corresponding types
+
+    const variableType = getCorrespondingUserVariableType(type);
+
+    const autoCompleteOptions = userVariables
+      .filter((userVariable) => userVariable.type === variableType)
+      .map((userVariable) => `$${userVariable.name}`);
+
+    return autoCompleteOptions;
+  }
+
+  function getCorrespondingUserVariableType(type) {
+    const variableTypes = {
+      Prompt: 'prompt',
+      Number: 'number',
+      Ordinal: 'number',
+      Amount: 'number',
+      Digits: 'number',
+      Date: 'date',
+      Day: 'day',
+      Month: 'month',
+      Time: 'time',
+    };
+
+    const variableType = variableTypes[type];
+
+    return variableType;
+  }
+
+  function filterOptions(options, {inputValue}) {
+    if (inputValue.startsWith('$')) {
+      return options.filter((option) =>
+        option.includes(inputValue.substring(1))
+      );
+    }
+    return [];
   }
 
   return (
@@ -244,18 +291,38 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
               ) : (
                 m.type !== 'Month' &&
                 m.type !== 'Day' && (
-                  <TextField
-                    name={m.type}
-                    sx={{
-                      mr: 3,
-                      width: m.type !== 'Prompt' ? 150 : undefined,
-                      backgroundColor: '#f5f5f5',
-                    }}
-                    placeholder={getTextFieldPlaceholderValue(m.type)}
-                    size='small'
+                  <Autocomplete
+                    options={getValidVariableNames(m.type, userVariables)}
+                    freeSolo
                     value={m.item}
-                    onChange={(e) => handleFieldChange(e, i)}
+                    filterOptions={filterOptions}
                     fullWidth={m.type === 'Prompt'}
+                    onChange={(event, newValue) => {
+                      handleFieldChange(
+                        {
+                          target: {
+                            value: newValue,
+                            name: m.type,
+                          },
+                        },
+                        i
+                      );
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        name={m.type}
+                        sx={{
+                          mr: 3,
+                          width: m.type !== 'Prompt' ? 180 : undefined,
+                          backgroundColor: '#f5f5f5',
+                        }}
+                        placeholder={getTextFieldPlaceholderValue(m.type)}
+                        onChange={(e) => handleFieldChange(e, i)}
+                        size='small'
+                        fullWidth={m.type === 'Prompt'}
+                      />
+                    )}
                   />
                 )
               )}
@@ -359,6 +426,7 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                 />
               )}
             </Box>
+
             <Box
               sx={{
                 mt: 1,
@@ -366,19 +434,21 @@ const MessageList = ({userVariables, messageList, setMessageList}) => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
-              <FormControlLabel
-                value='end'
-                control={
-                  <Switch
-                    onChange={(e) => handleFieldChangeSwitch(e, i)}
-                    checked={m.useVariable ?? false}
-                    color='primary'
-                  />
-                }
-                label={<span style={{fontSize: 14}}>Use Variable</span>}
-                labelPlacement='end'
-              />
-              <Box>
+              {(m.type === 'Month' || m.type === 'Day') && (
+                <FormControlLabel
+                  value='end'
+                  control={
+                    <Switch
+                      onChange={(e) => handleFieldChangeSwitch(e, i)}
+                      checked={m.useVariable ?? false}
+                      color='primary'
+                    />
+                  }
+                  label={<span style={{fontSize: 14}}>Use Variable</span>}
+                  labelPlacement='end'
+                />
+              )}
+              <Box sx={{ml: 'auto'}}>
                 <Tooltip title='Delete Message' enterDelay={500}>
                   <IconButton
                     color='error'
