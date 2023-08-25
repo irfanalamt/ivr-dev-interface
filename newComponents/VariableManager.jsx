@@ -3,6 +3,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import {
   Box,
   Button,
+  Checkbox,
   Divider,
   Drawer,
   IconButton,
@@ -34,8 +35,13 @@ const VariableManager = ({
   const [mode, setMode] = useState('');
   const [successText, setSuccessText] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [allowLeadingZeroes, setAllowLeadingZeroes] = useState(false);
 
   const errorObj = useRef({});
+
+  useEffect(() => {
+    revalidateDefaultValue();
+  }, [allowLeadingZeroes]);
 
   const DayValues = [
     '1 Sunday',
@@ -90,7 +96,12 @@ const VariableManager = ({
       if (index !== -1) {
         const updatedVariables = [...variables];
         const oldName = updatedVariables[index].name;
-        updatedVariables[index] = {type, name, defaultValue, description};
+
+        updatedVariables[index] =
+          type === 'number'
+            ? {type, name, defaultValue, description, allowLeadingZeroes}
+            : {type, name, defaultValue, description};
+
         const newName = updatedVariables[index].name;
         if (oldName != newName) {
           console.log('name changed!!');
@@ -102,7 +113,13 @@ const VariableManager = ({
         setErrorText('Update error.');
       }
     } else if (mode == 'add') {
-      setVariables([...variables, {type, name, defaultValue, description}]);
+      setVariables([
+        ...variables,
+        type === 'number'
+          ? {type, name, defaultValue, description, allowLeadingZeroes}
+          : {type, name, defaultValue, description},
+      ]);
+
       setSuccessText('New variable added.');
     }
 
@@ -155,6 +172,7 @@ const VariableManager = ({
     setDescription('');
     setSuccessText('');
     setErrorText('');
+    setAllowLeadingZeroes(false);
   }
 
   function isVariableNameUnique(name, variables, shapes) {
@@ -185,6 +203,8 @@ const VariableManager = ({
     } else if (objType === 'value') {
       if (type === 'json') {
         errorMessage = checkIfJsonIsValid(value);
+      } else if (type === 'number' && allowLeadingZeroes === false) {
+        errorMessage = checkNumberWithNoLeadingZeros(value);
       } else errorMessage = checkValidity(type, value);
     }
 
@@ -198,6 +218,22 @@ const VariableManager = ({
     } catch (e) {
       return 'JSON is not in valid format.';
     }
+  }
+
+  function checkNumberWithNoLeadingZeros(input) {
+    if (isNaN(input)) {
+      return 'Not a valid number.';
+    }
+
+    if (/^0[0-9]+/.test(input)) {
+      return 'Number has leading zeroes.';
+    }
+
+    return -1;
+  }
+
+  function revalidateDefaultValue() {
+    handleValidation('value', defaultValue);
   }
 
   function handleValidation(objType, value) {
@@ -285,7 +321,7 @@ const VariableManager = ({
       </ListItem>
 
       <Box sx={{backgroundColor: '#eeeeee', height: '100%'}}>
-        <List sx={{minWidth: 400}}>
+        <List sx={{minWidth: 380}}>
           <ListItem sx={{mt: 1}}>
             <Box sx={{display: 'flex', flexDirection: 'column'}}>
               <Typography fontSize='large' variant='subtitle1'>
@@ -301,6 +337,7 @@ const VariableManager = ({
                   setDefaultValue(e.target.value.defaultValue);
                   setDescription(e.target.value.description);
                   setMode('');
+                  setAllowLeadingZeroes(e.target.value.allowLeadingZeroes);
                 }}
                 sx={{
                   minWidth: 220,
@@ -360,6 +397,46 @@ const VariableManager = ({
           </ListItem>
           <Divider sx={{mt: 2}} />
           <Box sx={{py: 1}}>
+            <ListItem
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                height: '30px',
+              }}>
+              {successText && (
+                <Typography
+                  sx={{
+                    mx: 'auto',
+                    color: 'green',
+                    backgroundColor: '#e5f9e5',
+                    px: 2,
+                    py: 0.5,
+                    borderRadius: 1,
+                    textAlign: 'center',
+                    width: 'max-content',
+                  }}
+                  variant='subtitle2'>
+                  {successText}
+                </Typography>
+              )}
+              {errorText && (
+                <Typography
+                  sx={{
+                    mx: 'auto',
+                    color: 'red',
+                    backgroundColor: '#fce8e6',
+                    px: 2,
+                    py: 0.5,
+                    textAlign: 'center',
+                    borderRadius: 1,
+                    width: 'max-content',
+                  }}
+                  variant='subtitle2'>
+                  {errorText}
+                </Typography>
+              )}
+            </ListItem>
+
             <ListItem disablePadding>
               <Box
                 sx={{
@@ -367,15 +444,22 @@ const VariableManager = ({
                   flexDirection: 'column',
                   my: 1,
                   px: 2,
+                  width: '100%',
                 }}>
                 <Typography sx={{width: '100px'}} variant='subtitle2'>
                   Type
                 </Typography>
-                <Box sx={{display: 'flex', alignItems: 'center'}}>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
                   <Select
                     value={type}
                     onChange={(e) => {
                       setType(e.target.value);
+                      setAllowLeadingZeroes(false);
                       if (e.target.value == 'json') {
                         setDefaultValue('{ }');
                       } else setDefaultValue('');
@@ -397,39 +481,32 @@ const VariableManager = ({
                     <MenuItem value='month'>Month</MenuItem>
                     <MenuItem value='time'>Time</MenuItem>
                   </Select>
-                  {successText && (
-                    <Typography
+                  {type === 'number' && (
+                    <Box
+                      id='box2'
                       sx={{
-                        mx: 'auto',
-                        color: 'green',
-                        ml: 2,
-                        backgroundColor: '#e5f9e5',
-                        px: 2,
-                        py: 0.5,
-                        borderRadius: 1,
-                        textAlign: 'center',
-                        width: 'max-content',
-                      }}
-                      variant='subtitle2'>
-                      {successText}
-                    </Typography>
-                  )}
-                  {errorText && (
-                    <Typography
-                      sx={{
-                        mx: 'auto',
-                        color: 'red',
-                        ml: 2,
-                        backgroundColor: '#fce8e6',
-                        px: 2,
-                        py: 0.5,
-                        textAlign: 'center',
-                        borderRadius: 1,
-                        width: 'max-content',
-                      }}
-                      variant='subtitle2'>
-                      {errorText}
-                    </Typography>
+                        display: 'flex',
+                        alignItems: 'center',
+                      }}>
+                      <Typography
+                        sx={{
+                          color:
+                            mode == 'add' || mode == 'modify'
+                              ? 'black'
+                              : 'grey',
+                        }}
+                        variant='subtitle2'>
+                        Allow Leading Zeroes
+                      </Typography>
+                      <Checkbox
+                        size='small'
+                        checked={allowLeadingZeroes}
+                        onChange={(e) => {
+                          setAllowLeadingZeroes(e.target.checked);
+                        }}
+                        disabled={!(mode == 'add' || mode == 'modify')}
+                      />
+                    </Box>
                   )}
                 </Box>
               </Box>
@@ -441,6 +518,7 @@ const VariableManager = ({
                   flexDirection: 'column',
                   px: 2,
                   my: 1,
+                  width: '100%',
                 }}>
                 <Typography variant='subtitle2'>Name</Typography>
                 <TextField
@@ -451,12 +529,12 @@ const VariableManager = ({
                     handleValidation('name', e.target.value);
                   }}
                   sx={{
-                    width: 200,
                     backgroundColor:
                       mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
                   }}
                   size='small'
                   disabled={!(mode == 'add' || mode == 'modify')}
+                  fullWidth
                 />
               </Box>
             </ListItem>
@@ -468,6 +546,7 @@ const VariableManager = ({
                   flexDirection: 'column',
                   px: 2,
                   my: 1,
+                  width: '100%',
                 }}>
                 <Typography variant='subtitle2'>Default Value</Typography>
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
@@ -506,7 +585,6 @@ const VariableManager = ({
                         handleValidation('value', e.target.value);
                       }}
                       sx={{
-                        width: 200,
                         backgroundColor:
                           mode == 'add' || mode == 'modify'
                             ? 'white'
@@ -517,6 +595,7 @@ const VariableManager = ({
                       multiline={type === 'json'}
                       rows={6}
                       spellCheck={false}
+                      fullWidth
                     />
                   )}
                 </Box>
@@ -529,6 +608,7 @@ const VariableManager = ({
                   flexDirection: 'column',
                   px: 2,
                   my: 1,
+                  width: '100%',
                 }}>
                 <Typography variant='subtitle2'>Description</Typography>
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
@@ -536,13 +616,13 @@ const VariableManager = ({
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     sx={{
-                      width: 200,
                       backgroundColor:
                         mode == 'add' || mode == 'modify' ? 'white' : '#e0e0e0',
                     }}
                     size='small'
                     multiline
                     disabled={!(mode == 'add' || mode == 'modify')}
+                    fullWidth
                   />
                   <Button
                     onClick={handleSave}
