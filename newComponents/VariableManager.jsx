@@ -40,7 +40,7 @@ const VariableManager = ({
   const errorObj = useRef({});
 
   useEffect(() => {
-    revalidateDefaultValue();
+    if (type === 'number') revalidateDefaultValue();
   }, [allowLeadingZeroes]);
 
   const DayValues = [
