@@ -9,7 +9,9 @@ function generateInitVariablesJS(userVariables) {
   const codeString = userVariables
     .map((v) => {
       const defaultValue =
-        v.type === 'number' || v.type === 'boolean' || v.type === 'system'
+        (v.type === 'number' && !v.allowLeadingZeroes) ||
+        v.type === 'boolean' ||
+        v.type === 'system'
           ? v.defaultValue
           : `'${v.defaultValue}'`;
       return `this.${v.name}=${defaultValue};`;

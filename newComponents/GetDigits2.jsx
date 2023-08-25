@@ -61,6 +61,7 @@ const GetDigits = ({
     }
   );
   const [showDialog, setShowDialog] = useState(false);
+  const [hasLeadingZeroes, setHasLeadingZeroes] = useState(false);
 
   const errors = useRef({});
 
@@ -95,10 +96,11 @@ const GetDigits = ({
       }
       validMessages.push(message);
     }
+
     shape.setUserValues({
       messageList,
       variableName: resultName,
-      params: {minDigits, maxDigits},
+      params: {minDigits, maxDigits, allowLeadingZeroes: hasLeadingZeroes},
       optionalParams: addedOptionalParams,
       logs: logText,
     });
@@ -182,6 +184,19 @@ const GetDigits = ({
       setErrorText('');
       errors.current.name = undefined;
     }
+  }
+
+  function handleResultVariableChange(e) {
+    setResultName(e.target.value);
+    const selectedVarName = e.target.value.slice(1);
+
+    const selectedVariable = userVariables.find(
+      (v) => v.name === selectedVarName
+    );
+
+    setHasLeadingZeroes(
+      selectedVariable && selectedVariable.allowLeadingZeroes
+    );
   }
 
   function handleTabChange(e, newValue) {
@@ -505,7 +520,7 @@ const GetDigits = ({
             <Select
               value={resultName}
               sx={{width: '220px', backgroundColor: '#f5f5f5'}}
-              onChange={(e) => setResultName(e.target.value)}
+              onChange={handleResultVariableChange}
               size='small'>
               {userVariables
                 .filter((v) => v.type === 'number')

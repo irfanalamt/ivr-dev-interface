@@ -400,9 +400,13 @@ class Shape {
     const functionName = this.text ? this.text : `getDigits${this.id}`;
     const paramsString =
       `minDigits:${this.userValues.params.minDigits},maxDigits:${this.userValues.params.maxDigits},` +
+      (this.userValues.params.allowLeadingZeroes
+        ? `allowLeadingZeroes:true,`
+        : '') +
       this.userValues.optionalParams
         .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
         .join(', ');
+
     const modifiedMessageList = this.userValues.messageList.map(
       ({useVariable, ...rest}) => rest
     );
