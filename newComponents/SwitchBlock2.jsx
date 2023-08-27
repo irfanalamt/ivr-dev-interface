@@ -13,10 +13,11 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
 import SaveChangesDialog from './SaveChangesDialog';
+import ExpressionTextField from './ExpressionTextField';
 
 const SwitchBlock = ({
   shape,
@@ -47,6 +48,10 @@ const SwitchBlock = ({
 
     return () => clearTimeout(timeoutId);
   }, [successText]);
+
+  const allVariableNames = useMemo(() => {
+    return userVariables.map((variable) => `$${variable.name}`);
+  }, [userVariables]);
 
   function handleNameChange(e) {
     const {value} = e.target;
@@ -334,6 +339,9 @@ const SwitchBlock = ({
           <Box sx={{display: 'flex', alignItems: 'center'}}>
             <TextField
               sx={{backgroundColor: '#f5f5f5', width: 200}}
+              inputProps={{
+                style: {fontFamily: 'Courier New'},
+              }}
               value={defaultAction}
               onChange={(e) => setDefaultAction(e.target.value)}
               size='small'
@@ -348,31 +356,28 @@ const SwitchBlock = ({
                 <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
                   Condition
                 </Typography>
-                <TextField
-                  sx={{backgroundColor: '#f5f5f5', width: 350}}
-                  size='small'
-                  value={row.condition}
-                  error={Boolean(row.conditionError)}
-                  onChange={(e) => {
-                    handleActionFieldChange('condition', e.target.value, i);
-                    validateCondition(e.target.value, i);
+                <ExpressionTextField
+                  inputValue={row}
+                  setInputValue={(value) => {
+                    handleActionFieldChange('condition', value, i);
+                    validateCondition(value, i);
                   }}
-                  multiline
+                  variableNames={allVariableNames}
                 />
                 <Typography sx={{color: 'red', mx: 'auto'}}>
                   {row.conditionError}&nbsp;
                 </Typography>
               </Stack>
               <Stack>
-                {/* <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
-                  Action
-                </Typography> */}
                 <Box sx={{display: 'flex', alignItems: 'center'}}>
                   <TextField
                     sx={{
                       mr: i == 0 && '35px',
                       backgroundColor: '#f5f5f5',
                       width: 200,
+                    }}
+                    inputProps={{
+                      style: {fontFamily: 'Courier New'},
                     }}
                     placeholder='action'
                     size='small'
@@ -383,7 +388,6 @@ const SwitchBlock = ({
                       validateAction(e.target.value, i);
                     }}
                   />
-
                   {i > 0 && (
                     <IconButton
                       color='error'
