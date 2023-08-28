@@ -731,7 +731,7 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
           anchorOrigin={{vertical: 'top', horizontal: 'right'}}
           sx={{mt: 5, mr: 1}}
           open={Boolean(showSnackbar)}
-          autoHideDuration={5000}
+          autoHideDuration={showSnackbar.type === 'success' ? 5000 : 10000}
           onClose={() => setShowSnackbar(false)}>
           <Alert
             sx={{minWidth: '200px', display: 'flex', alignItems: 'center'}}
