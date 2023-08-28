@@ -22,16 +22,25 @@ function generateInitVariablesJS(userVariables) {
 }
 
 function generateCallDataJS(callData) {
-  const innerString = Object.entries(callData)
+  const callDataEntries = Object.entries(callData)
     .map(([key, value]) => {
       if (value.charAt(0) === '$') {
-        value = `this.${value.slice(1)}`;
-        return `IVR.callData.${key} = ${value};`;
-      } else return `IVR.callData.${key} = '${value}';`;
+        return `${key}: this.${value.slice(1)}`;
+      } else if (value === '') {
+        return `${key}: undefined`;
+      } else {
+        return `${key}: '${value}'`;
+      }
     })
-    .join('');
+    .join(',\n            ');
 
-  const outerString = `this.onTransferSetCallData = async function(){${innerString}};`;
+  const outerString = `this.onTransferSetCallData = async function () {
+        let callData = {
+            ${callDataEntries}
+        }
+        IVR.callData = JSON.stringify(callData);
+        IVR.log.trace('callData is set to ' + IVR.callData);
+    };`;
 
   return outerString;
 }
