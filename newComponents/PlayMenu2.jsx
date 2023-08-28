@@ -3,6 +3,7 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
+  Autocomplete,
   Avatar,
   Box,
   Button,
@@ -19,7 +20,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
 import LogDrawer from './LogDrawer';
@@ -65,6 +66,12 @@ const PlayMenu = ({
 
     return () => clearTimeout(timeoutId);
   }, [successText]);
+
+  const allPromptVariables = useMemo(() => {
+    return userVariables
+      .filter((userVariable) => userVariable.type === 'prompt')
+      .map((userVariable) => `$${userVariable.name}`);
+  }, [userVariables]);
 
   const optionalParamList = [
     'ignoreBuffer',
@@ -334,6 +341,15 @@ const PlayMenu = ({
     if (action === 'Transfer') return 'params.transferPrompt';
 
     return '';
+  }
+
+  function filterOptions(options, {inputValue}) {
+    if (inputValue.startsWith('$')) {
+      return options.filter((option) =>
+        option.includes(inputValue.substring(1))
+      );
+    }
+    return [];
   }
 
   function renderComponentByType(param, index) {
@@ -805,39 +821,55 @@ const PlayMenu = ({
                   </Stack>
                   <Stack sx={{my: 0.5}}>
                     <Typography variant='subtitle2'>Prompt</Typography>
-                    <TextField
-                      sx={{
-                        width: 300,
-                        backgroundColor:
-                          item.isDefault &&
-                          [
-                            'MainMenu',
-                            'PreviousMenu',
-                            'Disconnect',
-                            'Transfer',
-                          ].includes(item.action)
-                            ? ''
-                            : '#f5f5f5',
-                      }}
+                    <Autocomplete
+                      options={allPromptVariables}
+                      freeSolo
                       value={item.prompt}
-                      onChange={(e) => {
-                        handleItemFieldChange('prompt', e.target.value, i);
-                        validatePrompt(e.target.value, i);
+                      filterOptions={filterOptions}
+                      onChange={(event, newValue) => {
+                        if (newValue) {
+                          handleItemFieldChange('prompt', newValue, i);
+                          validatePrompt(newValue, i);
+                        }
                       }}
-                      placeholder={
-                        item.isDefault ? getPlaceholderValue(item.action) : ''
-                      }
-                      disabled={
-                        item.isDefault &&
-                        [
-                          'MainMenu',
-                          'PreviousMenu',
-                          'Disconnect',
-                          'Transfer',
-                        ].includes(item.action)
-                      }
-                      size='small'
-                      error={Boolean(item.promptError)}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{
+                            width: 300,
+                            backgroundColor:
+                              item.isDefault &&
+                              [
+                                'MainMenu',
+                                'PreviousMenu',
+                                'Disconnect',
+                                'Transfer',
+                              ].includes(item.action)
+                                ? ''
+                                : '#f5f5f5',
+                          }}
+                          placeholder={
+                            item.isDefault
+                              ? getPlaceholderValue(item.action)
+                              : ''
+                          }
+                          disabled={
+                            item.isDefault &&
+                            [
+                              'MainMenu',
+                              'PreviousMenu',
+                              'Disconnect',
+                              'Transfer',
+                            ].includes(item.action)
+                          }
+                          size='small'
+                          error={Boolean(item.promptError)}
+                          onChange={(e) => {
+                            handleItemFieldChange('prompt', e.target.value, i);
+                            validatePrompt(e.target.value, i);
+                          }}
+                        />
+                      )}
                     />
                   </Stack>
                   <Box sx={{display: 'flex', alignItems: 'center', my: 0.5}}>
