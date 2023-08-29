@@ -1,7 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
   Button,
@@ -61,7 +61,6 @@ const GetDigits = ({
     }
   );
   const [showDialog, setShowDialog] = useState(false);
-  const [hasLeadingZeroes, setHasLeadingZeroes] = useState(false);
 
   const errors = useRef({});
 
@@ -100,7 +99,10 @@ const GetDigits = ({
     shape.setUserValues({
       messageList,
       variableName: resultName,
-      params: {minDigits, maxDigits, allowLeadingZeroes: hasLeadingZeroes},
+      params: {
+        minDigits,
+        maxDigits,
+      },
       optionalParams: addedOptionalParams,
       logs: logText,
     });
@@ -184,19 +186,6 @@ const GetDigits = ({
       setErrorText('');
       errors.current.name = undefined;
     }
-  }
-
-  function handleResultVariableChange(e) {
-    setResultName(e.target.value);
-    const selectedVarName = e.target.value.slice(1);
-
-    const selectedVariable = userVariables.find(
-      (v) => v.name === selectedVarName
-    );
-
-    setHasLeadingZeroes(
-      selectedVariable && selectedVariable.allowLeadingZeroes
-    );
   }
 
   function handleTabChange(e, newValue) {
@@ -520,7 +509,7 @@ const GetDigits = ({
             <Select
               value={resultName}
               sx={{width: '220px', backgroundColor: '#f5f5f5'}}
-              onChange={handleResultVariableChange}
+              onChange={(e) => setResultName(e.target.value)}
               size='small'>
               {userVariables
                 .filter((v) => v.type === 'number')

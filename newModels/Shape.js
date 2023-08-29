@@ -398,11 +398,14 @@ class Shape {
 
   setFunctionStringGetDigits(variables) {
     const functionName = this.text ? this.text : `getDigits${this.id}`;
+    const selectedVarName = this.userValues.variableName.slice(1);
+    const selectedVariable = variables.find((v) => v.name === selectedVarName);
+    const isAllowLeadingZeroes =
+      selectedVariable && selectedVariable.allowLeadingZeroes;
+
     const paramsString =
       `minDigits:${this.userValues.params.minDigits},maxDigits:${this.userValues.params.maxDigits},` +
-      (this.userValues.params.allowLeadingZeroes
-        ? `allowLeadingZeroes:true,`
-        : '') +
+      (isAllowLeadingZeroes ? `allowLeadingZeroes:true,` : '') +
       this.userValues.optionalParams
         .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
         .join(', ');
