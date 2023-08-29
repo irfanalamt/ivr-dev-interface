@@ -105,11 +105,19 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
 
             isLoadFromDb.current = true;
             setShapes(newShapes);
+            const hasSystemVariables = newUserVariables.some(
+              (variable) => variable.type == 'system'
+            );
+
+            if (!hasSystemVariables) {
+              const userVariablesWithSystemVariables =
+                newUserVariables.concat(systemVariables);
+              setUserVariables(userVariablesWithSystemVariables);
+            } else {
+              setUserVariables(newUserVariables);
+            }
 
             updateNextItems(newShapes);
-
-            setUserVariables(newUserVariables);
-
             setTabs(tabs);
             setLoading(false);
           })
