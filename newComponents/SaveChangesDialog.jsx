@@ -7,7 +7,7 @@ import {
   DialogTitle,
 } from '@mui/material';
 
-const SaveChangesDialog = ({open, handleClose, handleSave}) => {
+const SaveChangesDialog = ({open, handleClose, closeDialog, handleSave}) => {
   return (
     <Dialog open={open}>
       <DialogTitle>{'Unsaved Changes'}</DialogTitle>
@@ -18,13 +18,24 @@ const SaveChangesDialog = ({open, handleClose, handleSave}) => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color='error' variant='outlined'>
+        <Button
+          onClick={() => {
+            closeDialog();
+            handleClose();
+          }}
+          color='error'
+          variant='outlined'>
           Discard
         </Button>
         <Button
           onClick={() => {
-            handleSave();
-            handleClose();
+            const saveSuccess = handleSave();
+            if (saveSuccess) {
+              closeDialog();
+              handleClose();
+            } else {
+              closeDialog();
+            }
           }}
           color='success'
           variant='contained'

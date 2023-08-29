@@ -63,6 +63,7 @@ const RunScript = ({
     if (isFunctionError) {
       setSuccessText('');
       setErrorText('Save failed. Script not valid.');
+      return false;
     } else {
       setErrorText('');
       setSuccessText('Saved.');
@@ -72,6 +73,7 @@ const RunScript = ({
       } else {
         shape.isComplete = false;
       }
+      return true;
     }
   }
 
@@ -131,7 +133,7 @@ const RunScript = ({
       .map(({name, defaultValue, type}) => {
         if (type === 'system') {
           if (name === 'CALLDATA') {
-            return `const $${name} = '{}';`;
+            return `const $${name} = '{"var1":"","var2":"","var3":"","var4":"","var5":"","var6":"","var7":"","var8":"","var9":"","var10":""}';`;
           }
           return `const $${name} = '${defaultValue}';`;
         } else return `let $${name} = '${defaultValue}';`;
@@ -328,10 +330,8 @@ const RunScript = ({
       <SaveChangesDialog
         open={showDialog}
         handleSave={handleSave}
-        handleClose={() => {
-          setShowDialog(false);
-          handleCloseDrawer();
-        }}
+        closeDialog={() => setShowDialog(false)}
+        handleClose={handleCloseDrawer}
       />
     </>
   );
