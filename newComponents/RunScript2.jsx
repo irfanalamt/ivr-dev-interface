@@ -125,10 +125,14 @@ const RunScript = ({
       errors.current.name = undefined;
     }
   }
+
   function getUserVariablesString() {
     const variables = userVariables
       .map(({name, defaultValue, type}) => {
         if (type === 'system') {
+          if (name === 'CALLDATA') {
+            return `const $${name} = '{}';`;
+          }
           return `const $${name} = '${defaultValue}';`;
         } else return `let $${name} = '${defaultValue}';`;
       })
