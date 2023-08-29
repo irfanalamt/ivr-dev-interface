@@ -60,10 +60,13 @@ function CodeEditor({userVariables, value, onChange}) {
   return (
     <Editor
       options={{
-        fontSize: 17,
+        fontSize: 18,
         minimap: {enabled: false},
         lineNumbers: 'off',
         glyphMargin: false,
+        padding: {
+          top: 20,
+        },
       }}
       defaultValue='//Enter JavaScript code here'
       defaultLanguage='javascript'
