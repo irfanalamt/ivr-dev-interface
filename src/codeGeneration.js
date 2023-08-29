@@ -67,6 +67,10 @@ function findIsErrorsPresent(shapes) {
     return items.some((item) => item.actionError || item.promptError);
   };
 
+  const isErrorInSwitchItems = (items) => {
+    return items.some((a) => a.conditionError || a.actionError);
+  };
+
   for (let shape of shapes) {
     if (ignoredShapeTypes.includes(shape.type)) continue;
 
@@ -80,6 +84,13 @@ function findIsErrorsPresent(shapes) {
     if (
       shape.type === 'playMenu' &&
       isErrorInMenuItems(shape.userValues.items)
+    ) {
+      return shape;
+    }
+
+    if (
+      shape.type === 'switch' &&
+      isErrorInSwitchItems(shape.userValues.actions)
     ) {
       return shape;
     }
