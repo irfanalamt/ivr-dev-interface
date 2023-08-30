@@ -26,8 +26,6 @@ function generateCallDataJS(callData) {
     .map(([key, value]) => {
       if (value.charAt(0) === '$') {
         return `${key}: this.${value.slice(1)}`;
-      } else if (value === '') {
-        return `${key}: undefined`;
       } else {
         return `${key}: '${value}'`;
       }
