@@ -509,10 +509,15 @@ class Shape {
     const functionName = this.text ? this.text : `callAPI${this.id}`;
     const {endpoint, inputVars, outputVars, playWaitMessage} = this.userValues;
 
+    function convertEndpoint(endpoint) {
+      return endpoint.replace(/\$(\w+)/g, '${this.$1}');
+    }
+
     const inputVarsString = `{${inputVars
       .filter((el) => el.name)
       .map((el) => `${el.name}:this.${el.name}`)
       .join(',')}}`;
+
     const outputVarsString = outputVars
       .filter((el) => el.name)
       .map((el) => `this.${el.name} = outputVars.${el.name};`)
@@ -521,22 +526,24 @@ class Shape {
     ${outputVarsString}
   }`;
 
+    const convertedEndpoint = convertEndpoint(endpoint);
+
     const codeString = `
     this.${functionName} = async function() {
-      let endpoint = '${endpoint}';
+      let endpoint = \`${convertedEndpoint}\`;
       let inputVars = ${inputVarsString};
       let outputVars;
       let playWaitMessage = ${playWaitMessage};
-  
+    
       try {
         outputVars = await IVR.callAPI('${functionName}', endpoint, inputVars, playWaitMessage);
         ${finalOutputString}
       } catch (err) {
         IVR.error('Error in callAPI ${functionName}', err);
       }
-  
+    
     };
-  `;
+    `;
 
     console.log('codeString📍', codeString);
     this.setFunctionString(codeString);

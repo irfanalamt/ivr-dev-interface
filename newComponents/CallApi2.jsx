@@ -15,9 +15,10 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
 import {checkValidity} from '../src/helpers';
 import {isNameUnique} from '../src/myFunctions';
+import UrlTextfield from './UrlTextfield';
 
 const CallApi = ({
   shape,
@@ -41,8 +42,7 @@ const CallApi = ({
   const [playWaitMessage, setPlayWaitMessage] = useState(
     shape.userValues?.playWaitMessage ?? false
   );
-
-  const errors = useRef({});
+  const [endpointError, setEndpointError] = useState('');
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -51,6 +51,18 @@ const CallApi = ({
 
     return () => clearTimeout(timeoutId);
   }, [successText]);
+
+  const allStringVariableNames = useMemo(() => {
+    return userVariables
+      .filter((variable) => variable.type === 'string')
+      .map((variable) => `$${variable.name}`);
+  }, [userVariables]);
+
+  const allStringVariables = useMemo(() => {
+    return userVariables.filter((variable) => variable.type === 'string');
+  }, [userVariables]);
+
+  const errors = useRef({});
 
   function handleSave() {
     if (errors.current.name) {
@@ -64,7 +76,12 @@ const CallApi = ({
 
     setErrorText('');
     setSuccessText('Saved.');
-    if (endpoint.length > 1 && inputVars[0].name && outputVars[0].name) {
+    if (
+      endpoint.length > 1 &&
+      inputVars[0].name &&
+      outputVars[0].name &&
+      !endpointError
+    ) {
       shape.isComplete = true;
     } else {
       shape.isComplete = false;
@@ -125,6 +142,66 @@ const CallApi = ({
     const updatedOutputVars = [...outputVars];
     updatedOutputVars[index].name = value;
     setOutputVars(updatedOutputVars);
+  }
+
+  function handleEndpointChange(value) {
+    setEndpoint(value);
+    validateEndpoint(value);
+  }
+
+  function validateEndpoint(textInput) {
+    const variablesInText = extractVariables(textInput);
+
+    if (variablesInText.length > 0) {
+      const invalidVariable = findInvalidVariable(variablesInText);
+      if (invalidVariable) {
+        setEndpointError(`${invalidVariable} is not a valid string variable.`);
+        return;
+      }
+    }
+
+    if (!isValidURLWithVariables(textInput) && textInput) {
+      setEndpointError('Not a valid URL');
+      return;
+    }
+
+    setEndpointError('');
+  }
+
+  function extractVariables(textInput) {
+    return textInput.match(/\$\w+/g) || [];
+  }
+
+  function findInvalidVariable(variablesInText) {
+    return variablesInText.find(
+      (variable) => !allStringVariableNames.includes(variable)
+    );
+  }
+
+  function isValidURLWithVariables(textInput) {
+    const replacedInput = textInput.replace(
+      /\$\w+/g,
+      getVariableValueOrDefault
+    );
+
+    return isValidURL(replacedInput);
+  }
+
+  function getVariableValueOrDefault(match) {
+    const nameWithoutDollar = match.slice(1);
+    const foundVariable = allStringVariables.find(
+      (variable) => variable.name === nameWithoutDollar
+    );
+    return foundVariable ? foundVariable.defaultValue : match;
+  }
+
+  function isValidURL(str) {
+    try {
+      new URL(str);
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   return (
@@ -248,15 +325,22 @@ const CallApi = ({
           <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
             REST Endpoint
           </Typography>
-          <TextField
-            placeholder='https://api.example.com/data'
-            sx={{backgroundColor: '#f5f5f5'}}
-            size='small'
-            value={endpoint}
-            onChange={(e) => setEndpoint(e.target.value)}
-            fullWidth
+
+          <UrlTextfield
+            inputValue={endpoint}
+            modifyInputValue={handleEndpointChange}
+            placeholderText='https://api.example.com/data'
+            variableNames={allStringVariableNames}
           />
+          <Box sx={{height: 10, textAlign: 'center'}}>
+            {endpointError && (
+              <Typography variant='body2' sx={{color: 'red', mt: 1}}>
+                {endpointError}
+              </Typography>
+            )}
+          </Box>
         </Stack>
+
         <Box
           sx={{
             px: 2,
