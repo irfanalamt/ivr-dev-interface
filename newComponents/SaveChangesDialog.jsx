@@ -25,8 +25,12 @@ const SaveChangesDialog = ({
       <DialogActions>
         <Button
           onClick={() => {
-            closeDialog();
-            handleClose();
+            if (closeDialog) {
+              closeDialog();
+              handleClose();
+            } else {
+              handleClose();
+            }
           }}
           color='error'
           variant='outlined'>
