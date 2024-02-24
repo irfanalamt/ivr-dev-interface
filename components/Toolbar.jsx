@@ -26,7 +26,6 @@ const renderButton = (
   return (
     <Button
       size='small'
-      onClick={(e) => handleSetSelectedItemToolbar(e, itemKey)}
       sx={{
         backgroundColor: backgroundColor,
         height: 40,
@@ -42,6 +41,11 @@ const renderButton = (
 };
 
 const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
+  const handleDragStart = (e, key) => {
+    e.dataTransfer.setData('application/reactflow', key);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
   return (
     <Box
       sx={{
@@ -94,19 +98,24 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
           title={key.replace(/^\w/, (c) => c.toUpperCase())}
           placement='right'
           key={key}>
-          {renderButton(
-            key,
-            selectedItemToolbar,
-            handleSetSelectedItemToolbar,
-            customIcon || (
-              <img
-                src={selectedItemToolbar[key] ? activeIcon : defaultIcon}
-                alt='Icon'
-                height={`${height}px`}
-                key={key}
-              />
-            )
-          )}
+          <div
+            draggable='true'
+            onDragStart={(e) => handleDragStart(e, key)}
+            style={{cursor: 'grab'}}>
+            {renderButton(
+              key,
+              selectedItemToolbar,
+              handleSetSelectedItemToolbar,
+              customIcon || (
+                <img
+                  src={selectedItemToolbar[key] ? activeIcon : defaultIcon}
+                  alt='Icon'
+                  height={`${height}px`}
+                  key={key}
+                />
+              )
+            )}
+          </div>
         </LightTooltip>
       ))}
     </Box>

@@ -76,7 +76,10 @@ const CanvasTest = ({
   useEffect(() => {
     const context = canvasRef.current.getContext('2d');
     contextRef.current = context;
-    clearAndDraw();
+
+    setTimeout(() => {
+      clearAndDraw();
+    }, 5);
 
     if (isLoadFromDb.current === true) {
       isLoadFromDb.current = false;
@@ -144,6 +147,7 @@ const CanvasTest = ({
       newShape.text = 'start';
       newShape.isComplete = true;
     }
+
     setShapes([...shapes, newShape]);
   }
 
@@ -252,12 +256,6 @@ const CanvasTest = ({
     }
 
     resetTabLabelChange();
-
-    if (selectedItemToolbar) {
-      addNewShape(realX, realY, selectedItemToolbar);
-      resetSelectedItemToolbar();
-      return;
-    }
 
     if (
       drawnMultiSelectRectangle.current &&
@@ -401,26 +399,6 @@ const CanvasTest = ({
     const {realX, realY} = getRealCoordinates(clientX, clientY);
     setOpenPeekMenu(false);
     setExitPointTooltip(false);
-
-    if (selectedItemToolbar) {
-      clearAndDraw();
-
-      const tempShape = new Shape(
-        realX,
-        realY,
-        selectedItemToolbar,
-        pageNumber
-      );
-
-      if (selectedItemToolbar === 'setParams') {
-        if (!hasShapeByText('start')) {
-          tempShape.text = 'start';
-        }
-      }
-
-      tempShape.drawShape(contextRef.current);
-      return;
-    }
 
     if (isDragging.current) {
       const draggingShape = currentShape.current;
@@ -635,6 +613,20 @@ const CanvasTest = ({
         return;
       }
     }
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    const itemType = e.dataTransfer.getData('application/reactflow');
+    const {clientX, clientY} = e;
+    const {realX, realY} = getRealCoordinates(clientX, clientY);
+
+    addNewShape(realX, realY, itemType);
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
   }
 
   function resetConnection() {
@@ -1215,6 +1207,8 @@ const CanvasTest = ({
         onMouseMove={handleMouseMove}
         onDoubleClick={handleDoubleClick}
         onContextMenu={handleContextMenu}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
         ref={canvasRef}
       />
       <Menu
