@@ -257,6 +257,11 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
     setTabs(updatedTabs);
   }
 
+  function resetTabLabelChange() {
+    const resetTabs = tabs.map((tab) => ({...tab, isEditMode: false}));
+    setTabs(resetTabs);
+  }
+
   function handleAddTab() {
     const lastTab = tabs[tabs.length - 1];
     const shapeCount = getShapeCountInPageNumber(lastTab.id);
@@ -690,6 +695,7 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
           shapeCount={shapeCount}
           saveToDb={saveToDb}
           isLoadFromDb={isLoadFromDb}
+          resetTabLabelChange={resetTabLabelChange}
         />
       </div>
       <BottomBar

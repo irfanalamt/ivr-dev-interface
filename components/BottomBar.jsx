@@ -64,7 +64,7 @@ const BottomBar = ({
       onClick={handleClick}>
       <Box
         sx={{
-          ml: '75px',
+          ml: '60px',
           display: 'flex',
           alignItems: 'center',
           maxWidth: '80%',
@@ -106,12 +106,18 @@ const BottomBar = ({
                     : i === 0 && '1px solid grey.400',
               }}
               key={tab.id}
-              disableRipple={tab.isEditMode}
+              disableRipple={true}
               label={
                 tab.isEditMode ? (
                   <Box sx={{display: 'flex'}}>
                     <TextField
                       ref={tabRef}
+                      sx={{
+                        '.MuiInputBase-input': {
+                          fontSize: '0.89rem',
+                          fontWeight: 'fontWeightMedium',
+                        },
+                      }}
                       value={tab.label}
                       size='small'
                       variant='standard'
@@ -134,7 +140,7 @@ const BottomBar = ({
                     </Tooltip>
                   </Box>
                 ) : (
-                  <Typography sx={{textTransform: 'none'}}>
+                  <Typography variant='button' sx={{textTransform: 'none'}}>
                     {tab.label}
                   </Typography>
                 )

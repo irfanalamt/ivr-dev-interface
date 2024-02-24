@@ -28,6 +28,7 @@ const CanvasTest = ({
   shapeCount,
   saveToDb,
   isLoadFromDb,
+  resetTabLabelChange,
 }) => {
   const [contextMenu, setContextMenu] = useState(null);
   const [isOpenElementDrawer, setIsOpenElementDrawer] = useState(false);
@@ -249,6 +250,8 @@ const CanvasTest = ({
     if (button !== 0) {
       return;
     }
+
+    resetTabLabelChange();
 
     if (selectedItemToolbar) {
       addNewShape(realX, realY, selectedItemToolbar);
