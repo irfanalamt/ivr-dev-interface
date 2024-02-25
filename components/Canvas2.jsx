@@ -76,6 +76,7 @@ const CanvasTest = ({
   useEffect(() => {
     const context = canvasRef.current.getContext('2d');
     contextRef.current = context;
+    clearAndDraw();
 
     setTimeout(() => {
       clearAndDraw();
