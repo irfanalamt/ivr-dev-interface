@@ -79,7 +79,7 @@ const CanvasTest = ({
 
     setTimeout(() => {
       clearAndDraw();
-    }, 5);
+    }, 50);
 
     if (isLoadFromDb.current === true) {
       isLoadFromDb.current = false;
