@@ -361,7 +361,9 @@ function getDriverFunctionShapeCode(shape, isMultiEntryDriver = false) {
     if (shape.userValues?.type === 'disconnect') {
       return 'IVR.doDisconnect();';
     } else if (shape.userValues?.transferPoint) {
-      return `IVR.doTransfer('${shape.userValues.transferPoint}');`;
+      if (shape.userValues.transferPoint[0] === '$') {
+        return `IVR.doTransfer(this.${shape.userValues.transferPoint});`;
+      } else return `IVR.doTransfer('${shape.userValues.transferPoint}');`;
     }
   } else if (globalMultiEntryCount[shape.id] && !isMultiEntryDriver) {
     return `await this.${shape.text}_X();`;

@@ -139,6 +139,7 @@ const ElementDrawer = ({
             handleCloseDrawer={handleCloseDrawer}
             openVariableManager={openVariableManager}
             openUserGuide={() => setOpenGuide(true)}
+            userVariables={userVariables}
           />
         );
 

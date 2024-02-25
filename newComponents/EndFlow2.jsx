@@ -2,6 +2,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import SaveIcon from '@mui/icons-material/Save';
 import {
+  Autocomplete,
   Box,
   Button,
   FormControlLabel,
@@ -20,18 +21,53 @@ const EndFlow = ({
   handleCloseDrawer,
   openVariableManager,
   openUserGuide,
+  userVariables,
 }) => {
   const [type, setType] = useState(shape.userValues?.type ?? 'disconnect');
   const [transferPoint, setTransferPoint] = useState(
     shape.userValues?.transferPoint ?? ''
   );
+  const [errorMessage, setErrorMessage] = useState('');
 
   function handleSave() {
-    shape.setUserValues({
-      type,
-      transferPoint,
-    });
+    const validationError = checkValidVariable(transferPoint, 'String');
+    if (validationError === -1) {
+      shape.setUserValues({
+        type,
+        transferPoint,
+      });
+    } else {
+      setErrorMessage(validationError);
+    }
   }
+
+  function getValidVariableNames(type, userVariables) {
+    const variableType = 'string';
+    const autoCompleteOptions = userVariables
+      .filter((userVariable) => userVariable.type === variableType)
+      .map((userVariable) => `$${userVariable.name}`);
+    return autoCompleteOptions;
+  }
+
+  function filterOptions(options, {inputValue}) {
+    if (inputValue.startsWith('$')) {
+      return options.filter((option) =>
+        option.toLowerCase().includes(inputValue.substring(1).toLowerCase())
+      );
+    }
+    return [];
+  }
+
+  function checkValidVariable(value, type) {
+    const validVariables = getValidVariableNames(type, userVariables);
+
+    if (validVariables.includes(value) || value[0] !== '$') {
+      return -1; // Indicates a valid variable
+    }
+
+    return `Not a valid ${type.toLowerCase()} variable.`;
+  }
+
   return (
     <>
       <ListItem
@@ -150,11 +186,33 @@ const EndFlow = ({
               <Typography fontSize='1rem' variant='subtitle2'>
                 Transfer Point
               </Typography>
-              <TextField
-                sx={{width: 180, backgroundColor: '#f5f5f5'}}
-                size='small'
+              <Autocomplete
+                options={getValidVariableNames('String', userVariables)}
+                freeSolo
                 value={transferPoint}
-                onChange={(e) => setTransferPoint(e.target.value)}
+                filterOptions={filterOptions}
+                onInputChange={(event, newInputValue) => {
+                  setTransferPoint(newInputValue);
+                  const error = checkValidVariable(newInputValue, 'String');
+                  if (error === -1 || newInputValue === '') {
+                    setErrorMessage('');
+                  } else {
+                    setErrorMessage(error);
+                  }
+                }}
+                onChange={(event, newValue) => {
+                  setTransferPoint(newValue);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    error={!!errorMessage}
+                    helperText={errorMessage}
+                    name='String'
+                    sx={{mr: 3, backgroundColor: '#f5f5f5'}}
+                    size='small'
+                  />
+                )}
               />
             </Stack>
           )}
