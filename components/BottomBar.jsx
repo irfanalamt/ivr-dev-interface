@@ -73,7 +73,12 @@ const BottomBar = ({
           value={activeTab}
           onChange={(e, id) => handleChangeTab(id)}
           variant='scrollable'
-          scrollButtons>
+          scrollButtons
+          sx={{
+            '.MuiTabs-indicator': {
+              backgroundColor: '#64b5f6',
+            },
+          }}>
           {tabs.map((tab, i) => (
             <Tab
               onContextMenu={(e) => {
@@ -94,28 +99,27 @@ const BottomBar = ({
                 borderBottom:
                   tab.id === activeTab &&
                   !tab.isEditMode &&
-                  '4px solid #9e9e9e',
-                borderRight:
-                  tab.id === activeTab
-                    ? '2px solid #9e9e9e'
-                    : '1px solid grey.400',
-                bgcolor: tab.id === activeTab && '#EFF7FD',
-                borderLeft:
-                  tab.id === activeTab
-                    ? '2px solid #9e9e9e'
-                    : i === 0 && '1px solid grey.400',
+                  '4px solid #64b5f6',
+                bgcolor: tab.id === activeTab ? '#EFF7FD' : 'transparent',
+                '&:hover': {
+                  bgcolor: '#ECEFF1',
+                },
+                borderRight: '1px solid #E0E0E0',
+                '&:last-child': {
+                  borderRight: 'none',
+                },
               }}
               key={tab.id}
               disableRipple={true}
               label={
                 tab.isEditMode ? (
-                  <Box sx={{display: 'flex'}}>
+                  <Box sx={{display: 'flex', alignItems: 'center'}}>
                     <TextField
                       ref={tabRef}
                       sx={{
                         '.MuiInputBase-input': {
                           fontSize: '0.89rem',
-                          fontWeight: 'fontWeightMedium',
+                          fontWeight: 'medium',
                         },
                       }}
                       value={tab.label}
@@ -131,16 +135,18 @@ const BottomBar = ({
                         )
                       }
                     />
-                    <Tooltip
-                      onClick={() => handleLabelChange(tab.id)}
-                      color='success'
-                      sx={{mr: -1}}
-                      size='small'>
-                      <DoneIcon />
+                    <Tooltip title='Confirm' sx={{ml: 1}}>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleLabelChange(tab.id)}>
+                        <DoneIcon />
+                      </IconButton>
                     </Tooltip>
                   </Box>
                 ) : (
-                  <Typography variant='button' sx={{textTransform: 'none'}}>
+                  <Typography
+                    variant='button'
+                    sx={{textTransform: 'none', color: '#455A64'}}>
                     {tab.label}
                   </Typography>
                 )
@@ -150,7 +156,10 @@ const BottomBar = ({
           ))}
         </Tabs>
         <Tooltip title='Add Page'>
-          <IconButton sx={{ml: -2}} size='small' onClick={handleAddTab}>
+          <IconButton
+            sx={{ml: -2, color: '#455A64'}}
+            size='small'
+            onClick={handleAddTab}>
             <AddCircleIcon />
           </IconButton>
         </Tooltip>
@@ -158,7 +167,6 @@ const BottomBar = ({
       {menuOpen && (
         <Menu
           open={Boolean(menuOpen)}
-          disableScrollLock={true}
           onClose={() => setMenuOpen(false)}
           anchorReference='anchorPosition'
           anchorPosition={

@@ -1,5 +1,6 @@
+import React from 'react';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import {Box, Button, Tooltip} from '@mui/material';
+import {Box, Button, Tooltip, Typography} from '@mui/material';
 import {styled} from '@mui/material/styles';
 import {tooltipClasses} from '@mui/material/Tooltip';
 
@@ -9,8 +10,27 @@ const LightTooltip = styled(({className, ...props}) => (
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: '#fdf5ef',
     color: 'black',
-    fontSize: 13,
+    fontSize: 14,
+    boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)',
   },
+}));
+
+const StyledButton = styled(Button)(({theme, isActive}) => ({
+  backgroundColor: isActive ? theme.palette.secondary.main : '#ECEFF1',
+  height: 40,
+  width: 'auto',
+  padding: '0 16px',
+  '&:hover': {
+    backgroundColor: isActive
+      ? theme.palette.secondary.dark
+      : theme.palette.action.hover,
+    boxShadow: theme.shadows[3],
+    transform: 'translateY(-2px)',
+  },
+  transition: 'transform 0.2s, background-color 0.3s',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
 }));
 
 const renderButton = (
@@ -20,23 +40,11 @@ const renderButton = (
   iconElement
 ) => {
   const isActive = selectedItemToolbar[itemKey];
-  const backgroundColor = isActive ? '#FFA500' : '#ECEFF1';
-  const hoverColor = isActive ? '#FF8C00' : '#CDCDCD';
 
   return (
-    <Button
-      size='small'
-      sx={{
-        backgroundColor: backgroundColor,
-        height: 40,
-        transition: 'transform 0.2s, background-color 0.3s',
-        '&:hover': {
-          transform: 'scale(1.05)',
-          backgroundColor: hoverColor,
-        },
-      }}>
+    <StyledButton size='small' isActive={isActive}>
       {iconElement}
-    </Button>
+    </StyledButton>
   );
 };
 
@@ -52,7 +60,8 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
         pt: '50px',
         pb: '35px',
         height: '100%',
-        boxShadow: 2,
+        boxShadow:
+          '0px 4px 6px -1px rgba(0,0,0,0.1), 0px 2px 4px -1px rgba(0,0,0,0.06)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -95,7 +104,11 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
         ['jumper', '/icons/jumper.png', '/icons/jumperBlack.png', 25],
       ].map(([key, defaultIcon, activeIcon, height, customIcon]) => (
         <LightTooltip
-          title={key.replace(/^\w/, (c) => c.toUpperCase())}
+          title={
+            <Typography variant='caption'>
+              {key.replace(/^\w/, (c) => c.toUpperCase())}
+            </Typography>
+          }
           placement='right'
           key={key}>
           <div
@@ -110,7 +123,7 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
                 <img
                   src={selectedItemToolbar[key] ? activeIcon : defaultIcon}
                   alt='Icon'
-                  height={`${height}px`}
+                  style={{height: `${height}px`}}
                   key={key}
                 />
               )

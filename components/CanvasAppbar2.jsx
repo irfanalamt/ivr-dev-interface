@@ -95,13 +95,18 @@ const CanvasAppbar2 = ({
         backgroundColor: '#FAFAFA',
         flexDirection: 'row',
         alignItems: 'center',
-        paddingRight: 0,
+        boxShadow: 'none',
+        borderBottom: '1px solid #E0E0E0',
       }}
       onClick={handleClick}>
       <Typography
-        sx={{ml: 4, color: '#3C3C3C', fontWeight: 600}}
-        variant='subtitle1'
-        fontSize='large'>
+        sx={{
+          ml: 4,
+          color: '#3C3C3C',
+          fontWeight: 600,
+          fontSize: '1rem',
+        }}
+        variant='subtitle1'>
         {ivrName.name}
         {ivrName.name && ` (${ivrName.version})`}
       </Typography>
@@ -114,79 +119,81 @@ const CanvasAppbar2 = ({
         }}>
         <Tooltip title='SAVE'>
           <IconButton
+            size='small'
             sx={{
               mr: 1,
-              backgroundColor: '#dcdcdc',
-              color: 'black',
-              '&:hover': {backgroundColor: '#81c784'},
+              backgroundColor: '#ECEFF1',
+              color: '#455A64',
+              '&:hover': {backgroundColor: '#CFD8DC'},
             }}
-            onClick={() => saveToDb(true)}
-            variant='contained'
-            color='success'>
-            <SaveIcon sx={{fontSize: 'large'}} />
+            onClick={() => saveToDb(true)}>
+            <SaveIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title='SAVE AS'>
           <IconButton
+            size='small'
             sx={{
               mr: 1,
-              backgroundColor: '#dcdcdc',
-              color: 'black',
-              '&:hover': {backgroundColor: '#9575cd'},
+              backgroundColor: '#ECEFF1',
+              color: '#455A64',
+              '&:hover': {backgroundColor: '#CFD8DC'},
             }}
-            variant='contained'
             onClick={openIvrDialog}>
-            <SaveAsIcon sx={{fontSize: 'large'}} />
+            <SaveAsIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title='RESET WORKSPACE'>
           <IconButton
+            size='small'
             sx={{
               mr: 1,
-              backgroundColor: '#dcdcdc',
-              color: 'black',
-              '&:hover': {backgroundColor: '#64b5f6'},
+              backgroundColor: '#ECEFF1',
+              color: '#455A64',
+              '&:hover': {backgroundColor: '#CFD8DC'},
             }}
-            variant='contained'
             onClick={() => setOpenDialog(true)}>
-            <RestartAltIcon sx={{fontSize: 'large'}} />
+            <RestartAltIcon />
           </IconButton>
         </Tooltip>
         <Tooltip title='GENERATE SCRIPT'>
           <Button
             sx={{
-              backgroundColor: '#66bb6a',
-              color: 'black',
+              backgroundColor: '#ECEFF1',
+              color: '#455A64',
               '&:hover': {
-                backgroundColor: '#43a047',
+                backgroundColor: '#CFD8DC',
               },
-              ml: 1,
+              ml: 2,
               mr: 2,
+              boxShadow: 'none',
             }}
             size='small'
-            variant='contained'
             onClick={handleGenerateConfigFile}>
-            <SaveAltIcon sx={{fontSize: 'large'}} />
+            <SaveAltIcon />
           </Button>
         </Tooltip>
         <ButtonBase sx={{height: '100%'}} onClick={handleMenuOpen}>
           <Box
             sx={{
-              backgroundColor: '#E5E5E5',
+              backgroundColor: '#ECEFF1',
               display: 'flex',
               alignItems: 'center',
               height: '100%',
               pl: 0.5,
               pr: 0,
+              '&:hover': {
+                backgroundColor: '#CFD8DC',
+              },
             }}>
             {user ? (
               <>
                 <IconButton edge='end'>
-                  <AccountCircleIcon sx={{color: 'black'}} />
+                  <AccountCircleIcon sx={{color: '#455A64'}} />
                 </IconButton>
                 <Typography
                   variant='subtitle1'
-                  sx={{ml: 1, mr: 1.5, color: 'black'}}>
+                  sx={{ml: 1, mr: 1.5, color: '#455A64'}}>
                   {user.name}
                 </Typography>
               </>
@@ -196,7 +203,7 @@ const CanvasAppbar2 = ({
                   ml: 2,
                   mr: 1,
                   fontWeight: 'bold',
-                  color: 'black',
+                  color: '#455A64',
                 }}
                 variant='subtitle2'>
                 Guest 🟢
