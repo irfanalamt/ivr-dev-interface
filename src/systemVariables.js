@@ -7,6 +7,9 @@ const systemVariables = [
   {type: 'system', name: 'ENVIRONMENT', defaultValue: 'IVR.environment'},
   {type: 'system', name: 'CALLDATA', defaultValue: 'IVR.callData'},
   {type: 'system', name: 'AGENTID', defaultValue: 'IVR.agentId'},
+  {type: 'system', name: 'QUEUEID', defaultValue: 'IVR.queueId'},
+  {type: 'system', name: 'PRIORITY', defaultValue: 'IVR.priority'},
+  {type: 'system', name: 'LANG', defaultValue: 'IVR.lang'},
 ];
 
 export default systemVariables;
