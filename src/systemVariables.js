@@ -10,6 +10,7 @@ const systemVariables = [
   {type: 'system', name: 'QUEUEID', defaultValue: 'IVR.queueId'},
   {type: 'system', name: 'PRIORITY', defaultValue: 'IVR.priority'},
   {type: 'system', name: 'LANG', defaultValue: 'IVR.lang'},
+  {type: 'system', name: 'CAMPAIGNDATA', defaultValue: 'IVR.campaignData'},
 ];
 
 export default systemVariables;
