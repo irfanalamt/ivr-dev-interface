@@ -11,6 +11,7 @@ const systemVariables = [
   {type: 'system', name: 'PRIORITY', defaultValue: 'IVR.priority'},
   {type: 'system', name: 'LANG', defaultValue: 'IVR.lang'},
   {type: 'system', name: 'CAMPAIGNDATA', defaultValue: 'IVR.campaignData'},
+  {type: 'system', name: 'CALLPROGRESS', defaultValue: 'IVR.callProgress'},
 ];
 
 export default systemVariables;
