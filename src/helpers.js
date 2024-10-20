@@ -689,7 +689,8 @@ export function checkValidity(name, value) {
   };
 
   if (!types[name]) return -1;
-  if (!value) return `${name == 'object' ? 'Id' : name} is required`;
+  if (!value && name != 'string')
+    return `${name == 'object' ? 'Id' : name} is required`;
   if (!types[name].regex.test(value)) return types[name].error;
   return -1;
 }

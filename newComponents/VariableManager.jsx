@@ -75,7 +75,7 @@ const VariableManager = ({
       setErrorText('Name is required.');
       return;
     }
-    if (defaultValue === '') {
+    if (defaultValue === '' && type !== 'string') {
       setErrorText('Default value is required.');
       return;
     }
@@ -85,7 +85,7 @@ const VariableManager = ({
       return;
     }
 
-    if (errorObj.current.value) {
+    if (errorObj.current.value && type !== 'string') {
       setErrorText('Default value not valid.');
       return;
     }
@@ -459,6 +459,7 @@ const VariableManager = ({
                     value={type}
                     onChange={(e) => {
                       setType(e.target.value);
+                      setErrorText('');
                       setAllowLeadingZeroes(false);
                       if (e.target.value == 'json') {
                         setDefaultValue('{ }');
