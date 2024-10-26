@@ -11,7 +11,8 @@ function generateInitVariablesJS(userVariables) {
       const defaultValue =
         (v.type === 'number' && !v.allowLeadingZeroes) ||
         v.type === 'boolean' ||
-        v.type === 'system'
+        v.type === 'system' ||
+        v.type === 'json'
           ? v.defaultValue
           : `'${v.defaultValue}'`;
       return `this.${v.name}=${defaultValue};`;
