@@ -182,10 +182,12 @@ const SwitchBlock = ({
   }
   function getUserVariablesString() {
     const variables = userVariables
-      .map(
-        (userVariable) =>
-          `let $${userVariable.name} = '${userVariable.defaultValue}';`
-      )
+      .map((userVariable) => {
+        if (userVariable.type === 'json')
+          return `let $${userVariable.name} = ${userVariable.defaultValue};`;
+        else
+          return `let $${userVariable.name} = '${userVariable.defaultValue}';`;
+      })
       .join(' ');
 
     if (!variables) return '';
