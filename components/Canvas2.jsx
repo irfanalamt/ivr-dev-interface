@@ -748,6 +748,11 @@ const CanvasTest = ({
       setOpenPeekMenu(shape);
       return;
     }
+
+    if (shape.type === 'dial' && shape.userValues?.phoneNum) {
+      setOpenPeekMenu(shape);
+      return;
+    }
   }
 
   function handleContextMenu(e) {

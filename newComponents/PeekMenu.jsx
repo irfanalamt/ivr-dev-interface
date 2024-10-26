@@ -1,4 +1,4 @@
-import {Box, Paper, Typography} from '@mui/material';
+import {Box, Paper, Stack, Typography} from '@mui/material';
 
 const PeekMenu = ({shape}) => {
   return (
@@ -122,6 +122,58 @@ const PeekMenu = ({shape}) => {
             </Typography>
           </Box>
         ))}
+      {shape.type === 'dial' && (
+        <Stack>
+          <Box sx={{display: 'flex', alignItems: 'center'}}>
+            <Typography
+              sx={{fontSize: '14px', fontWeight: '500'}}
+              variant='body1'>
+              {`Phone: `}&nbsp;
+            </Typography>
+            <Typography sx={{fontSize: '14px'}} variant='body1'>
+              {`${shape.userValues.phoneNum}`}&nbsp;
+            </Typography>
+          </Box>
+          {shape.userValues.trunk && (
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <Typography
+                sx={{fontSize: '14px', fontWeight: '500'}}
+                variant='body1'>
+                {`Trunk: `}&nbsp;
+              </Typography>
+              <Typography sx={{fontSize: '14px'}} variant='body1'>
+                {`${shape.userValues.trunk}`}&nbsp;
+              </Typography>
+            </Box>
+          )}
+
+          {shape.userValues.accessCode && (
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <Typography
+                sx={{fontSize: '14px', fontWeight: '500'}}
+                variant='body1'>
+                {`Access Code: `}&nbsp;
+              </Typography>
+              <Typography sx={{fontSize: '14px'}} variant='body1'>
+                {`${shape.userValues.accessCode}`}&nbsp;
+              </Typography>
+            </Box>
+          )}
+
+          {shape.userValues.callerId && (
+            <Box sx={{display: 'flex', alignItems: 'center'}}>
+              <Typography
+                sx={{fontSize: '14px', fontWeight: '500'}}
+                variant='body1'>
+                {`Caller ID: `}&nbsp;
+              </Typography>
+              <Typography sx={{fontSize: '14px'}} variant='body1'>
+                {`${shape.userValues.callerId}`}&nbsp;
+              </Typography>
+            </Box>
+          )}
+        </Stack>
+      )}
     </Paper>
   );
 };

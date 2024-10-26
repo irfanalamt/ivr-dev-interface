@@ -145,6 +145,7 @@ function generateCode(shape, variables, multiEntryCount) {
     'getDigits',
     'runScript',
     'callAPI',
+    'dial',
   ];
   if (typesToInclude.includes(shape.type)) {
     shape.generateAndSetFunctionString(variables, multiEntryCount);

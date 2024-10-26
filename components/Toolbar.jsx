@@ -87,6 +87,7 @@ const MainToolbar = ({selectedItemToolbar, handleSetSelectedItemToolbar}) => {
         ['runScript', '/icons/runScript.png', '/icons/runScriptBlack.png', 25],
         ['switch', '/icons/switch.png', '/icons/switchBlack.png', 25],
         ['callAPI', '/icons/callAPI.png', '/icons/callAPIBlack.png', 25],
+        ['dial', '/icons/dial.png', '/icons/dialBlack.png', 25],
         ['endFlow', '/icons/endFlow.png', '/icons/endFlowBlack.png', 25],
         [
           'connector',

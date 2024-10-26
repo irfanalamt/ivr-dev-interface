@@ -6,6 +6,7 @@ import {
 import {
   calculateDistance,
   deleteDollar,
+  replaceDollarString,
   replaceVarNameDollar,
   stringifySafe,
 } from '../src/myFunctions';
@@ -96,6 +97,11 @@ class Shape {
         this.height = 45;
         break;
 
+      case 'dial':
+        this.width = 120;
+        this.height = 40;
+        break;
+
       default:
         this.width = 120;
         this.height = 40;
@@ -114,6 +120,7 @@ class Shape {
         'playConfirm',
         'switch',
         'endFlow',
+        'dial',
       ].includes(type)
     ) {
       this.img = new Image(15, 15);
@@ -142,6 +149,7 @@ class Shape {
       ['connector', 'J'],
       ['jumper', 'K'],
       ['module', 'M'],
+      ['dial', 'N'],
     ]);
 
     const startCharacter = shapeTypeLetterMap.get(this.type) || 'X';
@@ -244,19 +252,20 @@ class Shape {
     // checks if this variable is used in element
 
     switch (this.type) {
-      case 'setParams':
+      case 'setParams': {
         const params = this.userValues?.params;
         if (!params) return false;
 
         return params.some((param) => param.value === `$${name}`);
-
-      case 'getDigits':
+      }
+      case 'getDigits': {
         const resultVariableName = this.userValues?.variableName;
         if (resultVariableName) {
           if (resultVariableName === `$${name}`) {
             return true;
           }
         }
+      }
       case 'playConfirm':
       case 'playMessage':
         const messageList = this.userValues?.messageList;
@@ -264,23 +273,26 @@ class Shape {
         if (!messageList) return false;
         return messageList.some((message) => message.item === `$${name}`);
 
-      case 'switch':
+      case 'switch': {
         const actions = this.userValues?.actions;
         if (!actions) return false;
         return actions.some((action) => action.condition.includes(`$${name}`));
+      }
 
-      case 'playMenu':
+      case 'playMenu': {
         const items = this.userValues?.items;
         if (!items) return false;
         return items.some((item) => item.prompt === `$${name}`);
+      }
 
-      case 'runScript':
+      case 'runScript': {
         const script = this.userValues?.script;
         if (!script) return false;
         const regex = new RegExp(`\\$${name}[^a-zA-Z0-9_]`, 'g');
         return regex.test(script);
+      }
 
-      case 'callAPI':
+      case 'callAPI': {
         const inputVars = this.userValues?.inputVars;
         if (inputVars) {
           const isMatchFound = inputVars.some(
@@ -295,6 +307,21 @@ class Shape {
         } else {
           return false;
         }
+      }
+
+      case 'dial': {
+        const resultPhoneNum = this.userValues?.phoneNum;
+        if (resultPhoneNum && resultPhoneNum === `$${name}`) return true;
+
+        const resultTrunk = this.userValues?.trunk;
+        if (resultTrunk && resultTrunk === `$${name}`) return true;
+
+        const resultAccessCode = this.userValues?.accessCode;
+        if (resultAccessCode && resultAccessCode === `$${name}`) return true;
+
+        const resultCallerId = this.userValues?.callerId;
+        if (resultCallerId && resultCallerId === `$${name}`) return true;
+      }
 
       default:
         return false;
@@ -330,9 +357,11 @@ class Shape {
       case 'playMenu':
         this.setFunctionStringPlayMenu(variables);
         break;
+
+      case 'dial':
+        this.setFunctionStringDial(variables);
     }
     if (elementEntryCount[this.id]) {
-      console.log('multiiii', this.text, this.type);
       this.generateDriverFunctionMultiEntry(elementEntryCount);
     }
   }
@@ -352,8 +381,6 @@ class Shape {
         await IVR.setCallParams('${functionName}', newParams);
       };
     `;
-
-    console.log('codeString☄️', codeString);
 
     this.setFunctionString(codeString);
   }
@@ -392,7 +419,6 @@ class Shape {
     };
   `;
 
-    console.log('codeString', codeString);
     this.setFunctionString(codeString);
   }
 
@@ -440,7 +466,6 @@ class Shape {
     };
   `;
 
-    console.log('codeString', codeString);
     this.setFunctionString(codeString);
   }
 
@@ -476,7 +501,6 @@ class Shape {
     };
   `;
 
-    console.log('codeString📍', codeString);
     this.setFunctionString(codeString);
   }
 
@@ -501,7 +525,6 @@ class Shape {
     };
   `;
 
-    console.log('codeString📍', codeString);
     this.setFunctionString(codeString);
   }
 
@@ -545,7 +568,6 @@ class Shape {
     };
     `;
 
-    console.log('codeString📍', codeString);
     this.setFunctionString(codeString);
   }
 
@@ -613,7 +635,40 @@ class Shape {
     };
   `;
 
-    console.log('codeString 📍', codeString);
+    this.setFunctionString(codeString);
+  }
+
+  setFunctionStringDial(variables) {
+    const functionName = this.text ? this.text : `dial${this.id}`;
+
+    const phoneNum =
+      this.userValues.phoneNum[0] == '$'
+        ? replaceDollarString(this.userValues.phoneNum)
+        : `'${this.userValues.phoneNum}'`;
+    const trunk =
+      this.userValues.trunk[0] == '$'
+        ? replaceDollarString(this.userValues.trunk)
+        : `'${this.userValues.trunk}'`;
+    const accessCode =
+      this.userValues.accessCode[0] == '$'
+        ? replaceDollarString(this.userValues.accessCode)
+        : `'${this.userValues.accessCode}'`;
+    const callerId =
+      this.userValues.callerId[0] == '$'
+        ? replaceDollarString(this.userValues.callerId)
+        : `'${this.userValues.callerId}'`;
+
+    const codeString = `
+    this.${functionName} = async function() {
+     const phoneNum = ${phoneNum};
+     const trunk = ${trunk};
+     const accessCode = ${accessCode};
+     const callerId = ${callerId};  
+      
+    this.resultVar = await IVR.dialAndConnect('${functionName}',phoneNum,trunk,accessCode,callerId); 
+    };
+  `;
+
     this.setFunctionString(codeString);
   }
 
@@ -876,6 +931,7 @@ class Shape {
           {x: this.x - this.width * (5 / 8), y: this.y + this.height / 2},
         ];
 
+      case 'dial':
       case 'runScript':
         return [
           {x: this.x - this.width / 2, y: this.y - this.height / 2},
@@ -1560,6 +1616,7 @@ class Shape {
 
   drawShape(ctx) {
     switch (this.type) {
+      case 'dial':
       case 'runScript':
         this.drawRectangle(ctx);
         break;

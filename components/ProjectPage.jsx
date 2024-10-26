@@ -70,6 +70,7 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
     connector: 1,
     jumper: 1,
     module: 1,
+    dial: 1,
   });
 
   useEffect(() => {
@@ -629,6 +630,16 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
               }
               return p;
             });
+          }
+        } else if (shapeType === 'dial') {
+          const userValues = shape.userValues;
+
+          if (userValues) {
+            const {phoneNum, trunk, accessCode, callerId} = userValues;
+            if (phoneNum === oldVar) shape.userValues.phoneNum = newVar;
+            if (trunk === oldVar) shape.userValues.trunk = newVar;
+            if (accessCode === oldVar) shape.userValues.accessCode = newVar;
+            if (callerId === oldVar) shape.userValues.callerId = newVar;
           }
         }
 

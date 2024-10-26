@@ -12,6 +12,7 @@ import SetParams from '../newComponents/SetParams2';
 import SwitchBlock from '../newComponents/SwitchBlock2';
 import {useState} from 'react';
 import ElementUserGuide from '../newComponents/ElementUserGuide';
+import Dial from '../newComponents/Dial';
 
 const ElementDrawer = ({
   shape,
@@ -149,6 +150,19 @@ const ElementDrawer = ({
             shape={shape}
             shapes={shapes}
             handleCloseDrawer={handleCloseDrawer}
+            openVariableManager={openVariableManager}
+            openUserGuide={() => setOpenGuide(true)}
+          />
+        );
+
+      case 'dial':
+        return (
+          <Dial
+            shape={shape}
+            handleCloseDrawer={handleCloseDrawer}
+            shapes={shapes}
+            clearAndDraw={clearAndDraw}
+            userVariables={userVariables}
             openVariableManager={openVariableManager}
             openUserGuide={() => setOpenGuide(true)}
           />
