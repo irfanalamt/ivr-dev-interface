@@ -307,6 +307,7 @@ function getNextShapes(shape) {
 }
 
 function generateMainMenuCode(startShape, multiEntryCount) {
+  globalMultiEntryCount = multiEntryCount;
   const shapesTillMenuOrSwitch = getShapesTillMenuOrSwitch(
     startShape,
     multiEntryCount
