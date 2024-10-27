@@ -100,6 +100,9 @@ function ProjectPage({ivrName, user, openIvrDialog, updateUser}) {
               shapeCount: newShapeCount,
             } = response.data;
 
+            //set defaultcount to dial; if not present
+            newShapeCount.dial ??= 1;
+
             shapeCount.current = newShapeCount;
 
             const newShapes = createShapesFromResponse(shapes);
