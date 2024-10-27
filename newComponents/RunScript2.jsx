@@ -152,7 +152,8 @@ const RunScript = ({
     static trace(message) {}
     static info(message) {}
     static error(message) {}
-  }`;
+  }
+  function setCustId(){}  `;
   }
 
   function handleEditorChange(value) {

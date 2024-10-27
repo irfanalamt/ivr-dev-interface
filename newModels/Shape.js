@@ -511,9 +511,15 @@ class Shape {
     function replaceLogWithIvrLog(str) {
       return str.replace(/log/g, 'IVR.log');
     }
+    function replaceSetCustIdWithIvr(str) {
+      return str.replace(/setCustId/g, 'IVR.setCustId');
+    }
+
     const functionName = this.text ? this.text : `runScript${this.id}`;
     const newReplacedString = replaceDollarString(this.userValues.script);
-    const ivrReplacedString = replaceLogWithIvrLog(newReplacedString);
+    const ivrReplacedString = replaceSetCustIdWithIvr(
+      replaceLogWithIvrLog(newReplacedString)
+    );
 
     const codeString = `
     this.${functionName} = async function() {
