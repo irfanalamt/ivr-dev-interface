@@ -321,6 +321,10 @@ class Shape {
 
         const resultCallerId = this.userValues?.callerId;
         if (resultCallerId && resultCallerId === `$${name}`) return true;
+
+        const resultVariableName = this.userValues?.dialResult;
+        if (resultVariableName && resultVariableName === `$${name}`)
+          return true;
       }
 
       default:
@@ -664,6 +668,8 @@ class Shape {
         ? replaceDollarString(this.userValues.callerId)
         : `'${this.userValues.callerId}'`;
 
+    const dialResult = deleteDollar(this.userValues.dialResult);
+
     const codeString = `
     this.${functionName} = async function() {
      const phoneNum = ${phoneNum};
@@ -671,7 +677,7 @@ class Shape {
      const accessCode = ${accessCode};
      const callerId = ${callerId};  
       
-    this.resultVar = await IVR.dialAndConnect('${functionName}',phoneNum,trunk,accessCode,callerId); 
+    this.${dialResult} = await IVR.dialAndConnect('${functionName}',phoneNum,trunk,accessCode,callerId); 
     };
   `;
 

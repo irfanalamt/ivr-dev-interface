@@ -7,6 +7,8 @@ import {
   Divider,
   IconButton,
   ListItem,
+  MenuItem,
+  Select,
   Stack,
   TextField,
   Typography,
@@ -25,6 +27,9 @@ const Dial = ({
   openUserGuide,
 }) => {
   const [name, setName] = useState(shape.text);
+  const [dialResult, setDialResult] = useState(
+    shape.userValues?.dialResult ?? ''
+  );
   const [phoneNum, setPhoneNum] = useState(shape.userValues?.phoneNum ?? '');
   const [trunk, setTrunk] = useState(shape.userValues?.trunk ?? '');
   const [accessCode, setAccessCode] = useState(
@@ -66,26 +71,45 @@ const Dial = ({
 
     if (!phoneNum) {
       setErrorText('Phone number is required.');
+      shape.setUserValues({...shape.userValues, phoneNum});
+      shape.isComplete = false;
       return;
     }
     if (errors.current.phoneNum) {
       setErrorText('Phone number not valid.');
       return;
+    } else {
+      shape.setUserValues({...shape.userValues, phoneNum});
     }
+
+    if (!dialResult) {
+      setErrorText('Dial result is required.');
+      return;
+    } else {
+      shape.setUserValues({...shape.userValues, dialResult});
+    }
+
     if (errors.current.trunk) {
       setErrorText('Trunk not valid.');
       return;
+    } else {
+      shape.setUserValues({...shape.userValues, trunk});
     }
+
     if (errors.current.accessCode) {
       setErrorText('Access code not valid.');
       return;
+    } else {
+      shape.setUserValues({...shape.userValues, accessCode});
     }
+
     if (errors.current.callerId) {
       setErrorText('Caller Id not valid.');
       return;
+    } else {
+      shape.setUserValues({...shape.userValues, callerId});
     }
 
-    shape.setUserValues({phoneNum, trunk, accessCode, callerId});
     shape.isComplete = true;
 
     setSuccessText('Saved.');
@@ -253,19 +277,37 @@ const Dial = ({
               <SaveIcon />
             </Button>
           </ListItem>
-          <ListItem sx={{height: 30}}>
-            {successText && (
-              <Typography sx={{mt: -1, color: 'green', mx: 'auto'}}>
-                {successText}
-              </Typography>
-            )}
-            {!successText && (
-              <Typography sx={{mt: -1, color: 'red', mx: 'auto'}}>
-                {errorText}
-              </Typography>
-            )}
-          </ListItem>
         </Box>
+        <ListItem>
+          <Stack>
+            <Typography variant='subtitle2'>Dial Result</Typography>
+            <Select
+              value={dialResult}
+              sx={{width: '220px', backgroundColor: '#f5f5f5'}}
+              onChange={(e) => setDialResult(e.target.value)}
+              size='small'>
+              {userVariables
+                .filter((v) => v.type === 'string')
+                .map((v, i) => (
+                  <MenuItem value={`$${v.name}`} key={i}>
+                    {v.name}
+                  </MenuItem>
+                ))}
+            </Select>
+          </Stack>
+        </ListItem>
+        <ListItem sx={{height: 30}}>
+          {successText && (
+            <Typography sx={{mt: -1, color: 'green', mx: 'auto'}}>
+              {successText}
+            </Typography>
+          )}
+          {!successText && (
+            <Typography sx={{mt: -1, color: 'red', mx: 'auto'}}>
+              {errorText}
+            </Typography>
+          )}
+        </ListItem>
         <Divider />
         <ListItem sx={{mt: 2}}>
           <Stack>
