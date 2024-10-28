@@ -59,6 +59,8 @@ const CanvasTest = ({
   const startX = useRef(0);
   const startY = useRef(0);
 
+  const buttonState = useRef(null);
+
   const shapesInPage = useMemo(
     () => shapes.filter((shape) => shape.pageNumber === pageNumber),
     [pageNumber, shapes]
@@ -598,6 +600,19 @@ const CanvasTest = ({
         }
       }
     }
+  }
+
+  function handleMouseEnter(e) {
+    if (buttonState.current != 0 && e.buttons == 0) {
+      // to reset if mouse gone outside while multiselect
+      // come back without left mouse down
+      handleMouseUp(e);
+      resetMultiSelect();
+    }
+  }
+
+  function handleMouseLeave(e) {
+    buttonState.current = e.buttons;
   }
 
   function handleDoubleClick(e) {
@@ -1212,6 +1227,8 @@ const CanvasTest = ({
         onMouseMove={handleMouseMove}
         onDoubleClick={handleDoubleClick}
         onContextMenu={handleContextMenu}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         ref={canvasRef}
