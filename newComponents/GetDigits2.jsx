@@ -77,6 +77,8 @@ const GetDigits = ({
     'maxRetries',
     'invalidAction',
     'timeoutAction',
+    'firstTimeout',
+    'interTimeout',
     'invalidPrompt',
     'interruptible',
   ];
@@ -287,16 +289,16 @@ const GetDigits = ({
               value={addedOptionalParams[index].value ?? ''}
               onChange={(e) => handleOptionalParamFieldChange(e, index)}
               size='small'>
-              <MenuItem value='0'>0</MenuItem>
-              <MenuItem value='1'>1</MenuItem>
-              <MenuItem value='2'>2</MenuItem>
-              <MenuItem value='3'>3</MenuItem>
-              <MenuItem value='4'>4</MenuItem>
-              <MenuItem value='5'>5</MenuItem>
-              <MenuItem value='6'>6</MenuItem>
-              <MenuItem value='7'>7</MenuItem>
-              <MenuItem value='8'>8</MenuItem>
-              <MenuItem value='9'>9</MenuItem>
+              <MenuItem value={0}>0</MenuItem>
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={9}>9</MenuItem>
             </Select>
           </Stack>
         );
@@ -345,6 +347,7 @@ const GetDigits = ({
                 size='small'>
                 <MenuItem value='disconnect'>Disconnect</MenuItem>
                 <MenuItem value='transfer'>Transfer</MenuItem>
+                <MenuItem value='continue'>Continue</MenuItem>
               </Select>
               {addedOptionalParams[index].value === 'transfer' && (
                 <TextField
@@ -361,6 +364,93 @@ const GetDigits = ({
             </Stack>
           </Stack>
         );
+
+      case 'firstTimeout':
+        return (
+          <Stack>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+              firstTimeout
+            </Typography>
+            <Select
+              sx={{backgroundColor: '#ededed'}}
+              value={addedOptionalParams[index].value ?? ''}
+              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              size='small'>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={9}>9</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={11}>11</MenuItem>
+              <MenuItem value={12}>12</MenuItem>
+              <MenuItem value={13}>13</MenuItem>
+              <MenuItem value={14}>14</MenuItem>
+              <MenuItem value={15}>15</MenuItem>
+              <MenuItem value={16}>16</MenuItem>
+              <MenuItem value={17}>17</MenuItem>
+              <MenuItem value={18}>18</MenuItem>
+              <MenuItem value={19}>19</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={21}>21</MenuItem>
+              <MenuItem value={22}>22</MenuItem>
+              <MenuItem value={23}>23</MenuItem>
+              <MenuItem value={24}>24</MenuItem>
+              <MenuItem value={25}>25</MenuItem>
+              <MenuItem value={26}>26</MenuItem>
+              <MenuItem value={27}>27</MenuItem>
+              <MenuItem value={28}>28</MenuItem>
+              <MenuItem value={29}>29</MenuItem>
+              <MenuItem value={30}>30</MenuItem>
+            </Select>
+          </Stack>
+        );
+
+      case 'interTimeout':
+        return (
+          <Stack>
+            <Typography sx={{fontSize: '1rem'}} variant='subtitle2'>
+              interTimeout
+            </Typography>
+            <Select
+              sx={{backgroundColor: '#ededed'}}
+              value={addedOptionalParams[index].value ?? ''}
+              onChange={(e) => handleOptionalParamFieldChange(e, index)}
+              size='small'>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={9}>9</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={11}>11</MenuItem>
+              <MenuItem value={12}>12</MenuItem>
+              <MenuItem value={13}>13</MenuItem>
+              <MenuItem value={14}>14</MenuItem>
+              <MenuItem value={15}>15</MenuItem>
+              <MenuItem value={16}>16</MenuItem>
+              <MenuItem value={17}>17</MenuItem>
+              <MenuItem value={18}>18</MenuItem>
+              <MenuItem value={19}>19</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={21}>21</MenuItem>
+              <MenuItem value={22}>22</MenuItem>
+              <MenuItem value={23}>23</MenuItem>
+              <MenuItem value={24}>24</MenuItem>
+              <MenuItem value={25}>25</MenuItem>
+              <MenuItem value={26}>26</MenuItem>
+              <MenuItem value={27}>27</MenuItem>
+              <MenuItem value={28}>28</MenuItem>
+              <MenuItem value={29}>29</MenuItem>
+              <MenuItem value={30}>30</MenuItem>
+            </Select>
+          </Stack>
+        );
+
       case 'invalidPrompt':
         return (
           <Stack sx={{width: '100%', mr: 2}}>
