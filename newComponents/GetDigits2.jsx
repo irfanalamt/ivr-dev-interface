@@ -347,7 +347,7 @@ const GetDigits = ({
                 size='small'>
                 <MenuItem value='disconnect'>Disconnect</MenuItem>
                 <MenuItem value='transfer'>Transfer</MenuItem>
-                <MenuItem value='continue'>Continue</MenuItem>
+                <MenuItem value='Continue'>Continue</MenuItem>
               </Select>
               {addedOptionalParams[index].value === 'transfer' && (
                 <TextField
