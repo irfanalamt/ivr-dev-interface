@@ -48,31 +48,62 @@ const PeekMenu = ({shape}) => {
         </>
       )}
       {shape.type === 'playMenu' &&
-        shape.userValues.items.map((m, i) => (
-          <Box display='flex' key={i} mb={1}>
-            <Box>
+        shape.userValues.items
+          .filter((m) => m.action !== 'Other')
+          .map((m, i) => (
+            <Box display='flex' key={i} mb={1}>
+              <Box>
+                <Typography
+                  sx={{fontSize: '14px', fontWeight: 'bold'}}
+                  variant='body1'>
+                  {`${m.digit}:`}
+                </Typography>
+              </Box>
+              <Box ml={1}>
+                <Typography
+                  sx={{fontSize: '14px', fontWeight: 'bold'}}
+                  variant='body1'>
+                  {`${m.action}`}
+                </Typography>
+              </Box>
+              <Box ml={1}>
+                <Typography sx={{fontSize: '14px'}} variant='body1'>
+                  {m.action === 'Transfer'
+                    ? ` ${m.transferPoint}`
+                    : ` '${m.prompt}'`}
+                </Typography>
+              </Box>
+            </Box>
+          ))}
+      {shape.type === 'playMenu' &&
+        shape.userValues.optionalParams?.some(
+          (param) =>
+            (param.name === 'timeoutAction' ||
+              param.name === 'invalidAction') &&
+            param.value === 'other'
+        ) && (
+          <Box display='flex' mb={1}>
+            <Typography
+              sx={{fontSize: '14px', fontWeight: 'bold'}}
+              variant='body1'>
+              Other (
               <Typography
-                sx={{fontSize: '14px', fontWeight: 'bold'}}
+                sx={{fontSize: '14px', display: 'inline'}}
                 variant='body1'>
-                {`${m.digit}:`}
+                {shape.userValues.optionalParams
+                  ?.filter(
+                    (param) =>
+                      (param.name === 'timeoutAction' ||
+                        param.name === 'invalidAction') &&
+                      param.value === 'other'
+                  )
+                  .map((param) => param.name)
+                  .join(', ')}
               </Typography>
-            </Box>
-            <Box ml={1}>
-              <Typography
-                sx={{fontSize: '14px', fontWeight: 'bold'}}
-                variant='body1'>
-                {`${m.action}`}
-              </Typography>
-            </Box>
-            <Box ml={1}>
-              <Typography sx={{fontSize: '14px'}} variant='body1'>
-                {m.action === 'Transfer'
-                  ? ` ${m.transferPoint}`
-                  : ` '${m.prompt}'`}
-              </Typography>
-            </Box>
+              )
+            </Typography>
           </Box>
-        ))}
+        )}
 
       {shape.type === 'switch' && (
         <>

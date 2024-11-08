@@ -95,7 +95,38 @@ const PlayMenu = ({
     clearAndDraw();
 
     validateBeforeSave();
-    const validItems = items.filter((i) => i.action);
+    let validItems = items.filter((i) => i.action);
+    const hasOtherItem = validItems.some((i) => i.action == 'Other');
+
+    let otherPresentInParams = false;
+    for (const p of addedOptionalParams) {
+      if (
+        (p.name === 'timeoutAction' || p.name === 'invalidAction') &&
+        p.value == 'other'
+      ) {
+        if (!hasOtherItem) {
+          validItems.push({
+            action: 'Other',
+            digit: 'Other',
+            disabled: false,
+            isDefault: false,
+            nextItemId: 'F1',
+            prompt: 'Other',
+          });
+        }
+        otherPresentInParams = true;
+        break;
+      }
+    }
+    if (!otherPresentInParams) {
+      validItems = validItems.filter((item) => item.action !== 'Other');
+    }
+
+    // sort array, bring bject with action "Other" to the end
+    validItems.sort((a, b) =>
+      a.action === 'Other' ? 1 : b.action === 'Other' ? -1 : 0
+    );
+
     shape.setUserValues({
       items: validItems,
       description,
@@ -225,6 +256,7 @@ const PlayMenu = ({
     ) {
       delete updatedItems[index].actionError;
     }
+
     setItems(updatedItems);
   }
 
@@ -260,11 +292,14 @@ const PlayMenu = ({
     const isUnique = items.every(
       (item, i) => i === index || item.action !== value
     );
+    const isOther = value == 'Other';
 
-    if (isValid && isUnique) {
+    if (isValid && isUnique && !isOther) {
       clearItemError(index, 'action');
     } else if (!isUnique) {
       setItemError(index, 'Action not unique', 'action');
+    } else if (isOther) {
+      setItemError(index, 'Other is a keyword', 'action');
     } else {
       setItemError(index, 'Action not in valid format', 'action');
     }
@@ -289,32 +324,8 @@ const PlayMenu = ({
       return;
     }
 
-    const shapeItems = shape.userValues.items.map(
-      ({nextItem, ...rest}) => rest
-    );
-    const expectedItems = items.map(({nextItem, ...rest}) => rest);
-
-    const shapeString = JSON.stringify({
-      items: shapeItems,
-      description: shape.userValues.description,
-      previousMenuId: shape.userValues.previousMenuId,
-      optionalParams: shape.userValues.optionalParams,
-      logs: shape.userValues.logs,
-    });
-
-    const expectedString = JSON.stringify({
-      items: expectedItems,
-      description,
-      previousMenuId,
-      optionalParams: addedOptionalParams,
-      logs: logText,
-    });
-
-    if (shapeString === expectedString) {
-      handleCloseDrawer();
-    } else {
-      setShowDialog(true);
-    }
+    handleSave();
+    handleCloseDrawer();
   }
 
   function validateOptionalPrompt(value, index) {
@@ -669,175 +680,196 @@ const PlayMenu = ({
         <Divider />
         {tabValue === 0 && (
           <List>
-            {items.map((item, i) => (
-              <ListItem
-                sx={{
-                  backgroundColor: '#eeeeee',
-                  borderBottom: '1px solid #bdbdbd',
-                }}
-                key={i}>
-                <Stack sx={{width: '100%', py: 1}}>
-                  <Box sx={{display: 'flex', alignItems: 'center'}}>
-                    <Avatar
-                      variant='rounded'
-                      sx={{
-                        mb: 1,
-                        border: '1px solid #424242',
-                        backgroundColor: '#f5f5f5',
-                        boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.05)',
-                      }}>
-                      <Typography sx={{color: 'black'}} variant='h6'>
-                        {item.digit}
+            {items.map((item, i) =>
+              item.action == 'Other' && item.digit == 'Other' ? null : (
+                <ListItem
+                  sx={{
+                    backgroundColor: '#eeeeee',
+                    borderBottom: '1px solid #bdbdbd',
+                  }}
+                  key={i}>
+                  <Stack sx={{width: '100%', py: 1}}>
+                    <Box sx={{display: 'flex', alignItems: 'center'}}>
+                      <Avatar
+                        variant='rounded'
+                        sx={{
+                          mb: 1,
+                          border: '1px solid #424242',
+                          backgroundColor: '#f5f5f5',
+                          boxShadow: '1px 1px 1px rgba(0, 0, 0, 0.05)',
+                        }}>
+                        <Typography sx={{color: 'black'}} variant='h6'>
+                          {item.digit}
+                        </Typography>
+                      </Avatar>
+                      <Typography
+                        sx={{
+                          mx: 'auto',
+                          color: 'red',
+                          backgroundColor: '#fce8e6',
+                          px: 2,
+                          py: 0.5,
+                          borderRadius: 1,
+                          width: 'max-content',
+                          visibility:
+                            item.actionError || item.promptError
+                              ? 'visible'
+                              : 'hidden',
+                        }}
+                        variant='subtitle2'>
+                        {item.actionError || item.promptError}
                       </Typography>
-                    </Avatar>
-                    <Typography
-                      sx={{
-                        mx: 'auto',
-                        color: 'red',
-                        backgroundColor: '#fce8e6',
-                        px: 2,
-                        py: 0.5,
-                        borderRadius: 1,
-                        width: 'max-content',
-                        visibility:
-                          item.actionError || item.promptError
-                            ? 'visible'
-                            : 'hidden',
-                      }}
-                      variant='subtitle2'>
-                      {item.actionError || item.promptError}
-                    </Typography>
-                  </Box>
+                    </Box>
 
-                  <Stack sx={{my: 0.5, mt: 1}}>
-                    <Typography variant='subtitle2'>
-                      Use Default Action
-                    </Typography>
-                    <Switch
-                      checked={item.isDefault}
-                      onChange={(e) => {
-                        handleItemFieldChange('isDefault', e.target.checked, i);
-                        handleItemFieldChange('action', '', i);
-                        handleItemFieldChange('menuName', undefined, i);
-                        handleItemFieldChange('transferPoint', undefined, i);
-                        handleItemFieldChange('messagePrompt', undefined, i);
-                        handleItemFieldChange('prompt', '', i);
+                    <Stack sx={{my: 0.5, mt: 1}}>
+                      <Typography variant='subtitle2'>
+                        Use Default Action
+                      </Typography>
+                      <Switch
+                        checked={item.isDefault}
+                        onChange={(e) => {
+                          handleItemFieldChange(
+                            'isDefault',
+                            e.target.checked,
+                            i
+                          );
+                          handleItemFieldChange('action', '', i);
+                          handleItemFieldChange('menuName', undefined, i);
+                          handleItemFieldChange('transferPoint', undefined, i);
+                          handleItemFieldChange('messagePrompt', undefined, i);
+                          handleItemFieldChange('prompt', '', i);
 
-                        // handleItemFieldChange('actionError', '', i);
-                        handleItemFieldChange('promptError', '', i);
-                        // console.log('item.isDefault', item.isDefault);
-                      }}
-                      sx={{mt: -1, ml: -1}}
-                    />
-                  </Stack>
-                  <Stack sx={{my: 0.5}}>
-                    <Typography variant='subtitle2'>Action</Typography>
-                    {item.isDefault ? (
-                      <>
-                        <Select
+                          // handleItemFieldChange('actionError', '', i);
+                          handleItemFieldChange('promptError', '', i);
+                          // console.log('item.isDefault', item.isDefault);
+                        }}
+                        sx={{mt: -1, ml: -1}}
+                      />
+                    </Stack>
+                    <Stack sx={{my: 0.5}}>
+                      <Typography variant='subtitle2'>Action</Typography>
+                      {item.isDefault ? (
+                        <>
+                          <Select
+                            sx={{
+                              width: 150,
+                              backgroundColor: '#f5f5f5',
+                              mb: 1,
+                            }}
+                            value={item.action}
+                            onChange={(e) =>
+                              handleItemFieldChange('action', e.target.value, i)
+                            }
+                            size='small'>
+                            {[
+                              'MainMenu',
+                              'PreviousMenu',
+                              'Disconnect',
+                              'Transfer',
+                              'Message',
+                            ].map((m, i) => (
+                              <MenuItem value={m} key={i}>
+                                {m}
+                              </MenuItem>
+                            ))}
+                          </Select>
+
+                          {item.action === 'Transfer' && (
+                            <Stack sx={{my: 0.5}}>
+                              <Typography variant='subtitle2'>
+                                Transfer Point
+                              </Typography>
+                              <TextField
+                                size='small'
+                                sx={{
+                                  width: 300,
+                                  backgroundColor: '#f5f5f5',
+                                }}
+                                value={item.transferPoint ?? ''}
+                                onChange={(e) =>
+                                  handleItemFieldChange(
+                                    'transferPoint',
+                                    e.target.value,
+                                    i
+                                  )
+                                }
+                              />
+                            </Stack>
+                          )}
+                          {item.action === 'Message' && (
+                            <Stack sx={{my: 0.5}}>
+                              <Typography variant='subtitle2'>
+                                Message Prompt
+                              </Typography>
+                              <TextField
+                                size='small'
+                                sx={{
+                                  width: 300,
+                                  backgroundColor: '#f5f5f5',
+                                }}
+                                value={item.messagePrompt ?? ''}
+                                onChange={(e) =>
+                                  handleItemFieldChange(
+                                    'messagePrompt',
+                                    e.target.value,
+                                    i
+                                  )
+                                }
+                              />
+                            </Stack>
+                          )}
+                        </>
+                      ) : (
+                        <TextField
                           sx={{
-                            width: 150,
+                            width: 200,
                             backgroundColor: '#f5f5f5',
-                            mb: 1,
                           }}
                           value={item.action}
-                          onChange={(e) =>
-                            handleItemFieldChange('action', e.target.value, i)
+                          onChange={(e) => {
+                            handleItemFieldChange('action', e.target.value, i);
+                            validateAction(e.target.value, i);
+                          }}
+                          error={Boolean(item.actionError)}
+                          size='small'
+                        />
+                      )}
+                    </Stack>
+                    <Stack sx={{my: 0.5}}>
+                      <Typography variant='subtitle2'>Prompt</Typography>
+                      <Autocomplete
+                        options={allPromptVariables}
+                        freeSolo
+                        value={item.prompt}
+                        filterOptions={filterOptions}
+                        onChange={(event, newValue) => {
+                          if (newValue) {
+                            handleItemFieldChange('prompt', newValue, i);
+                            validatePrompt(newValue, i);
                           }
-                          size='small'>
-                          {[
-                            'MainMenu',
-                            'PreviousMenu',
-                            'Disconnect',
-                            'Transfer',
-                            'Message',
-                          ].map((m, i) => (
-                            <MenuItem value={m} key={i}>
-                              {m}
-                            </MenuItem>
-                          ))}
-                        </Select>
-
-                        {item.action === 'Transfer' && (
-                          <Stack sx={{my: 0.5}}>
-                            <Typography variant='subtitle2'>
-                              Transfer Point
-                            </Typography>
-                            <TextField
-                              size='small'
-                              sx={{
-                                width: 300,
-                                backgroundColor: '#f5f5f5',
-                              }}
-                              value={item.transferPoint ?? ''}
-                              onChange={(e) =>
-                                handleItemFieldChange(
-                                  'transferPoint',
-                                  e.target.value,
-                                  i
-                                )
-                              }
-                            />
-                          </Stack>
-                        )}
-                        {item.action === 'Message' && (
-                          <Stack sx={{my: 0.5}}>
-                            <Typography variant='subtitle2'>
-                              Message Prompt
-                            </Typography>
-                            <TextField
-                              size='small'
-                              sx={{
-                                width: 300,
-                                backgroundColor: '#f5f5f5',
-                              }}
-                              value={item.messagePrompt ?? ''}
-                              onChange={(e) =>
-                                handleItemFieldChange(
-                                  'messagePrompt',
-                                  e.target.value,
-                                  i
-                                )
-                              }
-                            />
-                          </Stack>
-                        )}
-                      </>
-                    ) : (
-                      <TextField
-                        sx={{
-                          width: 200,
-                          backgroundColor: '#f5f5f5',
                         }}
-                        value={item.action}
-                        onChange={(e) => {
-                          handleItemFieldChange('action', e.target.value, i);
-                          validateAction(e.target.value, i);
-                        }}
-                        error={Boolean(item.actionError)}
-                        size='small'
-                      />
-                    )}
-                  </Stack>
-                  <Stack sx={{my: 0.5}}>
-                    <Typography variant='subtitle2'>Prompt</Typography>
-                    <Autocomplete
-                      options={allPromptVariables}
-                      freeSolo
-                      value={item.prompt}
-                      filterOptions={filterOptions}
-                      onChange={(event, newValue) => {
-                        if (newValue) {
-                          handleItemFieldChange('prompt', newValue, i);
-                          validatePrompt(newValue, i);
-                        }
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          sx={{
-                            width: 300,
-                            backgroundColor:
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            sx={{
+                              width: 300,
+                              backgroundColor:
+                                item.isDefault &&
+                                [
+                                  'MainMenu',
+                                  'PreviousMenu',
+                                  'Disconnect',
+                                  'Transfer',
+                                ].includes(item.action)
+                                  ? ''
+                                  : '#f5f5f5',
+                            }}
+                            placeholder={
+                              item.isDefault
+                                ? getPlaceholderValue(item.action)
+                                : ''
+                            }
+                            disabled={
                               item.isDefault &&
                               [
                                 'MainMenu',
@@ -845,108 +877,101 @@ const PlayMenu = ({
                                 'Disconnect',
                                 'Transfer',
                               ].includes(item.action)
-                                ? ''
-                                : '#f5f5f5',
-                          }}
-                          placeholder={
-                            item.isDefault
-                              ? getPlaceholderValue(item.action)
-                              : ''
-                          }
-                          disabled={
-                            item.isDefault &&
-                            [
-                              'MainMenu',
-                              'PreviousMenu',
-                              'Disconnect',
-                              'Transfer',
-                            ].includes(item.action)
-                          }
-                          size='small'
-                          error={Boolean(item.promptError)}
-                          onChange={(e) => {
-                            handleItemFieldChange('prompt', e.target.value, i);
-                            validatePrompt(e.target.value, i);
-                          }}
-                        />
-                      )}
-                    />
-                  </Stack>
-                  <Box sx={{display: 'flex', alignItems: 'center', my: 0.5}}>
-                    <Stack sx={{my: 0.5}}>
-                      <Typography variant='subtitle2'>Skip</Typography>
-                      <Switch
-                        checked={item.isSkip ?? false}
-                        onChange={(e) =>
-                          handleItemFieldChange('isSkip', e.target.checked, i)
-                        }
-                        sx={{mt: -1, ml: -1}}
+                            }
+                            size='small'
+                            error={Boolean(item.promptError)}
+                            onChange={(e) => {
+                              handleItemFieldChange(
+                                'prompt',
+                                e.target.value,
+                                i
+                              );
+                              validatePrompt(e.target.value, i);
+                            }}
+                          />
+                        )}
                       />
                     </Stack>
-                    <Stack sx={{my: 0.5, ml: 4}}>
-                      <Typography variant='subtitle2'>Disabled</Typography>
-                      <Switch
-                        checked={item.disabled}
-                        onChange={(e) =>
-                          handleItemFieldChange('disabled', e.target.checked, i)
-                        }
-                        sx={{mt: -1, ml: -1}}
-                      />
-                    </Stack>
-                    <Stack sx={{my: 0.5, ml: 4}}>
-                      <Typography variant='subtitle2'>Silent</Typography>
-                      <Switch
-                        checked={item.silent}
-                        onChange={(e) =>
-                          handleItemFieldChange('silent', e.target.checked, i)
-                        }
-                        sx={{mt: -1, ml: -1}}
-                      />
-                    </Stack>
-                    <IconButton
-                      color='error'
-                      size='small'
-                      onClick={() => handleDeleteItem(i)}
-                      sx={{
-                        ml: 'auto',
-                        backgroundColor: '#cfcfcf',
-                        '&:hover': {backgroundColor: '#c7c1bd'},
-                        height: 30,
-                        width: 30,
-                      }}>
-                      <DeleteIcon sx={{color: '#424242'}} />
-                    </IconButton>
-                  </Box>
-                  {item.isSkip ? (
-                    <Stack>
-                      <Typography variant='subtitle2'>
-                        Skip N Iterations
-                      </Typography>
-                      <Box sx={{display: 'flex', alignItems: 'center'}}>
-                        <Select
-                          sx={{
-                            width: 100,
-                            backgroundColor: '#f5f5f5',
-                          }}
-                          value={item.skip}
+                    <Box sx={{display: 'flex', alignItems: 'center', my: 0.5}}>
+                      <Stack sx={{my: 0.5}}>
+                        <Typography variant='subtitle2'>Skip</Typography>
+                        <Switch
+                          checked={item.isSkip ?? false}
                           onChange={(e) =>
-                            handleItemFieldChange('skip', e.target.value, i)
+                            handleItemFieldChange('isSkip', e.target.checked, i)
                           }
-                          size='small'>
-                          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((d, i) => (
-                            <MenuItem value={d} key={d}>
-                              {d}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </Box>
-                    </Stack>
-                  ) : (
-                    <></>
-                  )}
-                </Stack>
-              </ListItem>
-            ))}
+                          sx={{mt: -1, ml: -1}}
+                        />
+                      </Stack>
+                      <Stack sx={{my: 0.5, ml: 4}}>
+                        <Typography variant='subtitle2'>Disabled</Typography>
+                        <Switch
+                          checked={item.disabled}
+                          onChange={(e) =>
+                            handleItemFieldChange(
+                              'disabled',
+                              e.target.checked,
+                              i
+                            )
+                          }
+                          sx={{mt: -1, ml: -1}}
+                        />
+                      </Stack>
+                      <Stack sx={{my: 0.5, ml: 4}}>
+                        <Typography variant='subtitle2'>Silent</Typography>
+                        <Switch
+                          checked={item.silent}
+                          onChange={(e) =>
+                            handleItemFieldChange('silent', e.target.checked, i)
+                          }
+                          sx={{mt: -1, ml: -1}}
+                        />
+                      </Stack>
+                      <IconButton
+                        color='error'
+                        size='small'
+                        onClick={() => handleDeleteItem(i)}
+                        sx={{
+                          ml: 'auto',
+                          backgroundColor: '#cfcfcf',
+                          '&:hover': {backgroundColor: '#c7c1bd'},
+                          height: 30,
+                          width: 30,
+                        }}>
+                        <DeleteIcon sx={{color: '#424242'}} />
+                      </IconButton>
+                    </Box>
+                    {item.isSkip ? (
+                      <Stack>
+                        <Typography variant='subtitle2'>
+                          Skip N Iterations
+                        </Typography>
+                        <Box sx={{display: 'flex', alignItems: 'center'}}>
+                          <Select
+                            sx={{
+                              width: 100,
+                              backgroundColor: '#f5f5f5',
+                            }}
+                            value={item.skip}
+                            onChange={(e) =>
+                              handleItemFieldChange('skip', e.target.value, i)
+                            }
+                            size='small'>
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((d, i) => (
+                              <MenuItem value={d} key={d}>
+                                {d}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </Box>
+                      </Stack>
+                    ) : (
+                      <></>
+                    )}
+                  </Stack>
+                </ListItem>
+              )
+            )}
             <Stack
               sx={{
                 pl: 2,

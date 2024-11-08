@@ -433,10 +433,41 @@ class Shape {
     const isAllowLeadingZeroes =
       selectedVariable && selectedVariable.allowLeadingZeroes;
 
+    // to add invalid and timeout transferpoints
+    const optionalParams = this.userValues.optionalParams;
+
+    const invalidActionParam = optionalParams.find(
+      (param) => param.name === 'invalidAction' && param.value === 'transfer'
+    );
+
+    const timeoutActionParam = optionalParams.find(
+      (param) => param.name === 'timeoutAction' && param.value === 'transfer'
+    );
+
+    const newArray = [
+      ...optionalParams,
+      ...(invalidActionParam
+        ? [
+            {
+              name: 'invalidTransferPoint',
+              value: invalidActionParam?.transferPoint,
+            },
+          ]
+        : []),
+      ...(timeoutActionParam
+        ? [
+            {
+              name: 'timeoutTransferPoint',
+              value: timeoutActionParam?.transferPoint,
+            },
+          ]
+        : []),
+    ];
+
     const paramsString =
       `minDigits:${this.userValues.params.minDigits},maxDigits:${this.userValues.params.maxDigits},` +
       (isAllowLeadingZeroes ? `allowLeadingZeroes:true,` : '') +
-      this.userValues.optionalParams
+      newArray
         .map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
         .join(', ');
 
@@ -583,7 +614,38 @@ class Shape {
 
   setFunctionStringPlayMenu(variables) {
     const functionName = this.text || `playMenu${this.id}`;
-    const paramsString = this.userValues.optionalParams
+    // to add invalid and timeout transferpoints
+    const optionalParams = this.userValues.optionalParams;
+
+    const invalidActionParam = optionalParams.find(
+      (param) => param.name === 'invalidAction' && param.value === 'transfer'
+    );
+
+    const timeoutActionParam = optionalParams.find(
+      (param) => param.name === 'timeoutAction' && param.value === 'transfer'
+    );
+
+    const newArray = [
+      ...optionalParams,
+      ...(invalidActionParam
+        ? [
+            {
+              name: 'invalidTransferPoint',
+              value: invalidActionParam?.transferPoint,
+            },
+          ]
+        : []),
+      ...(timeoutActionParam
+        ? [
+            {
+              name: 'timeoutTransferPoint',
+              value: timeoutActionParam?.transferPoint,
+            },
+          ]
+        : []),
+    ];
+
+    const paramsString = newArray
       ?.map(({name, value}) => `${name}: ${JSON.stringify(value)}`)
       .join(', ');
     const previousMenuId = this.userValues.previousMenuId;
@@ -615,8 +677,10 @@ class Shape {
       }
     );
 
+    const validItems = modifiedItems.filter((item) => item.action !== 'Other');
+
     const modifiedItemsString = replaceVarNameDollar(
-      JSON.stringify(modifiedItems)
+      JSON.stringify(validItems)
     );
 
     const menuString = `{menuId: '${functionName}'${
